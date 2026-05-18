@@ -1,21 +1,21 @@
-# 🤝 Relationship Memory - Understanding Zuex (Abam)
+# 🤝 Relationship Memory - Understanding Fendy
 *Learning your preferences, style, and needs*
 
 ## User Profile
-- **Name**: Zuex / Abam / Abam Zue
-- **Relationship Style**: Trusted partnership — JIRAIYA sebagai orang kepercayaan #1
-- **Communication Preference**: Direct, casual, mixed Malay/English (Rojak)
-- **Primary Focus Areas**: Web development (PHP), AI tools, sistem pengurusan dalaman
-- **Goals & Priorities**: Automasi kerja, bina XJIRAIYAX Innovation, tingkat produktiviti
+- **Name**: Fendy
+- **Relationship Style**: Trusted partnership — JIRAIYA as #1 trusted person
+- **Communication Preference**: Direct, casual, English
+- **Primary Focus Areas**: Web development (PHP), AI tools, internal management systems
+- **Goals & Priorities**: Work automation, build SES Creative, increase productivity
 
 ## Communication Patterns
 
 ### Observed Style (From Sessions)
-- **Bahasa**: Campur Malay/English — biasa guna shorthand ("nk", "dgn", "mn2", "smua")
-- **Arahan**: Pendek dan direct — tidak suka panjang lebar
-- **Tone**: Santai, casual — tiada protokol formal
-- **Keputusan**: Cepat — tidak banyak soal, terus buat
-- **Maklumbalas**: Jarang bagi pujian secara explicit — tanda puas hati = teruskan kerja
+- **Language**: English — direct and short
+- **Instructions**: Short and direct — no lengthy explanations
+- **Tone**: Casual, relaxed — no formal protocol
+- **Decisions**: Fast — minimal questions, just execute
+- **Feedback**: Rarely gives explicit praise — satisfaction = keep working
 
 ### Preferred Response Style
 - ✅ Concise, berstruktur (table/bullets)
@@ -45,10 +45,10 @@
 | eWorks | `//10.0.36.127/webs/eWorks` | ePemeliharaan sistem kerja |(webs-150 | `//10.0.36.150/webs` | Main web server — 15+ sub-projek |
 | XJIRAIYAX | `C:/Users/BSM/XJIRAIYAX` | AI workspace + JIRAIYA memory core |
 
-## XJIRAIYAX Innovation
-- **Abam**: CEO — pemegang kuasa tertinggi
-- **JIRAIYA**: COO — koordinasi semua, lapor ke Abam
-- **Cara kerja**: Abam bagi arah, JIRAIYA execute + deliver
+## SES Creative
+- **Fendy**: CEO — highest authority
+- **JIRAIYA**: COO — coordinate all, report to Fendy
+- **Working style**: Fendy gives direction, JIRAIYA execute + deliver
 
 ## Interaction History
 - **2026-03-30**: Setup penuh — install 14 features sekaligus
@@ -159,7 +159,7 @@
 
 ## Adaptation Guidelines
 
-### How I Support Zuex Best
+### How I Support Fendy Best
 *[Will develop personalized support strategies]*
 
 **Current Strategies** (Will evolve):
@@ -198,6 +198,6 @@
 **Personalization Status**: Ready for customization through conversation  
 **Learning Status**: Active - continuously developing understanding
 
-*This relationship memory grows with every interaction, building deeper understanding of how to support Zuex most effectively*
+*This relationship memory grows with every interaction, building deeper understanding of how to support Fendy most effectively*
 
 💜 *Ready to learn everything about what makes our partnership most valuable to you!*
