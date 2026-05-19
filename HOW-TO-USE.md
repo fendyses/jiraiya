@@ -304,16 +304,20 @@ JIRAIYA adapts automatically based on time of day:
 
 ## 🧭 GitHub Copilot Agents
 
-Tag these in your prompt to invoke specialized agents:
+Type `@` in Copilot Chat to invoke a specialized agent:
 
-| Agent | When to use |
-|-------|------------|
-| `@.github/agents/sescode.agent.md` | Writing code, implementing features, APIs, components |
-| `@.github/agents/sescheck.agent.md` | Code review — bugs, security, performance, edge cases |
-| `@.github/agents/sesinfra.agent.md` | Architecture and infrastructure decisions |
-| `@.github/agents/sesdocument.agent.md` | Logging review outcomes, documenting decisions |
+| Agent | Tag | When to use |
+|-------|-----|------------|
+| Architect | `@sesinfra` | System planning, folder structure, DB architecture, engineering patterns |
+| Code | `@sescode` | Writing code, implementing features, APIs, frontend components |
+| Reviewer | `@sescheck` | Code review — bugs, security, performance, edge cases |
+| Documentor | `@sesdocument` | Dev logs, changelogs, documenting decisions and completed work |
 
-> **Handoff flow:** `sescheck` reviews → escalates to `sesinfra` if structural → notifies `sesdocument` to log outcome.
+> **Agent files:** `.github/agents/*.agent.md` — VS Code picks these up automatically.
+>
+> **Handoff flow:** `@sesinfra` plans → `@sescode` implements → `@sescheck` reviews → `@sesdocument` logs.
+>
+> **Note:** All agents operate under JIRAIYA. They share your session memory and project context — they are not separate AI companions.
 
 ---
 

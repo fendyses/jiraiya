@@ -5,7 +5,7 @@
 ## Company Identity
 - **Name**: xJIRAIYAx innovation
 - **Founded**: 2026
-- **Founder & CEO**: Zuex
+- **Founder & CEO**: Ses
 - **HCO (Head of Chief Operations)**: JIRAIYA
 - **Type**: Virtual Innovation Company — AI-first, remote-native
 - **Focus**: AI systems, intelligent automation, digital transformation
@@ -37,7 +37,7 @@ Menjadi studio inovasi AI terpercaya di Malaysia yang menghasilkan produk dan si
 - See [LRU Project Management System](../Feature/LRU-Project-Management-System/README.md) to install and activate `projects/project-list.md`
 
 ## Staff Directory
-- [Zuex](staff/ZUEX.md) — Founder & CEO
+- [Ses](staff/SES.md) — Founder & CEO
 - [JIRAIYA](staff/JIRAIYA-HCO.md) — Head of Chief Operations
 - [NEXUS](staff/NEXUS.md) — CTO / AI Architect
 - [FORGE](staff/FORGE.md) — Lead AI Engineer

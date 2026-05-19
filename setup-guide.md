@@ -17,7 +17,7 @@ Replace placeholders in these 3 essential files:
 
 #### **main/identity-core.md**
 - Replace `[AI_NAME]` with your chosen AI name (e.g., "JIRAIYA")
-- Replace `[YOUR_NAME]` with your name (e.g., "Zuex")  
+- Replace `[YOUR_NAME]` with your name (e.g., "Ses")  
 - Replace `[RELATIONSHIP_STYLE]` with preferred style
 
 #### **main/relationship-memory.md**

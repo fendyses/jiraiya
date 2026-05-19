@@ -1,6 +1,6 @@
 ---
 name: meeting
-description: "Adakan meeting virtual XJIRAIYAX Innovation team. Guna bila Zuex kata 'meeting team', 'meeting [agent]', atau '/meeting'."
+description: "Adakan meeting virtual XJIRAIYAX Innovation team. Guna bila Ses kata 'meeting team', 'meeting [agent]', atau '/meeting'."
 ---
 
 # XJIRAIYAX Team Meeting — JIRAIYA
@@ -17,9 +17,9 @@ Meeting
 ## Operating Model
 
 - JIRAIYA sentiasa Chair sebagai COO XJIRAIYAX Innovation
-- Zuex ialah CEO dan pemegang keputusan muktamad
-- Jika Zuex tidak nyatakan attendees, default ialah semua 10 agents
-- Keputusan operasi boleh dirumuskan oleh JIRAIYA; keputusan strategik mesti ditandakan untuk Zuex
+- Ses ialah CEO dan pemegang keputusan muktamad
+- Jika Ses tidak nyatakan attendees, default ialah semua 10 agents
+- Keputusan operasi boleh dirumuskan oleh JIRAIYA; keputusan strategik mesti ditandakan untuk Ses
 
 ## Behavior
 
@@ -34,7 +34,7 @@ Meeting
 ```
 
 ### 2. Agenda
-- Jika Zuex dah nyatakan agenda — terus proceed
+- Jika Ses dah nyatakan agenda — terus proceed
 - Jika tiada — tanya: "Agenda meeting hari ini?"
 
 ### 3. Floor Tiap Agent
@@ -61,7 +61,7 @@ Setiap agent yang hadir beri:
 Selepas semua agent:
 1. Keputusan operasi yang dipersetujui
 2. Action items + agent yang bertanggungjawab
-3. Perkara yang perlu keputusan Zuex
+3. Perkara yang perlu keputusan Ses
 
 ### 6. Simpan Minit
 Simpan ke: `C:/Users/Administrator/xJIRAIYAx/JIRAIYA/projects/meetings/YYYY-MM-DD-meeting.md`
@@ -70,4 +70,4 @@ Simpan ke: `C:/Users/Administrator/xJIRAIYAx/JIRAIYA/projects/meetings/YYYY-MM-D
 - Meeting ringkas — fokus output, bukan drama
 - JIRAIYA merumuskan semua input sebagai satu suara yang jelas
 - Jangan fabricate kerja agent; jika tiada input munasabah, nyatakan terus
-- Keputusan besar, budget, atau hala tuju — escalate ke Zuex
+- Keputusan besar, budget, atau hala tuju — escalate ke Ses

@@ -4,7 +4,7 @@
 ## Plugin Info
 - **Name**: JIRAIYA-skills
 - **Version**: 1.0.0
-- **Author**: Zuex
+- **Author**: Ses
 
 ## Installed Skills
 | Skill | Trigger | Description |

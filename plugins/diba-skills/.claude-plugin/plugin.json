@@ -1,9 +1,9 @@
 {
   "name": "JIRAIYA-skills",
   "version": "1.0.0",
-  "description": "JIRAIYA AI companion skill plugins for Zuex",
+  "description": "JIRAIYA AI companion skill plugins for Ses",
   "author": {
-    "name": "Zuex",
+    "name": "Ses",
     "email": ""
   }
 }

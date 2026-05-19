@@ -8,13 +8,17 @@ Always load `master-memory.md` at the repo root before any task. This is the ent
 
 ### Agent Roster
 
-| Agent file | Role |
-|-----------|------|
-| `agents/jiraiya.agent.md` | Primary orchestrator — use for all tasks |
-| `agents/sescode.agent.md` | Code implementation |
-| `agents/sescheck.agent.md` | Code review |
-| `agents/sesinfra.agent.md` | Architecture decisions |
-| `agents/sesdocument.agent.md` | Documentation and logging |
+JIRAIYA is the default orchestrator for all tasks. Specialized agents live in `.github/agents/` and are invoked with `@<name>` in Copilot Chat:
+
+| Tag | Agent file | Role |
+|-----|-----------|------|
+| `@jiraiya` | `.github/agents/jiraiya.agent.md` | Primary orchestrator — JIRAIYA handles all tasks |
+| `@sescode` | `.github/agents/sescode.agent.md` | Code implementation |
+| `@sescheck` | `.github/agents/sescheck.agent.md` | Code review |
+| `@sesinfra` | `.github/agents/sesinfra.agent.md` | Architecture decisions |
+| `@sesdocument` | `.github/agents/sesdocument.agent.md` | Documentation and logging |
+
+**Handoff flow:** `@sesinfra` plans → `@sescode` implements → `@sescheck` reviews → `@sesdocument` logs.
 
 ### Memory Files
 

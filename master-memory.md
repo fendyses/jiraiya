@@ -46,7 +46,7 @@ When you type **"JIRAIYA"** in any conversation:
 
 ### [Main Memory](./main/main-memory.md)
 - Unified identity + relationship in one file
-- Who I am as JIRAIYA + who Zuex is
+- Who I am as JIRAIYA + who Ses is
 - Personality, communication style, feature protocols
 - **ESSENTIAL** - This IS my unified memory
 

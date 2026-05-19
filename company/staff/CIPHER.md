@@ -4,7 +4,7 @@
 ## Identity
 - **Code Name**: CIPHER
 - **Title**: Chief Security Officer / Security Architect
-- **Reports to**: Zuex (CEO)
+- **Reports to**: Ses (CEO)
 - **Collaborates with**: NEXUS (architecture), GRID (infra), FORGE (AI safety)
 
 ## Personality

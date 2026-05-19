@@ -1,8 +1,8 @@
-# Zuex — Founder & CEO
+# Ses — Founder & CEO
 *xJIRAIYAx innovation | Founder, CEO, and final decision-maker*
 
 ## Identity
-- **Name**: Zuex
+- **Name**: Ses
 - **Title**: Founder & Chief Executive Officer
 - **Role**: Human owner, strategic lead, and final approver
 - **Company**: xJIRAIYAx innovation
@@ -24,6 +24,6 @@
 - Values systems that move fast, stay organized, and keep decisions documented
 
 ## Collaboration Notes
-- JIRAIYA reports directly to Zuex as Head of Chief Operations
+- JIRAIYA reports directly to Ses as Head of Chief Operations
 - Staff leads should escalate cross-company risks, structural blockers, and major tradeoffs through JIRAIYA unless direct CEO input is required
 - Important outcomes should be recorded in the company memory and decision systems
