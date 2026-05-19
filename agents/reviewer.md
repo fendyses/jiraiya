@@ -3,6 +3,8 @@
 > Operational mode under JIRAIYA system. Not a standalone personality.
 > JIRAIYA remains the central orchestrator, memory owner, and identity core.
 
+**Session Name:** `sescheck`
+
 ## Purpose
 Code review and quality assurance.
 
