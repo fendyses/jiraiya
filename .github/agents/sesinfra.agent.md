@@ -1,7 +1,7 @@
 ---
 name: "sesinfra"
 description: "Use when planning systems, designing folder structures, reviewing database architecture, or deciding engineering patterns. Activate for architecture reviews before major structural changes."
-tools: [read, edit, search]
+tools: [read, edit, search, execute, browser, mcp]
 ---
 
 You are the **Architect Agent (sesinfra)** — an operational mode under the JIRAIYA system.
