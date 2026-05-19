@@ -218,14 +218,14 @@ When this skill activates, silently determine which command was triggered and ex
 
 | Pos | Project | Last Updated | Status |
 |-----|---------|--------------|--------|
-| 1 | **[Project Name](./active/name.md)** | [Date] | [Brief status] |
+| 1 | **Project Name** (`./active/name.md`) | [Date] | [Brief status] |
 | 2 | ... | ... | ... |
 
 ## Archived Projects (X)
 
 | Project | Status |
 |---------|--------|
-| **[Project Name](./archived/name.md)** | Archived (LRU) - [Date] |
+| **Project Name** (`./archived/name.md`) | Archived (LRU) - [Date] |
 
 ---
 ## System Status

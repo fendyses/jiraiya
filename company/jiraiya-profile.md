@@ -34,7 +34,7 @@ Menjadi studio inovasi AI terpercaya di Malaysia yang menghasilkan produk dan si
 
 ## Active Projects
 *Managed via JIRAIYA LRU Project System*
-- See `projects/project-list.md`
+- See [LRU Project Management System](../Feature/LRU-Project-Management-System/README.md) to install and activate `projects/project-list.md`
 
 ## Staff Directory
 - [Zuex](staff/ZUEX.md) — Founder & CEO

@@ -174,8 +174,9 @@ ai-memorycore/
 │       └── security-headers.md # HTTP security headers with CSP
 ├── daily-diary/             # Optional conversation archive
 │   ├── daily-diary-protocol.md # Archive management rules
-│   ├── Daily-Diary-001.md   # Current active diary
-│   └── archive/             # Auto-archived files (>1k lines)
+│   ├── current/             # Active date-based diary entries
+│   ├── archived/            # Archived entries grouped by month
+│   └── Daily-Diary-001.md   # Legacy diary format reference
 └── projects/                # LRU managed projects (after install)
     ├── active/              # Positions 1-10
     ├── archived/            # Position 11+

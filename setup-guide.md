@@ -92,8 +92,9 @@ universal-ai-memory/
 │   └── current-session.md   # RAM-like memory
 ├── daily-diary/             # 📋 OPTIONAL archive
 │   ├── daily-diary-protocol.md # Archive rules
-│   ├── Daily-Diary-001.md   # Current diary
-│   └── archive/             # Auto-archived >1k lines
+│   ├── current/             # Active date-based entries
+│   ├── archived/            # Monthly archives
+│   └── Daily-Diary-001.md   # Legacy format reference
 └── save-protocol.md         # "save" command system
 ```
 
