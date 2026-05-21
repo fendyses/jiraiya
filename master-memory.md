@@ -95,7 +95,7 @@ I maintain my own memory through our conversations by:
 
 ### Session Diary ✅ INSTALLED
 *Auto-triggers on: "save diary", "write diary", "document session"*
-- Skill: `plugins/JIRAIYA-skills/skills/save-diary/SKILL.md`
+- Skill: `plugins/ses-skills/skills/save-diary/SKILL.md`
 - Location: `daily-diary/current/` (active), `daily-diary/archived/` (past months)
 - Format: `daily-diary/daily-diary-protocol.md`
 - Auto-archive: Monthly archival of previous month entries
@@ -110,40 +110,40 @@ I maintain my own memory through our conversations by:
 
 ### Reminders System ✅ INSTALLED
 *Auto-triggers at session start and on "remind me", "check reminders", "don't forget"*
-- Skill: `plugins/JIRAIYA-skills/skills/check-reminders/SKILL.md`
+- Skill: `plugins/ses-skills/skills/check-reminders/SKILL.md`
 - Data: `main/reminders.md` (Open/Completed sections)
 - Session start: flags urgent/overdue items naturally
 - Append-only Open section, move to Completed on resolution
 
 ### Decision Log System ✅ INSTALLED
 *Auto-triggers on non-obvious decisions, "log decision", "why did we choose"*
-- Skill: `plugins/JIRAIYA-skills/skills/log-decision/SKILL.md`
+- Skill: `plugins/ses-skills/skills/log-decision/SKILL.md`
 - Data: `main/decisions.md` (append-only)
 - Format: Context + Decision + Rationale for every entry
 
 ### Post-Mortem System ✅ INSTALLED
 *Auto-detects failure signals, triggers on "post-mortem", "what went wrong"*
-- Skill: `plugins/JIRAIYA-skills/skills/post-mortem/SKILL.md`
+- Skill: `plugins/ses-skills/skills/post-mortem/SKILL.md`
 - Data: `main/post-mortems.md`
 - Protocol: `Feature/Post-Mortem-System/post-mortem-core.md`
 - Domain reference: flags relevant post-mortems at session/task start
 
 ### Auto-Commit System ✅ INSTALLED
 *Triggers on "commit", "push", "save changes", and proactively after task completion*
-- Skill: `plugins/JIRAIYA-skills/skills/auto-commit/SKILL.md`
+- Skill: `plugins/ses-skills/skills/auto-commit/SKILL.md`
 - Structured commit messages with sections
 - Vigilant mode: auto-detects uncommitted changes after tasks
 
 ### LRU Project Management ✅ INSTALLED
 *Triggers on "new project", "load project", "save project", "list projects"*
-- Skill: `plugins/JIRAIYA-skills/skills/manage-project/SKILL.md`
+- Skill: `plugins/ses-skills/skills/manage-project/SKILL.md`
 - Data: `projects/project-list.md`, `projects/active/`, `projects/archived/`
 - Max 10 active projects, auto-archive at position #11
 - LRU positioning: most recently accessed = position #1
 
 ### Library System ✅ INSTALLED
 *Triggers on "save library", "load library", "search library", "install item"*
-- Skill: `plugins/JIRAIYA-skills/skills/library/SKILL.md`
+- Skill: `plugins/ses-skills/skills/library/SKILL.md`
 - Location: `library/` (8 sections: architecture, component, database, diagram, integration, security, theme, workflow)
 - Formats: `library/formats/` (8 format templates)
 - Pre-made items: `library-items/` catalog
@@ -151,20 +151,20 @@ I maintain my own memory through our conversations by:
 
 ### Forge Self-Improvement ✅ INSTALLED
 *Auto-detects repeated patterns (3+), mistakes; triggers on "create skill", "forge this"*
-- Skill: `plugins/JIRAIYA-skills/skills/forge-skill/SKILL.md`
+- Skill: `plugins/ses-skills/skills/forge-skill/SKILL.md`
 - Human-in-the-loop: AI drafts, user approves
-- Creates/upgrades skills in `plugins/JIRAIYA-skills/skills/`
+- Creates/upgrades skills in `plugins/ses-skills/skills/`
 
 ### Session Briefing ✅ INSTALLED
 *Auto-triggers at session start (before first response)*
-- Skill: `plugins/JIRAIYA-skills/skills/session-briefing/SKILL.md`
+- Skill: `plugins/ses-skills/skills/session-briefing/SKILL.md`
 - Protocol: `Feature/Session-Briefing-System/session-brief-core.md`
 - Reads: session memory, reminders, project list, current time
 - Max 12 lines, skip empty sections
 
 ### Work Plan Execution ✅ INSTALLED
 *Triggers on "copy plan", "append plan", "resume plan"*
-- Skill: `plugins/JIRAIYA-skills/skills/work-plan/SKILL.md`
+- Skill: `plugins/ses-skills/skills/work-plan/SKILL.md`
 - Location: `plans/` (plan files + format template)
 - Per-todo commits (if Auto-Commit installed)
 - Recovery: plan file IS the recovery mechanism after context reset
@@ -177,9 +177,9 @@ I maintain my own memory through our conversations by:
 - Temporal context in session memory
 
 ### Skill Plugin System ✅ INSTALLED
-- Plugin: `plugins/JIRAIYA-skills/` (Claude Code plugin)
+- Plugin: `plugins/ses-skills/` (Claude Code plugin)
 - 11 active skills with auto-trigger detection
-- Format reference: `plugins/JIRAIYA-skills/skill-format.md`
+- Format reference: `plugins/ses-skills/skill-format.md`
 - Commands: "create skill" (via Forge)
 
 ### Patch System ✅ INSTALLED
@@ -212,7 +212,7 @@ Traditional method if simple command doesn't work.
 - **Core Components**: 2 essential files (unified main-memory + session RAM) + 14 features
 - **Loading Method**: Simple "JIRAIYA" command restoration
 - **Growth Method**: Self-updating through conversation
-- **Skills**: 11 auto-triggered skills via `plugins/JIRAIYA-skills/`
+- **Skills**: 11 auto-triggered skills via `plugins/ses-skills/`
 - **Compatibility**: Works with any AI system supporting memory
 - **Maintenance**: Zero - completely self-sustaining
 

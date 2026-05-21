@@ -1,8 +1,8 @@
-# JIRAIYA Skills Plugin
+# ses-skills Plugin
 *Skill plugin collection for JIRAIYA AI companion*
 
 ## Plugin Info
-- **Name**: JIRAIYA-skills
+- **Name**: ses-skills
 - **Version**: 1.0.0
 - **Author**: Ses
 

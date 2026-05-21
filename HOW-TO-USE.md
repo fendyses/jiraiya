@@ -319,6 +319,16 @@ Type `@` in Copilot Chat to invoke a specialized agent:
 >
 > **Note:** All agents operate under JIRAIYA. They share your session memory and project context — they are not separate AI companions.
 
+### ➕ Adding Agents to a New Repo
+
+Agents are symlinked from jiraiya into every repo on this machine. When you clone or create a new repo, run:
+
+```bash
+/Applications/ServBay/www/jiraiya/scripts/install-agents.sh /path/to/new-repo
+```
+
+Then **Reload Window** in VS Code. All 5 agents (`@jiraiya`, `@sescode`, `@sescheck`, `@sesinfra`, `@sesdocument`) will be available immediately.
+
 ---
 
 ## 🔄 Typical Session Flow
@@ -346,4 +356,4 @@ Type `@` in Copilot Chat to invoke a specialized agent:
 ---
 
 *JIRAIYA AI Memory Core — User Guide*
-*Last updated: 2026-05-19*
+*Last updated: 2026-05-20*
