@@ -136,6 +136,28 @@ universal-ai-memory/
 
 ---
 
+## 🖥️ Shell Banner Setup (Any Device)
+
+To get the **JIRAIYA banner + `copilot` wrapper** on any machine, source the shell integration script from your `~/.zshrc`:
+
+```zsh
+# Add this line to ~/.zshrc (replace path with where you cloned the repo)
+source /path/to/jiraiya/scripts/jiraiya-shell.sh
+```
+
+Then reload your shell:
+```zsh
+source ~/.zshrc
+```
+
+**What it gives you:**
+- `ses` — prints the JIRAIYA banner with agent list
+- `copilot` — wraps the Copilot CLI and shows the banner on exit
+
+The script auto-detects the Copilot CLI binary path, so it works on any Mac/Linux machine without editing.
+
+---
+
 **Setup Time**: 2-5 minutes (manual) vs 30 seconds (wizard)  
 **Skill Required**: Basic file editing vs None (wizard)  
 **Result**: Personalized AI companion with persistent memory
