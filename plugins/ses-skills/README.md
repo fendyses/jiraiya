@@ -25,6 +25,6 @@
 | work-plan | "copy plan", "resume plan" | Plan lifecycle and execution |
 
 ## Auto-Discovery Notes
-- Semua skill dalam folder `skills/[skill-name]/SKILL.md` akan dikesan secara automatik oleh sistem plugin.
-- Tiada pendaftaran manual diperlukan; struktur folder ialah konfigurasi utama.
-- `README.md` ini hanyalah rujukan manusia dan **bukan** fail indeks wajib untuk plugin.
+- All skills in the `skills/[skill-name]/SKILL.md` folder are automatically detected by the plugin system.
+- No manual registration required; folder structure is the main configuration.
+- This `README.md` is for human reference only and **not** a required index file for the plugin.

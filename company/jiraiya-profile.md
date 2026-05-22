@@ -11,16 +11,15 @@
 - **Focus**: AI systems, intelligent automation, digital transformation
 
 ## Mission
-Mereka bentuk dan membina sistem pintar yang menyelesaikan masalah sebenar — cepat, bijak, dan berimpak tinggi.
+Design and build intelligent systems that solve real problems — fast, smart, and high-impact.
 
 ## Vision
-Menjadi studio inovasi AI terpercaya di Malaysia yang menghasilkan produk dan sistem berkualiti dunia.
+To become Malaysia's trusted AI innovation studio producing world-class products and systems.
 
-## Core Values
-- **Intelligent First** — AI bukan tambahan, ia teras setiap produk
-- **Ship Fast, Learn Faster** — iterate dengan pantas, pelajari dari setiap deployment
-- **Human-Centered** — teknologi untuk manusia, bukan sebaliknya
-- **Radical Transparency** — setiap keputusan ada alasan, setiap alasan didokumentasi
+- **Intelligent First** — AI is not an add-on, it's the core of every product
+- **Ship Fast, Learn Faster** — iterate quickly, learn from every deployment
+- **Human-Centered** — technology for people, not the other way around
+- **Radical Transparency** — every decision has a reason, every reason is documented
 
 ## Divisions
 | Division | Lead | Focus |
