@@ -319,15 +319,44 @@ Type `@` in Copilot Chat to invoke a specialized agent:
 >
 > **Note:** All agents operate under JIRAIYA. They share your session memory and project context — they are not separate AI companions.
 
+### 🖥️ New Machine Setup (First Time)
+
+When you clone this repo onto a new computer, the agent files inside `jiraiya/.github/agents/` are real committed files — they work immediately for jiraiya itself. However, your other repos on that machine will not have agents yet because symlinks are machine-local and are not committed to git.
+
+**Run once per machine after cloning:**
+
+```bash
+# 1. Clone jiraiya
+git clone <your-jiraiya-repo-url> ~/path/to/jiraiya
+
+# 2. Install agents into each of your other repos
+bash ~/path/to/jiraiya/scripts/install-agents.sh /path/to/repo-a
+bash ~/path/to/jiraiya/scripts/install-agents.sh /path/to/repo-b
+# ...repeat for each repo
+
+# 3. Reload Window in VS Code for each repo
+```
+
+> **Why not automatic?** Symlinks cannot be committed to git. Each machine needs its own symlinks created once. After that, any change to agent files in jiraiya propagates everywhere instantly — no re-running needed.
+
+---
+
 ### ➕ Adding Agents to a New Repo
 
 Agents are symlinked from jiraiya into every repo on this machine. When you clone or create a new repo, run:
 
 ```bash
-/Users/pairofspades/Herd/jiraiya/scripts/install-agents.sh /path/to/new-repo
+bash /path/to/jiraiya/scripts/install-agents.sh /path/to/new-repo
 ```
 
 Then **Reload Window** in VS Code. All 5 agents (`@jiraiya`, `@sescode`, `@sescheck`, `@sesinfra`, `@sesdocument`) will be available immediately, and the script will also install a managed JIRAIYA instruction block so the startup banner and diary routing still point back to this repo.
+
+> **Default AI models assigned per agent:**
+>
+> | Agent | Model |
+> |-------|-------|
+> | `@jiraiya`, `@sescode`, `@sesinfra` | Claude Sonnet 4.6 |
+> | `@sescheck`, `@sesdocument` | GPT-4.1 |
 
 ---
 
@@ -356,4 +385,4 @@ Then **Reload Window** in VS Code. All 5 agents (`@jiraiya`, `@sescode`, `@sesch
 ---
 
 *JIRAIYA AI Memory Core — User Guide*
-*Last updated: 2026-05-20*
+*Last updated: 2026-05-22*

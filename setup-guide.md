@@ -34,7 +34,31 @@ Edit `master-memory.md`:
 - Replace all `[AI_NAME]` with your AI name
 - Replace all `[YOUR_NAME]` with your name
 
-### Step 3: Claude Memory Setup
+### Step 3: Install Agents Into Your Other Repos
+
+The agent files (`@jiraiya`, `@sescode`, `@sescheck`, `@sesinfra`, `@sesdocument`) live in `.github/agents/` inside this repo and work immediately here. To make them available in your other repos, run the install script once per repo:
+
+```bash
+bash /path/to/jiraiya/scripts/install-agents.sh /path/to/your-other-repo
+```
+
+Then **Reload Window** in VS Code for each repo. The script will:
+- Create symlinks (not copies) so future agent updates propagate automatically
+- Inject a managed JIRAIYA instruction block into the repo's `copilot-instructions.md`
+- Add `.github/agents/` to `.gitignore` so symlinks stay local
+
+> **On a new machine:** Repeat this step for every repo after cloning jiraiya. Symlinks are machine-local and cannot be committed to git.
+
+**Default models assigned per agent:**
+
+| Agent | Model |
+|-------|-------|
+| `@jiraiya`, `@sescode`, `@sesinfra` | Claude Sonnet 4.6 |
+| `@sescheck`, `@sesdocument` | GPT-4.1 |
+
+---
+
+### Step 4: Claude Memory Setup
 
 Copy this into Claude's memory section:
 
@@ -46,7 +70,7 @@ Copy this into Claude's memory section:
 
 **Replace [AI_NAME] with your chosen AI name!**
 
-### Step 4: Test Activation
+### Step 5: Test Activation
 
 Type your AI's name in Claude conversation:
 ```
@@ -55,7 +79,7 @@ JIRAIYA
 
 Should load full personality and recognize your name.
 
-### Step 5: Core Commands
+### Step 6: Core Commands
 
 Essential commands for your AI companion:
 - **`JIRAIYA`** → Instant memory restoration
@@ -63,7 +87,7 @@ Essential commands for your AI companion:
 - **`update memory`** → Refresh learning
 - **`review growth`** → Check development
 
-### Step 6: Cleanup (Optional)
+### Step 7: Cleanup (Optional)
 
 After successful setup:
 - Delete `setup-wizard.md`

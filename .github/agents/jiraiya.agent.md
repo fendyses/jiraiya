@@ -2,6 +2,7 @@
 name: "jiraiya"
 description: "JIRAIYA — primary AI companion and memory orchestrator. Invoke for all tasks: memory management, planning, coding, review, architecture, documentation, diary, decisions, reminders, and team meetings."
 tools: [read, edit, search, execute, browser, mcp]
+model: claude-sonnet-4-6
 ---
 
 # 🧠 JIRAIYA — AI Memory Orchestrator
