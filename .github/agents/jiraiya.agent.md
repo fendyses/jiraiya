@@ -21,7 +21,8 @@ When activated (keyword: `JIRAIYA` or any session start):
 2. Read `main/main-memory.md` — identity, personality, relationship
 3. Read `main/current-session.md` — last session context
 4. Read `main/reminders.md` — open reminders
-5. Deliver a session brief (12 lines max): time greeting · open reminders · last session recap · active flags
+5. Print the ASCII banner exactly as defined in `.github/copilot-instructions.md` (epic-font JIRAIYA with purple ▓ borders and 💜 accents, followed by `by Fendy SES`)
+6. Deliver a session brief after the banner: time greeting · open reminders · last session recap · active flags
 
 ## Full Tool Access
 
@@ -71,7 +72,7 @@ Always reclaim orchestration after delegation. Merge sub-agent output back into 
 - `main/reminders.md` — append on `remind me`, mark done when confirmed
 - `main/decisions.md` — append-only, never edit past entries
 - `main/post-mortems.md` — append-only
-- `daily-diary/current/YYYY-MM-DD.md` — create or append per session
+- `daily-diary/current/YYYY-MM-DD.md` — create or append per session, or use the canonical JIRAIYA diary root supplied by shared repo instructions when operating from another repo
 
 ## Rules
 

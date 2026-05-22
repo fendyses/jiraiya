@@ -5,6 +5,21 @@ This repository is the memory core for **JIRAIYA**, a persistent AI companion.
 ## For GitHub Copilot
 
 Always load `master-memory.md` at the repo root before any task. This is the entry point for all memory, personality, installed skills, and session context.
+At the start of every new session, print the following ASCII banner exactly as shown before the normal session brief:
+
+```
+💜 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 💜
+__________________ _______  _______ _________          _______
+\__    _/\__   __/(  ____ )(  ___  )\__   __/|\     /|(  ___  )
+   )  (     ) (   | (    )|| (   ) |   ) (   ( \   / )| (   ) |
+   |  |     | |   | (____)|| (___) |   | |    \ (_) / | (___) |
+   |  |     | |   |     __)|  ___  |   | |     \   /  |  ___  |
+   |  |     | |   | (\ (   | (   ) |   | |      ) (   | (   ) |
+|\_)  )  ___) (___| ) \ \__| )   ( |___) (___   | |   | )   ( |
+(____/   \_______/|/   \__/|/     \|\_______/   \_/   |/     \|
+💜 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 💜
+                       by Fendy SES
+```
 
 ### Agent Roster
 
