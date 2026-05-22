@@ -7,7 +7,7 @@ description: 'Save session to daily diary. Use when user says: "save diary", "lo
 
 Automated daily session documentation with monthly archival.
 
-**Penting**: Diari **sentiasa ditulis ke JIRAIYA repo** (`/Applications/ServBay/www/jiraiya/daily-diary/`) tidak kira dari repo mana skill ini dipanggil. Ini memastikan semua kerja harian terpusat di satu tempat.
+**Penting**: Tentukan `JIRAIYA_ROOT` sebagai direktori yang mengandungi `master-memory.md` untuk sesi semasa. Diari **sentiasa ditulis ke JIRAIYA repo** (`JIRAIYA_ROOT/daily-diary/`) tidak kira dari repo mana skill ini dipanggil. Ini memastikan semua kerja harian terpusat di satu tempat.
 
 ## Trigger
 
@@ -20,7 +20,7 @@ Aktifkan juga bila pengguna kata: "save diary", "log this session", "document th
 ## Direktori
 
 ```
-/Applications/ServBay/www/jiraiya/daily-diary/
+JIRAIYA_ROOT/daily-diary/
 ├── current/                     # Entry bulan semasa
 │   ├── 2026-03-17.md
 │   └── 2026-03-30.md
@@ -41,7 +41,7 @@ Aktifkan juga bila pengguna kata: "save diary", "log this session", "document th
 #### A. Semak repo semasa (di mana user sedang bekerja)
 
 1. Jalankan `git rev-parse --show-toplevel` untuk dapatkan root repo semasa
-2. Jika root repo **bukan** `/Applications/ServBay/www/jiraiya`, ini bermakna user bekerja di repo lain
+2. Jika root repo **bukan** `JIRAIYA_ROOT`, ini bermakna user bekerja di repo lain
 3. Jalankan git log untuk repo semasa:
    ```bash
    TODAY=$(date +%Y-%m-%d)
@@ -51,9 +51,9 @@ Aktifkan juga bila pengguna kata: "save diary", "log this session", "document th
 
 #### B. Scan repo dari senarai projek
 
-1. Baca `/Applications/ServBay/www/jiraiya/projects/project-list.md` (jika wujud)
+1. Baca `JIRAIYA_ROOT/projects/project-list.md` (jika wujud)
 2. Untuk setiap projek aktif dalam senarai:
-   - Buka `/Applications/ServBay/www/jiraiya/projects/active/[name].md`
+   - Buka `JIRAIYA_ROOT/projects/active/[name].md`
    - Cari field `**Repository**:` di bawah **Technical Notes**
    - Jika path lokal (bermula dengan `/`), jalankan:
      ```bash
@@ -71,7 +71,7 @@ Gabungkan semua hasil dari A dan B — ini akan dimasukkan ke bahagian **"Kerja 
 
 ### Langkah 1: Auto-Archive Bulan Lepas
 
-**SEBELUM** menulis entry baru, semak jika ada fail bulan lama dalam `/Applications/ServBay/www/jiraiya/daily-diary/current/`:
+**SEBELUM** menulis entry baru, semak jika ada fail bulan lama dalam `JIRAIYA_ROOT/daily-diary/current/`:
 
 1. Baca semua fail dalam `daily-diary/current/`
 2. Jika ada fail dengan bulan **berbeza** dari bulan semasa:
@@ -81,7 +81,7 @@ Gabungkan semua hasil dari A dan B — ini akan dimasukkan ke bahagian **"Kerja 
 
 ### Langkah 2: Tulis Entry
 
-Append satu entry ke `/Applications/ServBay/www/jiraiya/daily-diary/current/YYYY-MM-DD.md` (cipta fail jika perlu).
+Append satu entry ke `JIRAIYA_ROOT/daily-diary/current/YYYY-MM-DD.md` (cipta fail jika perlu).
 
 ### Struktur Entry
 
@@ -115,10 +115,10 @@ Setiap entry MESTI ada:
 
 ### Kerja di repo lain
 <!-- Sertakan bahagian ini apabila ada kerja di repo selain jiraiya -->
-- **mystudentvue** (`/Applications/ServBay/www/mystudentvue`):
+- **repo-a** (`/path/to/repo-a`):
   - `abc1234` Fix login redirect bug
   - `def5678` Update student dashboard layout
-- **weightloss** (`/Applications/ServBay/www/weightloss`):
+- **repo-b** (`/path/to/repo-b`):
   - `ghi9012` Add calorie tracking feature
 
 ### Follow-ups

@@ -32,7 +32,7 @@ This repository uses the shared JIRAIYA memory core at \`$JIRAIYA_DIR\`.
 
 - Before handling the user's first request, load \`$JIRAIYA_DIR/master-memory.md\`.
 - Check \`$JIRAIYA_DIR/main/reminders.md\` at session start.
-- At session start, print the ASCII banner exactly as defined in \`$JIRAIYA_DIR/.github/copilot-instructions.md\` (epic-font JIRAIYA with purple ▓ borders and 💜 accents, followed by \`by Fendy SES\` in normal text).
+- At session start, print the ASCII banner exactly as defined in \`$JIRAIYA_DIR/.github/copilot-instructions.md\` (epic-font JIRAIYA with purple ▓ borders and 💜 accents).
 - Then continue with the normal JIRAIYA session brief.
 
 ## Shared Diary Rules

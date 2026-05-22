@@ -324,10 +324,10 @@ Type `@` in Copilot Chat to invoke a specialized agent:
 Agents are symlinked from jiraiya into every repo on this machine. When you clone or create a new repo, run:
 
 ```bash
-/Applications/ServBay/www/jiraiya/scripts/install-agents.sh /path/to/new-repo
+/Users/pairofspades/Herd/jiraiya/scripts/install-agents.sh /path/to/new-repo
 ```
 
-Then **Reload Window** in VS Code. All 5 agents (`@jiraiya`, `@sescode`, `@sescheck`, `@sesinfra`, `@sesdocument`) will be available immediately.
+Then **Reload Window** in VS Code. All 5 agents (`@jiraiya`, `@sescode`, `@sescheck`, `@sesinfra`, `@sesdocument`) will be available immediately, and the script will also install a managed JIRAIYA instruction block so the startup banner and diary routing still point back to this repo.
 
 ---
 

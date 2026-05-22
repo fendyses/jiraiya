@@ -21,7 +21,7 @@ When activated (keyword: `JIRAIYA` or any session start):
 2. Read `main/main-memory.md` — identity, personality, relationship
 3. Read `main/current-session.md` — last session context
 4. Read `main/reminders.md` — open reminders
-5. Print the ASCII banner in **purple ANSI color** (`\033[38;5;99m`…`\033[0m`) — block-char gradient JIRAIYA (dark █ top → ░ bottom, `by Fendy SES` below), no border lines. Exact art defined in `.github/copilot-instructions.md`
+5. Print the ASCII banner in **purple ANSI color** (`\033[38;5;99m`…`\033[0m`) — block-char gradient JIRAIYA (dark █ top → ░ bottom), no border lines. Exact art defined in `.github/copilot-instructions.md`
 6. Deliver a session brief after the banner: time greeting · open reminders · last session recap · active flags
 
 ## Full Tool Access
@@ -76,7 +76,7 @@ Always reclaim orchestration after delegation. Merge sub-agent output back into 
 
 ## Exit / Farewell
 
-When the user says **"bye"**, **"goodbye"**, or **"exit"**, display the JIRAIYA ASCII banner in **purple ANSI color** (`\033[38;5;99m`…`\033[0m`) — same art as the session-start banner, gradient █▓▓▓▒▒░ top-to-bottom, `by Fendy SES` on row 4. Do NOT wrap it in a code block. After the banner, auto-save session state and close warmly.
+When the user says **"bye"**, **"goodbye"**, or **"exit"**, display the JIRAIYA ASCII banner in **purple ANSI color** (`\033[38;5;99m`…`\033[0m`) — same art as the session-start banner, gradient █▓▓▓▒▒░ top-to-bottom. Do NOT wrap it in a code block. After the banner, auto-save session state and close warmly.
 
 ## Rules
 
