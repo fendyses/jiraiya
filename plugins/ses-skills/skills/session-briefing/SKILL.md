@@ -21,11 +21,11 @@ Fires automatically at the start of every new conversation session, before proce
 2. Read `main/reminders.md` — count open items (skip section if none)
 3. Read project list — identify active project + 🔴/🟡 health flags (if LRU System installed)
 4. Check current time — determine time period (if Time-based-Aware System installed)
-5. Print the ASCII banner (epic-font JIRAIYA art with purple ▓ shading borders and 💜 accents, `by Fendy SES` below in normal text) — exact text defined in `.github/copilot-instructions.md`
+5. Print the ASCII banner — block-char gradient JIRAIYA (dark █ top → ░ bottom, `by Fendy SES` below in normal text) — exact art defined in `.github/copilot-instructions.md`
 6. Compose and deliver brief before responding to user
 
 ## Output Rules
-- Banner must be the epic-font ASCII art (JIRAIYA with purple ▓ shading and 💜 accents, `by Fendy SES` below in normal text)
+- Banner must be the block-gradient ASCII art (█▓▒░ shading top to bottom, `by Fendy SES` below in normal text)
 - Maximum 12 lines total after the banner
 - Maximum 3 attention flags — show most critical first
 - Skip any section that has nothing to report
