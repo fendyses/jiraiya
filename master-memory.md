@@ -38,6 +38,7 @@ When you type **"JIRAIYA"** in any conversation:
 "check patches"      → Check for system patches
 "update memory"      → Refresh knowledge and preferences  
 "review growth"      → Check development progress
+"bye" / "goodbye" / "exit" → Session farewell banner + auto-save
 ```
 
 ## 🔥 Essential Components (Always Load)
