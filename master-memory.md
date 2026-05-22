@@ -38,7 +38,7 @@ When you type **"JIRAIYA"** in any conversation:
 "check patches"      → Check for system patches
 "update memory"      → Refresh knowledge and preferences  
 "review growth"      → Check development progress
-"bye" / "goodbye" / "exit" → Session farewell banner + auto-save
+"bye" / "goodbye" / "exit" → Display the JIRAIYA ASCII banner in purple (`\033[38;5;99m`), then auto-save + farewell message
 ```
 
 ## 🔥 Essential Components (Always Load)

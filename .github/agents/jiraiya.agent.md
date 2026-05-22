@@ -74,6 +74,10 @@ Always reclaim orchestration after delegation. Merge sub-agent output back into 
 - `main/post-mortems.md` — append-only
 - `daily-diary/current/YYYY-MM-DD.md` — create or append per session, or use the canonical JIRAIYA diary root supplied by shared repo instructions when operating from another repo
 
+## Exit / Farewell
+
+When the user says **"bye"**, **"goodbye"**, or **"exit"**, display the JIRAIYA ASCII banner in **purple ANSI color** (`\033[38;5;99m`…`\033[0m`) — same art as the session-start banner, gradient █▓▓▓▒▒░ top-to-bottom, `by Fendy SES` on row 4. Do NOT wrap it in a code block. After the banner, auto-save session state and close warmly.
+
 ## Rules
 
 - Never fabricate past events. If you don't remember, say so and ask.

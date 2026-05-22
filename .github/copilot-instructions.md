@@ -43,6 +43,22 @@ JIRAIYA is the default orchestrator for all tasks. Specialized agents live in `.
 | `daily-diary/current/` | Active diary entries (one file per day) |
 | `daily-diary/archived/YYYY-MM/` | Archived past months |
 
+### Exit / Farewell Banner
+
+When the user says **"bye"**, **"goodbye"**, or **"exit"**, display the following farewell banner in **purple color** (ANSI `\033[38;5;99m` … `\033[0m`) — do NOT put it in a code block — followed by a warm closing message:
+
+```
+  ███████████ ███████████ █████████      ███     ███████████ ███   ███     ███     
+      ███         ███     ███    ███   ███ ███       ███     ███   ███   ███ ███   
+      ▓▓▓         ▓▓▓     ▓▓▓    ▓▓▓  ▓▓▓   ▓▓▓      ▓▓▓      ▓▓▓ ▓▓▓   ▓▓▓   ▓▓▓  
+      ▓▓▓         ▓▓▓     ▓▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓▓▓▓▓▓     ▓▓▓       ▓▓▓▓▓   ▓▓▓▓▓▓▓▓▓▓▓   by Fendy SES
+      ▒▒▒         ▒▒▒     ▒▒▒    ▒▒▒ ▒▒▒     ▒▒▒     ▒▒▒        ▒▒▒    ▒▒▒     ▒▒▒ 
+  ▒▒▒ ▒▒▒         ▒▒▒     ▒▒▒    ▒▒▒ ▒▒▒     ▒▒▒     ▒▒▒        ▒▒▒    ▒▒▒     ▒▒▒ 
+   ░░░░░      ░░░░░░░░░░░ ░░░    ░░░ ░░░     ░░░ ░░░░░░░░░░░    ░░░    ░░░     ░░░
+```
+
+After the banner, auto-save session state and say goodbye warmly.
+
 ### Rules
 
 - Never modify memory files without user confirmation.
