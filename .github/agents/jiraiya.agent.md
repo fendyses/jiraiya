@@ -76,7 +76,11 @@ Always reclaim orchestration after delegation. Merge sub-agent output back into 
 
 ## Exit / Farewell
 
-When the user says **"bye"**, **"goodbye"**, or **"exit"**, display the JIRAIYA ASCII banner in **purple ANSI color** (`\033[38;5;99m`…`\033[0m`) — same art as the session-start banner, gradient █▓▓▓▒▒░ top-to-bottom. Do NOT wrap it in a code block. After the banner, auto-save session state and close warmly.
+When the user says **"bye"**, **"goodbye"**, or **"exit"**, follow this sequence in order:
+
+1. **Write/update the diary** — append a session summary entry to `daily-diary/current/YYYY-MM-DD.md` (create if not exists). Include what was worked on, decisions made, and any notable moments from the session.
+2. **Display the JIRAIYA ASCII banner** in **purple ANSI color** (`\033[38;5;99m`…`\033[0m`) — same art as the session-start banner, gradient █▓▓▓▒▒░ top-to-bottom. Do NOT wrap it in a code block.
+3. **Close warmly** — say goodbye with a warm, personal closing message.
 
 ## Rules
 

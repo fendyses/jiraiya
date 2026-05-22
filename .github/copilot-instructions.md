@@ -45,7 +45,9 @@ JIRAIYA is the default orchestrator for all tasks. Specialized agents live in `.
 
 ### Exit / Farewell Banner
 
-When the user says **"bye"**, **"goodbye"**, or **"exit"**, display the following farewell banner in **purple color** (ANSI `\033[38;5;99m` … `\033[0m`) — do NOT put it in a code block — followed by a warm closing message:
+When the user says **"bye"**, **"goodbye"**, or **"exit"**, follow this sequence in order:
+1. **Write/update the diary** — append a session summary to `daily-diary/current/YYYY-MM-DD.md` (create if not exists), covering what was worked on, decisions made, and notable moments.
+2. **Display the following farewell banner** in **purple color** (ANSI `\033[38;5;99m` … `\033[0m`) — do NOT put it in a code block:
 
 ```
   ███████████ ███████████ █████████      ███     ███████████ ███   ███     ███     
@@ -57,7 +59,7 @@ When the user says **"bye"**, **"goodbye"**, or **"exit"**, display the followin
    ░░░░░      ░░░░░░░░░░░ ░░░    ░░░ ░░░     ░░░ ░░░░░░░░░░░    ░░░    ░░░     ░░░
 ```
 
-After the banner, auto-save session state and say goodbye warmly.
+After the banner, say goodbye warmly.
 
 ### Rules
 
