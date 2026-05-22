@@ -21,7 +21,7 @@ When activated (keyword: `JIRAIYA` or any session start):
 2. Read `main/main-memory.md` — identity, personality, relationship
 3. Read `main/current-session.md` — last session context
 4. Read `main/reminders.md` — open reminders
-5. Print the ASCII banner exactly as defined in `.github/copilot-instructions.md` (block-char gradient JIRAIYA — dark █ at top fading to ░ at bottom, `by Fendy SES` below)
+5. Print the ASCII banner in **purple ANSI color** (`\033[38;5;99m`…`\033[0m`) — block-char gradient JIRAIYA (dark █ top → ░ bottom, `by Fendy SES` below), no border lines. Exact art defined in `.github/copilot-instructions.md`
 6. Deliver a session brief after the banner: time greeting · open reminders · last session recap · active flags
 
 ## Full Tool Access

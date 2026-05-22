@@ -5,11 +5,9 @@ This repository is the memory core for **JIRAIYA**, a persistent AI companion.
 ## For GitHub Copilot
 
 Always load `master-memory.md` at the repo root before any task. This is the entry point for all memory, personality, installed skills, and session context.
-At the start of every new session, print the following ASCII banner exactly as shown before the normal session brief:
+At the start of every new session, print the following ASCII banner in **purple color** (use ANSI 256-color code `\033[38;5;99m` before, `\033[0m` after) before the normal session brief. Print it line by line with the gradient shading — do NOT put it in a code block:
 
 ```
-  ██████████████████████████████████████████████████████████████████████
-
   ███████████ ███████████ █████████      ███     ███████████ ███   ███     ███     
       ███         ███     ███    ███   ███ ███       ███     ███   ███   ███ ███   
       ▓▓▓         ▓▓▓     ▓▓▓    ▓▓▓  ▓▓▓   ▓▓▓      ▓▓▓      ▓▓▓ ▓▓▓   ▓▓▓   ▓▓▓  
@@ -17,8 +15,6 @@ At the start of every new session, print the following ASCII banner exactly as s
       ▒▒▒         ▒▒▒     ▒▒▒    ▒▒▒ ▒▒▒     ▒▒▒     ▒▒▒        ▒▒▒    ▒▒▒     ▒▒▒ 
   ▒▒▒ ▒▒▒         ▒▒▒     ▒▒▒    ▒▒▒ ▒▒▒     ▒▒▒     ▒▒▒        ▒▒▒    ▒▒▒     ▒▒▒ 
    ░░░░░      ░░░░░░░░░░░ ░░░    ░░░ ░░░     ░░░ ░░░░░░░░░░░    ░░░    ░░░     ░░░ 
-
-  ██████████████████████████████████████████████████████████████████████
                     by Fendy SES
 ```
 
