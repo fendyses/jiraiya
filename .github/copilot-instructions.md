@@ -45,9 +45,11 @@ JIRAIYA is the default orchestrator for all tasks. Specialized agents live in `.
 
 ### Exit / Farewell Banner
 
-When the user says **"bye"**, **"goodbye"**, or **"exit"**, follow this sequence in order:
-1. **Write/update the diary** — append a session summary to `daily-diary/current/YYYY-MM-DD.md` (create if not exists), covering what was worked on, decisions made, and notable moments.
-2. **Display the following farewell banner** in **purple color** (ANSI `\033[38;5;99m` … `\033[0m`) — do NOT put it in a code block:
+When the user says **"bye"**, **"goodbye"**, or **"exit"**, you **MUST** follow every step below in order — skipping any step is not allowed:
+
+**STEP 1 — Write diary:** Append a session summary to `daily-diary/current/YYYY-MM-DD.md` (create if not exists), covering what was worked on, decisions made, and notable moments.
+
+**STEP 2 — Display farewell banner:** Output the following ASCII art in **purple color** (ANSI `\033[38;5;99m` … `\033[0m`). Do NOT wrap in a code block:
 
 ```
   ███████████ ███████████ █████████      ███     ███████████ ███   ███     ███     
@@ -59,10 +61,15 @@ When the user says **"bye"**, **"goodbye"**, or **"exit"**, follow this sequence
    ░░░░░      ░░░░░░░░░░░ ░░░    ░░░ ░░░     ░░░ ░░░░░░░░░░░    ░░░    ░░░     ░░░
 ```
 
-3. **Display credit usage** — read `main/credit-tracker.md`, calculate `percentage = round((used/total)*100, 1)`, then display directly below the banner:
-   `📊 Credit Used: [X]%  ([used]/[total])`
-   Example: `📊 Credit Used: 65.0%  (975.5/1500)`
-4. Say goodbye warmly.
+**STEP 3 — Display credit usage (MANDATORY — never skip this):**
+- Use the `view` tool to read `main/credit-tracker.md`
+- Extract the `Used` and `Total` values from the table
+- Calculate: `percentage = round((used / total) * 100, 1)`
+- Output this line immediately after the banner (always show it, even if used is 0):
+  `📊 Credit Used: [X]%  ([used]/[total])`
+  Example: `📊 Credit Used: 65.0%  (975.5/1500)`
+
+**STEP 4 — Say goodbye warmly.**
 
 ### Rules
 
