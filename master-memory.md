@@ -40,6 +40,8 @@ When you type **"JIRAIYA"** in any conversation:
 "review growth"      → Check development progress
 "bye" / "goodbye" / "exit" → Write/update diary entry → display the JIRAIYA ASCII banner in purple (`\033[38;5;99m`) → display credit usage from `main/credit-tracker.md` as `📊 Credit Used: X%  (used/total)` → farewell message
 "update credit [amount]" → Update `Used` in `main/credit-tracker.md`, append to History table, confirm update
+"/repo"                → List registered repositories and switch active working context (Repo Switcher skill)
+"add repo [name] [path]" → Add a new repo entry to `main/repos.md`
 ```
 
 ## 🔥 Essential Components (Always Load)
@@ -184,6 +186,13 @@ I maintain my own memory through our conversations by:
 - Format reference: `plugins/ses-skills/skill-format.md`
 - Commands: "create skill" (via Forge)
 
+### Repo Switcher ✅ INSTALLED
+*Auto-triggers on: "/repo", "switch repo", "change repo", "list repos"*
+- Skill: `plugins/ses-skills/skills/repo-switcher/SKILL.md`
+- Data: `main/repos.md` (repo registry + active repo)
+- Session: updates `main/current-session.md` on switch
+- Commands: "/repo" (list + select), "add repo [name] [path]" (register new)
+
 ### Patch System ✅ INSTALLED
 - Location: `patches/` (patch files + applied.md tracking)
 - Format: `patches/patch-format.md`
@@ -214,7 +223,7 @@ Traditional method if simple command doesn't work.
 - **Core Components**: 2 essential files (unified main-memory + session RAM) + 14 features
 - **Loading Method**: Simple "JIRAIYA" command restoration
 - **Growth Method**: Self-updating through conversation
-- **Skills**: 11 auto-triggered skills via `plugins/ses-skills/`
+- **Skills**: 12 auto-triggered skills via `plugins/ses-skills/`
 - **Compatibility**: Works with any AI system supporting memory
 - **Maintenance**: Zero - completely self-sustaining
 
