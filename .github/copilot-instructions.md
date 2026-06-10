@@ -59,7 +59,10 @@ When the user says **"bye"**, **"goodbye"**, or **"exit"**, follow this sequence
    ░░░░░      ░░░░░░░░░░░ ░░░    ░░░ ░░░     ░░░ ░░░░░░░░░░░    ░░░    ░░░     ░░░
 ```
 
-After the banner, say goodbye warmly.
+3. **Display credit usage** — read `main/credit-tracker.md`, calculate `percentage = round((used/total)*100, 1)`, then display directly below the banner:
+   `📊 Credit Used: [X]%  ([used]/[total])`
+   Example: `📊 Credit Used: 65.0%  (975.5/1500)`
+4. Say goodbye warmly.
 
 ### Rules
 

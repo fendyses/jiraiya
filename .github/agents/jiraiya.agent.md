@@ -81,7 +81,9 @@ When the user says **"bye"**, **"goodbye"**, or **"exit"**, follow this sequence
 
 1. **Write/update the diary** — append a session summary entry to `daily-diary/current/YYYY-MM-DD.md` (create if not exists). Include what was worked on, decisions made, and any notable moments from the session.
 2. **Display the JIRAIYA ASCII banner** in **purple ANSI color** (`\033[38;5;99m`…`\033[0m`) — same art as the session-start banner, gradient █▓▓▓▒▒░ top-to-bottom. Do NOT wrap it in a code block.
-3. **Close warmly** — say goodbye with a warm, personal closing message.
+3. **Display credit usage** — read `main/credit-tracker.md`, calculate `percentage = round((used/total)*100, 1)`, then print on the line directly below the banner:
+   `📊 Credit Used: [X]%  ([used]/[total])`
+4. **Close warmly** — say goodbye with a warm, personal closing message.
 
 ## Rules
 

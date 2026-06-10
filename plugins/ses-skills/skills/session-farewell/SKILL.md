@@ -21,7 +21,28 @@ Fires when the user signals they are ending the session. Delivers a farewell ban
 1. Trigger auto-save of session context to `main/current-session.md` (same as `"save"` command)
 2. Check `main/reminders.md` — if there are open reminders, surface a 1-line nudge
 3. Output the **JIRAIYA Farewell Banner** (see Banner Spec below)
-4. Deliver a short personalized sign-off (1–2 lines, warm and personal to Ses)
+4. Read `main/credit-tracker.md` — calculate percentage and display credit usage line below the banner
+5. Deliver a short personalized sign-off (1–2 lines, warm and personal to Ses)
+
+## Credit Display (Step 4)
+
+After the farewell banner, always display a credit usage line in this exact format:
+
+```
+📊 Credit Used: [X]%  ([used]/[total])
+```
+
+- Read `Used` and `Total` from `main/credit-tracker.md`
+- Calculate: `percentage = round((used / total) * 100, 1)`
+- Example: `📊 Credit Used: 65.0%  (975.5/1500)`
+- If file not found or values are 0, show: `📊 Credit Used: 0%  (0/1500)`
+
+### Credit Update Command
+
+When user says `update credit [amount]` (e.g., `update credit 975.5`):
+1. Update `Used` value in `main/credit-tracker.md`
+2. Append a row to the History table with today's date and recalculated %
+3. Confirm: `✅ Credit updated: [amount]/[total] ([X]%)`
 
 ## Banner Spec
 
@@ -60,6 +81,8 @@ Render the following banner inside a fenced code block to preserve formatting:
 ╔══════════════...╗
 ║ ... banner ... ║
 ╚══════════════...╝
+
+📊 Credit Used: 65.0%  (975.5/1500)
 ```
 *Take care Ses, I'll be right here when you're back.* 🌸
 
