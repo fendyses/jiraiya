@@ -1,47 +1,51 @@
-# Current Session Memory - 2026-05-22
+# Current Session Memory - 2026-06-12
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Documentation
-**Current Project**: JIRAIYA repository maintenance
-**Status**: Closed
-**Time**: 2026-05-22
+**Session Type**: Feature Development
+**Current Project**: NILAM (`~/Sites/Nilam`)
+**Status**: Active
+**Time**: 2026-06-12 ~16:40 GMT+8
 
 ## Current Focus
-- **Primary Task**: Diary logging and session documentation via `@sesdocument`
-- **Technical Context**: This repo uses markdown-based systems, feature docs, and session memory files
-- **Progress**: Diary entry written for 2026-05-22; session memory updated
+- **Primary Task**: LPU status re-routing feature (Notification ↔ Approval) on the edit page
+- **Technical Context**: Laravel 8 MOU/MOA system; status transitions guarded by confirmation modals triggered via select2 dropdown change
+- **Progress**: Feature complete — both directions implemented, tested logic, diary written
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: Documentation session — diary written, session closed
-- **Immediate Goals**: None — session ended cleanly
-- **Recent Progress**: Agent symlink distribution completed 2026-05-21 across all 14 repos via `scripts/install-agents.sh`
-- **Next Steps**: Continue using portable repo-relative references in memory and feature docs
+- **Current Topic**: NILAM repo — LPU re-routing between `submit-for-lpu-notified` and `submit-for-lpu-approval`
+- **Immediate Goals**: None — feature delivered, diary written
+- **Recent Progress**:
+  - Added `rerouteLpuNotified()` controller method + route
+  - Added two confirmation modals + JS interceptor on `edit.blade.php`
+  - Saved NILAM system instruction to `Repo-instruction/nilam.md`
+  - Created `Repo-instruction/` folder pattern in JIRAIYA
+  - Archived May diary files
 
 ### Important Decisions
-- Use `daily-diary/current/` and `daily-diary/archived/` as the canonical diary structure
-- Treat `Daily-Diary-001.md` as a legacy reference, not the active diary
-- Agents are symlinks from jiraiya source — updates propagate automatically to all repos
-- jiraiya `.github/agents/` holds real files; all other repos get symlinks only
+- LPU re-route triggered from `application_status_id` dropdown on edit page (not show page)
+- Both directions handled: Notify→Approval and Approval→Notify
+- Confirmation modal shows dynamic info (meeting number, sent date) before proceeding
+- `select2:select` event used; dropdown reverts automatically on cancel via `hidden.bs.modal`
+- `.github/copilot-instructions.md` NOT committed to git; canonical copy in JIRAIYA
 
 ## Session Recap (For AI Restart)
-*Quick summary when AI loads after close/reopen*
-- **Previous Session Summary**: 2026-05-21 — global agent distribution via install script; 2026-05-22 — documentation session via `@sesdocument`
-- **Where We Left Off**: Diary written and session closed cleanly on 2026-05-22
-- **Important Context**: Canonical persona reference is `plans/JIRAIYA-Persona-v2-Spec.md`; active diary flow is date-based under `daily-diary/current/`
-- **User's Current State**: Repository clean, agents distributed, no open reminders
+- **Previous Session Summary**: 2026-06-10 — JIRAIYA memory/credit-tracker rules updated
+- **Where We Left Off**: NILAM LPU re-routing feature complete; diary written 2026-06-12
+- **Important Context**:
+  - Repo instruction pattern: `~/Sites/jiraiya/Repo-instruction/<repo>.md`
+  - App 8604 has status discrepancy (log shows id:14 but actual is id:12) — flagged but not fixed yet
+  - Flash messages now handled on `applications/show.blade.php`
 
 ## Session Achievements
-- ✅ 2026-05-21: Created `scripts/install-agents.sh`, distributed agents as symlinks to all 14 repos
-- ✅ 2026-05-21: Updated `HOW-TO-USE.md` with agent install instructions
-- ✅ 2026-05-22: Diary entry written for 2026-05-22 via `@sesdocument`
-- ✅ 2026-05-22: Session memory updated and session closed
-
-## Quick Context for Next Session
-- **Where We Left Off**: Documentation session closed cleanly on 2026-05-22
-- **What's Working**: Agent symlink system, diary flow, repo-relative paths throughout
-- **What Needs Attention**: Verify symlinks remain intact if new repos are added; keep `current/` clean with monthly archiving
+- ✅ Analysed app 8604 via DB query — found stuck status + discrepancy
+- ✅ Implemented `rerouteLpuApproval` UI (modal on edit page)
+- ✅ Implemented `rerouteLpuNotified` (reverse direction)
+- ✅ JS select2 interceptor with auto-revert on cancel
+- ✅ Saved NILAM instructions to JIRAIYA `Repo-instruction/`
+- ✅ Created memory reference for repo-instruction pattern
+- ✅ Archived May diary files
 
 ---
-*Session updated: 2026-05-22*
+*Session updated: 2026-06-12*
