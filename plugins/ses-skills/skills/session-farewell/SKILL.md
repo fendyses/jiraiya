@@ -1,3 +1,8 @@
+---
+name: session-farewell
+description: "MUST use when user says 'bye', 'goodbye', 'ciao', 'later', 'see you', 'exit', 'quit', 'goodnight', 'done for today', 'wrapping up', 'i'm done'. Executes the full exit protocol: write diary, display JIRAIYA banner in purple, show credit usage, say farewell."
+---
+
 # 🌙 Session Farewell — Skill Plugin
 
 ## Skill Name

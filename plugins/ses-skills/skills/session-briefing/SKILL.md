@@ -1,3 +1,8 @@
+---
+name: session-briefing
+description: "Auto-triggers at the start of every new conversation session, before the first response. Also triggers on 'brief', 'session brief', 'what did we do last time', 'where did we leave off'."
+---
+
 # 📋 Session Briefing — Skill Plugin
 
 ## Skill Name

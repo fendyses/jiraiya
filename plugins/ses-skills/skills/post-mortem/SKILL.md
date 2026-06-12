@@ -1,3 +1,8 @@
+---
+name: post-mortem
+description: "MUST use when user says 'post-mortem', 'postmortem', 'log this failure', 'write a post-mortem', 'what went wrong'. Also auto-detects failure signals in conversation and prompts to log."
+---
+
 # 🔥 Post-Mortem — Skill Plugin
 
 ## Skill Name
