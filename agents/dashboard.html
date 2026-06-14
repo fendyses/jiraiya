@@ -43,6 +43,12 @@
     @keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
     .cursor{display:inline-block;width:5px;height:9px;background:currentColor;vertical-align:text-bottom;animation:blink 1s step-end infinite;margin-left:1px}
     @keyframes blink{50%{opacity:0}}
+    .repo-item{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:7px;padding:7px 9px;transition:all .25s ease;cursor:default}
+    .repo-item:hover{background:rgba(255,255,255,.05);transform:translateX(2px)}
+    .repo-item.active{border-color:rgba(212,160,23,.5);background:rgba(212,160,23,.08)}
+    .lang-badge{font-family:'Share Tech Mono',monospace;font-size:8px;padding:1px 5px;border-radius:3px;letter-spacing:.5px;white-space:nowrap}
+    .lang-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+    @media(max-width:780px){.stage-row{flex-direction:column}#repoPanel{width:100%!important}}
     @media(max-width:900px){.cards-grid{grid-template-columns:repeat(3,1fr)!important}.terms-grid{grid-template-columns:repeat(2,1fr)!important}}
     @media(max-width:520px){.cards-grid{grid-template-columns:repeat(2,1fr)!important}.terms-grid{grid-template-columns:repeat(1,1fr)!important}}
   </style>
@@ -69,10 +75,22 @@
 </header>
 
 <div class="max-w-screen-xl mx-auto p-4 flex flex-col gap-3">
-  <div id="game-wrap">
-    <div id="game-container"></div>
-    <div id="battleBanner">⚔ CONFLICT SIM &nbsp;—&nbsp; <span id="bCount">20</span>s</div>
-    <div id="battleTimerWrapper"><div id="battleTimerBar"></div></div>
+  <div class="stage-row flex gap-3 items-stretch">
+    <aside id="repoPanel" class="glass p-3 relative flex flex-col" style="width:236px;flex-shrink:0">
+      <div class="cdeco tl"></div><div class="cdeco br"></div>
+      <div class="mono text-yellow-700 text-xs tracking-[2px] uppercase mb-1">// WORKSPACE</div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-yellow-400 font-bold text-sm tracking-wider">REPO SYSTEMS</span>
+        <span id="repoCount" class="mono text-white/30 text-xs ml-auto"></span>
+      </div>
+      <div id="repoList" class="flex flex-col gap-2 flex-1"></div>
+      <div class="mono text-white/15 text-[9px] mt-3 pt-2 border-t border-white/5">main/repos.md · auto-synced</div>
+    </aside>
+    <div id="game-wrap" class="flex-1 min-w-0">
+      <div id="game-container"></div>
+      <div id="battleBanner">⚔ CONFLICT SIM &nbsp;—&nbsp; <span id="bCount">20</span>s</div>
+      <div id="battleTimerWrapper"><div id="battleTimerBar"></div></div>
+    </div>
   </div>
   <div id="cardGrid" class="grid gap-3 cards-grid" style="grid-template-columns:repeat(5,1fr)"></div>
   <div id="termGrid" class="grid gap-3 terms-grid" style="grid-template-columns:repeat(5,1fr)"></div>
@@ -568,9 +586,50 @@ function tick(){
 }
 
 // ════════════════════════════════════════════════════════
+// REPO SYSTEMS (from main/repos.md)
+// ════════════════════════════════════════════════════════
+const LANG = {
+  laravel:{label:'Laravel',  color:'#FF2D20'},
+  vue:    {label:'Vue.js',   color:'#42B883'},
+  angular:{label:'Angular',  color:'#DD0031'},
+  php:    {label:'PHP',      color:'#777BB3'},
+  ts:     {label:'TypeScript',color:'#3178C6'},
+  md:     {label:'Markdown', color:'#D4A017'},
+};
+const REPO_SYS = [
+  { name:'Jiraiya',      langs:['md'],            note:'AI Memory Core', active:true },
+  { name:'Nilam',        langs:['laravel','vue'], note:'Laravel + Vue'   },
+  { name:'MyStudent',    langs:['vue'],           note:'Vue SPA'         },
+  { name:'MyAlumniCard', langs:['angular'],       note:'Angular'         },
+  { name:'Masmed2u',     langs:['laravel'],       note:'API Backend'     },
+  { name:'Mobiliti UG',  langs:['laravel'],       note:'Laravel'         },
+];
+function buildRepoPanel(){
+  const list=document.getElementById('repoList');
+  document.getElementById('repoCount').textContent=REPO_SYS.length+' repos';
+  REPO_SYS.forEach(r=>{
+    const el=document.createElement('div');
+    el.className='repo-item flex flex-col gap-1.5'+(r.active?' active':'');
+    const badges=r.langs.map(k=>{
+      const L=LANG[k]||{label:k,color:'#888'};
+      return `<span class="lang-badge flex items-center gap-1" style="background:${L.color}22;color:${L.color};border:1px solid ${L.color}55">
+                <span class="lang-dot" style="background:${L.color}"></span>${L.label}</span>`;
+    }).join('');
+    el.innerHTML=`
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-xs tracking-wide truncate" style="color:${r.active?'#D4A017':'#fff'}">${r.name}</span>
+        ${r.active?'<span class="mono text-[8px] text-yellow-500/70 ml-auto">● ACTIVE</span>':''}
+      </div>
+      <div class="flex flex-wrap gap-1">${badges}</div>`;
+    list.appendChild(el);
+  });
+}
+
+// ════════════════════════════════════════════════════════
 // BOOT
 // ════════════════════════════════════════════════════════
 buildUI();
+buildRepoPanel();
 tick(); setInterval(tick,1000);
 
 const wrap=document.getElementById('game-wrap');
