@@ -154,11 +154,11 @@ const ADEF = {
 
 // atlas key + display scale
 const CHAR = {
-  Jiraiya:{ atlas:'mPerson', sc:0.48 },
-  Naruto: { atlas:'mAdv',    sc:0.44 },
-  Sasuke: { atlas:'zombie',  sc:0.44 },
-  Sakura: { atlas:'fAdv',    sc:0.44 },
-  Hinata: { atlas:'fPerson', sc:0.44 },
+  Jiraiya:{ atlas:'mPerson', sc:0.72 },
+  Naruto: { atlas:'mAdv',    sc:0.66 },
+  Sasuke: { atlas:'zombie',  sc:0.66 },
+  Sakura: { atlas:'fAdv',    sc:0.66 },
+  Hinata: { atlas:'fPerson', sc:0.66 },
 };
 
 const MSGS = {
@@ -170,6 +170,12 @@ const MSGS = {
 };
 
 const BATTLE_PAIRS=[['Naruto','Sasuke'],['Sakura','Hinata']];
+
+const PETS_DEF=[
+  {key:'pet-fox',     file:'assets/kenney_cube-pets_1.0/Previews/animal-fox.png',     scale:0.76, name:'Fox'    },
+  {key:'pet-penguin', file:'assets/kenney_cube-pets_1.0/Previews/animal-penguin.png', scale:0.72, name:'Penguin'},
+  {key:'pet-cat',     file:'assets/kenney_cube-pets_1.0/Previews/animal-cat.png',     scale:0.76, name:'Cat'    },
+];
 
 // ════════════════════════════════════════════════════════
 // ASSET PATHS
@@ -474,6 +480,53 @@ class AgentNPC {
 }
 
 // ════════════════════════════════════════════════════════
+// PET NPC
+// ════════════════════════════════════════════════════════
+class PetNPC {
+  constructor(scene,def,x,y){
+    this.scene=scene; this.def=def;
+    this.baseX=x; this.baseY=y;
+    this.vx=0; this.vy=0;
+    this.isWalking=false; this.waitT=0;
+    this.walked=0; this.walkDist=0;
+    this.bobT=Math.random()*Math.PI*2;
+
+    this.shadow=scene.add.graphics();
+    this.sprite=scene.add.image(x,y,def.key).setOrigin(0.5,1).setScale(def.scale);
+    this.pickTarget();
+  }
+  pickTarget(){
+    const W=this.scene.W,H=this.scene.H,minY=this.scene.walkMinY;
+    const tx=80+Math.random()*(W-160);
+    const ty=minY+20+Math.random()*(H-minY-50);
+    const dx=tx-this.baseX,dy=ty-this.baseY,d=Math.sqrt(dx*dx+dy*dy)||1;
+    const spd=0.028+Math.random()*0.022;
+    this.vx=(dx/d)*spd; this.vy=(dy/d)*spd;
+    this.walkDist=d; this.walked=0; this.isWalking=true;
+  }
+  update(delta){
+    this.bobT+=delta*0.006;
+    if(this.isWalking){
+      this.baseX=Phaser.Math.Clamp(this.baseX+this.vx*delta,60,this.scene.W-60);
+      this.baseY=Phaser.Math.Clamp(this.baseY+this.vy*delta,this.scene.walkMinY+10,this.scene.H-24);
+      this.sprite.setFlipX(this.vx<0);
+      this.walked+=Math.hypot(this.vx,this.vy)*delta;
+      if(this.walked>=this.walkDist*0.97){this.isWalking=false;this.waitT=1200+Math.random()*3500;}
+    } else {
+      this.waitT-=delta;
+      if(this.waitT<=0) this.pickTarget();
+    }
+    const bob=this.isWalking?Math.sin(this.bobT*3)*1.8:0;
+    const d=Math.floor(this.baseY);
+    this.sprite.setPosition(this.baseX,this.baseY+bob).setDepth(d);
+    const sw=this.sprite.displayWidth;
+    this.shadow.clear().setDepth(d-1);
+    this.shadow.fillStyle(0x000000,0.20);
+    this.shadow.fillEllipse(this.baseX,this.baseY-2,sw*0.75,sw*0.16);
+  }
+}
+
+// ════════════════════════════════════════════════════════
 // PHASER SCENE
 // ════════════════════════════════════════════════════════
 const TILE=16, SCALE=3, DISP=TILE*SCALE; // 48px on screen
@@ -484,6 +537,7 @@ class GameScene extends Phaser.Scene {
   preload(){
     Object.entries(ATLASES).forEach(([k,{png,xml}])=>this.load.atlasXML(k,png,xml));
     this.load.spritesheet('town', TOWN_PNG, { frameWidth:16, frameHeight:16 });
+    PETS_DEF.forEach(p=>this.load.image(p.key,p.file));
 
     const W=this.scale.width,H=this.scale.height;
     const bar=this.add.graphics();
@@ -523,6 +577,8 @@ class GameScene extends Phaser.Scene {
     this.summonTimer=55000+Math.random()*35000;
     // clouds
     this.buildClouds();
+    // pets
+    this.spawnPets();
   }
 
   buildAnims(){
@@ -627,6 +683,8 @@ class GameScene extends Phaser.Scene {
   update(time,delta){
     // drift clouds
     this.clouds.forEach(c=>{ c.x+=c.spd*delta; if(c.x>this.W+130) c.x=-130; });
+    // pet critters
+    this.pets.forEach(p=>p.update(delta));
 
     this.npcs.forEach(a=>{
       if(a.state!=='fighting') a.update(delta);
@@ -715,6 +773,16 @@ class GameScene extends Phaser.Scene {
       g.spd=0.005+Math.random()*0.013;
       this.clouds.push(g);
     }
+  }
+
+  spawnPets(){
+    this.pets=[];
+    const W=this.W,H=this.H,minY=this.walkMinY;
+    PETS_DEF.forEach((def,i)=>{
+      const x=W*0.25+i*(W*0.25);
+      const y=minY+40+Math.random()*(H-minY-70);
+      this.pets.push(new PetNPC(this,def,x,y));
+    });
   }
 
   triggerSummon(){
