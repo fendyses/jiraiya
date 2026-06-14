@@ -6,7 +6,7 @@
   <title>JIRAIYA — Live Agent Ecosystem</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{background:#05050f;font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;color:#fff}
@@ -17,21 +17,16 @@
     .cdeco{position:absolute;width:18px;height:18px;border-color:rgba(212,160,23,.3);border-style:solid;pointer-events:none}
     .cdeco.tl{top:7px;left:7px;border-width:1px 0 0 1px}.cdeco.tr{top:7px;right:7px;border-width:1px 1px 0 0}
     .cdeco.bl{bottom:7px;left:7px;border-width:0 0 1px 1px}.cdeco.br{bottom:7px;right:7px;border-width:0 1px 1px 0}
-
-    /* ── Game container ── */
-    #game-wrap{position:relative;width:100%;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
-    #game-wrap canvas{display:block!important;width:100%!important;height:auto!important}
-
-    /* ── Battle overlay ── */
-    #battleBanner{display:none;position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:5px 20px;border-radius:4px;font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;z-index:20;background:rgba(0,0,0,.88);border:1px solid #7B2FFF;box-shadow:0 0 24px #7B2FFF55;animation:bannerFlicker .8s ease-in-out infinite alternate}
-    @keyframes bannerFlicker{from{opacity:1}to{opacity:.85}}
-    #battleTimerWrapper{display:none;position:absolute;top:0;left:0;right:0;height:3px;z-index:21;overflow:hidden}
+    #game-wrap{position:relative;width:100%;border-radius:10px;overflow:hidden;border:2px solid rgba(120,90,40,.5);box-shadow:inset 0 0 0 1px rgba(0,0,0,.4)}
+    #game-wrap canvas{display:block!important;width:100%!important;height:auto!important;image-rendering:pixelated}
+    #battleBanner{display:none;position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:5px 18px;border-radius:4px;font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;z-index:20;background:rgba(0,0,0,.88);border:2px solid #7B2FFF;box-shadow:0 0 20px #7B2FFF66;animation:bFlicker .8s ease-in-out infinite alternate}
+    @keyframes bFlicker{from{opacity:1}to{opacity:.82}}
+    #battleTimerWrapper{display:none;position:absolute;top:0;left:0;right:0;height:4px;z-index:21}
     #battleTimerBar{height:100%;width:100%;background:linear-gradient(90deg,#FF6B1A,#fff,#7B2FFF);transition:width .15s linear}
-
-    /* ── Agent cards ── */
+    .clockbox{font-family:'Press Start 2P',monospace}
     .agent-card{transition:all .3s ease}
-    .agent-card.fighting{animation:cardPulse .45s ease-in-out infinite alternate}
-    @keyframes cardPulse{from{transform:scale(1)}to{transform:scale(1.03);box-shadow:0 0 18px var(--cc)}}
+    .agent-card.fighting{animation:cPulse .45s ease-in-out infinite alternate}
+    @keyframes cPulse{from{transform:scale(1)}to{transform:scale(1.03);box-shadow:0 0 16px var(--cc)}}
     .sdot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
     .sdot.walking{background:#22c55e;animation:sdP 2s ease infinite}
     .sdot.idle{background:#eab308;animation:sdP 3s ease infinite}
@@ -39,20 +34,17 @@
     .sdot.post-battle{background:#8b5cf6}
     @keyframes sdP{0%,100%{opacity:1}50%{opacity:.4}}
     .power-bar-inner{transition:width .6s ease}
-
-    /* ── Terminals ── */
     .terminal{background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.07);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:9.5px;line-height:1.55;height:155px;overflow:hidden;display:flex;flex-direction:column}
     .term-header{padding:4px 10px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:6px;font-size:9px;letter-spacing:1px;flex-shrink:0}
     .term-dots{display:flex;gap:4px}
     .term-dot{width:6px;height:6px;border-radius:50%}
     .term-body{flex:1;padding:7px 10px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:1px}
-    .term-line{animation:fadeInLine .25s ease}
-    @keyframes fadeInLine{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+    .term-line{animation:fadeIn .25s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
     .cursor{display:inline-block;width:5px;height:9px;background:currentColor;vertical-align:text-bottom;animation:blink 1s step-end infinite;margin-left:1px}
     @keyframes blink{50%{opacity:0}}
-
-    @media(max-width:900px){.cards-grid{grid-template-columns:repeat(3,1fr)!important}.terminals-grid{grid-template-columns:repeat(2,1fr)!important}}
-    @media(max-width:520px){.cards-grid{grid-template-columns:repeat(2,1fr)!important}.terminals-grid{grid-template-columns:repeat(1,1fr)!important}}
+    @media(max-width:900px){.cards-grid{grid-template-columns:repeat(3,1fr)!important}.terms-grid{grid-template-columns:repeat(2,1fr)!important}}
+    @media(max-width:520px){.cards-grid{grid-template-columns:repeat(2,1fr)!important}.terms-grid{grid-template-columns:repeat(1,1fr)!important}}
   </style>
 </head>
 <body>
@@ -69,495 +61,192 @@
       </h1>
     </div>
     <div class="text-right">
-      <div id="clock" class="mono text-yellow-400/80 text-2xl tracking-widest"></div>
-      <div id="dateDisp" class="mono text-white/25 text-xs mt-0.5"></div>
+      <div id="clock" class="clockbox text-yellow-400/90 text-lg tracking-wider"></div>
+      <div id="dateDisp" class="mono text-white/25 text-xs mt-1.5"></div>
     </div>
   </div>
   <div class="cdeco bl"></div><div class="cdeco br"></div>
 </header>
 
 <div class="max-w-screen-xl mx-auto p-4 flex flex-col gap-3">
-
   <div id="game-wrap">
     <div id="game-container"></div>
-    <div id="battleBanner">⚔ CONFLICT RESOLUTION SIMULATION &nbsp;—&nbsp; <span id="bCount">20</span>s</div>
+    <div id="battleBanner">⚔ CONFLICT SIM &nbsp;—&nbsp; <span id="bCount">20</span>s</div>
     <div id="battleTimerWrapper"><div id="battleTimerBar"></div></div>
   </div>
-
   <div id="cardGrid" class="grid gap-3 cards-grid" style="grid-template-columns:repeat(5,1fr)"></div>
-  <div id="termGrid" class="grid gap-3 terminals-grid" style="grid-template-columns:repeat(5,1fr)"></div>
+  <div id="termGrid" class="grid gap-3 terms-grid" style="grid-template-columns:repeat(5,1fr)"></div>
 </div>
 
 <script>
 'use strict';
 
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 // CONFIG
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 const CFG = {
-  BATTLE_DIST: 60, BATTLE_SECS: 20,
-  COOLDOWN_MS: 9000, POST_BATTLE_MS: 2500,
-  IDLE_MIN: 1400, IDLE_MAX: 3800,
-  SEP_SPEED: 1.8, INIT_COOLDOWN: 4000,
+  BATTLE_DIST:64, BATTLE_SECS:20,
+  COOLDOWN_MS:9000, POST_BATTLE_MS:3000,
+  IDLE_MIN:1400, IDLE_MAX:3600,
+  SEP_SPEED:1.6, INIT_COOLDOWN:4500,
 };
 
 const ADEF = {
-  Jiraiya:{ color:'#D4A017',glow:'#FFD700',speed:55,  model:'claude-sonnet-4-6',role:'Orchestrator'},
-  Naruto: { color:'#FF6B1A',glow:'#FF9500',speed:75,  model:'claude-sonnet-4-6',role:'Code Agent'  },
-  Sasuke: { color:'#7B2FFF',glow:'#00BFFF',speed:70,  model:'claude-opus-4-8',  role:'Reviewer'    },
-  Sakura: { color:'#FF69B4',glow:'#FFB6C1',speed:60,  model:'claude-sonnet-4-6',role:'Architect'   },
-  Hinata: { color:'#B8A9E3',glow:'#E6E6FA',speed:55,  model:'claude-haiku-4-5', role:'Documentor'  },
+  Jiraiya:{ color:'#D4A017', glow:'#FFD700', speed:48, model:'claude-sonnet-4-6', role:'Orchestrator' },
+  Naruto: { color:'#FF6B1A', glow:'#FF9500', speed:72, model:'claude-sonnet-4-6', role:'Code Agent'   },
+  Sasuke: { color:'#7B2FFF', glow:'#00BFFF', speed:68, model:'claude-opus-4-8',   role:'Reviewer'     },
+  Sakura: { color:'#FF69B4', glow:'#FFB6C1', speed:60, model:'claude-sonnet-4-6', role:'Architect'    },
+  Hinata: { color:'#B8A9E3', glow:'#E6E6FA', speed:54, model:'claude-haiku-4-5',  role:'Documentor'   },
+};
+
+// atlas key + display scale
+const CHAR = {
+  Jiraiya:{ atlas:'mPerson', sc:0.48 },
+  Naruto: { atlas:'mAdv',    sc:0.44 },
+  Sasuke: { atlas:'zombie',  sc:0.44 },
+  Sakura: { atlas:'fAdv',    sc:0.44 },
+  Hinata: { atlas:'fPerson', sc:0.44 },
 };
 
 const MSGS = {
-  Jiraiya:{ walking:['> [JIRAIYA] Orchestrating sub-agents...','> Sage Mode: Sensing repo changes...','> Loading memory from main-memory.md...','> Delegating tasks to sub-agents...','> [STATUS] All 4 sub-agents operational.','> Session context synchronized.'],idle:['> Awaiting next task delegation.','> [IDLE] Passive monitoring active.','> Memory consolidation in progress...']},
-  Naruto: { walking:['> Shadow Clone: Spawning threads...','> Scanning codebase... believe it!','> [BUILD] 1247 files compiled, dattebayo!','> Wind Release: Build pipeline boosted!','> Running unit tests on shadow clones...'],fighting:['> !! RASENGAN ENGAGED !!','> Intense optimization INITIATED!','> [FIGHT] MAX FORCE compression!','> BELIEVE IT — Bug WILL be eliminated!','> This is my Ninja Way!']},
-  Sasuke: { walking:['> Sharingan: Memorizing architecture...','> [REVIEW] 43 issues flagged.','> Mangekyou: Mapping dependency graph...','> OWASP scan complete. 0 critical.','> Analyzing merge conflicts...'],fighting:['> !! CHIDORI ACTIVATED !!','> Amaterasu: Burning legacy code.','> [FIGHT] Piercing the monolith!','> Flawless execution is inevitable.','> Precision over brute force.']},
-  Sakura: { walking:['> Running system health diagnostics...','> [ARCH] Planning new service layer...','> Infrastructure blueprint v2 drafted.','> [DESIGN] DB schema finalized.','> Scaling strategy updated.'],idle:['> Monitoring system vitals...','> [IDLE] Health check: all nominal.','> Awaiting next architecture task.']},
-  Hinata: { walking:['> Byakugan: Scanning 360° of codebase...','> Gentle Fist: Precise docs applied.','> Writing changelog for v2.4.1...','> [DOC] Session diary generated.','> PR documentation updated.'],idle:['> [DOC] Summary report prepared.','> Documentation updated successfully.','> Logging session activity...']},
+  Jiraiya:{ walking:['> [JIRAIYA] Orchestrating sub-agents...','> Sage Mode: Sensing repo changes...','> Loading memory from main-memory.md...','> Delegating to sub-agents...','> All 4 sub-agents operational.','> Session context synced.'],idle:['> Memory consolidation...','> Awaiting task delegation.','> [IDLE] Monitoring active.'] },
+  Naruto: { walking:['> Shadow Clone: Spawning threads...','> Scanning codebase...','> Wind Release: Build boosted!','> [BUILD] 1247 files, dattebayo!','> Running unit tests...'],fighting:['> !! RASENGAN !!','> Optimization INITIATED!','> [FIGHT] MAX FORCE!','> BELIEVE IT — bug eliminated!','> This is my Ninja Way!'] },
+  Sasuke: { walking:['> Sharingan: Memorizing arch...','> [REVIEW] 43 issues flagged.','> Mapping dependency graph...','> OWASP scan: 0 critical.','> Analyzing merge conflicts...'],fighting:['> !! CHIDORI !!','> Amaterasu: burning dead code.','> [FIGHT] Piercing monolith!','> Flawless execution.','> Precision over force.'] },
+  Sakura: { walking:['> System health diagnostics...','> [ARCH] Planning service layer...','> Blueprint v2 drafted.','> [DESIGN] Schema finalized.','> Scaling strategy updated.'],idle:['> Monitoring vitals...','> [IDLE] All nominal.','> Awaiting arch task.'] },
+  Hinata: { walking:['> Byakugan: 360° scan...','> Gentle Fist: docs applied.','> Changelog v2.4.1...','> [DOC] Diary generated.','> PR docs updated.'],idle:['> [DOC] Report prepared.','> Docs updated.','> Logging activity...'] },
 };
 
-// ═══════════════════════════════════════════════
-// HARVEST MOON–STYLE PIXEL ART SPRITES
-// 12 cols × 20 rows; pixel_size=3 → 36×60 texture; displayed at 3× = 108×180
-// Front-facing 3/4 view, big head, short body
-// ═══════════════════════════════════════════════
-const PS = 3;
-const SPRITES = {
-  // NARUTO — yellow spiky hair, orange jacket, dark pants, blue eyes
-  naruto:{
-    pal:{Y:'#F5C518',S:'#FFCC99',B:'#3366CC',O:'#FF6A00',N:'#1A2A6A',D:'#333355',H:'#AAAAAA',R:'#CC2200','.':null},
-    rows:[
-      '....YYYYYYY.',
-      '..YYYYYYYYYY',
-      '.YYYYYYYYYYY',
-      '.YSSSSSSSSYY',
-      '.YSBSSSSBSYY',
-      '.YSSSSSSSSYY',
-      '.YSSSSSSSSYY',
-      '..HSSSSSSSSH',
-      '..HHHHHHHHHH',
-      '..OOOOOOOOOO',
-      '..OOOOOOOOOO',
-      '..OORROOOOOO',
-      '..OOOOOOOOOO',
-      '...NNNNNNNN.',
-      '...NN....NN.',
-      '...NN....NN.',
-      '...NN....NN.',
-      '..DDDD..DDDD',
-      '............',
-      '............',
-    ]
-  },
-  // SASUKE — black hair, dark navy uniform, red Sharingan eye
-  sasuke:{
-    pal:{A:'#111122',S:'#FFCC99',E:'#AA0000',U:'#0D0D2A',C:'#DDDDDD',N:'#0A0A20',D:'#1A1A33','.':null},
-    rows:[
-      '..AAAAAAAAAA',
-      '.AAAAAAAAAAA',
-      '.AAAAAAAAAAA',
-      '.AASSSSSSSAA',
-      '.AASEEEESSAA',
-      '.AASSSSSSSAA',
-      '.AASSSSSSSAA',
-      '..CCSSSSSSCC',
-      '..UUUUUUUUUU',
-      '..UUUUUUUUUU',
-      '..UUUUUUUUUU',
-      '..UUUUUUUUUU',
-      '..UUUUUUUUUU',
-      '...NNNNNNNN.',
-      '...NN....NN.',
-      '...NN....NN.',
-      '...NN....NN.',
-      '..DDDD..DDDD',
-      '............',
-      '............',
-    ]
-  },
-  // SAKURA — pink bob hair, red qipao, green eyes
-  sakura:{
-    pal:{K:'#FF69B4',S:'#FFCC99',G:'#22AA44',R:'#CC0033',Q:'#2A0A15',D:'#221122',M:'#CC3366','.':null},
-    rows:[
-      '...KKKKKKKK.',
-      '..KKKKKKKKKK',
-      '.KKKKKKKKKKK',
-      '.KKSSSSSSKKK',
-      '.KKSGSSSGSKK',
-      '.KKSSSSSSSKK',
-      '.KKSSSSSSSKK',
-      '..MSSSSSSSSM',
-      '..RRRRRRRRRR',
-      '..RRRRRRRRRR',
-      '..RRRRRRRRRR',
-      '..RRRRRRRRRR',
-      '..RRRRRRRRRR',
-      '...QQQQQQQQ.',
-      '...QQ....QQ.',
-      '...QQ....QQ.',
-      '...QQ....QQ.',
-      '..DDDD..DDDD',
-      '............',
-      '............',
-    ]
-  },
-  // JIRAIYA — white flowing hair, red sage outfit, sage markings, bigger build
-  jiraiya:{
-    pal:{W:'#DCDCDC',S:'#FFCC99',E:'#2255AA',F:'#CC2200',B:'#5A3018',T:'#AA1100',G:'#335522',D:'#222222','.':null},
-    rows:[
-      'WWWWWWWWWWWW',
-      'WWWWWWWWWWWW',
-      'WWWSSSSSSSWW',
-      'WWWSSSSSSSWW',
-      'WWWSESESETWW',
-      'WWWSTSSSSTW.',
-      'WWWSSSSSSSWW',
-      '.WWSSSSSSSWW',
-      'GFFFFFFFFFFG',
-      'GFFFFFFFFFFG',
-      'GFFBBBBBBFFG',
-      'GFFBBBBBBFFG',
-      'GFFFFFFFFFFG',
-      '..BBBBBBBB..',
-      '..BB....BB..',
-      '..BB....BB..',
-      '..BB....BB..',
-      '.DDDD..DDDD.',
-      '............',
-      '............',
-    ]
-  },
-  // HINATA — dark bob, lavender jacket, pale eyes, shy blush
-  hinata:{
-    pal:{A:'#1A1A30',S:'#FFCC99',Z:'#D4CCE8',L:'#8B7BB0',I:'#F0EEE8',P:'#2A2A4A',D:'#222233',C:'#FFAAAA','.':null},
-    rows:[
-      '..AAAAAAAAA.',
-      '..AAAAAAAAA.',
-      '.AAASSSSAAAA',
-      '.AAASSSSSAAA',
-      '.AAASZSSZSAA',
-      '.AAASSSSSAAA',
-      '.AAASCSSCAAA',
-      '..IISSSSSII.',
-      '..LLLLLLLLLL',
-      '..LLLLLLLLLL',
-      '..LLLLLLLLLL',
-      '..LLIILILLLL',
-      '..LLLLLLLLLL',
-      '...PPPPPPPP.',
-      '...PP....PP.',
-      '...PP....PP.',
-      '...PP....PP.',
-      '..DDDD..DDDD',
-      '............',
-      '............',
-    ]
-  }
+// ════════════════════════════════════════════════════════
+// ASSET PATHS
+// ════════════════════════════════════════════════════════
+const CP = 'assets/kenney_toon-characters';
+const ATLASES = {
+  mAdv:    { png:`${CP}/Male adventurer/Tilesheet/character_maleAdventurer_sheet.png`,    xml:`${CP}/Male adventurer/Tilesheet/character_maleAdventurer_sheet.xml`    },
+  fAdv:    { png:`${CP}/Female adventurer/Tilesheet/character_femaleAdventurer_sheet.png`, xml:`${CP}/Female adventurer/Tilesheet/character_femaleAdventurer_sheet.xml` },
+  mPerson: { png:`${CP}/Male person/Tilesheet/character_malePerson_sheet.png`,             xml:`${CP}/Male person/Tilesheet/character_malePerson_sheet.xml`             },
+  fPerson: { png:`${CP}/Female person/Tilesheet/character_femalePerson_sheet.png`,         xml:`${CP}/Female person/Tilesheet/character_femalePerson_sheet.xml`         },
+  zombie:  { png:`${CP}/Zombie/Tilesheet/character_zombie_sheet.png`,                       xml:`${CP}/Zombie/Tilesheet/character_zombie_sheet.xml`                       },
+};
+const TOWN_PNG = 'assets/kenney_tiny-town/Tilemap/tilemap_packed.png';
+
+// Tiny-Town tile indices (verified full single tiles against tilemap_packed.png)
+const T = {
+  grass:0, grassA:1, grassFlower:2, grassPatch:43,
+  // full single-tile trees only (no multi-tile halves)
+  treeGreen:[4,16,28], treeAutumn:[15,27], bush:[3,5], seedling:17, mush:29,
+  // red-roof farmhouse
+  roofL:52, roofM:53, roofR:54,
+  wallL:64, wallM:65, wallR:66,
+  doorWood:[85,86], windowWood:84,
+  // blue/stone house
+  bRoofL:48, bRoofM:49, bRoofR:50,
+  bWallL:60, bWallM:61, bWallR:62,
+  bDoor:[89,90,91],
+  // fence — clean horizontal rail: left 80, mid 81, right 82
+  fenceL:80, fenceM:81, fenceR:82, fencePost:47,
+  // dirt path
+  pathTop:13, pathMid:25, pathBot:37,
+  // decor
+  barrel:92, jar:93, pot:94, bucket:107, trough:131, sign:83,
 };
 
-// ═══════════════════════════════════════════════
-// BUILD PHASER CANVAS TEXTURES FROM SPRITE DEFS
-// ═══════════════════════════════════════════════
-function buildTextures(scene){
-  Object.entries(SPRITES).forEach(([key,def])=>{
-    const rows=def.rows, W=12, H=rows.length;
-    const tex=scene.textures.createCanvas(key,W*PS,H*PS);
-    const ctx=tex.getContext();
-    ctx.imageSmoothingEnabled=false;
-    rows.forEach((row,ry)=>{
-      for(let cx=0;cx<W;cx++){
-        const col=def.pal[row[cx]||'.'];
-        if(col){ctx.fillStyle=col;ctx.fillRect(cx*PS,ry*PS,PS,PS);}
-      }
-    });
-    tex.refresh();
-  });
-}
-
-// ═══════════════════════════════════════════════
-// HARVEST MOON OBLIQUE VILLAGE BACKGROUND
-// ═══════════════════════════════════════════════
-function drawVillage(scene){
-  const W=scene.W, H=scene.H;
-  const G=scene.add.graphics().setDepth(0);
-
-  // === HORIZON STRIP (far grass — lighter) ===
-  G.fillStyle(0xA8D895); G.fillRect(0,0,W,18);
-
-  // === GRASS FIELD — gradient: lighter top (far) → darker bottom (near) ===
-  // 3 bands simulating the perspective gradient
-  G.fillStyle(0x82C870); G.fillRect(0,14,W,Math.floor(H*0.25));
-  G.fillStyle(0x6DB35A); G.fillRect(0,14+Math.floor(H*0.25),W,Math.floor(H*0.38));
-  G.fillStyle(0x5DA048); G.fillRect(0,14+Math.floor(H*0.63),W,H-14-Math.floor(H*0.63));
-
-  // Grass texture — slightly angled horizontal dash lines
-  G.fillStyle(0x78C464,0.5);
-  for(let y=25;y<H;y+=9){
-    const wid=4+Math.floor((y/H)*10);
-    for(let x=0;x<W;x+=18+Math.floor(Math.random()*8)){
-      G.fillRect(x+(y%20)*0.3,y,wid,2);
-    }
-  }
-  // Slightly darker diagonal shadows
-  G.fillStyle(0x50914040);
-  for(let d=0;d<W+H;d+=28){
-    G.fillRect(d-H,0,2,H);
-  }
-
-  // === WATER STREAM (left edge) ===
-  G.fillStyle(0x5599CC); G.fillRect(0,18,52,H);
-  G.fillStyle(0x4488BB); G.fillRect(5,22,42,H);
-  // Ripple lines
-  G.fillStyle(0x88BBEE);
-  for(let wy=40;wy<H;wy+=16){G.fillRect(9,wy,28,3);}
-  // Water shimmer
-  G.fillStyle(0xAADDFF,0.4);
-  for(let wy=55;wy<H;wy+=32){G.fillRect(14,wy,12,2);}
-  // Bank edge
-  G.fillStyle(0xAA9966); G.fillRect(50,20,8,H);
-  G.fillStyle(0x998855); G.fillRect(56,24,6,H);
-
-  // === MAIN BUILDING — Oblique 3/4 perspective ===
-  // Shows: roof TOP (seen from above), front WALL, thin right SIDE WALL
-
-  const BX=65, BY=12, BW=250, BH=170;
-
-  // ── Roof top face (seen at angle — darkest, facing upward) ──
-  G.fillStyle(0x7A1212); G.fillRect(BX,BY,BW,44);
-  // Roof tile lines (horizontal)
-  G.fillStyle(0x661010);
-  for(let ry=BY+8;ry<BY+44;ry+=10){G.fillRect(BX,ry,BW,2);}
-  // Tile vertical dividers
-  G.fillStyle(0x8A1A1A);
-  for(let rx=BX+20;rx<BX+BW;rx+=25){G.fillRect(rx,BY,1,44);}
-  // Roof ridge (top edge highlight)
-  G.fillStyle(0x551010); G.fillRect(BX+2,BY,BW-4,5);
-  G.fillStyle(0xCC2222); G.fillRect(BX+5,BY+1,BW-10,3);
-
-  // ── Right side wall of roof (oblique — lighter, catching light) ──
-  G.fillStyle(0xBB2828); G.fillRect(BX+BW,BY,14,46);
-  G.fillStyle(0xAA2020); G.fillRect(BX+BW,BY+2,12,42);
-
-  // ── Eave (transition roof → wall) ──
-  G.fillStyle(0x500E0E); G.fillRect(BX-2,BY+42,BW+4,7);
-  G.fillStyle(0x881818); G.fillRect(BX,BY+47,BW,5);
-
-  // ── Front wall ──
-  G.fillStyle(0xEADBAA); G.fillRect(BX,BY+50,BW,BH);
-
-  // ── Right side wall (oblique, noticeably darker = depth) ──
-  G.fillStyle(0xBBAA80); G.fillRect(BX+BW,BY+44,16,BH+8);
-  G.fillStyle(0xAA9970); G.fillRect(BX+BW+2,BY+48,13,BH+4);
-
-  // ── Wood vertical pillars ──
-  G.fillStyle(0x5A3015);
-  [BX, BX+63, BX+126, BX+189, BX+BW].forEach(px=>{G.fillRect(px,BY+50,8,BH);});
-  // ── Horizontal beam ──
-  G.fillRect(BX,BY+105,BW,6);
-
-  // ── Windows (warm glow, upper row) ──
-  G.fillStyle(0xFFD060);
-  [[BX+14,BY+60,48,38],[BX+77,BY+60,48,38],[BX+140,BY+60,48,38],[BX+203,BY+60,38,38]].forEach(([wx,wy,ww,wh])=>{
-    G.fillRect(wx,wy,ww,wh);
-    G.fillStyle(0x5A3015);G.fillRect(wx+ww/2-1,wy,2,wh);G.fillRect(wx,wy+wh/2-1,ww,2);
-    G.fillStyle(0xFFD060);
-  });
-
-  // ── Windows lower row ──
-  [[BX+14,BY+116,48,32],[BX+77,BY+116,48,32],[BX+140,BY+116,48,32]].forEach(([wx,wy,ww,wh])=>{
-    G.fillRect(wx,wy,ww,wh);
-    G.fillStyle(0x5A3015);G.fillRect(wx+ww/2-1,wy,2,wh);G.fillRect(wx,wy+wh/2-1,ww,2);
-    G.fillStyle(0xFFD060);
-  });
-
-  // ── Sign/nameplate ──
-  G.fillStyle(0xCC9933); G.fillRect(BX+77,BY+52,100,14);
-  G.fillStyle(0x774400); G.fillRect(BX+79,BY+54,96,10);
-
-  // ── Door ──
-  G.fillStyle(0x2A1008); G.fillRect(BX+193,BY+116,50,104);
-  G.fillStyle(0x4A2010); G.fillRect(BX+196,BY+119,44,99);
-  G.fillStyle(0xAA7733); G.fillRect(BX+233,BY+165,5,10);
-
-  // ── Porch step (foundation edge) ──
-  G.fillStyle(0x9B8055); G.fillRect(BX-2,BY+BH+46,BW+4,8);
-  G.fillStyle(0x8A7044); G.fillRect(BX-4,BY+BH+52,BW+6,8);
-  // Side step
-  G.fillStyle(0x7A5A30); G.fillRect(BX+BW+14,BY+BH+44,6,18);
-
-  // Ground shadow under building
-  G.fillStyle(0x000000,0.1); G.fillRect(BX,BY+BH+58,BW+20,22);
-
-  // === FENCE LINE (right of building, top area) ===
-  G.fillStyle(0xCC9944);
-  for(let fx=BX+BW+16;fx<W-30;fx+=36){
-    G.fillRect(fx,54,6,82);        // post
-    G.fillStyle(0xAA7722);G.fillRect(fx+6,56,4,80); // post depth
-    G.fillStyle(0xCC9944);
-  }
-  G.fillStyle(0xCC9944); G.fillRect(BX+BW+16,68,W-BX-BW-46,5);
-  G.fillRect(BX+BW+16,97,W-BX-BW-46,5);
-  G.fillStyle(0xAA7722); G.fillRect(BX+BW+22,70,W-BX-BW-52,3);
-  G.fillRect(BX+BW+22,99,W-BX-BW-52,3);
-
-  // === TREES — isometric round canopy style ===
-  function isoTree(tx,ty,r){
-    G.fillStyle(0x000000,0.1);G.fillEllipse(tx+6,ty+4,r*2.4,r*0.7);
-    G.fillStyle(0x6B4010);G.fillRect(tx-4,ty-r*1.1,8,r*1.1);
-    G.fillStyle(0x5A3008);G.fillRect(tx+4,ty-r*1.0,4,r*0.9);
-    G.fillStyle(0x247A18);G.fillCircle(tx,ty-r*1.45,r*1.2);
-    G.fillStyle(0x319920);G.fillCircle(tx-r*0.35,ty-r*1.7,r*0.85);
-    G.fillStyle(0x40BB2A);G.fillCircle(tx+r*0.2,ty-r*1.9,r*0.65);
-    G.fillStyle(0x50CC38);G.fillCircle(tx,ty-r*2.1,r*0.38);
-  }
-  isoTree(W*0.58,118,20); isoTree(W*0.68,102,17); isoTree(W*0.79,126,22); isoTree(W*0.91,108,18);
-
-  // === ROCKS ===
-  function isoRock(rx,ry,w,h){
-    G.fillStyle(0x000000,0.09);G.fillEllipse(rx+5,ry+h*0.6,w*1.2,h*0.5);
-    G.fillStyle(0x96A8B5);G.fillEllipse(rx,ry,w,h);
-    G.fillStyle(0x7A9AA8);G.fillEllipse(rx+w*0.25,ry+h*0.1,w*0.55,h*0.45);
-    G.fillStyle(0xC0D0DA);G.fillEllipse(rx-w*0.1,ry-h*0.15,w*0.4,h*0.35);
-  }
-  isoRock(W*0.09,220,24,15); isoRock(W*0.44,195,18,12); isoRock(W*0.71,220,26,16);
-
-  // === FLOWERS scattered ===
-  function flowers(fx,fy,n,col){
-    for(let i=0;i<n;i++){
-      const sx=fx+Math.sin(i*2.1)*16,sy=fy+Math.cos(i*1.8)*7;
-      G.fillStyle(0x33AA33);G.fillRect(sx-1,sy-5,2,6);
-      G.fillStyle(col,0.85);G.fillCircle(sx,sy-5,3);
-      G.fillStyle(0xFFFF55);G.fillCircle(sx,sy-5,1.4);
-    }
-  }
-  flowers(W*0.15,290,5,0xFF9966); flowers(W*0.33,330,4,0xFF66AA);
-  flowers(W*0.74,310,5,0xFFCC44); flowers(W*0.88,360,4,0xFF9966);
-  flowers(W*0.52,380,3,0xCC66FF);
-
-  // === DIRT PATH (oblique — runs diagonally, wider near bottom) ===
-  G.fillStyle(0xC0A058);
-  G.fillRect(W/2-60,H-70,120,50);
-  G.fillRect(W/2-50,H-120,100,55);
-  G.fillRect(W/2-40,H-170,80,55);
-  G.fillRect(W/2-30,H-210,60,45);
-  G.fillStyle(0xAA8844);
-  G.fillRect(W/2-60,H-72,120,3);
-  G.fillRect(W/2+56,H-72,3,50);
-  G.fillRect(W/2-60,H-72,3,50);
-  // Path stones
-  G.fillStyle(0xAA9050);
-  [[0,0],[1,1],[0,2],[1,3],[0,4]].forEach(([col,row])=>{
-    G.fillRect(W/2-50+col*50,H-65+row*12,44,9);
-  });
-
-  // === EDGE DARKENING (vignette) ===
-  G.fillStyle(0x000000,0.06);G.fillRect(0,H-50,W,50);
-  G.fillStyle(0x000000,0.04);G.fillRect(0,0,W,30);
-}
-
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 // SPEECH BUBBLE
-// ═══════════════════════════════════════════════
-function spawnBubble(scene,x,y,text){
-  const str=text.replace(/^> /,'').substring(0,30);
-  const tw=Math.min(str.length*6+20,160);
-  const g=scene.add.graphics();
-  g.fillStyle(0xFFFFFF,0.93);g.fillRoundedRect(-tw/2,-28,tw,22,5);
-  g.fillStyle(0xFFFFFF,0.93);g.fillTriangle(-5,-6,5,-6,0,2);
-  const t=scene.add.text(0,-17,str,{fontSize:'8px',fontFamily:'"Share Tech Mono",monospace',color:'#000'}).setOrigin(0.5,0.5);
-  const c=scene.add.container(x,y,[g,t]).setDepth(500);
+// ════════════════════════════════════════════════════════
+function spawnBubble(scene, x, y, text){
+  const str = text.replace(/^> /,'').substring(0,28);
+  const tw  = Math.min(str.length*6+18, 158);
+  const g = scene.add.graphics();
+  g.fillStyle(0x000000,0.35); g.fillRoundedRect(-tw/2+2,-28,tw,22,5);
+  g.fillStyle(0xFFFFFF,0.96); g.fillRoundedRect(-tw/2,-30,tw,22,5);
+  g.fillStyle(0xFFFFFF,0.96); g.fillTriangle(-5,-9,5,-9,0,-1);
+  const t = scene.add.text(0,-19,str,{fontSize:'8px',fontFamily:'"Share Tech Mono",monospace',color:'#1a1a2e'}).setOrigin(0.5,0.5);
+  const c = scene.add.container(x,y,[g,t]).setDepth(9000);
   scene.tweens.add({targets:c,alpha:0,delay:2800,duration:400,onComplete:()=>{if(c.active)c.destroy();}});
   return c;
 }
 
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
+// BATTLE FX
+// ════════════════════════════════════════════════════════
+function fxRasengan(G,x,y,t){
+  for(let i=0;i<3;i++){const a=t*4.5+i*2.094,r=14+Math.sin(t*7)*3;
+    G.fillStyle(0x88CCFF,0.5);G.fillCircle(x+Math.cos(a)*r*.4,y+Math.sin(a)*r*.4,r);
+    G.fillStyle(0xFFFFFF,0.7);G.fillCircle(x+Math.cos(a)*r*.4,y+Math.sin(a)*r*.4,r*.35);}
+  G.fillStyle(0xFFFFFF,0.9);G.fillCircle(x,y,10);G.fillStyle(0x55AAFF,0.5);G.fillCircle(x,y,18);
+}
+function fxChidori(G,x,y,t){
+  G.fillStyle(0xAA44FF,0.55);G.fillCircle(x,y,18);G.fillStyle(0xFFFFFF,0.85);G.fillCircle(x,y,9);
+  G.lineStyle(2,0x00BFFF,0.9);
+  for(let i=0;i<6;i++){const a=t*3.5+i*1.047,len=12+Math.random()*10;let lx=x,ly=y;
+    G.beginPath();G.moveTo(lx,ly);
+    for(let s=0;s<3;s++){lx+=Math.cos(a+(Math.random()-.5)*1.2)*(len/3);ly+=Math.sin(a+(Math.random()-.5)*1.2)*(len/3);G.lineTo(lx,ly);}
+    G.strokePath();}
+}
+function fxClash(G,x,y,t){
+  const p=0.5+Math.sin(t*9)*.5;
+  G.fillStyle(0xFFFFFF,p*.85);G.fillCircle(x,y,20*p);G.fillStyle(0xCC88FF,p*.45);G.fillCircle(x,y,32*p);
+  for(let i=0;i<3;i++){G.lineStyle(2,0xFFFFFF,0.3-i*.08);G.strokeCircle(x,y,8+i*10+Math.sin(t*6+i)*4);}
+}
+
+// ════════════════════════════════════════════════════════
 // AGENT NPC
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 class AgentNPC {
   constructor(scene,name,x,y){
-    const def=ADEF[name];
     this.scene=scene; this.name=name;
-    this.color=def.color; this.intColor=parseInt(def.color.replace('#',''),16);
-    this.state='walking'; this.cooldown=CFG.INIT_COOLDOWN;
-    this.vx=0; this.vy=0; this.idleWaitT=0;
+    this.color=ADEF[name].color; this.intColor=parseInt(ADEF[name].color.replace('#',''),16);
+    this.atlasKey=CHAR[name].atlas; this.sc=CHAR[name].sc;
+    this.state='idle'; this.cooldown=CFG.INIT_COOLDOWN;
+    this.vx=0; this.vy=0; this.waitT=0;
 
-    // Drop shadow (rendered below sprite)
-    this.shadowGfx=scene.add.graphics();
-
-    // Sprite — 3× scale gives nice chunky pixel art
-    this.sprite=scene.add.image(x,y,name.toLowerCase()).setOrigin(0.5,1).setScale(1);
-
-    // Name tag
-    this.nametag=scene.add.text(x,y,name,{
-      fontSize:'10px',fontFamily:'"Share Tech Mono",monospace',
-      color:'#FFFFFF',backgroundColor:'#000000BB',padding:{x:3,y:1}
-    }).setOrigin(0.5,1);
-
-    // State label
-    this.stateTag=scene.add.text(x,y,'',{
-      fontSize:'8px',fontFamily:'"Share Tech Mono",monospace',color:def.color
-    }).setOrigin(0.5,1);
-
-    // HP bar graphics
+    this.shadow=scene.add.graphics();
+    this.sprite=scene.add.sprite(x,y,this.atlasKey,'idle').setOrigin(0.5,1).setScale(this.sc);
+    this.nametag=scene.add.text(x,y,name,{fontSize:'9px',fontFamily:'"Share Tech Mono",monospace',color:'#FFFFFF',backgroundColor:'#000000CC',padding:{x:3,y:1}}).setOrigin(0.5,1);
     this.hpGfx=scene.add.graphics();
 
-    // Walk bob tween
-    this.bobTween=scene.tweens.add({
-      targets:this.sprite,y:`-=5`,duration:220,yoyo:true,repeat:-1,ease:'Sine.easeInOut',paused:true
-    });
-    // Idle gentle float
-    this.idleTween=scene.tweens.add({
-      targets:this.sprite,y:`-=2`,duration:700,yoyo:true,repeat:-1,ease:'Sine.easeInOut',paused:true
-    });
-
-    // Terminal
     this.termLines=[]; this.termT=0;
     this.termEl=document.getElementById('term-'+name);
     this.bubble=null; this.bubbleT=2500+Math.random()*4000;
 
     this.pickTarget();
-    for(let i=0;i<4;i++)this.pushLine();
+    for(let i=0;i<4;i++) this.pushLine();
   }
-
-  get x(){return this.sprite.x;}
-  get y(){return this.sprite.y;}
+  get x(){return this.sprite.x;} get y(){return this.sprite.y;}
 
   pickTarget(){
     const W=this.scene.W,H=this.scene.H;
-    const minX=62,maxX=W-48,minY=235,maxY=H-25;
-    const tx=minX+Math.random()*(maxX-minX);
-    const ty=minY+Math.random()*(maxY-minY);
-    const dx=tx-this.sprite.x,dy=ty-this.sprite.y;
-    const dist=Math.sqrt(dx*dx+dy*dy)||1;
+    const tx=80+Math.random()*(W-160);
+    const ty=this.scene.walkMinY+Math.random()*(H-this.scene.walkMinY-24);
+    const dx=tx-this.sprite.x,dy=ty-this.sprite.y,d=Math.sqrt(dx*dx+dy*dy)||1;
     const spd=ADEF[this.name].speed/1000;
-    this.vx=(dx/dist)*spd; this.vy=(dy/dist)*spd;
-    this.idleWaitT=0; this.state='walking';
-    this.bobTween.resume(); this.idleTween.pause();
-    this.sprite.setFlipX(dx<0);
+    this.vx=(dx/d)*spd; this.vy=(dy/d)*spd; this.waitT=0;
+    this.setState('walking');
   }
-
+  setState(s){
+    if(this.state===s) return;
+    this.state=s;
+    switch(s){
+      case 'walking': this.sprite.play(this.atlasKey+'_walk'); break;
+      case 'idle': this.sprite.stop(); this.sprite.setFrame('idle'); break;
+      case 'fighting': this.sprite.play(this.atlasKey+'_attack'); break;
+      case 'post-battle': this.sprite.play(this.atlasKey+'_cheer'); break;
+    }
+  }
   update(delta){
     this.cooldown-=delta;
     if(this.state==='walking'){
-      const W=this.scene.W,H=this.scene.H;
-      this.sprite.x=Phaser.Math.Clamp(this.sprite.x+this.vx*delta,62,W-48);
-      this.sprite.y=Phaser.Math.Clamp(this.sprite.y+this.vy*delta,235,H-25);
-      this.idleWaitT+=delta;
-      if(this.idleWaitT>1200+Math.random()*2600){
-        this.state='idle'; this.idleWaitT=0;
-        this.vx=0; this.vy=0;
-        this.bobTween.pause(); this.idleTween.resume();
-      }
+      this.sprite.x=Phaser.Math.Clamp(this.sprite.x+this.vx*delta,55,this.scene.W-55);
+      this.sprite.y=Phaser.Math.Clamp(this.sprite.y+this.vy*delta,this.scene.walkMinY,this.scene.H-22);
+      this.sprite.setFlipX(this.vx<0);
+      this.waitT+=delta;
+      if(this.waitT>1200+Math.random()*2600){this.vx=0;this.vy=0;this.waitT=0;this.setState('idle');}
     } else if(this.state==='idle'){
-      this.idleWaitT+=delta;
-      if(this.idleWaitT>CFG.IDLE_MIN+Math.random()*(CFG.IDLE_MAX-CFG.IDLE_MIN)){
-        this.idleWaitT=0; this.pickTarget();
-      }
+      this.waitT+=delta;
+      if(this.waitT>CFG.IDLE_MIN+Math.random()*(CFG.IDLE_MAX-CFG.IDLE_MIN)){this.waitT=0;this.pickTarget();}
     } else if(this.state==='post-battle'){
-      const W=this.scene.W,H=this.scene.H;
-      this.sprite.x=Phaser.Math.Clamp(this.sprite.x+this.vx*delta,62,W-48);
-      this.sprite.y=Phaser.Math.Clamp(this.sprite.y+this.vy*delta,235,H-25);
+      this.sprite.x=Phaser.Math.Clamp(this.sprite.x+this.vx*delta,55,this.scene.W-55);
+      this.sprite.y=Phaser.Math.Clamp(this.sprite.y+this.vy*delta,this.scene.walkMinY,this.scene.H-22);
     }
     this.syncUI();
     this.bubbleT-=delta;
@@ -565,37 +254,26 @@ class AgentNPC {
     this.termT-=delta;
     if(this.termT<=0){this.pushLine();this.termT=this.state==='fighting'?700+Math.random()*500:1800+Math.random()*1400;}
   }
-
   syncUI(){
-    const sx=this.sprite.x,sy=this.sprite.y,sh=this.sprite.displayHeight;
-    const depth=sy;
-
-    // Drop shadow (ellipse on ground plane)
-    this.shadowGfx.clear().setDepth(depth-1);
-    this.shadowGfx.fillStyle(0x000000,0.22);
-    this.shadowGfx.fillEllipse(sx,sy,sh*0.55,sh*0.13);
-
-    this.sprite.setDepth(depth);
-    this.nametag.setPosition(sx,sy-sh-10).setDepth(depth+2);
-    this.stateTag.setText('['+this.state.toUpperCase()+']')
-      .setPosition(sx,sy-sh+1).setDepth(depth+2)
-      .setColor(this.state==='fighting'?'#ff5555':this.color);
-
-    // HP bar
-    const hg=this.hpGfx;
-    hg.clear().setDepth(depth+3);
-    hg.fillStyle(0x111111,0.75);hg.fillRect(sx-22,sy-sh-24,44,6);
-    hg.fillStyle(this.intColor,0.9);hg.fillRect(sx-21,sy-sh-23,42,4);
-    if(this.state==='fighting'){hg.fillStyle(0xFF0000,0.9);hg.fillRect(sx-21+30,sy-sh-23,12,4);}
+    const sx=this.sprite.x,sy=this.sprite.y,sh=this.sprite.displayHeight,d=Math.floor(sy);
+    this.shadow.clear().setDepth(d-1);
+    this.shadow.fillStyle(0x000000,0.22); this.shadow.fillEllipse(sx,sy-2,sh*0.42,sh*0.1);
+    this.sprite.setDepth(d);
+    this.nametag.setPosition(sx,sy-sh+4).setDepth(d+2);
+    const hg=this.hpGfx; hg.clear().setDepth(d+3);
+    hg.fillStyle(0x000000,0.55); hg.fillRect(sx-22,sy-sh-9,44,5);
+    hg.fillStyle(this.intColor,0.95); hg.fillRect(sx-21,sy-sh-8,42,3);
+    if(this.state==='fighting'){hg.fillStyle(0xFF0000,0.95);hg.fillRect(sx-21+28,sy-sh-8,14,3);}
+    // bubble follows the character
+    if(this.bubble&&this.bubble.active){this.bubble.setPosition(sx,sy-sh-12).setDepth(d+9000);}
   }
-
   showBubble(){
     if(this.bubble&&this.bubble.active)this.bubble.destroy();
     const pool=(MSGS[this.name]||{}).walking||(MSGS[this.name]||{}).idle||[];
     if(!pool.length)return;
-    this.bubble=spawnBubble(this.scene,this.sprite.x,this.sprite.y-this.sprite.displayHeight-8,pool[Math.floor(Math.random()*pool.length)]);
+    const sh=this.sprite.displayHeight;
+    this.bubble=spawnBubble(this.scene,this.sprite.x,this.sprite.y-sh-12,pool[Math.floor(Math.random()*pool.length)]);
   }
-
   pushLine(){
     const st=this.state==='fighting'?'fighting':this.state==='idle'?'idle':'walking';
     const pool=(MSGS[this.name]||{})[st]||(MSGS[this.name]||{}).walking||[];
@@ -603,96 +281,172 @@ class AgentNPC {
     this.termLines.push(pool[Math.floor(Math.random()*pool.length)]);
     if(this.termLines.length>7)this.termLines.shift();
     if(this.termEl){
-      const body=this.termEl.querySelector('.term-body');body.innerHTML='';
+      const body=this.termEl.querySelector('.term-body'); body.innerHTML='';
       this.termLines.forEach((txt,i)=>{
         const p=document.createElement('p');p.className='term-line';
-        p.style.color=this.state==='fighting'?'#ff9999':this.color+'cc';
-        p.textContent=txt;
+        p.style.color=this.state==='fighting'?'#ff9999':this.color+'cc';p.textContent=txt;
         if(i===this.termLines.length-1){const c=document.createElement('span');c.className='cursor';c.style.background=this.color;p.appendChild(c);}
         body.appendChild(p);
       });
     }
   }
-
   lockForBattle(tx,ty,faceRight){
-    this.state='fighting';this.vx=0;this.vy=0;
-    this.bobTween.pause();this.idleTween.pause();
-    this.sprite.setPosition(tx,ty).setFlipX(!faceRight);
-    this.pushLine();
+    this.vx=0;this.vy=0;this.sprite.setPosition(tx,ty).setFlipX(!faceRight);
+    this.setState('fighting');this.pushLine();
   }
-
   releaseFromBattle(dir){
-    this.state='post-battle';
     const spd=ADEF[this.name].speed/1000;
-    this.vx=dir*spd*CFG.SEP_SPEED;
-    this.vy=(Math.random()-0.5)*spd*0.5;
-    this.cooldown=CFG.COOLDOWN_MS;
-    this.bobTween.resume();
-    this.sprite.setFlipX(dir<0);
+    this.vx=dir*spd*CFG.SEP_SPEED; this.vy=(Math.random()-.5)*spd*0.4;
+    this.cooldown=CFG.COOLDOWN_MS; this.waitT=0;
+    this.setState('post-battle'); this.sprite.setFlipX(dir<0);
+    setTimeout(()=>{if(this.state==='post-battle')this.pickTarget();},CFG.POST_BATTLE_MS);
   }
 }
 
-// ═══════════════════════════════════════════════
-// BATTLE EFFECTS
-// ═══════════════════════════════════════════════
-function drawRasengan(G,x,y,t){
-  for(let i=0;i<3;i++){
-    const a=t*4.5+i*(Math.PI*2/3),r=16+Math.sin(t*7)*4;
-    const gx=x+Math.cos(a)*r*.4,gy=y+Math.sin(a)*r*.4;
-    G.fillStyle(0x88CCFF,0.5);G.fillCircle(gx,gy,r);
-    G.fillStyle(0xFFFFFF,0.7);G.fillCircle(gx,gy,r*.4);
-  }
-  G.fillStyle(0xFFFFFF,0.9);G.fillCircle(x,y,12);
-  G.fillStyle(0x55AAFF,0.6);G.fillCircle(x,y,20);
-}
+// ════════════════════════════════════════════════════════
+// PHASER SCENE
+// ════════════════════════════════════════════════════════
+const TILE=16, SCALE=3, DISP=TILE*SCALE; // 48px on screen
 
-function drawChidori(G,x,y,t){
-  G.fillStyle(0xAA44FF,0.6);G.fillCircle(x,y,20);
-  G.fillStyle(0xFFFFFF,0.85);G.fillCircle(x,y,10);
-  G.lineStyle(2,0x00BFFF,0.9);
-  for(let i=0;i<6;i++){
-    const a=t*3.5+i*(Math.PI/3)+Math.sin(t*9)*.4;
-    const len=14+Math.random()*10;
-    let lx=x,ly=y;
-    G.beginPath();G.moveTo(lx,ly);
-    for(let s=0;s<3;s++){const sl=len/3;lx+=Math.cos(a+(Math.random()-.5)*1.2)*sl;ly+=Math.sin(a+(Math.random()-.5)*1.2)*sl;G.lineTo(lx,ly);}
-    G.strokePath();
-  }
-}
-
-function drawClash(G,x,y,t){
-  const p=0.5+Math.sin(t*9)*.5;
-  G.fillStyle(0xFFFFFF,p*.9);G.fillCircle(x,y,22*p);
-  G.fillStyle(0xCC88FF,p*.5);G.fillCircle(x,y,35*p);
-  for(let i=0;i<3;i++){G.lineStyle(2,0xFFFFFF,0.35-i*.08);G.strokeCircle(x,y,10+i*12+Math.sin(t*6+i)*5);}
-}
-
-// ═══════════════════════════════════════════════
-// PHASER GAME SCENE
-// ═══════════════════════════════════════════════
 class GameScene extends Phaser.Scene {
-  constructor(){super({key:'GameScene'});}
+  constructor(){ super({key:'GameScene'}); }
+
+  preload(){
+    Object.entries(ATLASES).forEach(([k,{png,xml}])=>this.load.atlasXML(k,png,xml));
+    this.load.spritesheet('town', TOWN_PNG, { frameWidth:16, frameHeight:16 });
+
+    const W=this.scale.width,H=this.scale.height;
+    const bar=this.add.graphics();
+    this.load.on('progress',p=>{bar.clear();bar.fillStyle(0x1a1a2e,1);bar.fillRect(W/4,H/2-9,W/2,18);bar.fillStyle(0xD4A017,1);bar.fillRect(W/4+2,H/2-7,(W/2-4)*p,14);});
+    this.load.on('complete',()=>bar.destroy());
+  }
 
   create(){
     this.W=this.scale.width; this.H=this.scale.height;
-    buildTextures(this);
-    drawVillage(this);
+    this.cols=Math.ceil(this.W/DISP); this.rows=Math.ceil(this.H/DISP);
+    this.walkMinY=Math.floor(this.rows*0.42)*DISP;
 
-    // Initial spawn positions spread across the walkable area
-    const minY=245,H=this.H,W=this.W;
-    const startPos=[
-      {name:'Jiraiya',x:W*.18,y:minY+20},
-      {name:'Naruto', x:W*.38,y:minY+80},
-      {name:'Sasuke', x:W*.60,y:minY+70},
-      {name:'Sakura', x:W*.50,y:minY+140},
-      {name:'Hinata', x:W*.78,y:minY+50},
+    // smooth filter on character atlases (they are vector-style, not pixel art)
+    ['mAdv','fAdv','mPerson','fPerson','zombie'].forEach(k=>{
+      const tex=this.textures.get(k); if(tex) tex.setFilter(Phaser.Textures.FilterMode.LINEAR);
+    });
+
+    this.buildAnims();
+    this.buildWorld();
+
+    const wy=this.walkMinY,W=this.W,H=this.H;
+    const starts=[
+      {name:'Jiraiya',x:W*.16,y:wy+30},
+      {name:'Naruto', x:W*.36,y:wy+90},
+      {name:'Sasuke', x:W*.64,y:wy+75},
+      {name:'Sakura', x:W*.50,y:H-50},
+      {name:'Hinata', x:W*.83,y:wy+45},
     ];
-    this.npcs=startPos.map(p=>new AgentNPC(this,p.name,p.x,p.y));
+    this.npcs=starts.map(p=>new AgentNPC(this,p.name,p.x,p.y));
 
     this.battleActive=false; this.battleSecs=0;
     this.postPhase=false; this.postTimer=0;
-    this.fxGfx=this.add.graphics().setDepth(400);
+    this.fxGfx=this.add.graphics().setDepth(8000);
     this.cardTimer=0;
+  }
+
+  buildAnims(){
+    ['mAdv','fAdv','mPerson','fPerson','zombie'].forEach(key=>{
+      if(this.anims.exists(key+'_walk')) return;
+      this.anims.create({key:key+'_walk',  frames:Array.from({length:8},(_,i)=>({key,frame:`walk${i}`})),frameRate:9,repeat:-1});
+      this.anims.create({key:key+'_idle',  frames:[{key,frame:'idle'}],frameRate:1,repeat:0});
+      this.anims.create({key:key+'_attack',frames:Array.from({length:3},(_,i)=>({key,frame:`attack${i}`})),frameRate:7,repeat:-1});
+      this.anims.create({key:key+'_cheer', frames:[{key,frame:'cheer0'},{key,frame:'cheer1'}],frameRate:4,repeat:-1});
+    });
+  }
+
+  // Bake the whole tile world into one RenderTexture (no seams), then scale it up.
+  buildWorld(){
+    const cols=this.cols, rows=this.rows;
+    const rt=this.add.renderTexture(0,0,cols*TILE,rows*TILE).setOrigin(0,0).setDepth(-100);
+    const rand=(s)=>{const x=Math.sin(s*127.1)*43758.5453;return x-Math.floor(x);};
+    const place=(f,c,r)=>{ if(c>=0&&c<cols&&r>=0&&r<rows&&f!=null) rt.drawFrame('town',f,c*TILE,r*TILE); };
+    const pick=(arr,s)=>arr[Math.floor(rand(s)*arr.length)];
+
+    // Track occupied cells so decorations never overwrite structures
+    const used=new Set();
+    const key=(c,r)=>c+','+r;
+    const occupy=(c,r)=>used.add(key(c,r));
+    const free=(c,r)=>c>=0&&c<cols&&r>=0&&r<rows&&!used.has(key(c,r));
+    const put=(f,c,r)=>{ if(free(c,r)){ place(f,c,r); occupy(c,r); } };
+
+    // ── 1. Grass base ──
+    for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+      const h=rand(c*7.3+r*13.7);
+      let g=T.grass;
+      if(h>0.93) g=T.grassFlower; else if(h>0.78) g=T.grassA;
+      place(g,c,r);
+    }
+
+    // ── 2. Dirt path: vertical from farmhouse door down to bottom ──
+    const pathCol=3;
+    for(let r=3;r<rows;r++){
+      place(r===rows-1?T.pathBot:T.pathMid, pathCol, r);
+      occupy(pathCol,r);
+    }
+
+    // ── 3. Farmhouse (red roof) top-left, 4 wide × 3 tall ──
+    const A={x:1,y:0};
+    place(T.roofL,A.x,A.y);place(T.roofM,A.x+1,A.y);place(T.roofM,A.x+2,A.y);place(T.roofR,A.x+3,A.y);
+    place(T.wallL,A.x,A.y+1);place(T.wallM,A.x+1,A.y+1);place(T.wallM,A.x+2,A.y+1);place(T.wallR,A.x+3,A.y+1);
+    place(T.wallL,A.x,A.y+2);place(T.doorWood[0],A.x+1,A.y+2);place(T.windowWood,A.x+2,A.y+2);place(T.wallR,A.x+3,A.y+2);
+    for(let r=0;r<3;r++) for(let c=A.x;c<A.x+4;c++) occupy(c,r);
+
+    // ── 4. Stone/blue house top-right, 3 wide × 3 tall ──
+    const B={x:cols-4,y:0};
+    place(T.bRoofL,B.x,B.y);place(T.bRoofM,B.x+1,B.y);place(T.bRoofR,B.x+2,B.y);
+    place(T.bWallL,B.x,B.y+1);place(T.bWallM,B.x+1,B.y+1);place(T.bWallR,B.x+2,B.y+1);
+    place(T.bDoor[0],B.x,B.y+2);place(T.bDoor[1],B.x+1,B.y+2);place(T.bDoor[2],B.x+2,B.y+2);
+    for(let r=0;r<3;r++) for(let c=B.x;c<B.x+3;c++) occupy(c,r);
+
+    // ── 5. Continuous fence across row 2, gap only at house footprints ──
+    const fRow=2, fStart=A.x+4, fEnd=B.x-1;
+    const fcells=[];
+    for(let c=fStart;c<fEnd;c++){ if(c!==pathCol&&free(c,fRow)) fcells.push(c); }
+    fcells.forEach((c,i)=>{
+      const f = i===0?T.fenceL : (i===fcells.length-1?T.fenceR : T.fenceM);
+      put(f,c,fRow);
+    });
+
+    // ── 6. Trees in top band (rows 0–1 only, above the fence) ──
+    const treeSpots=[
+      [6,0],[7,1],[9,0],[10,1],
+      [Math.floor(cols/2)-1,0],[Math.floor(cols/2),1],[Math.floor(cols/2)+2,0],
+      [cols-6,1],[cols-7,0],[cols-9,1],
+    ];
+    treeSpots.forEach(([c,r],i)=>{
+      const roll=rand(c*3.1+r*5.7+i);
+      put(roll>0.72 ? pick(T.treeAutumn,i+2) : pick(T.treeGreen,i), c, r);
+    });
+
+    // ── 7. Bushes in top band ──
+    [[8,1],[Math.floor(cols/2)+1,1],[cols-5,0],[5,1]].forEach(([c,r],i)=>put(pick(T.bush,i+9),c,r));
+
+    // ── 8. Decorations (ground props, bottom rows) ──
+    put(T.barrel, 1, rows-1);
+    put(T.pot, 1, rows-2);
+    put(T.trough, cols-2, rows-1);
+    put(T.jar, cols-3, rows-2);
+    put(T.bucket, cols-2, rows-3);
+    put(T.sign, pathCol+1, rows-2);
+    put(T.mush, 6, rows-1);
+    put(T.grassPatch, Math.floor(cols/2), rows-1);
+    put(T.grassPatch, Math.floor(cols/2)-3, rows-2);
+    put(T.seedling, Math.floor(cols/2)+3, rows-2);
+
+    // ── Scale the baked world up crisply ──
+    rt.setScale(SCALE);
+
+    // Soft depth shadow near bottom for grounding (drawn over the RT)
+    const sh=this.add.graphics().setDepth(-90);
+    sh.fillStyle(0x000000,0.10); sh.fillRect(0,this.H-40,this.W,40);
+    // subtle boundary between yard and field
+    sh.fillStyle(0x3a2a10,0.18); sh.fillRect(0,this.walkMinY-2,this.W,2);
   }
 
   update(time,delta){
@@ -700,32 +454,27 @@ class GameScene extends Phaser.Scene {
     const sasuke=this.npcs.find(a=>a.name==='Sasuke');
 
     this.npcs.forEach(a=>{
-      if(a.state!=='fighting')a.update(delta);
-      else{a.termT-=delta;if(a.termT<=0){a.pushLine();a.termT=700+Math.random()*500;}a.syncUI();}
+      if(a.state!=='fighting') a.update(delta);
+      else {a.termT-=delta;if(a.termT<=0){a.pushLine();a.termT=700+Math.random()*500;}a.syncUI();}
     });
 
-    // Proximity battle check
     if(!this.battleActive&&!this.postPhase){
       const dx=naruto.x-sasuke.x,dy=naruto.y-sasuke.y;
-      if(Math.sqrt(dx*dx+dy*dy)<CFG.BATTLE_DIST
-         &&naruto.cooldown<=0&&sasuke.cooldown<=0
+      if(Math.sqrt(dx*dx+dy*dy)<CFG.BATTLE_DIST&&naruto.cooldown<=0&&sasuke.cooldown<=0
          &&naruto.state!=='fighting'&&sasuke.state!=='fighting'
          &&naruto.state!=='post-battle'&&sasuke.state!=='post-battle'){
         this.startBattle(naruto,sasuke);
       }
     }
-
     if(this.battleActive){
       this.battleSecs-=delta/1000;
       const frac=Math.max(0,this.battleSecs/CFG.BATTLE_SECS);
       document.getElementById('battleTimerBar').style.width=(frac*100)+'%';
       document.getElementById('bCount').textContent=Math.max(0,Math.ceil(this.battleSecs));
       this.drawBattleFX(naruto,sasuke,time);
-      if(this.battleSecs<=0)this.endBattle(naruto,sasuke);
+      if(this.battleSecs<=0) this.endBattle(naruto,sasuke);
     }
-
     if(this.postPhase){this.postTimer-=delta;if(this.postTimer<=0){this.postPhase=false;this.fxGfx.clear();}}
-
     this.cardTimer+=delta;
     if(this.cardTimer>500){this.npcs.forEach(a=>refreshCard(a));this.cardTimer=0;}
   }
@@ -733,47 +482,39 @@ class GameScene extends Phaser.Scene {
   startBattle(naruto,sasuke){
     this.battleActive=true; this.battleSecs=CFG.BATTLE_SECS;
     const mx=(naruto.x+sasuke.x)/2,my=Math.max(naruto.y,sasuke.y);
-    naruto.lockForBattle(mx-60,my,true);
-    sasuke.lockForBattle(mx+60,my,false);
+    naruto.lockForBattle(mx-58,my,true); sasuke.lockForBattle(mx+58,my,false);
     document.getElementById('battleBanner').style.display='block';
     document.getElementById('battleTimerWrapper').style.display='block';
     this.cameras.main.shake(150,0.005);
-    refreshCard(naruto);refreshCard(sasuke);
+    refreshCard(naruto); refreshCard(sasuke);
   }
-
   endBattle(naruto,sasuke){
     this.battleActive=false; this.postPhase=true; this.postTimer=CFG.POST_BATTLE_MS;
-    this.fxGfx.clear();
-    this.cameras.main.shake(400,0.015);
-    this.cameras.main.flash(300,255,255,255,false);
+    this.fxGfx.clear(); this.cameras.main.shake(400,0.015); this.cameras.main.flash(300,255,255,255,false);
     document.getElementById('battleBanner').style.display='none';
     document.getElementById('battleTimerWrapper').style.display='none';
     naruto.releaseFromBattle(-1); sasuke.releaseFromBattle(1);
-    setTimeout(()=>{if(naruto.state==='post-battle')naruto.pickTarget();refreshCard(naruto);},CFG.POST_BATTLE_MS);
-    setTimeout(()=>{if(sasuke.state==='post-battle')sasuke.pickTarget();refreshCard(sasuke);},CFG.POST_BATTLE_MS+150);
-    refreshCard(naruto);refreshCard(sasuke);
+    refreshCard(naruto); refreshCard(sasuke);
   }
-
   drawBattleFX(naruto,sasuke,time){
-    const G=this.fxGfx;G.clear();
-    const t=time*0.003;
-    const cx=(naruto.x+sasuke.x)/2,cy=(naruto.y+sasuke.y)/2-40;
-    drawRasengan(G,naruto.x+32,naruto.y-40,t);
-    drawChidori(G,sasuke.x-32,sasuke.y-40,t);
-    drawClash(G,cx,cy,t);
+    const G=this.fxGfx; G.clear(); const t=time*0.003;
+    const cx=(naruto.x+sasuke.x)/2,cy=(naruto.y+sasuke.y)/2-35;
+    fxRasengan(G,naruto.x+26,naruto.y-32,t);
+    fxChidori(G,sasuke.x-26,sasuke.y-32,t);
+    fxClash(G,cx,cy,t);
     if(Math.sin(t*10)>0.7){G.fillStyle(0xFF6B1A,0.04);G.fillRect(0,0,this.W,this.H);}
   }
 }
 
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 // HTML PANELS
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 function buildUI(){
   const cg=document.getElementById('cardGrid'),tg=document.getElementById('termGrid');
   Object.entries(ADEF).forEach(([name,d])=>{
     const card=document.createElement('div');
-    card.id='card-'+name;card.className='agent-card glass p-3 relative overflow-hidden';
-    card.style.setProperty('--cc',d.color);card.style.borderColor=d.color+'33';
+    card.id='card-'+name; card.className='agent-card glass p-3 relative overflow-hidden';
+    card.style.setProperty('--cc',d.color); card.style.borderColor=d.color+'33';
     card.innerHTML=`
       <div class="cdeco tl" style="border-color:${d.color}44"></div>
       <div class="cdeco br" style="border-color:${d.color}44"></div>
@@ -782,16 +523,16 @@ function buildUI(){
           <div class="font-bold text-sm tracking-wider truncate" style="color:${d.color}">${name.toUpperCase()}</div>
           <div class="text-xs text-white/35">${d.role}</div>
         </div>
-        <span class="sdot walking"></span>
+        <span class="sdot idle"></span>
       </div>
-      <div class="mono text-xs mb-2"><span class="text-white/25">ST: </span><span class="st-text" style="color:${d.color}">Walking</span></div>
+      <div class="mono text-xs mb-2"><span class="text-white/25">ST: </span><span class="st-text" style="color:${d.color}">Idle</span></div>
       <div class="w-full rounded-full overflow-hidden mb-1" style="height:2px;background:rgba(255,255,255,.06)">
         <div class="power-bar-inner h-full rounded-full" style="width:72%;background:linear-gradient(90deg,${d.color},${d.glow})"></div>
       </div>
       <div class="mono text-white/15 text-xs truncate">${d.model}</div>`;
     cg.appendChild(card);
     const term=document.createElement('div');
-    term.className='terminal';term.id='term-'+name;
+    term.className='terminal'; term.id='term-'+name;
     term.innerHTML=`
       <div class="term-header" style="color:${d.color}">
         <div class="term-dots">
@@ -806,9 +547,8 @@ function buildUI(){
     tg.appendChild(term);
   });
 }
-
 function refreshCard(agent){
-  const card=document.getElementById('card-'+agent.name);if(!card)return;
+  const card=document.getElementById('card-'+agent.name); if(!card)return;
   const dot=card.querySelector('.sdot'),st=card.querySelector('.st-text'),bar=card.querySelector('.power-bar-inner');
   dot.className='sdot '+agent.state;
   st.textContent=agent.state.charAt(0).toUpperCase()+agent.state.slice(1);
@@ -817,9 +557,9 @@ function refreshCard(agent){
   else{st.style.color=agent.color;bar.style.width=(55+Math.random()*38)+'%';bar.style.background=`linear-gradient(90deg,${agent.color},${ADEF[agent.name].glow})`;}
 }
 
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 // CLOCK
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 function tick(){
   const d=new Date(),p=n=>String(n).padStart(2,'0');
   document.getElementById('clock').textContent=`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
@@ -827,22 +567,25 @@ function tick(){
   document.getElementById('dateDisp').textContent=`${DAY[d.getDay()]} · ${p(d.getDate())} ${MON[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-// ═══════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════════════════════════
+// BOOT
+// ════════════════════════════════════════════════════════
 buildUI();
 tick(); setInterval(tick,1000);
 
-const GAME_W=Math.min((document.getElementById('game-wrap').clientWidth||920),900);
-const GAME_H=Math.round(GAME_W*0.32);
+const wrap=document.getElementById('game-wrap');
+const cols=Math.max(16,Math.floor((wrap.clientWidth||960)/DISP));
+const GW=cols*DISP;
+const GH=9*DISP;
 
 new Phaser.Game({
   type:Phaser.AUTO,
-  width:GAME_W, height:GAME_H,
+  width:GW, height:GH,
   parent:'game-container',
+  backgroundColor:'#5DA048',
   pixelArt:true,
-  scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY,width:GAME_W,height:GAME_H},
-  render:{antialias:false,pixelArt:true},
+  roundPixels:true,
+  scale:{ mode:Phaser.Scale.FIT, autoCenter:Phaser.Scale.CENTER_HORIZONTALLY, width:GW, height:GH },
   scene:GameScene
 });
 </script>
