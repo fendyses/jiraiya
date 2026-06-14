@@ -217,6 +217,7 @@ Gives you:
 | [SherlockianAsh](https://github.com/SherlockianAsh) | Observation |
 | [naimkatiman](https://github.com/naimkatiman) | Mulahazah |
 | [xdaxzurairi](https://github.com/xdaxzurairi) | Meeting, Orchestration, Auto-Worker, Code-Sharp, Token Guard, Discipline, Continuous Improvement, Security Audit, Dream Ideas, Break Reminder, Save Memory, JIRAIYA Recall, Dashboard |
+| Fendy SES (saifuleffendy) | Phaser dashboard with animated sprites & character auras · Dual battle system with clouds & summon events · Jiraiya sprite customisation · Sub-agent definitions (Naruto, Sasuke, Sakura, Hinata) · Repo panel with VS Code + CLI action buttons · TerminalOpener.app (custom URL scheme for macOS Terminal) · `main/repos.js` split from dashboard HTML · Animals asset pack · Company staff profiles |
 
 ---
 
