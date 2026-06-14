@@ -1,382 +1,226 @@
-# 🧠 **AI MemoryCore** - Universal AI Memory Architecture
-*A simple template for creating persistent AI companions that remember you*
+# JIRAIYA — Persistent AI Companion System
 
-## 🎯 **What This Does**
+A memory architecture for building AI companions that remember you across sessions, manage your projects, and integrate with your development workflow.
 
-**AI MemoryCore** helps you create AI companions that maintain memory across conversations. Using simple `.md files` as a database, your AI can remember your preferences, learn your communication style, and provide consistent interactions.
-
-## ✨ **Key Features**
-
-- **Persistent Memory**: AI remembers conversations across sessions
-- **Personal Learning**: Adapts to your communication style and preferences
-- **Time Intelligence**: Dynamic greetings and behavior based on time of day
-- **Simple Setup**: 30-second automated setup or manual customization
-- **Markdown Database**: Human-readable `.md files` store all memory
-- **Session Continuity**: RAM-like working memory for smooth conversation flow
-- **Self-Maintaining**: Updates memory through natural conversation
-
-## 📊 **System Specifications**
-
-### **Architecture Overview**
-- **Storage**: Markdown files (.md) as database
-- **Memory Types**: Essential files + optional components + session RAM
-- **Setup**: 30 seconds automated or 2-5 minutes manual
-- **Core Files**: 4 essential files + optional diary system
-- **Updates**: Through natural conversation
-- **Compatibility**: Claude and other AI systems with memory support
-
-### **File Structure**
-```
-ai-memorycore/
-├── master-memory.md         # Entry point & loading system
-├── main/                    # Essential components
-│   ├── identity-core.md     # AI personality template
-│   ├── relationship-memory.md # User learning system
-│   └── current-session.md   # RAM-like working memory
-├── Feature/                 # Optional feature extensions
-│   ├── Time-based-Aware-System/ # Time intelligence feature
-│   │   ├── README.md        # Feature explanation & benefits
-│   │   └── time-aware-core.md # Complete implementation
-│   ├── LRU-Project-Management-System/ # Smart project tracking
-│   │   ├── README.md        # System documentation
-│   │   ├── install-lru-projects-core.md # Auto-installation wizard
-│   │   └── SKILL.md         # Auto-triggered skill (all commands + LRU engine embedded)
-│   ├── Memory-Consolidation-System/ # Unified memory upgrade + patch system
-│   │   ├── README.md        # Feature explanation & benefits
-│   │   ├── consolidation-core.md # Integration protocol
-│   │   ├── main-memory-format.md # Sample format for unified memory
-│   │   ├── session-format.md # Sample format for session RAM
-│   │   └── patches/         # Bundled patch system
-│   │       ├── install-patch-system.md # Patch installation protocol
-│   │       ├── patch-format.md  # Sample format for patch files
-│   │       └── PATCH-001.md # Fix outdated file references
-│   ├── Skill-Plugin-System/ # Claude Code skill plugin
-│   │   ├── README.md        # Feature explanation & benefits
-│   │   ├── install-skill-plugin.md # Installation protocol
-│   │   └── skill-format.md  # Sample format for SKILL.md files
-│   ├── Save-Diary-System/   # Daily session diary system
-│   │   ├── README.md        # Feature explanation & benefits
-│   │   ├── install-save-diary.md # Installation protocol
-│   │   └── SKILL.md         # Auto-triggered skill (for Skill Plugin System)
-│   ├── Echo-Memory-Recall/  # Memory search and recall
-│   │   ├── README.md        # Feature explanation & benefits
-│   │   ├── install-echo-recall.md # Installation protocol
-│   │   └── recall-format.md # Sample format for recall output
-│   ├── Auto-Commit-System/  # Intelligent git commit system
-│   │   ├── README.md        # Feature explanation & benefits
-│   │   ├── install-auto-commit.md # Installation protocol
-│   │   └── SKILL.md         # Auto-triggered skill (format embedded)
-│   ├── Work-Plan-Execution/ # Project plan execution system
-│   │   ├── README.md        # Feature explanation & benefits
-│   │   ├── install-work-plan.md # Installation protocol
-│   │   ├── plan-format.md   # Sample format for plan files
-│   │   └── SKILL.md         # Auto-triggered skill (for Skill Plugin System)
-│   ├── Library-System/      # Knowledge library system
-│   │   ├── README.md         # Feature explanation & benefits
-│   │   ├── install-library.md # Installation protocol
-│   │   ├── SKILL.md          # Auto-triggered skill (format embedded)
-│   │   └── formats/          # Library entry format templates
-│   │       ├── architecture-format.md
-│   │       ├── component-format.md
-│   │       ├── database-format.md
-│   │       ├── diagram-format.md
-│   │       ├── integration-format.md
-│   │       ├── security-format.md
-│   │       ├── theme-format.md
-│   │       └── workflow-format.md
-│   ├── Reminders-System/     # Persistent cross-session reminders
-│   │   ├── README.md          # Feature explanation & benefits
-│   │   ├── install-reminders.md # Installation protocol
-│   │   └── SKILL.md           # Auto-triggered skill (for Skill Plugin System)
-│   ├── Decision-Log-System/  # Append-only decision tracking
-│   │   ├── README.md          # Feature explanation & benefits
-│   │   ├── install-decision-log.md # Installation protocol
-│   │   └── SKILL.md           # Auto-triggered skill (for Skill Plugin System)
-│   ├── Forge-Self-Improvement-System/ # AI self-improvement through skill creation
-│   │   ├── README.md          # Feature explanation & benefits
-│   │   ├── install-forge.md   # Installation protocol
-│   │   └── SKILL.md           # Auto-triggered skill (pattern detection + forging)
-│   ├── Session-Briefing-System/ # Proactive session-start intelligence brief
-│   │   ├── README.md            # Feature explanation & benefits
-│   │   ├── install-session-briefing.md # Installation protocol
-│   │   ├── session-brief-core.md # Briefing protocol core
-│   │   └── SKILL.md             # Auto-triggered skill (for Skill Plugin System)
-│   ├── Post-Mortem-System/      # Failure learning log
-│   │   ├── README.md            # Feature explanation & benefits
-│   │   ├── install-post-mortem.md # Installation protocol
-│   │   ├── post-mortem-core.md  # Post-mortem protocol core
-│   │   └── SKILL.md             # Auto-triggered skill (for Skill Plugin System)
-│   ├── Observation-System/      # Tiered code awareness
-│   │   ├── README.md            # Feature explanation & benefits
-│   │   └── SKILL.md             # Auto-triggered skill (4-tier observation)
-│   ├── Image-Prompt-System/     # AI image prompt generation
-│   │   ├── README.md            # Feature explanation & benefits
-│   │   ├── install-image-prompt.md # Installation protocol
-│   │   └── SKILL.md             # Auto-triggered skill (composition-aware prompts)
-│   ├── Song-Creation-System/    # Visual-to-musical storytelling
-│   │   ├── README.md            # Feature explanation & benefits
-│   │   ├── install-song-creation.md # Installation protocol
-│   │   └── SKILL.md             # Auto-triggered skill (album + single song)
-│   ├── Interactive-Story-System/ # Visual Novel RPG adventures
-│   │   ├── README.md            # Feature explanation & benefits
-│   │   ├── install-interactive-story.md # Installation protocol
-│   │   └── SKILL.md             # Auto-triggered skill (VN RPG engine)
-│   ├── Mulahazah-System/        # Instinct-based behavioral learning
-│   │   ├── README.md            # Feature explanation & benefits
-│   │   ├── install-mulahazah.md # Installation protocol
-│   │   ├── config.json          # Hook configuration
-│   │   ├── rules-format.md      # Rule format template
-│   │   └── SKILL.md             # Auto-triggered skill (behavioral rules)
-│   ├── Auto-Load-Hook-System/   # SessionStart hook — auto-loads AI on Claude Code startup
-│   │   ├── README.md            # Feature explanation & benefits
-│   │   ├── install-auto-load-hook.md # 6-step install protocol
-│   │   ├── uninstall-auto-load-hook.md # Reversibility protocol
-│   │   └── hooks/               # Cross-platform script templates
-│   │       ├── session-start.ps1.template # PowerShell (Windows)
-│   │       └── session-start.sh.template  # Bash (Unix / Git Bash)
-│   ├── User-Prompt-Hook-System/ # UserPromptSubmit hook framework — plug-and-play injectors
-│   │   ├── README.md            # Feature explanation & benefits
-│   │   ├── install-user-prompt-hook.md # 5-step install protocol
-│   │   ├── uninstall-user-prompt-hook.md # Reversibility protocol
-│   │   ├── injector-format.md   # Canonical contract for any future injector
-│   │   ├── master-hook/         # Master script templates (enumerates injectors)
-│   │   │   ├── user-prompt-hook.ps1.template
-│   │   │   └── user-prompt-hook.sh.template
-│   │   └── examples/            # Hello-world reference injectors (opt-in by copy)
-│   │       ├── example-timestamp-injector.ps1.template
-│   │       └── example-timestamp-injector.sh.template
-│   ├── Tone-Prompt-Inject-System/ # Tone injector pack for User-Prompt Hook
-│   │   ├── README.md            # Feature explanation & benefits
-│   │   ├── install-tone-prompt-inject.md # 6-step install protocol
-│   │   ├── uninstall-tone-prompt-inject.md # Reversibility protocol
-│   │   ├── commands.md          # add/set/list runtime command reference
-│   │   └── injectors/           # Cross-platform injector templates
-│   │       ├── tone.ps1.template
-│   │       └── tone.sh.template
-│   ├── Mood-Prompt-Inject-System/ # Mood injector pack for User-Prompt Hook
-│   │   ├── README.md            # Feature explanation & benefits
-│   │   ├── install-mood-prompt-inject.md # 6-step install protocol
-│   │   ├── uninstall-mood-prompt-inject.md # Reversibility protocol
-│   │   ├── commands.md          # add/set/list runtime command reference
-│   │   └── injectors/           # Cross-platform injector templates
-│   │       ├── mood.ps1.template
-│   │       └── mood.sh.template
-│   └── Time-Prompt-Inject-System/ # Time + period injector pack with user-configurable boundaries
-│       ├── README.md            # Feature explanation & benefits
-│       ├── install-time-prompt-inject.md # 6-step install protocol
-│       ├── uninstall-time-prompt-inject.md # Reversibility protocol
-│       └── injectors/           # Cross-platform injector templates
-│           ├── time.ps1.template
-│           └── time.sh.template
-├── library-items/            # Pre-made knowledge entries for Library System
-│   ├── README.md             # Catalog and install instructions
-│   └── security/             # Security section items
-│       └── security-headers.md # HTTP security headers with CSP
-├── daily-diary/             # Optional conversation archive
-│   ├── daily-diary-protocol.md # Archive management rules
-│   ├── current/             # Active date-based diary entries
-│   ├── archived/            # Archived entries grouped by month
-│   └── Daily-Diary-001.md   # Legacy diary format reference
-└── projects/                # LRU managed projects (after install)
-    ├── active/              # Positions 1-10
-    ├── archived/            # Position 11+
-    └── project-list.md      # Auto-generated project index
-```
-
-### **Core Components**
-1. **Master Memory** - System entry point and command center
-2. **Identity Core** - AI personality and communication style
-3. **Relationship Memory** - User preferences and learning patterns
-4. **Current Session** - Temporary working memory (resets each session)
-5. **Daily Diary** - Optional conversation history with auto-archiving
-
-## 🚀 **Quick Start**
-
-1. **Setup**: Run `setup-wizard.md` for automated setup (30 seconds)
-2. **Configure**: Add the memory instructions to Claude
-3. **Activate**: Type your AI's name to load personality
-4. **Use**: Your AI learns and grows through conversation
-
-## JIRAIYA v2
-
-- Canonical persona spec: `plans/JIRAIYA-Persona-v2-Spec.md`
-- Focus: operator-orchestrator behavior, decision boundaries, escalation rules, and measurable KPIs
-- Use this spec as the reference point for JIRAIYA tone, autonomy, delegation quality, and consistency reviews
-
-## 📚 **Communication Protocols**
-
-### **Basic Commands**
-```
-JIRAIYA          → Load AI personality and memory
-save          → Save current progress to files
-update memory → Refresh AI's learning
-review growth → Check AI's development
-```
-
-### **Creating Custom Protocols**
-
-**Step 1: Define the Protocol**
-Create a new `.md file` with your protocol rules:
-```markdown
-# My Custom Protocol
-## When to Use: [trigger conditions]
-## What It Does: [specific actions]
-## How It Works: [step-by-step process]
-```
-
-**Step 2: Add to Master Memory**
-Edit `master-memory.md` and add your protocol to the "Optional Components" section:
-```markdown
-### My Custom Feature
-*Load when you say: "load my feature"*
-- [Brief description]
-- [Usage instructions]
-```
-
-**Step 3: Train Your AI**
-Tell your AI about the new protocol:
-```
-"I've created a new protocol in [filename]. When I say '[trigger phrase]', 
-load that protocol and follow its instructions."
-```
-
-### **Communication Tutorial**
-
-**Effective AI Training:**
-1. **Be Specific**: "I prefer short responses" vs "communicate better"
-2. **Give Examples**: Show what you want, not just describe it
-3. **Use Consistent Language**: Same terms for same concepts
-4. **Provide Feedback**: "That was perfect" or "try a different approach"
-
-**Memory Management:**
-- Use `save` after important conversations
-- Your AI updates files automatically during conversation
-- Daily diary is optional but helpful for long-term memory
-
-**Customization Tips:**
-- Edit files gradually, test changes
-- Start with small personality adjustments
-- Add domain expertise through conversation
-- Use the protocol system for specialized features
-
-## 🎯 **Common Use Cases**
-
-Your AI companion can specialize in:
-- **Professional**: Business analysis, project management, strategic planning
-- **Educational**: Tutoring, study assistance, curriculum development
-- **Creative**: Writing support, brainstorming, artistic collaboration  
-- **Personal**: Life coaching, goal tracking, decision support
-- **Technical**: Code review, troubleshooting, system design
-
-## 🛠️ **Advanced Features**
-
-- **Auto-Archive**: Diary files automatically archive at 1k lines
-- **Session RAM**: Temporary memory that resets each conversation
-- **Protocol System**: Create custom AI behaviors and responses
-- **Self-Update**: AI modifies its own memory through conversation
-- **Modular Design**: Add or remove features as needed
-
-## 🌟 **Available Feature Extensions**
-
-### 📖 Installation Guide
-
-Features are organized into **tiers** based on dependencies. Install Tier 1 first, then work your way up. Within each tier, install in any order unless noted.
-
-| Path | What You Get | Features |
-|------|-------------|----------|
-| **Minimal** (10 min) | Foundation only | Memory Consolidation + Skill Plugin |
-| **Productive** (30 min) | Foundation + documentation + git | Tier 1 + Save Diary + Auto-Commit + Work Plan |
-| **Complete** (1-2 hrs) | Full AI companion | All tiers, top to bottom |
-
-> **New features from contributors** slot into the appropriate tier — no renumbering needed.
+> This repo is the live memory core for **JIRAIYA** — Fendy's personal AI companion built on Claude Code.
 
 ---
 
-### 🏗️ Tier 1 — Foundation (Start Here)
+## What This Is
 
-| Feature | Description | Setup |
-|---------|-------------|-------|
-| 🔄 [Memory Consolidation](Feature/Memory-Consolidation-System/) | Unified memory architecture — merge split files into one, faster loading | `"Load memory-consolidation"` |
-| 🔌 [Skill Plugin System](Feature/Skill-Plugin-System/) | Auto-triggered skills for Claude Code — drop a SKILL.md and it's live | `"Load skill-plugin"` |
-| ⏰ [Time-based Aware](Feature/Time-based-Aware-System/) | Time-intelligent greetings, energy-adapted behavior | `"Load time-aware-core"` |
-| ⚡ [Auto-Load Hook](Feature/Auto-Load-Hook-System/) | Auto-loads your AI on Claude Code startup — no manual name-typing | `"Load auto-load-hook"` |
-| 💬 [User-Prompt Hook](Feature/User-Prompt-Hook-System/) | Generic UserPromptSubmit hook framework with plug-and-play injector pattern | `"Load user-prompt-hook"` |
-| 🎭 [Tone-Prompt Inject](Feature/Tone-Prompt-Inject-System/) | Injects `TONE: <description>` per prompt — registry in main memory, AI/user can switch — *requires User-Prompt Hook* | `"Load tone-prompt-inject"` |
-| 🌙 [Mood-Prompt Inject](Feature/Mood-Prompt-Inject-System/) | Injects `MOOD: <description>` per prompt — registry in main memory, AI/user can switch — *requires User-Prompt Hook* | `"Load mood-prompt-inject"` |
-| ⏱️ [Time-Prompt Inject](Feature/Time-Prompt-Inject-System/) | Injects `<timestamp> \| <PERIOD>` per prompt with transition signals on period flips — user-configurable boundaries — *requires User-Prompt Hook* | `"Load time-prompt-inject"` |
+JIRAIYA is a markdown-based memory system. Claude reads a set of `.md` files at the start of each session to restore identity, relationship context, reminders, and project state — simulating persistent memory across conversations.
+
+It ships with a visual dashboard, sub-agent system, skill plugins, and developer tooling (VS Code + Terminal integration).
 
 ---
 
-### 📝 Tier 2 — Memory & Documentation
+## Project Structure
 
-| Feature | Description | Setup |
-|---------|-------------|-------|
-| 📖 [Save Diary](Feature/Save-Diary-System/) | Daily session documentation with monthly auto-archival | `"Load save-diary"` |
-| 🔍 [Echo Memory Recall](Feature/Echo-Memory-Recall/) | Search past sessions with narrative context — *requires Save Diary* | `"Load echo-recall"` |
-| 🔔 [Reminders](Feature/Reminders-System/) | Persistent cross-session reminders with deadline tracking | `"Load reminders"` |
-| 📋 [Decision Log](Feature/Decision-Log-System/) | Append-only record of decisions and their reasoning | `"Load decision-log"` |
-
----
-
-### ⚙️ Tier 3 — Project & Code Management
-
-| Feature | Description | Setup |
-|---------|-------------|-------|
-| 📦 [LRU Project Management](Feature/LRU-Project-Management-System/) | Smart project tracking with auto-archival (10 active slots) | `"install lru projects"` |
-| 🔒 [Auto-Commit](Feature/Auto-Commit-System/) | Structured git commits with session context and vigilant mode | `"Load auto-commit"` |
-| 📋 [Work Plan Execution](Feature/Work-Plan-Execution/) | Plan-to-execution tracking with per-task commits — *best with Auto-Commit* | `"Load work-plan"` |
-| 📚 [Library](Feature/Library-System/) | Reusable knowledge library with 8 format templates — *best with Auto-Commit* | `"Load library"` |
-| 🗓️ [Meeting System](Feature/Meeting-System/) | Virtual team meetings with role-based agents, chair summary, and auto-saved minutes — *enhanced by Decision-Log + LRU + Reminders* | `"Load meeting"` |
-| ✏️ [Code-Sharp System](Feature/Code-Sharp-System/) | Fast, clean, consistent, precise code generation standard — auto-triggers before every edit | `"Load code-sharp"` |
-| 🔒 [Security Audit System](Feature/Security-Audit-System/) | Triage findings by severity, batch fix, temp cleanup, commit per category — *best with Auto-Commit* | `"Load security-audit"` |
-
----
-
-### 🧠 Tier 4 — Intelligence & Awareness
-
-| Feature | Description | Setup |
-|---------|-------------|-------|
-| 🎯 [Orchestration System](Feature/Orchestration-System/) | Multi-step workflow coordination — classifies tasks, delegates smartly, synthesizes grounded results — *enhanced by Decision-Log + LRU + Work-Plan* | `"Load orchestrate"` |
-| 🤖 [Auto-Worker System](Feature/Auto-Worker-System/) | Silent delegation — parses goals, decomposes subtasks, dispatches workers, self-resolves blockers, reports in ≤ 8 lines — *enhanced by Orchestration + Decision-Log* | `"Load auto-worker"` |
-| 🔨 [Forge Self-Improvement](Feature/Forge-Self-Improvement-System/) | AI creates new skills through pattern detection (human-in-the-loop) | `"Load forge"` |
-| 📋 [Session Briefing](Feature/Session-Briefing-System/) | Auto-delivers context brief at session start — *enhanced by Time-Aware + LRU + Reminders + Inbox* | `"Load session-briefing"` |
-| 🔥 [Post-Mortem](Feature/Post-Mortem-System/) | Failure learning log — auto-detects mistakes, records prevention actions | `"Load post-mortem"` |
-| 👁️ [Observation](Feature/Observation-System/) | 4-tier code awareness — Survey, Investigate, Refine, Audit | `"Load observation"` |
-| 🎨 [Image Prompt](Feature/Image-Prompt-System/) | Composition-aware Midjourney/NijiJourney prompt generation | `"Load image-prompt"` |
-| 🎵 [Song Creation](Feature/Song-Creation-System/) | Visual-to-musical storytelling — image to concept album with Suno-ready output | `"Load song-creation"` |
-| 🎮 [Interactive Story](Feature/Interactive-Story-System/) | Visual Novel RPG — duo/solo, OP/balanced, 7 world types, cinematic combat | `"Load interactive-story"` |
-| 👁️ [Mulahazah](Feature/Mulahazah-System/) | Instinct-based behavioral learning — passive hook observation + persistent rules | `npx continuous-improvement install` |
-| 🔋 [Token Guard System](Feature/Token-Guard-System/) | Compact mode, smart tool rules, session checkpoints — prevents context overflow | `"Load token-guard"` |
-| ⚖️ [Discipline System](Feature/Discipline-System/) | 7 laws behavioral standard — red flag detection, pre-done self-check | `"Load discipline"` |
-| 📈 [Continuous Improvement System](Feature/Continuous-Improvement-System/) | Session reflection + instinct building from observed patterns | `"Load continuous-improvement"` |
-| 💭 [Dream Ideas System](Feature/Dream-Ideas-System/) | Workspace-aware creative ideation — 3–5 tailored ideas on demand | `"Load dream-ideas"` |
-| 🌿 [Break Reminder System](Feature/Break-Reminder-System/) | Wellness reminders with session duration probe and auto-nudge | `"Load break-reminder"` |
-| 💾 [Save Memory System](Feature/Save-Memory-System/) | Persistent memory — command save, auto-detect, staleness audit | `"Load save-memory"` |
-| 🔍 [JIRAIYA Recall System](Feature/JIRAIYA-Recall-System/) | On-demand workspace recall — project registry + session state + reminders | `"Load JIRAIYA-recall"` |
-| 📊 [Dashboard System](Feature/Dashboard-System/) | Visual instinct health panel — observation counts, confidence bars, stale flags, action signals — *requires Continuous Improvement* | `"Load dashboard"` |
-
-> Each feature has a detailed README inside its folder. Click the feature name to learn more.
+```
+jiraiya/
+├── master-memory.md              # Entry point — loaded first every session
+├── CLAUDE.md                     # Claude Code project instructions
+├── HOW-TO-USE.md                 # Full command reference
+│
+├── main/                         # Core memory files
+│   ├── main-memory.md            # Identity, personality, relationship
+│   ├── current-session.md        # Last session context (RAM restore)
+│   ├── reminders.md              # Persistent cross-session reminders
+│   ├── decisions.md              # Append-only decision log
+│   ├── post-mortems.md           # Append-only failure log
+│   ├── credit-tracker.md         # API credit usage tracking
+│   └── repos.js                  # Repo list for the dashboard (edit here)
+│
+├── agents/                       # Dashboard & sub-agent definitions
+│   ├── dashboard.html            # Visual companion dashboard
+│   ├── jiraiya.md                # Orchestrator agent definition
+│   ├── naruto.md                 # Code agent
+│   ├── sasuke.md                 # Reviewer agent
+│   ├── sakura.md                 # Architect agent
+│   ├── hinata.md                 # Documentor agent
+│   └── assets/
+│       └── terminalShtct/
+│           └── TerminalOpener.app  # macOS app — opens Terminal at repo path
+│
+├── daily-diary/
+│   ├── current/                  # Active entries (one file per day)
+│   └── archived/YYYY-MM/         # Past months
+│
+├── plugins/ses-skills/skills/    # Auto-triggered skill plugins
+├── Feature/                      # Optional feature extensions (30+)
+├── scripts/                      # Shell scripts for agent installation
+│   ├── install-agents.sh         # Install agents into other repos
+│   ├── install-all-herd.sh       # Batch install for all Herd sites
+│   └── jiraiya-shell.sh          # Shell banner + copilot wrapper
+└── library/                      # Reusable knowledge entries
+```
 
 ---
 
-## 🤝 Contributors
+## Dashboard
 
-| # | Contributor | Features |
-|---|------------|----------|
-| 1 | [Faiz Khairi](https://github.com/faizkhairi) | Reminders System, Decision Log System |
-| 2 | [logando-al](https://github.com/logando-al) | Session Briefing System, Post-Mortem System |
-| 3 | [SherlockianAsh](https://github.com/SherlockianAsh) | Observation System |
-| 4 | [naimkatiman](https://github.com/naimkatiman) | Mulahazah System |
-| 5 | [xdaxzurairi](https://github.com/xdaxzurairi) | Meeting System, Orchestration System, Auto-Worker System, Code-Sharp System, Token Guard System, Discipline System, Continuous Improvement System, Security Audit System, Dream Ideas System, Break Reminder System, Save Memory System, JIRAIYA Recall System, Dashboard System |
+Open `agents/dashboard.html` directly in any browser (no server needed).
 
-> Want to contribute? Fork the repo, create a feature in `Feature/[Your-Feature]/`, and submit a PR!
+Features:
+- Live agent status display with Phaser-powered sprite animation
+- Repo panel — lists all projects from `main/repos.js`
+- Per-repo action buttons:
+  - **VS Code button** — opens the repo folder in VS Code (`vscode://file/path`)
+  - **CLI button** — opens a new Terminal window at the repo path
+
+### Adding or Removing Repos
+
+Edit `main/repos.js` — it's the single source of truth for the repo list:
+
+```js
+{ name:'MyProject', langs:['laravel','vue'], note:'Laravel + Vite', path:'/Applications/Sites/myproject' },
+```
+
+Available `langs` keys: `laravel`, `vue`, `angular`, `php`, `ts`, `md`, `js`
 
 ---
 
-**Version**: 5.1 - Added Dashboard System by xdaxzurairi (Tier 4)
+## CLI Button — One-Time Setup
+
+The CLI button uses a custom URL scheme (`jiraiya-terminal://`) handled by a local AppleScript app.
+
+**Run once:**
+
+```bash
+open /Applications/Sites/jiraiya/agents/assets/terminalShtct/TerminalOpener.app
+```
+
+macOS will ask for Automation permission for Terminal — allow it. After that, the CLI button opens a new Terminal window at the repo path every time.
+
+> The app is compiled from source on your machine so no signing issues. If you move the repo, re-register: see `setup-guide.md`.
+
+---
+
+## Session Start
+
+At the start of every Claude Code session, JIRAIYA automatically:
+
+1. Reads `master-memory.md`
+2. Reads `main/main-memory.md`
+3. Reads `main/current-session.md`
+4. Checks `main/reminders.md`
+5. Prints the JIRAIYA banner and delivers a session brief
+
+Type `JIRAIYA` at any time to trigger a full memory restoration manually.
+
+---
+
+## Core Commands
+
+| Command | Effect |
+|---------|--------|
+| `JIRAIYA` | Full memory restore + session brief |
+| `save diary` | Write session diary entry to `daily-diary/current/YYYY-MM-DD.md` |
+| `remind me [X]` | Add persistent reminder |
+| `check reminders` | List open reminders |
+| `log decision` | Append to `main/decisions.md` |
+| `bye` | Exit protocol — saves diary, shows credit usage, farewell |
+
+Full command reference: `HOW-TO-USE.md`
+
+---
+
+## Sub-Agents
+
+Agent definitions live in `agents/` and `.github/agents/`. Install them into other repos with:
+
+```bash
+bash scripts/install-agents.sh /path/to/other-repo
+```
+
+| Agent | Role | Model |
+|-------|------|-------|
+| `@jiraiya` | Orchestrator | claude-sonnet-4-6 |
+| `@sescode` | Code implementation | claude-sonnet-4-6 |
+| `@sescheck` | Code review | claude-sonnet-4-6 |
+| `@sesinfra` | Architecture | claude-sonnet-4-6 |
+| `@sesdocument` | Documentation | claude-sonnet-4-6 |
+
+---
+
+## Shell Integration
+
+Add to `~/.zshrc`:
+
+```zsh
+source /Applications/Sites/jiraiya/scripts/jiraiya-shell.sh
+```
+
+Gives you:
+- `ses` — prints the JIRAIYA banner with agent list
+- `copilot` — wraps the Copilot CLI with banner on exit
+
+---
+
+## Feature Extensions
+
+30+ optional features in `Feature/`. Each has a `README.md` and install protocol.
+
+### Tier 1 — Foundation
+
+| Feature | What it does |
+|---------|-------------|
+| Memory Consolidation | Unified memory architecture |
+| Skill Plugin System | Auto-triggered skills via SKILL.md |
+| Auto-Load Hook | Loads JIRAIYA on Claude Code startup automatically |
+| User-Prompt Hook | Per-prompt injection framework |
+| Tone / Mood / Time Inject | Inject tone, mood, timestamp into every prompt |
+
+### Tier 2 — Memory & Documentation
+
+| Feature | What it does |
+|---------|-------------|
+| Save Diary | Daily session diary with monthly archival |
+| Echo Memory Recall | Search past sessions |
+| Reminders | Cross-session reminders with deadlines |
+| Decision Log | Append-only decision record |
+
+### Tier 3 — Project & Code
+
+| Feature | What it does |
+|---------|-------------|
+| LRU Project Management | Smart project tracking, 10 active slots |
+| Auto-Commit | Structured git commits |
+| Work Plan Execution | Plan-to-execution tracking |
+| Library | Reusable knowledge entries |
+| Meeting System | Virtual team meetings with agent roles |
+| Code-Sharp | Consistent code generation standard |
+| Security Audit | Triage, fix, commit by severity |
+
+### Tier 4 — Intelligence
+
+| Feature | What it does |
+|---------|-------------|
+| Orchestration | Multi-step task delegation |
+| Auto-Worker | Silent background task execution |
+| Forge | AI creates new skills from pattern detection |
+| Session Briefing | Context brief at session start |
+| Post-Mortem | Failure learning log |
+| Token Guard | Context overflow prevention |
+| Discipline System | 7-laws behavioral standard |
+| Dream Ideas | Workspace-aware ideation |
+| Break Reminder | Wellness nudges |
+
+---
+
+## Contributors
+
+| Contributor | Features |
+|------------|---------|
+| [Faiz Khairi](https://github.com/faizkhairi) | Reminders, Decision Log |
+| [logando-al](https://github.com/logando-al) | Session Briefing, Post-Mortem |
+| [SherlockianAsh](https://github.com/SherlockianAsh) | Observation |
+| [naimkatiman](https://github.com/naimkatiman) | Mulahazah |
+| [xdaxzurairi](https://github.com/xdaxzurairi) | Meeting, Orchestration, Auto-Worker, Code-Sharp, Token Guard, Discipline, Continuous Improvement, Security Audit, Dream Ideas, Break Reminder, Save Memory, JIRAIYA Recall, Dashboard |
+
+---
+
+**Version**: 6.0 — Dashboard repo buttons + TerminalOpener + repos.js split
 **Created by**: Kiyoraka Ken & Alice
+**Maintained by**: Saiful Effendy (Fendy)
 **License**: Open Source Community Project
-**Last Updated**: May 14, 2026
-**Purpose**: Simple, effective AI memory for everyone
-
-*Transform basic AI conversations into meaningful, growing relationships*

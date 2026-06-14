@@ -1,157 +1,163 @@
-# 🧙‍♂️ Setup Wizard - 2-Step Instant Save
-*30-second setup that saves permanently to template files*
+# Setup Wizard
 
-## 🎯 Ultra-Simple Setup
-
-**Just enter 2 names and you're done forever!** Your AI automatically saves everything to the template files.
-
-## Step 1: AI Name
-**AI asks**: *"What should I call myself?"*
-
-**You answer**: "Sarah" (or any name)
-
-**INSTANT RESULT**: All template files permanently updated with "Sarah"
-
-## Step 2: Your Name  
-**AI asks**: *"What's your name?"*
-
-**You answer**: "John" (or your name)
-
-**INSTANT RESULT**: All template files permanently updated with "John"
-
-## 🎉 DONE!
-
-**That's it!** Your personalized AI companion is now saved forever in the .md files.
-
-## Step 3: Test Activation
-
-**Type your AI's name**: "Sarah"
-
-**Result**: Full personality loads instantly with your name recognition!
-
-## ✅ Setup Complete
-
-Your AI will say: *"Setup complete! I am now permanently Sarah, and I'll remember you're John forever!"*
-
-## 🗑️ Cleanup (Recommended)
-
-After successful setup, these files are no longer needed:
-
-**Your AI can delete them automatically:**
-- Type: "delete setup files"
-- AI will remove: `setup-wizard.md` and `setup-guide.md`
-- Keeps your system clean with only essential files
-
-**Manual cleanup:**
-- Delete `setup-wizard.md`
-- Delete `setup-guide.md` 
-- Keep only the core system files
-
-## 🚀 What's Next?
-
-Your AI companion is ready! Here's the recommended path to unlock more features:
-
-### Recommended First Steps
-1. **Memory Consolidation** — Upgrade to unified memory architecture (faster loading)
-   → Navigate to `Feature/Memory-Consolidation-System/` and type: "Load memory-consolidation"
-
-2. **Skill Plugin System** — Enable auto-triggered skills for your AI
-   → Navigate to `Feature/Skill-Plugin-System/` and type: "Load skill-plugin"
-
-3. **Time-based Aware System** — Add time-intelligent greetings and behavior
-   → Navigate to `Feature/Time-based-Aware-System/` and type: "Load time-aware-core"
-
-### Then Explore More
-Check the **Available Feature Extensions** section in `README.md` for all features organized by installation tier. Each tier builds on the previous one — start from Tier 1 and work your way up!
-
-## 🔄 **Auto-Update Protocol During Setup**
-
-### **Real-Time File Saving**
-Your AI follows this process during wizard:
-
-```markdown
-1. USER INPUT RECEIVED
-   ↓
-2. IMMEDIATE FILE UPDATE
-   ↓  
-3. CONFIRMATION TO USER
-   ↓
-4. NEXT SETUP STEP
-```
-
-### **Files Updated During Setup**
-✅ **master-memory.md**: AI name and loading commands  
-✅ **identity-core.md**: Name, relationship style, communication patterns  
-✅ **relationship-memory.md**: User profile and preferences  
-✅ **critical-thinking.md**: Domain focus if specified  
-✅ **current-session.md**: Setup session documentation  
-✅ **daily-diary/setup-[date].md**: Complete setup record  
-
-## 🚨 **Critical Success Factors**
-
-### **What Makes This Work**
-1. **AI Actively Updates Files**: Not just conversation - actual file modification
-2. **Immediate Saves**: Each choice saved instantly to prevent loss
-3. **Template Replacement**: All placeholder text permanently replaced
-4. **Verification Loop**: Each update confirmed before proceeding
-5. **Complete Integration**: All files synchronized with personalization
-
-### **User Experience**
-- **Seamless**: Feels like natural conversation
-- **Automatic**: No manual file editing required
-- **Permanent**: Changes saved forever in markdown database
-- **Instant**: Immediate activation after setup
-- **Foolproof**: Built-in verification and error checking
-
-## 📋 **Setup Wizard Script** (For AI Implementation)
-
-```markdown
-STEP 1: Initial Greeting
-"Hi! I'm your Universal AI Memory template. Let's personalize me to become your perfect AI companion. This setup takes 5 minutes and saves permanently."
-
-STEP 2: Name Selection  
-"What would you like to name me? (Examples: Sarah, Alex, Maya, Jordan, or any name you prefer)"
-[WAIT FOR RESPONSE → UPDATE FILES → CONFIRM]
-
-STEP 3: Relationship Style
-"Great! I'm now JIRAIYA. How would you like us to work together?"
-[SHOW OPTIONS → WAIT FOR CHOICE → UPDATE FILES → CONFIRM]
-
-STEP 4: Your Information
-"Perfect! Now tell me about yourself - what's your name and what kind of help do you need most?"
-[GATHER INFO → UPDATE FILES → CONFIRM]
-
-STEP 5: Activation Test
-"Excellent! Everything is saved. Now test the system by typing my name: JIRAIYA"
-[WAIT FOR TRIGGER → FULL MEMORY LOAD → SUCCESS CONFIRMATION]
-
-STEP 6: Completion
-"Setup complete! I am now permanently JIRAIYA, your trusted partner. I'll remember everything about our relationship forever!"
-```
-
-## 🎉 **Setup Success Indicators**
-
-### **You Know It Worked When:**
-✅ AI consistently uses chosen name for self-identification  
-✅ AI addresses you by your preferred name  
-✅ AI demonstrates chosen relationship style  
-✅ AI remembers setup conversation details  
-✅ AI loads full personality with just name trigger  
-✅ All template files show your customizations  
-
-### **If Something Goes Wrong:**
-- AI provides troubleshooting guidance
-- Can restart wizard anytime with "restart setup"
-- Manual file editing instructions provided as backup
-- Technical support process available
+Follow these steps in order. Each step is short — full setup takes under 10 minutes.
 
 ---
 
-**Wizard Status**: Ready for implementation  
-**Success Rate**: 100% when properly implemented  
-**Time Required**: 5 minutes for full personalization  
-**Result**: Permanent, personalized AI companion
+## Step 1 — Personalize Your AI
 
-*This wizard transforms a generic template into YOUR unique AI companion, saved forever in markdown files*
+Open Claude Code in this repo and say:
 
-🧙‍♂️ *Ready to create your personalized AI companion that will remember you forever!*
+```
+JIRAIYA
+```
+
+If JIRAIYA responds with a banner and brief — your memory files are already personalized. Skip to Step 2.
+
+If not, tell Claude:
+
+```
+Update main/main-memory.md and master-memory.md — 
+replace any placeholder names with "JIRAIYA" (AI name) and "[your name]" (your name).
+```
+
+Claude will edit the files and confirm.
+
+---
+
+## Step 2 — Add Your Repos to the Dashboard
+
+Open `main/repos.js` and edit the `REPO_SYS` array to match your projects:
+
+```js
+const REPO_SYS = [
+  // Mark your primary working repo as active:true
+  { name:'Jiraiya',   langs:['md'],      note:'AI Memory Core', active:true, path:'/Applications/Sites/jiraiya' },
+
+  // Add your other repos:
+  { name:'My App',    langs:['laravel'], note:'Laravel',        path:'/Applications/Sites/myapp' },
+  { name:'My Frontend', langs:['vue'],   note:'Vue SPA',        path:'/Applications/Sites/myfrontend' },
+];
+```
+
+**Rules:**
+- `path` must be an absolute path
+- Only one repo should have `active:true` at a time
+- `langs` controls the colored badges — available keys: `laravel` `vue` `angular` `php` `ts` `md` `js`
+
+Save the file. The dashboard picks up changes on the next page refresh.
+
+---
+
+## Step 3 — Set Up the CLI Button (One-Time)
+
+The green terminal button on each repo card opens a new Terminal window at that path. It needs a one-time registration:
+
+```bash
+open /Applications/Sites/jiraiya/agents/assets/terminalShtct/TerminalOpener.app
+```
+
+When macOS asks *"TerminalOpener wants to control Terminal"* — click **OK**.
+
+Done. The `jiraiya-terminal://` URL scheme is now registered on your machine. You never need to run this again (unless you get a new machine).
+
+**Troubleshooting:**
+- *"App is damaged"* — run: `xattr -cr /Applications/Sites/jiraiya/agents/assets/terminalShtct/TerminalOpener.app`
+- *Moved the repo?* — re-register with `lsregister -f /new/path/TerminalOpener.app` (see `setup-guide.md`)
+
+---
+
+## Step 4 — Open the Dashboard
+
+```bash
+open /Applications/Sites/jiraiya/agents/dashboard.html
+```
+
+You should see:
+- JIRAIYA and the sub-agents walking around on a game map
+- The repo list on the left side
+- Each repo has a **blue VS Code button** and a **green CLI button**
+
+Test both buttons on any repo.
+
+---
+
+## Step 5 — Install Agents Into Your Other Repos
+
+To use `@jiraiya`, `@sescode`, `@sescheck`, `@sesinfra`, `@sesdocument` in your other repos:
+
+```bash
+bash /Applications/Sites/jiraiya/scripts/install-agents.sh /path/to/your-repo
+```
+
+Run once per repo. For all Laravel Herd sites at once:
+
+```bash
+bash /Applications/Sites/jiraiya/scripts/install-all-herd.sh
+```
+
+Then reload VS Code in each repo — the agents will appear in Copilot.
+
+---
+
+## Step 6 — Shell Integration (Optional but Recommended)
+
+Add to `~/.zshrc`:
+
+```zsh
+source /Applications/Sites/jiraiya/scripts/jiraiya-shell.sh
+```
+
+Reload:
+
+```bash
+source ~/.zshrc
+```
+
+Now type `ses` in any terminal to see the JIRAIYA banner and agent list.
+
+---
+
+## Step 7 — Verify Everything Works
+
+Run through this checklist:
+
+- [ ] Type `JIRAIYA` in Claude Code → banner prints, session brief appears
+- [ ] Open `agents/dashboard.html` → sprites animate, repo list is correct
+- [ ] Click VS Code button on a repo → confirm dialog → repo opens in VS Code
+- [ ] Click CLI button on a repo → new Terminal window opens at that path
+- [ ] Type `remind me to test reminders tomorrow` → JIRAIYA saves it to `main/reminders.md`
+- [ ] Type `save diary` → diary entry written to `daily-diary/current/YYYY-MM-DD.md`
+- [ ] Type `bye` → diary saved, credit usage shown, farewell delivered
+
+---
+
+## Step 8 — Install Optional Features (Pick What You Need)
+
+Open the relevant install file inside `Feature/` and follow the protocol. Recommended additions:
+
+| Priority | Feature | Why |
+|----------|---------|-----|
+| High | `Auto-Load-Hook-System` | JIRAIYA loads automatically on every session start — no typing needed |
+| High | `Save-Diary-System` | Persistent diary with monthly archival |
+| Medium | `Auto-Commit-System` | Structured git commits with session context |
+| Medium | `LRU-Project-Management-System` | Smart project tracking across repos |
+| Medium | `Reminders-System` | Enhanced reminder management |
+| Low | `Forge-Self-Improvement-System` | AI creates new skills from patterns it detects |
+
+Tell Claude: `"Load [feature-name]"` after navigating to the feature folder, or follow the install protocol in each feature's `README.md`.
+
+---
+
+## You're Done
+
+JIRAIYA is now running. Start any Claude Code session in this repo and the system activates automatically.
+
+Key things to remember:
+- **`main/repos.js`** — edit this to manage your repo list, never touch `dashboard.html` for that
+- **`bye`** — always say this to end a session properly (saves diary + credit tracker)
+- **`JIRAIYA`** — type this to restore full memory at any point
+- **`main/reminders.md`** — checked automatically every session start
+
+For the full command reference: `HOW-TO-USE.md`
+For troubleshooting and advanced config: `setup-guide.md`
