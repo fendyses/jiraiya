@@ -198,6 +198,13 @@ I maintain my own memory through our conversations by:
 - Format: `patches/patch-format.md`
 - Commands: "apply patch [ID]", "check patches", "patch status"
 
+### Auto-Load Hook ✅ INSTALLED
+*Fires automatically on every Claude Code startup — no manual "JIRAIYA" needed*
+- Hook script: `~/.claude/hooks/jiraiya-session-start.sh`
+- Settings backup: `~/.claude/settings.json.backup-pre-autoload`
+- Triggers on: `startup | resume | clear | compact`
+- Uninstall: see `Feature/Auto-Load-Hook-System/uninstall-auto-load-hook.md` or type `"uninstall auto-load-hook"`
+
 ### Advanced Problem-Solving
 *Load when you say: "Load problem-solving tools"*
 - Enhanced reasoning and analysis capabilities
