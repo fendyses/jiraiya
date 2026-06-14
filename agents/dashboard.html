@@ -165,9 +165,11 @@ const MSGS = {
   Jiraiya:{ walking:['> [JIRAIYA] Orchestrating sub-agents...','> Sage Mode: Sensing repo changes...','> Loading memory from main-memory.md...','> Delegating to sub-agents...','> All 4 sub-agents operational.','> Session context synced.'],idle:['> Memory consolidation...','> Awaiting task delegation.','> [IDLE] Monitoring active.'] },
   Naruto: { walking:['> Shadow Clone: Spawning threads...','> Scanning codebase...','> Wind Release: Build boosted!','> [BUILD] 1247 files, dattebayo!','> Running unit tests...'],fighting:['> !! RASENGAN !!','> Optimization INITIATED!','> [FIGHT] MAX FORCE!','> BELIEVE IT — bug eliminated!','> This is my Ninja Way!'] },
   Sasuke: { walking:['> Sharingan: Memorizing arch...','> [REVIEW] 43 issues flagged.','> Mapping dependency graph...','> OWASP scan: 0 critical.','> Analyzing merge conflicts...'],fighting:['> !! CHIDORI !!','> Amaterasu: burning dead code.','> [FIGHT] Piercing monolith!','> Flawless execution.','> Precision over force.'] },
-  Sakura: { walking:['> System health diagnostics...','> [ARCH] Planning service layer...','> Blueprint v2 drafted.','> [DESIGN] Schema finalized.','> Scaling strategy updated.'],idle:['> Monitoring vitals...','> [IDLE] All nominal.','> Awaiting arch task.'] },
-  Hinata: { walking:['> Byakugan: 360° scan...','> Gentle Fist: docs applied.','> Changelog v2.4.1...','> [DOC] Diary generated.','> PR docs updated.'],idle:['> [DOC] Report prepared.','> Docs updated.','> Logging activity...'] },
+  Sakura: { walking:['> System health diagnostics...','> [ARCH] Planning service layer...','> Blueprint v2 drafted.','> [DESIGN] Schema finalized.','> Scaling strategy updated.'],idle:['> Monitoring vitals...','> [IDLE] All nominal.','> Awaiting arch task.'],fighting:['> !! STRENGTH OF A HUNDRED !!','> Shanaro — medical punch!','> [FIGHT] Precise strike!','> Cherry Blossom Impact!','> Kai! Heal then destroy!'] },
+  Hinata: { walking:['> Byakugan: 360° scan...','> Gentle Fist: docs applied.','> Changelog v2.4.1...','> [DOC] Diary generated.','> PR docs updated.'],idle:['> [DOC] Report prepared.','> Docs updated.','> Logging activity...'],fighting:['> !! GENTLE FIST !!','> Byakugan activated!','> [FIGHT] Eight Trigrams!','> 64 Palms — chakra sealed!','> Rotation!'] },
 };
+
+const BATTLE_PAIRS=[['Naruto','Sasuke'],['Sakura','Hinata']];
 
 // ════════════════════════════════════════════════════════
 // ASSET PATHS
@@ -176,7 +178,7 @@ const CP = 'assets/kenney_toon-characters';
 const ATLASES = {
   mAdv:    { png:`${CP}/Male adventurer/Tilesheet/character_maleAdventurer_sheet.png`,    xml:`${CP}/Male adventurer/Tilesheet/character_maleAdventurer_sheet.xml`    },
   fAdv:    { png:`${CP}/Female adventurer/Tilesheet/character_femaleAdventurer_sheet.png`, xml:`${CP}/Female adventurer/Tilesheet/character_femaleAdventurer_sheet.xml` },
-  mPerson: { png:`${CP}/Male person/Tilesheet/character_malePerson_sheet.png`,             xml:`${CP}/Male person/Tilesheet/character_malePerson_sheet.xml`             },
+  mPerson: { png:`${CP}/Male person/Tilesheet/character_malePerson_jiraiya.png`,           xml:`${CP}/Male person/Tilesheet/character_malePerson_sheet.xml`             },
   fPerson: { png:`${CP}/Female person/Tilesheet/character_femalePerson_light.png`,         xml:`${CP}/Female person/Tilesheet/character_femalePerson_sheet.xml`         },
   zombie:  { png:`${CP}/Zombie/Tilesheet/character_zombie_sheet.png`,                       xml:`${CP}/Zombie/Tilesheet/character_zombie_sheet.xml`                       },
 };
@@ -241,6 +243,26 @@ function fxClash(G,x,y,t){
   G.fillStyle(0xFFFFFF,p*.85);G.fillCircle(x,y,20*p);G.fillStyle(0xCC88FF,p*.45);G.fillCircle(x,y,32*p);
   for(let i=0;i<3;i++){G.lineStyle(2,0xFFFFFF,0.3-i*.08);G.strokeCircle(x,y,8+i*10+Math.sin(t*6+i)*4);}
 }
+function fxMedicalPunch(G,x,y,t){
+  G.fillStyle(0x66FF88,0.28);G.fillCircle(x,y,22+Math.sin(t*7)*4);
+  G.fillStyle(0xFF69B4,0.7);G.fillCircle(x,y,10+Math.sin(t*9)*3);
+  G.fillStyle(0xFFFFFF,0.6);G.fillCircle(x,y,5);
+  G.lineStyle(1.5,0xFFB6C1,0.65);
+  for(let i=0;i<5;i++){const a=t*2.2+i*1.257;G.strokeCircle(x+Math.cos(a)*14,y+Math.sin(a)*9,2.5);}
+}
+function fxByakugan(G,x,y,t){
+  for(let i=0;i<3;i++){
+    const r=7+i*9+Math.sin(t*5+i)*2.5;
+    G.lineStyle(2,0xE6E6FA,0.55-i*0.14);G.strokeEllipse(x,y,r*2,r*0.75);
+  }
+  G.fillStyle(0xFFFFFF,0.88);G.fillCircle(x,y,5.5);
+  G.fillStyle(0xC8B6F0,0.4);G.fillCircle(x,y,10+Math.sin(t*8)*2);
+}
+function fxSHClash(G,x,y,t){
+  const p=0.5+Math.sin(t*8)*.5;
+  G.fillStyle(0xFFB6C1,p*.65);G.fillCircle(x,y,18*p);G.fillStyle(0xE6E6FA,p*.5);G.fillCircle(x,y,28*p);
+  for(let i=0;i<4;i++){G.lineStyle(1.5,0xFF69B4,0.35-i*.07);G.strokeCircle(x,y,6+i*8+Math.sin(t*5+i)*3);}
+}
 
 // ════════════════════════════════════════════════════════
 // AGENT NPC
@@ -252,6 +274,9 @@ class AgentNPC {
     this.atlasKey=CHAR[name].atlas; this.sc=CHAR[name].sc;
     this.state='idle'; this.cooldown=CFG.INIT_COOLDOWN;
     this.vx=0; this.vy=0; this.waitT=0;
+    this.golden = (name==='Jiraiya'); this.trailT=0;  // golden afterimage for Jiraiya
+    this.fxT=0;  // per-character walking aura timer
+    this.summoned=false;
 
     this.shadow=scene.add.graphics();
     this.sprite=scene.add.sprite(x,y,this.atlasKey,'idle').setOrigin(0.5,1).setScale(this.sc);
@@ -286,20 +311,112 @@ class AgentNPC {
       case 'post-battle': this.sprite.play(this.atlasKey+'_cheer'); break;
     }
   }
+  emitTrail(){
+    const s=this.sprite;
+    const ghost=this.scene.add.image(s.x,s.y,s.texture.key,s.frame.name)
+      .setOrigin(0.5,1).setScale(this.sc).setFlipX(s.flipX)
+      .setTint(0xFFD700).setAlpha(0.55)
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setDepth(Math.floor(s.y)-1);
+    this.scene.tweens.add({
+      targets:ghost, alpha:0, scaleX:this.sc*0.92, scaleY:this.sc*0.92,
+      duration:480, ease:'Quad.easeOut',
+      onComplete:()=>ghost.destroy()
+    });
+  }
+  // ── per-character walking aura ──────────────────────────
+  fxInterval(){
+    switch(this.name){
+      case 'Naruto': return 70;
+      case 'Sasuke': return 95;
+      case 'Sakura': return 150;
+      case 'Hinata': return 130;
+      default:       return 110;
+    }
+  }
+  emitWalkFx(){
+    const s=this.sprite;
+    const behind = s.x - (this.vx>=0?1:-1)*9;          // trail behind movement
+    const midY   = s.y - s.displayHeight*0.46;
+    const depth  = Math.floor(s.y)-1;
+    switch(this.name){
+      case 'Naruto': this.fxChakra(behind,midY,depth); break;
+      case 'Sasuke': this.fxSpark (behind,midY,depth); break;
+      case 'Sakura': this.fxPetal (behind,s.y - s.displayHeight*0.62,depth); break;
+      case 'Hinata': this.fxAura  (s.x,s.y-4,depth); break;
+    }
+  }
+  fxChakra(x,y,depth){                                  // Naruto — rising orange chakra orbs
+    const sc=this.scene;
+    for(let i=0;i<2;i++){
+      const g=sc.add.graphics().setDepth(depth).setBlendMode(Phaser.BlendModes.ADD);
+      g.fillStyle(0xFF7A1A,0.45); g.fillCircle(0,0,6);
+      g.fillStyle(0xFFD27A,0.9);  g.fillCircle(0,0,2.6);
+      g.setPosition(x+(Math.random()-0.5)*16, y+(Math.random()-0.5)*20);
+      sc.tweens.add({targets:g, y:g.y-20-Math.random()*12, alpha:0, scaleX:0.2, scaleY:0.2,
+        duration:520+Math.random()*160, ease:'Quad.easeOut', onComplete:()=>g.destroy()});
+    }
+  }
+  fxSpark(x,y,depth){                                   // Sasuke — purple/cyan electric crackle
+    const sc=this.scene;
+    const g=sc.add.graphics().setDepth(depth).setBlendMode(Phaser.BlendModes.ADD);
+    g.setPosition(x+(Math.random()-0.5)*14, y+(Math.random()-0.5)*22);
+    g.lineStyle(1.5,0x00BFFF,0.9); g.beginPath(); g.moveTo(0,0);
+    let lx=0,ly=0;
+    for(let s=0;s<3;s++){ lx+=(Math.random()-0.5)*11; ly+=(Math.random()-0.5)*11; g.lineTo(lx,ly); }
+    g.strokePath();
+    g.fillStyle(0xAA66FF,0.85); g.fillCircle(0,0,2.4);
+    sc.tweens.add({targets:g, alpha:0, duration:240+Math.random()*120, ease:'Quad.easeOut', onComplete:()=>g.destroy()});
+  }
+  fxPetal(x,y,depth){                                   // Sakura — drifting cherry-blossom petals
+    const sc=this.scene;
+    const tone=Math.random()>0.5?0xFF8FC8:0xFFC1DE;
+    const g=sc.add.graphics().setDepth(depth);
+    g.fillStyle(tone,0.92); g.fillEllipse(0,0,7,3.6);
+    g.fillStyle(0xFFFFFF,0.25); g.fillEllipse(-1,-0.6,3,1.6);
+    g.setPosition(x+(Math.random()-0.5)*18, y);
+    g.rotation=Math.random()*Math.PI;
+    const drift=(this.vx>=0?-1:1)*(10+Math.random()*18);
+    sc.tweens.add({targets:g, x:g.x+drift, y:g.y+24+Math.random()*18,
+      rotation:g.rotation+(Math.random()>0.5?1:-1)*2.6, alpha:0,
+      duration:1000+Math.random()*350, ease:'Sine.easeIn', onComplete:()=>g.destroy()});
+  }
+  fxAura(x,y,depth){                                    // Hinata — soft expanding lavender chakra
+    const sc=this.scene;
+    const ring=sc.add.graphics().setDepth(depth).setBlendMode(Phaser.BlendModes.ADD);
+    ring.setPosition(x,y); ring.lineStyle(2,0xC8B6F0,0.55); ring.strokeEllipse(0,0,14,6);
+    sc.tweens.add({targets:ring, scaleX:2.3, scaleY:2.3, alpha:0, duration:640, ease:'Quad.easeOut', onComplete:()=>ring.destroy()});
+    const w=sc.add.graphics().setDepth(depth).setBlendMode(Phaser.BlendModes.ADD);
+    w.fillStyle(0xE6E0FF,0.5); w.fillCircle(0,0,3.5);
+    w.setPosition(x+(Math.random()-0.5)*14, y-2);
+    sc.tweens.add({targets:w, y:w.y-16-Math.random()*8, alpha:0, duration:520, ease:'Quad.easeOut', onComplete:()=>w.destroy()});
+  }
   update(delta){
     this.cooldown-=delta;
     if(this.state==='walking'){
       this.sprite.x=Phaser.Math.Clamp(this.sprite.x+this.vx*delta,55,this.scene.W-55);
       this.sprite.y=Phaser.Math.Clamp(this.sprite.y+this.vy*delta,this.scene.walkMinY,this.scene.H-22);
       this.sprite.setFlipX(this.vx<0);
-      this.waitT+=delta;
-      if(this.waitT>1200+Math.random()*2600){this.vx=0;this.vy=0;this.waitT=0;this.setState('idle');}
+      if(!this.summoned){
+        this.waitT+=delta;
+        if(this.waitT>1200+Math.random()*2600){this.vx=0;this.vy=0;this.waitT=0;this.setState('idle');}
+      }
     } else if(this.state==='idle'){
       this.waitT+=delta;
-      if(this.waitT>CFG.IDLE_MIN+Math.random()*(CFG.IDLE_MAX-CFG.IDLE_MIN)){this.waitT=0;this.pickTarget();}
+      if(this.waitT>CFG.IDLE_MIN+Math.random()*(CFG.IDLE_MAX-CFG.IDLE_MIN)&&!this.summoned){this.waitT=0;this.pickTarget();}
     } else if(this.state==='post-battle'){
       this.sprite.x=Phaser.Math.Clamp(this.sprite.x+this.vx*delta,55,this.scene.W-55);
       this.sprite.y=Phaser.Math.Clamp(this.sprite.y+this.vy*delta,this.scene.walkMinY,this.scene.H-22);
+    }
+    // golden afterimage trail (Jiraiya, while moving)
+    if(this.golden && (this.state==='walking'||this.state==='post-battle')){
+      this.trailT-=delta;
+      if(this.trailT<=0){ this.emitTrail(); this.trailT=85; }
+    }
+    // per-character walking aura (Naruto/Sasuke/Sakura/Hinata, while moving)
+    if(!this.golden && (this.state==='walking'||this.state==='post-battle')){
+      this.fxT-=delta;
+      if(this.fxT<=0){ this.emitWalkFx(); this.fxT=this.fxInterval(); }
     }
     this.syncUI();
     this.bubbleT-=delta;
@@ -397,10 +514,15 @@ class GameScene extends Phaser.Scene {
     ];
     this.npcs=starts.map(p=>new AgentNPC(this,p.name,p.x,p.y));
 
-    this.battleActive=false; this.battleSecs=0;
+    this.battleActive=false; this.battleSecs=0; this.fightA=null; this.fightB=null;
     this.postPhase=false; this.postTimer=0;
     this.fxGfx=this.add.graphics().setDepth(8000);
     this.cardTimer=0;
+    // summon event
+    this.summonActive=false; this.summonPhase='idle'; this.summonT=0; this.summonGatherT=0;
+    this.summonTimer=55000+Math.random()*35000;
+    // clouds
+    this.buildClouds();
   }
 
   buildAnims(){
@@ -503,59 +625,218 @@ class GameScene extends Phaser.Scene {
   }
 
   update(time,delta){
-    const naruto=this.npcs.find(a=>a.name==='Naruto');
-    const sasuke=this.npcs.find(a=>a.name==='Sasuke');
+    // drift clouds
+    this.clouds.forEach(c=>{ c.x+=c.spd*delta; if(c.x>this.W+130) c.x=-130; });
 
     this.npcs.forEach(a=>{
       if(a.state!=='fighting') a.update(delta);
       else {a.termT-=delta;if(a.termT<=0){a.pushLine();a.termT=700+Math.random()*500;}a.syncUI();}
     });
 
-    if(!this.battleActive&&!this.postPhase){
-      const dx=naruto.x-sasuke.x,dy=naruto.y-sasuke.y;
-      if(Math.sqrt(dx*dx+dy*dy)<CFG.BATTLE_DIST&&naruto.cooldown<=0&&sasuke.cooldown<=0
-         &&naruto.state!=='fighting'&&sasuke.state!=='fighting'
-         &&naruto.state!=='post-battle'&&sasuke.state!=='post-battle'){
-        this.startBattle(naruto,sasuke);
+    // summon countdown
+    if(!this.battleActive&&!this.postPhase&&!this.summonActive){
+      this.summonTimer-=delta;
+      if(this.summonTimer<=0) this.triggerSummon();
+    }
+    if(this.summonActive) this.updateSummon(delta,time);
+
+    // battle check — all pairs
+    if(!this.battleActive&&!this.postPhase&&!this.summonActive){
+      for(const [na,nb] of BATTLE_PAIRS){
+        const a=this.npcs.find(x=>x.name===na),b=this.npcs.find(x=>x.name===nb);
+        if(!a||!b) continue;
+        const dx=a.x-b.x,dy=a.y-b.y;
+        if(Math.sqrt(dx*dx+dy*dy)<CFG.BATTLE_DIST&&a.cooldown<=0&&b.cooldown<=0
+           &&a.state!=='fighting'&&b.state!=='fighting'
+           &&a.state!=='post-battle'&&b.state!=='post-battle'
+           &&!a.summoned&&!b.summoned){
+          this.startBattle(a,b); break;
+        }
       }
     }
     if(this.battleActive){
       this.battleSecs-=delta/1000;
       const frac=Math.max(0,this.battleSecs/CFG.BATTLE_SECS);
       document.getElementById('battleTimerBar').style.width=(frac*100)+'%';
-      document.getElementById('bCount').textContent=Math.max(0,Math.ceil(this.battleSecs));
-      this.drawBattleFX(naruto,sasuke,time);
-      if(this.battleSecs<=0) this.endBattle(naruto,sasuke);
+      const bEl=document.getElementById('bCount'); if(bEl) bEl.textContent=Math.max(0,Math.ceil(this.battleSecs));
+      this.drawBattleFX(this.fightA,this.fightB,time);
+      if(this.battleSecs<=0) this.endBattle(this.fightA,this.fightB);
     }
     if(this.postPhase){this.postTimer-=delta;if(this.postTimer<=0){this.postPhase=false;this.fxGfx.clear();}}
     this.cardTimer+=delta;
     if(this.cardTimer>500){this.npcs.forEach(a=>refreshCard(a));this.cardTimer=0;}
   }
 
-  startBattle(naruto,sasuke){
+  startBattle(a,b){
+    this.fightA=a; this.fightB=b;
     this.battleActive=true; this.battleSecs=CFG.BATTLE_SECS;
-    const mx=(naruto.x+sasuke.x)/2,my=Math.max(naruto.y,sasuke.y);
-    naruto.lockForBattle(mx-58,my,true); sasuke.lockForBattle(mx+58,my,false);
+    const mx=(a.x+b.x)/2,my=Math.max(a.y,b.y);
+    a.lockForBattle(mx-58,my,true); b.lockForBattle(mx+58,my,false);
+    document.getElementById('battleBanner').innerHTML=`⚔ ${a.name.toUpperCase()} vs ${b.name.toUpperCase()} &nbsp;—&nbsp; <span id="bCount">20</span>s`;
     document.getElementById('battleBanner').style.display='block';
     document.getElementById('battleTimerWrapper').style.display='block';
     this.cameras.main.shake(150,0.005);
-    refreshCard(naruto); refreshCard(sasuke);
+    refreshCard(a); refreshCard(b);
   }
-  endBattle(naruto,sasuke){
+  endBattle(a,b){
     this.battleActive=false; this.postPhase=true; this.postTimer=CFG.POST_BATTLE_MS;
     this.fxGfx.clear(); this.cameras.main.shake(400,0.015); this.cameras.main.flash(300,255,255,255,false);
     document.getElementById('battleBanner').style.display='none';
     document.getElementById('battleTimerWrapper').style.display='none';
-    naruto.releaseFromBattle(-1); sasuke.releaseFromBattle(1);
-    refreshCard(naruto); refreshCard(sasuke);
+    a.releaseFromBattle(-1); b.releaseFromBattle(1);
+    refreshCard(a); refreshCard(b);
   }
-  drawBattleFX(naruto,sasuke,time){
+  drawBattleFX(a,b,time){
     const G=this.fxGfx; G.clear(); const t=time*0.003;
-    const cx=(naruto.x+sasuke.x)/2,cy=(naruto.y+sasuke.y)/2-35;
-    fxRasengan(G,naruto.x+26,naruto.y-32,t);
-    fxChidori(G,sasuke.x-26,sasuke.y-32,t);
-    fxClash(G,cx,cy,t);
-    if(Math.sin(t*10)>0.7){G.fillStyle(0xFF6B1A,0.04);G.fillRect(0,0,this.W,this.H);}
+    const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2-35;
+    const isNS=(a.name==='Naruto'||a.name==='Sasuke');
+    if(isNS){
+      const nr=a.name==='Naruto'?a:b, sk=a.name==='Sasuke'?a:b;
+      fxRasengan(G,nr.x+26,nr.y-32,t); fxChidori(G,sk.x-26,sk.y-32,t); fxClash(G,cx,cy,t);
+      if(Math.sin(t*10)>0.7){G.fillStyle(0xFF6B1A,0.04);G.fillRect(0,0,this.W,this.H);}
+    } else {
+      const sa=a.name==='Sakura'?a:b, hi=a.name==='Hinata'?a:b;
+      fxMedicalPunch(G,sa.x+22,sa.y-32,t); fxByakugan(G,hi.x-22,hi.y-32,t); fxSHClash(G,cx,cy,t);
+      if(Math.sin(t*8)>0.7){G.fillStyle(0xFF69B4,0.03);G.fillRect(0,0,this.W,this.H);}
+    }
+  }
+
+  buildClouds(){
+    this.clouds=[];
+    const skyH=this.walkMinY*0.6;
+    const blobs=[[0,0,40,19],[26,-8,28,15],[-26,-6,24,13],[44,2,20,11]];
+    for(let i=0;i<6;i++){
+      const g=this.add.graphics().setDepth(-60);
+      const alpha=0.065+Math.random()*0.065;
+      blobs.forEach(([bx,by,bw,bh])=>{ g.fillStyle(0xFFFFFF,alpha); g.fillEllipse(bx,by,bw*2,bh*2); });
+      g.fillStyle(0xFFFFFF,alpha*0.5); g.fillEllipse(0,-5,32,18);
+      const sc=0.6+Math.random()*0.9; g.setScale(sc);
+      g.x=Math.random()*this.W; g.y=14+Math.random()*skyH;
+      g.spd=0.005+Math.random()*0.013;
+      this.clouds.push(g);
+    }
+  }
+
+  triggerSummon(){
+    if(this.battleActive||this.summonActive) return;
+    this.summonActive=true; this.summonPhase='gathering';
+    this.summonT=0; this.summonGatherT=0;
+    const cx=this.W/2, cy=this.walkMinY+(this.H-this.walkMinY)*0.42;
+    this.summonCenter={x:cx,y:cy};
+    this.npcs.forEach(a=>{
+      a.summoned=true;
+      const dx=cx-a.x,dy=cy-a.y,d=Math.sqrt(dx*dx+dy*dy)||1;
+      const spd=ADEF[a.name].speed/1000*1.3;
+      a.vx=(dx/d)*spd; a.vy=(dy/d)*spd; a.waitT=0;
+      if(a.state!=='fighting') a.setState('walking');
+    });
+    document.getElementById('battleBanner').innerHTML='✦ JIRAIYA GATHERS THE TEAM ✦';
+    document.getElementById('battleBanner').style.display='block';
+  }
+  updateSummon(delta,time){
+    this.summonT+=delta; this.summonGatherT+=delta;
+    const {x:cx,y:cy}=this.summonCenter;
+    if(this.summonPhase==='gathering'){
+      this.npcs.forEach(a=>{
+        if(!a.summoned) return;
+        const dx=cx-a.x,dy=cy-a.y,d=Math.sqrt(dx*dx+dy*dy)||1;
+        if(d>30){ const spd=ADEF[a.name].speed/1000*1.3; a.vx=(dx/d)*spd; a.vy=(dy/d)*spd; }
+      });
+      const allNear=this.npcs.every(a=>Math.hypot(a.x-cx,a.y-cy)<50);
+      if(allNear||this.summonGatherT>6500){
+        this.summonPhase='burst'; this.summonT=0;
+        this.npcs.forEach(a=>{a.vx=0;a.vy=0;a.setState('post-battle');});
+        // ── impact sequence ──────────────────────────────
+        this.cameras.main.shake(700,0.032);
+        this.cameras.main.flash(500,255,215,0,false);          // gold flash
+        this.time.delayedCall(720,()=>this.cameras.main.shake(350,0.018));
+        this.time.delayedCall(1100,()=>this.cameras.main.flash(250,255,255,255,false)); // white afterburn
+        this.time.delayedCall(1800,()=>this.cameras.main.shake(200,0.010));
+        document.getElementById('battleBanner').innerHTML='✦ SAGE ART — TEAM ASSEMBLED ✦';
+      }
+    } else if(this.summonPhase==='burst'){
+      const G=this.fxGfx; G.clear();
+      const BURST=3400;
+      const p=Math.min(1,this.summonT/BURST);   // 0→1 over 3.4 s
+
+      // ── Stage 1 (p 0→0.25): Blinding core explosion ────
+      if(p<0.28){
+        const ep=p/0.28;
+        const coreR=(1-ep)*75;
+        G.fillStyle(0xFFFFFF,Math.max(0,(1-ep)*0.95)); G.fillCircle(cx,cy,coreR);
+        G.fillStyle(0xFFE55C,Math.max(0,(1-ep)*0.75)); G.fillCircle(cx,cy,coreR*1.55);
+        G.fillStyle(0xFFD700,Math.max(0,(1-ep)*0.45)); G.fillCircle(cx,cy,coreR*2.2);
+        // screen-wide gold tint during impact
+        G.fillStyle(0xFFD700,(0.28-p)/0.28*0.10); G.fillRect(0,0,this.W,this.H);
+      }
+
+      // ── Stage 2 (p 0.02→0.55): 4 fast shockwave rings ─
+      for(let i=0;i<4;i++){
+        const sp=Math.max(0,(p-i*0.045)/0.5);
+        if(sp>0&&sp<1){
+          const r=sp*(this.W*0.72);
+          const al=(1-sp)*(0.72-i*0.12);
+          if(al>0.01){
+            G.lineStyle(4-i*0.5,0xFFD700,al);         G.strokeEllipse(cx,cy,r*2,r*0.62);
+            G.lineStyle(2,0xFFFFFF,al*0.45);            G.strokeEllipse(cx,cy,r*2*0.97,r*0.62*0.97);
+          }
+        }
+      }
+
+      // ── Stage 3 (p 0.08→1.0): 14 radial gold beams ────
+      const beamFade=p<0.12?(p-0.08)/0.04:Math.max(0,1-(p-0.12)/0.76);
+      if(beamFade>0.01){
+        const maxR=Math.min(1,p*2.2)*160;
+        for(let i=0;i<14;i++){
+          const a=i/14*Math.PI*2;
+          const thick=i%2===0?3.5:1.5;
+          const al=beamFade*(i%2===0?0.75:0.4);
+          G.lineStyle(thick,i%2===0?0xFFD700:0xFFF5B0,al);
+          G.beginPath(); G.moveTo(cx,cy);
+          G.lineTo(cx+Math.cos(a)*maxR, cy+Math.sin(a)*maxR*0.52);
+          G.strokePath();
+        }
+      }
+
+      // ── Stage 4 (p 0.18→1.0): 8 cascading concentric rings
+      for(let i=0;i<8;i++){
+        const rp=Math.max(0,(p-0.18-i*0.035)/0.65);
+        if(rp>0){
+          const r=(8+i*15)+rp*100;
+          const al=Math.max(0,(1-rp)*0.58-i*0.055);
+          if(al>0.01){
+            G.lineStyle(i<3?3:2,i%2===0?0xFFD700:0xFFF5CC,al);
+            G.strokeEllipse(cx,cy,r*2,r*0.68);
+          }
+        }
+      }
+
+      // ── Stage 5 (p 0.12→0.88): per-character colour auras
+      if(p>0.12&&p<0.88){
+        const ap=p<0.28?(p-0.12)/0.16:Math.max(0,1-(p-0.55)/0.33);
+        this.npcs.forEach(a=>{
+          const hy=a.y-a.sprite.displayHeight*0.5;
+          G.fillStyle(a.intColor,ap*0.20);  G.fillCircle(a.x,hy,34);
+          G.lineStyle(2.5,a.intColor,ap*0.75); G.strokeCircle(a.x,hy,26);
+          G.lineStyle(1.2,a.intColor,ap*0.35); G.strokeCircle(a.x,hy,40);
+        });
+      }
+
+      // ── Stage 6 (p 0.5→1.0): lingering gold pulse on centre
+      if(p>0.5){
+        const lp=(p-0.5)/0.5;
+        const pulse=0.5+Math.sin(this.summonT*0.018)*0.5;
+        G.lineStyle(2,0xFFD700,Math.max(0,(1-lp)*0.45*pulse));
+        G.strokeCircle(cx,cy,18+pulse*12);
+      }
+
+      if(this.summonT>=BURST){
+        this.summonActive=false; this.fxGfx.clear();
+        document.getElementById('battleBanner').style.display='none';
+        this.npcs.forEach(a=>{ a.summoned=false; a.cooldown=0; a.pickTarget(); });
+        this.summonTimer=55000+Math.random()*35000;
+      }
+    }
   }
 }
 
@@ -642,7 +923,7 @@ const REPO_SYS = [
   // ── Other systems under /Applications/Sites ──
   { name:'Credit',        langs:['laravel','vue'], note:'Laravel + Vite', path:'/Applications/Sites/credit' },
   { name:'Frontend Aduan',langs:['laravel'],       note:'Laravel',        path:'/Applications/Sites/frontend-aduan' },
-  { name:'HEP Web',       langs:['laravel','vue'], note:'Laravel + Vite', path:'/Applications/Sites/hepweb' },
+  { name:'My HEP',       langs:['laravel','vue'], note:'Laravel + Vite', path:'/Applications/Sites/hepweb' },
   { name:'iCan2u',        langs:['laravel'],       note:'Laravel',        path:'/Applications/Sites/ican2u' },
   { name:'Lara1',         langs:['laravel'],       note:'Laravel',        path:'/Applications/Sites/lara1' },
   { name:'Result EJPP',   langs:['vue'],           note:'Vue SPA',        path:'/Applications/Sites/result-ejpp' },
