@@ -43,12 +43,14 @@
     @keyframes fadeIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
     .cursor{display:inline-block;width:5px;height:9px;background:currentColor;vertical-align:text-bottom;animation:blink 1s step-end infinite;margin-left:1px}
     @keyframes blink{50%{opacity:0}}
-    .repo-item{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:7px;padding:7px 9px;transition:all .25s ease;cursor:pointer}
-    .repo-item:hover{background:rgba(58,160,255,.08);transform:translateX(2px);border-color:rgba(58,160,255,.4)}
-    .repo-item:active{transform:translateX(2px) scale(.98)}
-    .repo-item .vscode-ico{opacity:0;transition:opacity .2s ease}
-    .repo-item:hover .vscode-ico{opacity:1}
+    .repo-item{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:7px;padding:7px 9px;transition:all .25s ease;cursor:default}
+    .repo-item:hover{background:rgba(58,160,255,.04);border-color:rgba(58,160,255,.2)}
     .repo-item.active{border-color:rgba(212,160,23,.5);background:rgba(212,160,23,.08)}
+    .repo-btn{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);cursor:pointer;transition:all .18s ease;flex-shrink:0}
+    .repo-btn:hover{transform:scale(1.12)}
+    .repo-btn.vs:hover{background:rgba(58,160,255,.2);border-color:rgba(58,160,255,.5);box-shadow:0 0 8px rgba(58,160,255,.3)}
+    .repo-btn.cli:hover{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.45);box-shadow:0 0 8px rgba(74,222,128,.25)}
+    .repo-btn.cli.copied{background:rgba(74,222,128,.25);border-color:rgba(74,222,128,.7)}
     .lang-badge{font-family:'Share Tech Mono',monospace;font-size:8px;padding:1px 5px;border-radius:3px;letter-spacing:.5px;white-space:nowrap}
     .lang-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
     #repoList{overflow-y:auto;min-height:0;max-height:352px;padding-right:4px}
@@ -1013,29 +1015,41 @@ function showConfirm(repo, onYes){
   ov.onclick=e=>{ if(e.target===ov) close(); };
   document.onkeydown=e=>{ if(e.key==='Escape')close(); if(e.key==='Enter'){close();onYes();} };
 }
+function openCLI(repo, btn){
+  btn.classList.add('copied');
+  setTimeout(()=>btn.classList.remove('copied'), 900);
+  window.location.href='jiraiya-terminal://'+repo.path;
+}
 function buildRepoPanel(){
   const list=document.getElementById('repoList');
   document.getElementById('repoCount').textContent=REPO_SYS.length+' repos';
   REPO_SYS.forEach(r=>{
     const el=document.createElement('div');
     el.className='repo-item flex flex-col gap-1.5'+(r.active?' active':'');
-    el.title='Open in VS Code → '+r.path;
-    if(r.path) el.addEventListener('click',()=>openInVSCode(r));
     const badges=r.langs.map(k=>{
       const L=LANG[k]||{label:k,color:'#888'};
       return `<span class="lang-badge flex items-center gap-1" style="background:${L.color}22;color:${L.color};border:1px solid ${L.color}55">
                 <span class="lang-dot" style="background:${L.color}"></span>${L.label}</span>`;
     }).join('');
     el.innerHTML=`
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5">
         <span class="font-bold text-xs tracking-wide truncate" style="color:${r.active?'#D4A017':'#fff'}">${r.name}</span>
-        ${r.active?'<span class="mono text-[8px] text-yellow-500/70 ml-auto">● ACTIVE</span>':'<span class="vscode-ico ml-auto" title="Open in VS Code">'+VSCODE_SVG+'</span>'}
+        ${r.active?'<span class="mono text-[8px] text-yellow-500/70 ml-1">● ACTIVE</span>':''}
+        <div class="flex gap-1 ml-auto flex-shrink-0">
+          <button class="repo-btn vs" title="Open in VS Code">${VSCODE_SVG}</button>
+          <button class="repo-btn cli" title="Open CLI here">${CLI_SVG}</button>
+        </div>
       </div>
       <div class="flex flex-wrap gap-1">${badges}</div>`;
+    const vsBtn=el.querySelector('.repo-btn.vs');
+    const cliBtn=el.querySelector('.repo-btn.cli');
+    vsBtn.addEventListener('click',e=>{ e.stopPropagation(); openInVSCode(r); });
+    cliBtn.addEventListener('click',e=>{ e.stopPropagation(); openCLI(r,cliBtn); });
     list.appendChild(el);
   });
 }
-const VSCODE_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="opacity:.5"><path d="M17 2 7 11l-4-3-2 1 4 4-4 4 2 1 4-3 10 9 5-2V4l-5-2Zm1 5v10l-7-5 7-5Z" fill="#3aa0ff"/></svg>';
+const VSCODE_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M17 2 7 11l-4-3-2 1 4 4-4 4 2 1 4-3 10 9 5-2V4l-5-2Zm1 5v10l-7-5 7-5Z" fill="#3aa0ff" opacity=".75"/></svg>';
+const CLI_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="18" rx="2.5" stroke="#4ade80" stroke-width="1.8" opacity=".75"/><path d="M7 8.5l4 3.5-4 3.5M13 15.5h4" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/></svg>';
 
 // ════════════════════════════════════════════════════════
 // BOOT
