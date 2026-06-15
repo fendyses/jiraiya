@@ -1,1 +1,0 @@
-../../.github/agents/sescode.agent.md

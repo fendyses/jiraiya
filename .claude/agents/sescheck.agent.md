@@ -1,1 +1,0 @@
-../../.github/agents/sescheck.agent.md
