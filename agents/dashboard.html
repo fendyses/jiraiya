@@ -347,6 +347,11 @@ class AgentNPC {
 
     this.shadow=scene.add.graphics();
     this.sprite=scene.add.sprite(x,y,this.atlasKey,'idle').setOrigin(0.5,1).setScale(this.sc);
+    this.dragging=false;
+    this.sprite.setInteractive();
+    scene.input.setDraggable(this.sprite);
+    this.sprite.on('pointerover',()=>scene.game.canvas.style.cursor='grab');
+    this.sprite.on('pointerout',()=>{ if(!this.dragging) scene.game.canvas.style.cursor='default'; });
     this.nametag=scene.add.text(x,y,name,{fontSize:'9px',fontFamily:'"Share Tech Mono",monospace',color:'#FFFFFF',backgroundColor:'#000000CC',padding:{x:3,y:1}}).setOrigin(0.5,1);
     this.hpGfx=scene.add.graphics();
 
@@ -459,6 +464,7 @@ class AgentNPC {
     sc.tweens.add({targets:w, y:w.y-16-Math.random()*8, alpha:0, duration:520, ease:'Quad.easeOut', onComplete:()=>w.destroy()});
   }
   update(delta){
+    if(this.dragging){this.syncUI();return;}
     this.cooldown-=delta;
     if(this.state==='walking'){
       this.sprite.x=Phaser.Math.Clamp(this.sprite.x+this.vx*delta,55,this.scene.W-55);
@@ -554,6 +560,11 @@ class PetNPC {
 
     this.shadow=scene.add.graphics();
     this.sprite=scene.add.image(x,y,def.key).setOrigin(0.5,1).setScale(def.scale);
+    this.dragging=false;
+    this.sprite.setInteractive();
+    scene.input.setDraggable(this.sprite);
+    this.sprite.on('pointerover',()=>scene.game.canvas.style.cursor='grab');
+    this.sprite.on('pointerout',()=>{ if(!this.dragging) scene.game.canvas.style.cursor='default'; });
     this.pickTarget();
   }
   pickTarget(){
@@ -566,6 +577,7 @@ class PetNPC {
     this.walkDist=d; this.walked=0; this.isWalking=true;
   }
   update(delta){
+    if(this.dragging) return;
     this.bobT+=delta*0.006;
     if(this.isWalking){
       this.baseX=Phaser.Math.Clamp(this.baseX+this.vx*delta,60,this.scene.W-60);
@@ -628,6 +640,42 @@ class GameScene extends Phaser.Scene {
       {name:'Hinata', x:W*.83,y:wy+45},
     ];
     this.npcs=starts.map(p=>new AgentNPC(this,p.name,p.x,p.y));
+
+    // ── Drag-to-place ──
+    this.input.on('dragstart',(pointer,go)=>{
+      const npc=this.npcs.find(a=>a.sprite===go);
+      const pet=!npc&&this.pets&&this.pets.find(p=>p.sprite===go);
+      const t=npc||pet; if(!t) return;
+      t.dragging=true;
+      if(npc){ npc.summoned=true; npc.vx=0; npc.vy=0; npc.setState('idle'); }
+      else { pet.isWalking=false; pet.vx=0; pet.vy=0; }
+      t.sprite.setDepth(9999);
+      this.game.canvas.style.cursor='grabbing';
+    });
+    this.input.on('drag',(pointer,go,dragX,dragY)=>{
+      const npc=this.npcs.find(a=>a.sprite===go);
+      const pet=!npc&&this.pets&&this.pets.find(p=>p.sprite===go);
+      if(npc){
+        npc.sprite.setPosition(
+          Phaser.Math.Clamp(dragX,55,this.W-55),
+          Phaser.Math.Clamp(dragY,this.walkMinY,this.H-22)
+        );
+      } else if(pet){
+        pet.baseX=Phaser.Math.Clamp(dragX,60,this.W-60);
+        pet.baseY=Phaser.Math.Clamp(dragY,this.walkMinY+10,this.H-24);
+        pet.sprite.setPosition(pet.baseX,pet.baseY);
+      }
+    });
+    this.input.on('dragend',(pointer,go)=>{
+      const npc=this.npcs.find(a=>a.sprite===go);
+      const pet=!npc&&this.pets&&this.pets.find(p=>p.sprite===go);
+      const t=npc||pet; if(!t) return;
+      t.dragging=false;
+      t.sprite.setDepth(Math.floor(t.sprite.y));
+      this.game.canvas.style.cursor='default';
+      if(npc){ npc.summoned=false; npc.pickTarget(); }
+      else { pet.pickTarget(); }
+    });
 
     this.battleActive=false; this.battleSecs=0; this.fightA=null; this.fightB=null;
     this.postPhase=false; this.postTimer=0;
