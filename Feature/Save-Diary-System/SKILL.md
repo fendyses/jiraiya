@@ -62,13 +62,19 @@ When this skill activates, output:
   - Next steps identified
 - [ ] Confirm diary entry saved with timestamp
 
+### Step 5: Regenerate Dashboard Diary Snapshot (MANDATORY — never skip)
+- [ ] Run `python3 daily-diary/regenerate-diary-data.py` from the repo root
+- [ ] This rebuilds `daily-diary/diary-data.js` from every `current/*.md` + `archived/*/*.md` file
+- [ ] Required because `agents/dashboard.html`'s in-game diary book reads only this generated snapshot, never the `.md` files directly — skipping this step leaves the book showing stale/wrong content (including old timestamps) even after the `.md` file is fixed
+
 ## Mandatory Rules
 1. **Always APPEND** — never overwrite existing diary entries
 2. **One file per day** — multiple entries separated by `---`
-3. **Use real timestamps** — get current time via platform-appropriate command (`date +"%H:%M"` on bash, `Get-Date` on PowerShell, `time /T` on CMD)
+3. **Use real timestamps — never estimate or guess.** Before writing ANY `🕐 HH:MM GMT+8` or `Logged by ... ~HH:MM GMT+8` line, run the actual system clock command (`date +"%H:%M"` on bash, `Get-Date` on PowerShell, `time /T` on CMD) and use that output verbatim. Do this separately for every entry in a session — never reuse or increment a time from an earlier entry, and never write a time that is later than what the clock just returned. The laptop's clock is already Malaysia time (GMT+8), so no conversion is needed — just read it and use it.
 4. **Archive first** — run monthly archive check before every write
 5. **Evidence-based** — document actual session content, not generic summaries
 6. **Follow existing protocol** — use `daily-diary/daily-diary-protocol.md` for entry structure
+7. **Always regenerate `diary-data.js` after writing or editing any diary `.md` file** — run `python3 daily-diary/regenerate-diary-data.py`. This applies to new entries, corrections, and archival moves alike.
 
 ## Edge Cases
 
@@ -82,3 +88,4 @@ When this skill activates, output:
 
 ## Level History
 - **Lv.1** — Base: 4-step diary write protocol with monthly archival, append-only entries, session memory update, and existing protocol reference for entry format.
+- **Lv.2** — Added mandatory real-clock timestamps (rule 3) and a mandatory Step 5 that regenerates `daily-diary/diary-data.js` via `regenerate-diary-data.py` after every diary write, so the in-game dashboard diary book never goes stale.
