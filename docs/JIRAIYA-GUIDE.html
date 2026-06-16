@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>JIRAIYA Guide Book</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    color: #2a1b3d;
+    background: #fff;
+  }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 14mm 16mm;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  h1, h2, h3 { margin: 0; }
+  p { margin: 0; }
+
+  /* ---------- COVER ---------- */
+  .cover {
+    padding: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, #4a2a7a 0%, #1a0e2e 55%, #0d0716 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .cover .glow {
+    position: absolute;
+    top: -120px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(168,107,255,0.55) 0%, rgba(168,107,255,0) 70%);
+    z-index: 0;
+  }
+  .cover .kicker-top {
+    position: relative; z-index: 2;
+    margin-top: 16mm;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #c9a3ff;
+  }
+  .cover h1 {
+    position: relative; z-index: 2;
+    margin-top: 8px;
+    font-size: 52px;
+    letter-spacing: 10px;
+    font-weight: 800;
+    background: linear-gradient(90deg,#e8c8ff,#a86bff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .cover .sub {
+    position: relative; z-index: 2;
+    margin-top: 6px;
+    font-size: 14px;
+    color: #d9c4ff;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .cover .portrait-frame {
+    position: relative; z-index: 2;
+    margin-top: 14px;
+    width: 138mm;
+    height: 168mm;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(200,160,255,0.35);
+    box-shadow: 0 0 60px rgba(123,47,247,0.45), 0 20px 50px rgba(0,0,0,0.5);
+    background: #0d0716;
+  }
+  .cover .portrait-frame img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    filter: contrast(1.04) saturate(1.05);
+  }
+  .cover .portrait-frame .fade {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 45%;
+    background: linear-gradient(to top, #0d0716 0%, rgba(13,7,22,0) 100%);
+  }
+  .cover .tag {
+    position: relative; z-index: 2;
+    margin-top: 14px;
+    font-size: 12px;
+    color: #b497e0;
+    max-width: 440px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .cover .meta {
+    position: relative; z-index: 2;
+    margin-top: auto;
+    margin-bottom: 10mm;
+    font-size: 10px;
+    color: #8a6bb0;
+    letter-spacing: 1px;
+  }
+
+  /* ---------- SECTION HEADER ---------- */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 3px solid #7b2ff7;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+  .section-head .num {
+    font-size: 34px;
+    font-weight: 800;
+    color: #7b2ff7;
+  }
+  .section-head h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1a0e2e;
+  }
+  .section-head .kicker {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #9d6fe0;
+    display: block;
+  }
+  .page-foot {
+    position: absolute;
+    bottom: 8mm;
+    left: 16mm;
+    right: 16mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: #aaa;
+    border-top: 1px solid #eee;
+    padding-top: 6px;
+  }
+
+  /* ---------- OVERVIEW / FLOW ---------- */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 28px 0;
+  }
+  .flow .step {
+    flex: 1;
+    text-align: center;
+    background: #f6effe;
+    border: 1px solid #e2cdfb;
+    border-radius: 12px;
+    padding: 14px 8px;
+    position: relative;
+  }
+  .flow .step .ic { font-size: 26px; }
+  .flow .step .t { font-size: 11px; font-weight: 700; margin-top: 6px; color: #4a2a7a; }
+  .flow .step .d { font-size: 9px; color: #6b5a8a; margin-top: 4px; }
+  .flow .arrow { font-size: 18px; color: #c0a3ec; padding: 0 4px; }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .card {
+    background: #faf7ff;
+    border: 1px solid #e6d9f7;
+    border-left: 5px solid #7b2ff7;
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .card h3 { font-size: 12.5px; color: #3a1c5e; }
+  .card p { font-size: 10px; color: #5b4a78; margin-top: 5px; line-height: 1.4; }
+
+  .stat-row { display: flex; gap: 14px; margin-top: 18px; }
+  .stat {
+    flex: 1;
+    background: linear-gradient(160deg,#3a1c5e,#7b2ff7);
+    color: #fff;
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat .n { font-size: 26px; font-weight: 800; }
+  .stat .l { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.85; margin-top: 4px; }
+
+  /* ---------- TABLES ---------- */
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 9.5px; }
+  th {
+    background: #3a1c5e; color: #fff; text-align: left;
+    padding: 6px 8px; font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  td { padding: 6px 8px; border-bottom: 1px solid #ecdffb; vertical-align: top; }
+  tr:nth-child(even) td { background: #faf7ff; }
+  .badge {
+    display: inline-block; font-size: 8px; font-weight: 700;
+    padding: 2px 6px; border-radius: 10px; color: #fff;
+  }
+
+  /* category colors */
+  .c-session { background:#7b2ff7; }
+  .c-memory { background:#2f8f6f; }
+  .c-project { background:#c98a1f; }
+  .c-quality { background:#c23b5a; }
+  .c-creative { background:#1f7fc9; }
+  .c-hook { background:#5a5a8a; }
+  .c-auto { background:#8a3fa0; }
+
+  .legend { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  .legend span { font-size: 9px; }
+
+  /* feature grid cards (compact, 3 cols) */
+  .feat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .feat-card {
+    background: #fff;
+    border: 1px solid #e6d9f7;
+    border-radius: 7px;
+    padding: 8px 9px;
+    border-top: 4px solid #7b2ff7;
+  }
+  .feat-card .name { font-size: 9.5px; font-weight: 800; color: #2a1b3d; }
+  .feat-card .purpose { font-size: 8px; color: #5b4a78; margin-top: 3px; line-height: 1.3; }
+  .feat-card .trigger { font-size: 7.5px; color: #8a6bb0; margin-top: 4px; font-style: italic; }
+
+  /* memory model */
+  .model-col { display: flex; gap: 12px; margin-top: 20px; }
+  .model-box {
+    flex: 1;
+    border-radius: 10px;
+    padding: 14px;
+    color: #fff;
+  }
+  .model-box h3 { font-size: 12px; }
+  .model-box ul { margin: 8px 0 0 16px; padding: 0; font-size: 9px; line-height: 1.6; }
+  .model-box.m1 { background: linear-gradient(160deg,#2f8f6f,#5fcf9f); }
+  .model-box.m2 { background: linear-gradient(160deg,#7b2ff7,#a86bff); }
+  .model-box.m3 { background: linear-gradient(160deg,#c98a1f,#e8b94f); }
+
+  .gap-item {
+    background: #fff5f5; border-left: 5px solid #c23b5a; border-radius: 6px;
+    padding: 10px 12px; margin-bottom: 10px; font-size: 10px; color: #5b2a3a;
+  }
+  .gap-item b { color: #c23b5a; }
+</style>
+</head>
+<body>
+
+<!-- ============ PAGE 1: COVER ============ -->
+<div class="page cover">
+  <div class="glow"></div>
+  <div class="kicker-top">AI Memory &amp; Control System</div>
+  <h1>JIRAIYA</h1>
+  <div class="sub">Guide Book</div>
+  <div class="portrait-frame">
+    <img src="jiraiya-cover.png" alt="Jiraiya">
+    <div class="fade"></div>
+  </div>
+  <div class="tag">A persistent AI companion built on Claude Code: 40 feature modules, an auto-trigger skill layer, and a layered memory architecture that survives across sessions.</div>
+  <div class="meta">Generated for Fendy · saifuleffendy@uitm.edu.my · 2026-06-16</div>
+</div>
+
+<!-- ============ PAGE 2: OVERVIEW ============ -->
+<div class="page">
+  <div class="section-head">
+    <span class="num">01</span>
+    <div><span class="kicker">Overview</span><h2>What JIRAIYA Is</h2></div>
+  </div>
+
+  <p style="font-size:11px; color:#4a3a68; line-height:1.6;">
+    JIRAIYA is a memory-first orchestration layer on top of Claude Code. Instead of starting every
+    session blank, it loads identity, relationship history, open reminders, and project state from
+    a set of markdown files — then keeps a library of 40 feature modules on standby, each triggered
+    by a phrase, an event, or a hook.
+  </p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="n">40</div><div class="l">Feature Modules</div></div>
+    <div class="stat"><div class="n">32+</div><div class="l">Auto-Trigger Skills</div></div>
+    <div class="stat"><div class="n">6</div><div class="l">Core Memory Files</div></div>
+    <div class="stat"><div class="n">7</div><div class="l">Functional Categories</div></div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card"><h3>🧠 Memory Core</h3><p>main-memory.md, current-session.md, reminders.md, decisions.md, post-mortems.md — the durable identity and history layer.</p></div>
+    <div class="card"><h3>⚙️ Feature Modules</h3><p>Feature/* — 40 self-contained systems, each with a README and (mostly) a SKILL.md defining its trigger.</p></div>
+    <div class="card"><h3>🪝 Prompt Hooks</h3><p>User-Prompt-Hook-System injects time / tone / mood context into every message before JIRAIYA responds.</p></div>
+    <div class="card"><h3>📓 Diary</h3><p>daily-diary/current → archived/YYYY-MM — append-only session logs, the raw material for Echo recall.</p></div>
+  </div>
+</div>
+
+<!-- ============ PAGE 3: QUICK START FLOW ============ -->
+<div class="page">
+  <div class="section-head">
+    <span class="num">02</span>
+    <div><span class="kicker">Quick Start</span><h2>Session Lifecycle</h2></div>
+  </div>
+
+  <div class="flow">
+    <div class="step"><div class="ic">🚀</div><div class="t">Session Start</div><div class="d">Auto-Load-Hook fires</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="ic">📖</div><div class="t">Read Memory</div><div class="d">master-memory, main-memory, current-session, reminders</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="ic">🎨</div><div class="t">Banner + Brief</div><div class="d">Purple ASCII banner, ≤12 line recap</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="ic">💬</div><div class="t">Work</div><div class="d">Skills auto-trigger on phrases/events</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="ic">👋</div><div class="t">Farewell</div><div class="d">"bye" → diary + banner + credit %</div></div>
+  </div>
+
+  <div class="section-head" style="margin-top:30px;">
+    <span class="num">·</span>
+    <div><span class="kicker">Exit Protocol</span><h2>4 Mandatory Steps on "bye"</h2></div>
+  </div>
+  <table>
+    <tr><th style="width:8%">Step</th><th>Action</th><th>Output</th></tr>
+    <tr><td>1</td><td>Write diary entry</td><td>daily-diary/current/YYYY-MM-DD.md (append or create)</td></tr>
+    <tr><td>2</td><td>Display farewell banner</td><td>Purple ANSI JIRAIYA ASCII art, no code block</td></tr>
+    <tr><td>3</td><td>Show credit usage</td><td>📊 Credit Used: X% (used/total) — read from main/credit-tracker.md</td></tr>
+    <tr><td>4</td><td>Say goodbye</td><td>Warm closing line</td></tr>
+  </table>
+  <p style="font-size:9px; color:#9d6fe0; margin-top:8px;">Type <b>"skip brief"</b> to suppress the session-start briefing for one session only.</p>
+</div>
+
+<!-- ============ PAGE 4: TRIGGER REFERENCE ============ -->
+<div class="page">
+  <div class="section-head">
+    <span class="num">03</span>
+    <div><span class="kicker">Reference</span><h2>Trigger Phrase Index</h2></div>
+  </div>
+  <div class="legend">
+    <span class="badge c-session">SESSION</span><span class="badge c-memory">MEMORY</span>
+    <span class="badge c-project">PROJECT</span><span class="badge c-quality">QUALITY</span>
+    <span class="badge c-creative">CREATIVE</span><span class="badge c-hook">HOOK</span>
+    <span class="badge c-auto">AUTOMATION</span>
+  </div>
+  <table>
+    <tr><th>Trigger Phrase</th><th>Fires</th><th>Cat</th></tr>
+    <tr><td>"save diary" / "write diary" / "document session"</td><td>Save-Diary-System</td><td><span class="badge c-memory">MEM</span></td></tr>
+    <tr><td>"commit" / "push" / "save changes"</td><td>Auto-Commit-System</td><td><span class="badge c-auto">AUTO</span></td></tr>
+    <tr><td>"remind me" / "don't forget"</td><td>Reminders-System</td><td><span class="badge c-memory">MEM</span></td></tr>
+    <tr><td>"log decision" / "why did we choose"</td><td>Decision-Log-System</td><td><span class="badge c-memory">MEM</span></td></tr>
+    <tr><td>"post-mortem" / "what went wrong"</td><td>Post-Mortem-System</td><td><span class="badge c-quality">QUAL</span></td></tr>
+    <tr><td>"new project" / "load project" / "list projects"</td><td>LRU-Project-Management-System</td><td><span class="badge c-project">PROJ</span></td></tr>
+    <tr><td>"save library" / "load library"</td><td>Library-System</td><td><span class="badge c-memory">MEM</span></td></tr>
+    <tr><td>"copy plan" / "resume plan"</td><td>Work-Plan-Execution</td><td><span class="badge c-project">PROJ</span></td></tr>
+    <tr><td>"create skill" / "forge this"</td><td>Forge-Self-Improvement-System</td><td><span class="badge c-quality">QUAL</span></td></tr>
+    <tr><td>"do you remember" / "recall"</td><td>Echo-Memory-Recall</td><td><span class="badge c-memory">MEM</span></td></tr>
+    <tr><td>"/repo" / "switch repo" / "change repo"</td><td>Skill-Plugin-System (repo-switcher)</td><td><span class="badge c-project">PROJ</span></td></tr>
+    <tr><td>"JIRAIYA"</td><td>JIRAIYA-Recall-System (Instant Restoration)</td><td><span class="badge c-session">SESS</span></td></tr>
+    <tr><td>"bye" / "goodbye" / "exit"</td><td>Session-Farewell-System</td><td><span class="badge c-session">SESS</span></td></tr>
+    <tr><td>"penat" / "burnt out"</td><td>Break-Reminder-System</td><td><span class="badge c-auto">AUTO</span></td></tr>
+    <tr><td>"dream" / "brainstorm" / "imagine"</td><td>Dream-Ideas-System</td><td><span class="badge c-creative">CREA</span></td></tr>
+    <tr><td>"midjourney prompt" / "image prompt"</td><td>Image-Prompt-System</td><td><span class="badge c-creative">CREA</span></td></tr>
+    <tr><td>"new adventure" / "resume adventure"</td><td>Interactive-Story-System</td><td><span class="badge c-creative">CREA</span></td></tr>
+    <tr><td>"create album" / "write a song"</td><td>Song-Creation-System</td><td><span class="badge c-creative">CREA</span></td></tr>
+    <tr><td>"security audit" / "findings"</td><td>Security-Audit-System</td><td><span class="badge c-quality">QUAL</span></td></tr>
+    <tr><td>"jimat token" / "compact mode"</td><td>Token-Guard-System</td><td><span class="badge c-quality">QUAL</span></td></tr>
+    <tr><td>"meeting team" / "/meeting"</td><td>Meeting-System</td><td><span class="badge c-project">PROJ</span></td></tr>
+    <tr><td>(no command — fires on every prompt)</td><td>Time/Tone/Mood-Prompt-Inject + User-Prompt-Hook</td><td><span class="badge c-hook">HOOK</span></td></tr>
+  </table>
+</div>
+
+<!-- ============ PAGE 5-8: FEATURE GRID ============ -->
+<div class="page">
+  <div class="section-head">
+    <span class="num">04</span>
+    <div><span class="kicker">Feature Reference</span><h2>Session & Lifecycle</h2></div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card" style="border-top-color:#7b2ff7"><div class="name">Auto-Load-Hook-System</div><div class="purpose">Loads companion on Claude Code startup, no manual name-typing.</div><div class="trigger">SessionStart hook</div></div>
+    <div class="feat-card" style="border-top-color:#7b2ff7"><div class="name">Session-Briefing-System</div><div class="purpose">Proactive recap + open reminders + active project + time-adaptive suggestion.</div><div class="trigger">session start / "brief"</div></div>
+    <div class="feat-card" style="border-top-color:#7b2ff7"><div class="name">Session-Farewell-System</div><div class="purpose">Graceful close: auto-save, reminder nudge, farewell banner.</div><div class="trigger">"bye", "exit", "ttyl"...</div></div>
+    <div class="feat-card" style="border-top-color:#7b2ff7"><div class="name">Time-based-Aware-System</div><div class="purpose">Time-aware greetings adapting to morning/afternoon/evening/night.</div><div class="trigger">session start</div></div>
+    <div class="feat-card" style="border-top-color:#7b2ff7"><div class="name">auto-idle-save-recall</div><div class="purpose">Auto-saves diary after 20-min idle; auto-recalls last session on greeting.</div><div class="trigger">idle 20m / "hi JIRAIYA"</div></div>
+    <div class="feat-card" style="border-top-color:#7b2ff7"><div class="name">JIRAIYA-Recall-System</div><div class="purpose">Workspace-aware recall: detects workspace, loads project + global state.</div><div class="trigger">"JIRAIYA", "recall"</div></div>
+  </div>
+
+  <div class="section-head" style="margin-top:24px;">
+    <span class="num">·</span>
+    <div><span class="kicker">Feature Reference</span><h2>Memory & Knowledge</h2></div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card" style="border-top-color:#2f8f6f"><div class="name">Save-Memory-System</div><div class="purpose">Saves on command, auto-detects memory-worthy moments, audits staleness.</div><div class="trigger">"save", "ingat", "simpan"</div></div>
+    <div class="feat-card" style="border-top-color:#2f8f6f"><div class="name">Memory-Consolidation-System</div><div class="purpose">Upgrades split memory files into unified main-memory.md.</div><div class="trigger">"Load memory-consolidation"</div></div>
+    <div class="feat-card" style="border-top-color:#2f8f6f"><div class="name">Echo-Memory-Recall</div><div class="purpose">Searches past diary entries, presents as natural narrative.</div><div class="trigger">"do you remember..."</div></div>
+    <div class="feat-card" style="border-top-color:#2f8f6f"><div class="name">Library-System</div><div class="purpose">Reusable knowledge library, 8 sections, save once / reuse across projects.</div><div class="trigger">"save library"</div></div>
+    <div class="feat-card" style="border-top-color:#2f8f6f"><div class="name">Decision-Log-System</div><div class="purpose">Append-only record of non-obvious architectural decisions.</div><div class="trigger">"log decision"</div></div>
+    <div class="feat-card" style="border-top-color:#2f8f6f"><div class="name">Post-Mortem-System</div><div class="purpose">Auto-detects failures; records cause, impact, lesson, prevention.</div><div class="trigger">"post-mortem"</div></div>
+    <div class="feat-card" style="border-top-color:#2f8f6f"><div class="name">Reminders-System</div><div class="purpose">Persistent cross-session reminders with deadline awareness.</div><div class="trigger">"remind me..."</div></div>
+    <div class="feat-card" style="border-top-color:#2f8f6f"><div class="name">Save-Diary-System</div><div class="purpose">Structured daily session log with auto-monthly archival.</div><div class="trigger">"save diary"</div></div>
+  </div>
+  <div class="page-foot"><span>JIRAIYA Guide Book</span><span>04 · Feature Reference</span></div>
+</div>
+
+<div class="page">
+  <div class="section-head">
+    <span class="num">04</span>
+    <div><span class="kicker">Feature Reference</span><h2>Project & Work Management</h2></div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card" style="border-top-color:#c98a1f"><div class="name">LRU-Project-Management-System</div><div class="purpose">LRU project tracking (10 active max), auto-archiving, duration tracking.</div><div class="trigger">"new project [name]"</div></div>
+    <div class="feat-card" style="border-top-color:#c98a1f"><div class="name">Work-Plan-Execution</div><div class="purpose">Captures plan into trackable file, checkbox execution, per-task commits.</div><div class="trigger">"copy plan"</div></div>
+    <div class="feat-card" style="border-top-color:#c98a1f"><div class="name">Orchestration-System</div><div class="purpose">Coordinates complex tasks via 5 workflow patterns.</div><div class="trigger">3+ step tasks, "buat plan"</div></div>
+    <div class="feat-card" style="border-top-color:#c98a1f"><div class="name">Auto-Worker-System</div><div class="purpose">Silent delegation: parses intent, decomposes tasks, routes to workers.</div><div class="trigger">multi-step implicit goal</div></div>
+    <div class="feat-card" style="border-top-color:#c98a1f"><div class="name">auto-learn-new-folder</div><div class="purpose">5-phase project analysis before editing an unfamiliar folder.</div><div class="trigger">new folder / "tolong edit"</div></div>
+    <div class="feat-card" style="border-top-color:#c98a1f"><div class="name">Meeting-System</div><div class="purpose">Virtual team meeting framework with role-based agents, structured minutes.</div><div class="trigger">"meeting team", "/meeting"</div></div>
+  </div>
+
+  <div class="section-head" style="margin-top:24px;">
+    <span class="num">·</span>
+    <div><span class="kicker">Feature Reference</span><h2>Quality, Safety & Self-Improvement</h2></div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card" style="border-top-color:#c23b5a"><div class="name">Code-Sharp-System</div><div class="purpose">Fast, clean, consistent code standard enforced before code is written.</div><div class="trigger">auto, "sharp", "ikut standard"</div></div>
+    <div class="feat-card" style="border-top-color:#c23b5a"><div class="name">Discipline-System</div><div class="purpose">7 behavioral laws preventing common failure modes.</div><div class="trigger">before/after significant action</div></div>
+    <div class="feat-card" style="border-top-color:#c23b5a"><div class="name">Security-Audit-System</div><div class="purpose">Triage by severity, batch-fix, commit per category.</div><div class="trigger">"security audit"</div></div>
+    <div class="feat-card" style="border-top-color:#c23b5a"><div class="name">Token-Guard-System</div><div class="purpose">Context management: compact mode, smart tool rules, checkpoints.</div><div class="trigger">"jimat token", "checkpoint"</div></div>
+    <div class="feat-card" style="border-top-color:#c23b5a"><div class="name">Observation-System</div><div class="purpose">4-tier: Survey (30s) → Investigate (5m) → Refine (5m) → Audit (15m).</div><div class="trigger">"survey", "investigate"</div></div>
+    <div class="feat-card" style="border-top-color:#c23b5a"><div class="name">Continuous-Improvement-System</div><div class="purpose">Reflects on sessions, detects patterns, builds persistent instincts.</div><div class="trigger">"/continuous-improvement"</div></div>
+    <div class="feat-card" style="border-top-color:#c23b5a"><div class="name">Dashboard-System</div><div class="purpose">Visual panel: instinct health, observation counts, learning level.</div><div class="trigger">after /continuous-improvement</div></div>
+    <div class="feat-card" style="border-top-color:#c23b5a"><div class="name">Forge-Self-Improvement-System</div><div class="purpose">Proposes new skills / level-ups after repeated patterns; human-approved.</div><div class="trigger">"create skill", "forge this"</div></div>
+    <div class="feat-card" style="border-top-color:#c23b5a"><div class="name">Mulahazah-System</div><div class="purpose">Hook-based learning: captures tool calls, extracts persistent rules.</div><div class="trigger">every tool call (auto)</div></div>
+  </div>
+  <div class="page-foot"><span>JIRAIYA Guide Book</span><span>04 · Feature Reference</span></div>
+</div>
+
+<div class="page">
+  <div class="section-head">
+    <span class="num">04</span>
+    <div><span class="kicker">Feature Reference</span><h2>Creative Tools</h2></div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card" style="border-top-color:#1f7fc9"><div class="name">Dream-Ideas-System</div><div class="purpose">Creative ideation without logical constraints, workspace-aware.</div><div class="trigger">"dream", "brainstorm"</div></div>
+    <div class="feat-card" style="border-top-color:#1f7fc9"><div class="name">Image-Prompt-System</div><div class="purpose">Midjourney/NijiJourney prompt generation with composition awareness.</div><div class="trigger">"midjourney prompt"</div></div>
+    <div class="feat-card" style="border-top-color:#1f7fc9"><div class="name">Interactive-Story-System</div><div class="purpose">Visual Novel RPG: cinematic combat, persistence, 7 world types.</div><div class="trigger">"new adventure"</div></div>
+    <div class="feat-card" style="border-top-color:#1f7fc9"><div class="name">Song-Creation-System</div><div class="purpose">Image-to-concept-album, full lyrics + Suno tags.</div><div class="trigger">"create album from [image]"</div></div>
+  </div>
+
+  <div class="section-head" style="margin-top:24px;">
+    <span class="num">·</span>
+    <div><span class="kicker">Feature Reference</span><h2>Prompt Hooks (fire on every message)</h2></div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card" style="border-top-color:#5a5a8a"><div class="name">User-Prompt-Hook-System</div><div class="purpose">Generic UserPromptSubmit framework; runs pluggable injector scripts.</div><div class="trigger">every user prompt</div></div>
+    <div class="feat-card" style="border-top-color:#5a5a8a"><div class="name">Time-Prompt-Inject-System</div><div class="purpose">Injects timestamp + period (MORNING/AFTERNOON/EVENING/NIGHT).</div><div class="trigger">every user prompt</div></div>
+    <div class="feat-card" style="border-top-color:#5a5a8a"><div class="name">Tone-Prompt-Inject-System</div><div class="purpose">Injects current tone/voice register from registry.</div><div class="trigger">"set tone &lt;name&gt;"</div></div>
+    <div class="feat-card" style="border-top-color:#5a5a8a"><div class="name">Mood-Prompt-Inject-System</div><div class="purpose">Adds mood context line to every prompt; AI can auto-set.</div><div class="trigger">"set mood &lt;name&gt;"</div></div>
+  </div>
+
+  <div class="section-head" style="margin-top:24px;">
+    <span class="num">·</span>
+    <div><span class="kicker">Feature Reference</span><h2>Automation & Wellness</h2></div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card" style="border-top-color:#8a3fa0"><div class="name">Auto-Commit-System</div><div class="purpose">Analyzes changes, generates structured commit messages with session context.</div><div class="trigger">"commit", "push"</div></div>
+    <div class="feat-card" style="border-top-color:#8a3fa0"><div class="name">Break-Reminder-System</div><div class="purpose">Wellness nudge for overwork, auto-renudges if user stays active.</div><div class="trigger">"penat", "burnt out"</div></div>
+    <div class="feat-card" style="border-top-color:#8a3fa0"><div class="name">Skill-Plugin-System</div><div class="purpose">Claude Code plugin scaffold: auto-triggered skills + slash commands.</div><div class="trigger">description match / "/command"</div></div>
+  </div>
+  <div class="page-foot"><span>JIRAIYA Guide Book</span><span>04 · Feature Reference</span></div>
+</div>
+
+<!-- ============ PAGE: MEMORY MODEL ============ -->
+<div class="page">
+  <div class="section-head">
+    <span class="num">05</span>
+    <div><span class="kicker">Architecture</span><h2>Memory Model</h2></div>
+  </div>
+  <p style="font-size:11px; color:#4a3a68; line-height:1.6;">
+    Three layers cooperate: a fast-changing working layer, a durable identity layer, and a raw narrative log.
+  </p>
+  <div class="model-col">
+    <div class="model-box m2">
+      <h3>🧬 main/ — Identity Layer</h3>
+      <ul>
+        <li>main-memory.md — personality, relationship, bond</li>
+        <li>current-session.md — RAM, resets each session</li>
+        <li>reminders.md — cross-session follow-ups</li>
+        <li>decisions.md — append-only decision log</li>
+        <li>post-mortems.md — append-only failure log</li>
+      </ul>
+    </div>
+    <div class="model-box m1">
+      <h3>📓 daily-diary/ — Narrative Log</h3>
+      <ul>
+        <li>current/YYYY-MM-DD.md — today's session writeups</li>
+        <li>archived/YYYY-MM/ — past months, auto-archived</li>
+        <li>Source material for Echo-Memory-Recall</li>
+        <li>Real timestamps only — never guessed</li>
+      </ul>
+    </div>
+    <div class="model-box m3">
+      <h3>🗂️ memory/ + master-memory.md</h3>
+      <ul>
+        <li>master-memory.md — universal entry point, loader</li>
+        <li>memory/ — workspace-scoped auto-memory (this tool's own store)</li>
+        <li>Read first at session start, before anything else</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-head" style="margin-top:30px;">
+    <span class="num">·</span>
+    <div><span class="kicker">Rules</span><h2>Always-On Constraints</h2></div>
+  </div>
+  <table>
+    <tr><th>Rule</th><th>Why</th></tr>
+    <tr><td>Never modify memory files without user confirmation</td><td>Memory is durable identity — accidental edits compound silently across sessions</td></tr>
+    <tr><td>Never run destructive git commands without explicit approval</td><td>Force-push / reset can erase work that isn't recoverable</td></tr>
+    <tr><td>Always check reminders.md at session start</td><td>Cross-session follow-ups are the main way commitments survive a reset</td></tr>
+    <tr><td>Diary timestamps must be real (read system clock)</td><td>Guessed/incremented times break the narrative timeline Echo-Recall depends on</td></tr>
+  </table>
+</div>
+
+<!-- ============ PAGE: KNOWN GAPS ============ -->
+<div class="page">
+  <div class="section-head">
+    <span class="num">06</span>
+    <div><span class="kicker">Audit</span><h2>Known Gaps</h2></div>
+  </div>
+
+  <div class="gap-item"><b>Skill path mismatch.</b> CLAUDE.md's "Installed Skills" table says skills live at <code>plugins/ses-skills/skills/&lt;name&gt;/SKILL.md</code>. That folder doesn't exist — every actual SKILL.md lives at <code>Feature/&lt;FolderName&gt;/SKILL.md</code> instead (one nested exception: <code>Feature/Skill-Plugin-System/skills/skill-plugin-system/SKILL.md</code>).</div>
+
+  <div class="gap-item"><b>8 features have no SKILL.md yet.</b> Auto-Load-Hook-System, Auto-Worker-System, Break-Reminder-System, Code-Sharp-System, Dream-Ideas-System, Meeting-System, Observation-System, Orchestration-System, Discipline-System, and Token-Guard-System are README-only — they rely on README-described behavior rather than a formal trigger file.</div>
+
+  <div class="gap-item"><b>repo-switcher isn't in the CLAUDE.md skill table.</b> The "/repo" trigger is documented separately in CLAUDE.md's own "Repository Switcher" section, but doesn't appear as a row in the "Installed Skills (Auto-Trigger)" table alongside the others.</div>
+
+  <div class="gap-item"><b>post-mortems.md is currently empty.</b> Noted in the file itself as "good thing" — no failures logged yet, so Post-Mortem-System has no historical data to draw on.</div>
+
+  <p style="font-size:9px; color:#9d6fe0; margin-top:20px;">This guide reflects the repository state as read on 2026-06-16. Re-run the inventory after adding or moving SKILL.md files.</p>
+</div>
+
+</body>
+</html>
