@@ -4,3 +4,9 @@
 
 # Claude Code settings
 .claude/settings.local.json
+
+# Aider (Ollama agentic CLI) local files
+.aider.tags.cache.v4/
+.aider.chat.history.md
+.aider.input.history
+.aider*
