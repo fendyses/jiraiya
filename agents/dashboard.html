@@ -49,8 +49,8 @@
     .repo-btn{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);cursor:pointer;transition:all .18s ease;flex-shrink:0}
     .repo-btn:hover{transform:scale(1.12)}
     .repo-btn.vs:hover{background:rgba(58,160,255,.2);border-color:rgba(58,160,255,.5);box-shadow:0 0 8px rgba(58,160,255,.3)}
-    .repo-btn.cli:hover{background:rgba(74,222,128,.15);border-color:rgba(74,222,128,.45);box-shadow:0 0 8px rgba(74,222,128,.25)}
-    .repo-btn.cli.copied{background:rgba(74,222,128,.25);border-color:rgba(74,222,128,.7)}
+    .repo-btn.cli:hover{background:rgba(217,119,87,.15);border-color:rgba(217,119,87,.45);box-shadow:0 0 8px rgba(217,119,87,.25)}
+    .repo-btn.cli.copied{background:rgba(217,119,87,.25);border-color:rgba(217,119,87,.7)}
     .lang-badge{font-family:'Share Tech Mono',monospace;font-size:8px;padding:1px 5px;border-radius:3px;letter-spacing:.5px;white-space:nowrap}
     .lang-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
     #repoList{overflow-y:auto;min-height:0;max-height:352px;padding-right:4px}
@@ -1324,7 +1324,7 @@ function buildRepoPanel(){
   });
 }
 const VSCODE_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M17 2 7 11l-4-3-2 1 4 4-4 4 2 1 4-3 10 9 5-2V4l-5-2Zm1 5v10l-7-5 7-5Z" fill="#3aa0ff" opacity=".75"/></svg>';
-const CLI_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="18" rx="2.5" stroke="#4ade80" stroke-width="1.8" opacity=".75"/><path d="M7 8.5l4 3.5-4 3.5M13 15.5h4" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/></svg>';
+const CLI_SVG='<img src="assets/pics/claude-logo.svg" width="11" height="11" style="opacity:.8">';
 
 // ════════════════════════════════════════════════════════
 // BOOT
