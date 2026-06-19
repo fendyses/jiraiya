@@ -6,6 +6,8 @@
   <title>JIRAIYA — Live Agent Ecosystem</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Press+Start+2P&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -17,8 +19,10 @@
     .cdeco{position:absolute;width:18px;height:18px;border-color:rgba(212,160,23,.3);border-style:solid;pointer-events:none}
     .cdeco.tl{top:7px;left:7px;border-width:1px 0 0 1px}.cdeco.tr{top:7px;right:7px;border-width:1px 1px 0 0}
     .cdeco.bl{bottom:7px;left:7px;border-width:0 0 1px 1px}.cdeco.br{bottom:7px;right:7px;border-width:0 1px 1px 0}
-    #game-wrap{position:relative;width:100%;border-radius:10px;overflow:hidden;border:2px solid rgba(120,90,40,.5);box-shadow:inset 0 0 0 1px rgba(0,0,0,.4);background:#5DA048;line-height:0}
-    #game-wrap canvas{display:block!important;width:100%!important;height:auto!important;image-rendering:pixelated}
+    #game-wrap{position:relative;width:100%;border-radius:10px;overflow:hidden;border:2px solid rgba(120,90,40,.5);box-shadow:inset 0 0 0 1px rgba(0,0,0,.4);line-height:0}
+    #bg3d{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;display:block!important;border-radius:10px;background:#7ECDF5}
+    #game-container{position:relative;z-index:1}
+    #game-wrap canvas:not(#bg3d){display:block!important;width:100%!important;height:auto!important;image-rendering:pixelated}
     #battleBanner{display:none;position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:5px 18px;border-radius:4px;font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;z-index:20;background:rgba(0,0,0,.88);border:2px solid #7B2FFF;box-shadow:0 0 20px #7B2FFF66;animation:bFlicker .8s ease-in-out infinite alternate}
     @keyframes bFlicker{from{opacity:1}to{opacity:.82}}
     #battleTimerWrapper{display:none;position:absolute;top:0;left:0;right:0;height:4px;z-index:21}
@@ -203,6 +207,7 @@
       <div class="mono text-white/15 text-[9px] mt-3 pt-2 border-t border-white/5">main/repos.md · auto-synced</div>
     </aside>
     <div id="game-wrap" class="flex-1 min-w-0">
+      <canvas id="bg3d"></canvas>
       <div id="game-container"></div>
       <div id="battleBanner">⚔ CONFLICT SIM &nbsp;—&nbsp; <span id="bCount">20</span>s</div>
       <div id="battleTimerWrapper"><div id="battleTimerBar"></div></div>
@@ -454,8 +459,11 @@ class AgentNPC {
 
   pickTarget(){
     const W=this.scene.W,H=this.scene.H;
-    const tx=80+Math.random()*(W-160);
-    const ty=this.scene.walkMinY+Math.random()*(H-this.scene.walkMinY-24);
+    let tx,ty,tries=0;
+    do{
+      tx=80+Math.random()*(W-160);
+      ty=this.scene.walkMinY+Math.random()*(H-this.scene.walkMinY-24);
+    }while(this.scene.isBlocked&&this.scene.isBlocked(tx,ty)&&++tries<14);
     const dx=tx-this.sprite.x,dy=ty-this.sprite.y,d=Math.sqrt(dx*dx+dy*dy)||1;
     const spd=ADEF[this.name].speed/1000;
     this.vx=(dx/d)*spd; this.vy=(dy/d)*spd; this.waitT=0;
@@ -555,9 +563,15 @@ class AgentNPC {
     if(this.dragging){this.syncUI();return;}
     this.cooldown-=delta;
     if(this.state==='walking'){
-      this.sprite.x=Phaser.Math.Clamp(this.sprite.x+this.vx*delta,55,this.scene.W-55);
-      this.sprite.y=Phaser.Math.Clamp(this.sprite.y+this.vy*delta,this.scene.walkMinY,this.scene.H-22);
-      this.sprite.setFlipX(this.vx<0);
+      const nx=Phaser.Math.Clamp(this.sprite.x+this.vx*delta,55,this.scene.W-55);
+      const ny=Phaser.Math.Clamp(this.sprite.y+this.vy*delta,this.scene.walkMinY,this.scene.H-22);
+      // block walking INTO an obstacle (but allow escaping one if already overlapping)
+      if(this.scene.isBlocked(nx,ny)&&!this.scene.isBlocked(this.sprite.x,this.sprite.y)){
+        this.vx=0;this.vy=0;this.waitT=0;
+        if(!this.summoned) this.pickTarget();
+      } else {
+        this.sprite.x=nx; this.sprite.y=ny; this.sprite.setFlipX(this.vx<0);
+      }
       if(!this.summoned){
         this.waitT+=delta;
         if(this.waitT>1200+Math.random()*2600){this.vx=0;this.vy=0;this.waitT=0;this.setState('idle');}
@@ -711,13 +725,32 @@ class GameScene extends Phaser.Scene {
     this.cols=Math.ceil(this.W/DISP); this.rows=Math.ceil(this.H/DISP);
     this.walkMinY=Math.floor(this.rows*0.42)*DISP;
 
+    // ── Collision zones (ellipses, normalized to W/H) — characters can't walk onto
+    //    the 3D houses, windmill, mill, or the prominent foreground trees.
+    this.obstacles=[
+      [0.07,0.58,0.055,0.075],  // far-left gazebo
+      [0.19,0.55,0.055,0.075],  // windmill
+      [0.40,0.57,0.090,0.080],  // green-roof sign house
+      [0.63,0.55,0.065,0.075],  // red-roof house
+      [0.85,0.57,0.080,0.080],  // mill house
+      [0.35,0.64,0.032,0.045],  // foreground tree (centre-left)
+      [0.66,0.66,0.032,0.045],  // foreground tree (centre-right)
+    ].map(o=>({x:o[0]*this.W,y:o[1]*this.H,rx:o[2]*this.W,ry:o[3]*this.H}));
+    this.isBlocked=(x,y)=>{
+      for(let i=0;i<this.obstacles.length;i++){
+        const o=this.obstacles[i],dx=(x-o.x)/o.rx,dy=(y-o.y)/o.ry;
+        if(dx*dx+dy*dy<1) return true;
+      }
+      return false;
+    };
+
     // smooth filter on character atlases (they are vector-style, not pixel art)
     ['mAdv','fAdv','mPerson','fPerson','zombie'].forEach(k=>{
       const tex=this.textures.get(k); if(tex) tex.setFilter(Phaser.Textures.FilterMode.LINEAR);
     });
 
     this.buildAnims();
-    this.buildWorld();
+    this.cameras.main.setBackgroundColor('rgba(0,0,0,0)'); // transparent — show 3D bg behind
 
     const wy=this.walkMinY,W=this.W,H=this.H;
     const starts=[
@@ -779,7 +812,7 @@ class GameScene extends Phaser.Scene {
     this.summonActive=false; this.summonPhase='idle'; this.summonT=0; this.summonGatherT=0;
     this.summonTimer=55000+Math.random()*35000;
     // clouds
-    this.buildClouds();
+    this.clouds=[]; // clouds handled by Three.js 3D background
     // pets
     this.spawnPets();
   }
@@ -1338,16 +1371,340 @@ const cols=Math.max(16,Math.floor((wrap.clientWidth||960)/DISP));
 const GW=cols*DISP;
 const GH=9*DISP;
 
+window.BG3D_SIZE = {w:GW, h:GH};
+window.dispatchEvent(new CustomEvent('bg3dReady', {detail:{w:GW,h:GH}}));
+
 new Phaser.Game({
   type:Phaser.AUTO,
   width:GW, height:GH,
   parent:'game-container',
-  backgroundColor:'#5DA048',
+  transparent:true,
   pixelArt:true,
   roundPixels:true,
   scale:{ mode:Phaser.Scale.FIT, autoCenter:Phaser.Scale.CENTER_HORIZONTALLY, width:GW, height:GH },
   scene:GameScene
 });
+</script>
+
+<script>
+(function () {
+  var sz = window.BG3D_SIZE;
+  if (!sz || typeof THREE === 'undefined') { console.error('[3DBG] THREE not ready'); return; }
+
+  var W = sz.w, H = sz.h;
+  var canvas = document.getElementById('bg3d');
+  canvas.width  = W;
+  canvas.height = H;
+
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setSize(W, H, false);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;  // compress highlights — no more white blowout
+  renderer.toneMappingExposure = 1.05;
+
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x46AEEA);   // vivid storybook blue sky
+  scene.fog = new THREE.Fog(0xB6DCEE, 40, 105);   // gentle haze on the far hills only
+
+  // Zoomed-in, low, near-isometric vista — makes the buildings render BIG vs the 2D characters
+  var camera = new THREE.PerspectiveCamera(32, W / H, 0.1, 200);
+  camera.position.set(0, 9, 13);
+  camera.lookAt(0, 2.2, -7);
+
+  // ── LIGHTING ── (bright sunny, but tone-mapped so highlights don't clip to white)
+  scene.add(new THREE.AmbientLight(0xFFFFFF, 0.5));
+  scene.add(new THREE.HemisphereLight(0xAFD4F0, 0x6E9A40, 0.35)); // softer blue bounce (less icy rocks)
+
+  var sun = new THREE.DirectionalLight(0xFFF3D2, 1.5);
+  sun.position.set(10, 22, 12);
+  sun.castShadow = true;
+  sun.shadow.mapSize.width  = 2048;
+  sun.shadow.mapSize.height = 2048;
+  sun.shadow.camera.left   = -30;
+  sun.shadow.camera.right  =  30;
+  sun.shadow.camera.top    =  30;
+  sun.shadow.camera.bottom = -30;
+  sun.shadow.camera.far    = 90;
+  sun.shadow.bias = -0.0005;
+  sun.shadow.camera.updateProjectionMatrix();
+  scene.add(sun);
+
+  // ── GROUND ── (lush saturated grass, like the reference)
+  var grassMat = new THREE.MeshLambertMaterial({ color: 0x66B038 });
+  var groundM = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), grassMat);
+  groundM.rotation.x = -Math.PI / 2;
+  groundM.receiveShadow = true;
+  scene.add(groundM);
+
+  var darkMat = new THREE.MeshLambertMaterial({ color: 0x4E8E2C });
+  [[-9,3],[-13,-2],[7,5],[14,1],[-6,-12],[11,-3],[-3,6],[9,-10],[-18,4],[17,2]].forEach(function(p) {
+    var m = new THREE.Mesh(new THREE.PlaneGeometry(4, 3, 1, 1), darkMat);
+    m.rotation.x = -Math.PI / 2;
+    m.position.set(p[0], 0.01, p[1]);
+    scene.add(m);
+  });
+
+  // ── DIRT GROUND ── (warm sandy clearing where characters walk)
+  var dirtMat = new THREE.MeshLambertMaterial({ color: 0xCFA058 });
+  function mkDirt(w, d, x, z) {
+    var m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), dirtMat);
+    m.rotation.x = -Math.PI / 2;
+    m.position.set(x, 0.02, z);
+    m.receiveShadow = true;
+    scene.add(m);
+  }
+  mkDirt(30, 18, 0, 3);     // big foreground clearing (character play area)
+  mkDirt(7, 40, 0, -6);     // path up through the town centre
+  mkDirt(46, 7, 2, 1);      // cross path
+  mkDirt(10, 14, 17, -2);   // path to the right (well/stalls)
+
+  // ── CLOUDS ── (soft, high, behind everything)
+  var cloudMat = new THREE.MeshLambertMaterial({ color: 0xFFFFFF, transparent: true, opacity: 0.85, fog: false });
+  [[-16,15,-30,1.0],[9,17,-34,0.85],[18,14,-28,0.7],[-4,16,-36,0.95],[-26,16,-26,0.6]].forEach(function(cd) {
+    var g = new THREE.Group();
+    [[0,0,0,3.2],[2.8,0.5,0,2.4],[-2.2,0.3,0,2.0],[0.5,0,2.2,1.8],[0,0,-2,1.5]].forEach(function(b) {
+      var sp = new THREE.Mesh(new THREE.SphereGeometry(b[3], 8, 6), cloudMat);
+      sp.position.set(b[0], b[1], b[2]);
+      g.add(sp);
+    });
+    g.position.set(cd[0], cd[1], cd[2]);
+    g.scale.setScalar(cd[3]);
+    scene.add(g);
+  });
+
+  // ── ROUNDED FOREST HILLS ── (big green mounds filling the background, like the reference)
+  function hill(x, z, rx, ryy, rz, col) {
+    var m = new THREE.Mesh(new THREE.SphereGeometry(1, 28, 18),
+              new THREE.MeshLambertMaterial({ color: col }));
+    m.scale.set(rx, ryy, rz);
+    m.position.set(x, -ryy * 0.34, z);  // sink the base under the ground line
+    m.receiveShadow = true;
+    scene.add(m);
+  }
+  // far darker ridge
+  hill(-19, -46, 22, 14, 16, 0x35752A);
+  hill(7,   -48, 26, 16, 18, 0x35752A);
+  hill(28,  -45, 19, 13, 15, 0x35752A);
+  // mid brighter mounds
+  hill(-24, -37, 16, 13, 12, 0x46912F);
+  hill(-4,  -39, 19, 15, 13, 0x46912F);
+  hill(17,  -37, 17, 13, 12, 0x46912F);
+  // near rounded mounds (closest, lightest)
+  hill(-13, -32, 13, 10, 10, 0x53A038);
+  hill(11,  -33, 14, 11, 10, 0x53A038);
+
+  // ── ANIMATED TARGETS ── (windmill blades, water wheel, flowing water)
+  var spin = [];   // each: {o, sp}  → rotates about local X
+  var flow = [];   // each: {map, sp} → scrolls a water texture
+
+  // ── START RENDER LOOP IMMEDIATELY (sky + ground always visible) ──
+  var clock = new THREE.Clock();
+  renderer.setAnimationLoop(function() {
+    var dt = clock.getDelta();
+    for (var i = 0; i < spin.length; i++) spin[i].o.rotation.x += spin[i].sp * dt;
+    for (var j = 0; j < flow.length; j++) flow[j].map.offset.y -= flow[j].sp * dt;
+    renderer.render(scene, camera);
+  });
+
+  // ── GLB LOADER ──
+  if (typeof THREE.GLTFLoader === 'undefined') { console.warn('[3DBG] GLTFLoader unavailable — models skipped'); return; }
+  var loader = new THREE.GLTFLoader();
+  var BASE = 'assets/kenney_fantasy-town-kit_2.0/Models/GLB%20format/';
+
+  // place(name, x, z, {y, s, ry, ground, onload})
+  //  - scale defaults to 1 (modular pieces share a 1-unit grid; DON'T random-scale them)
+  //  - ground:true snaps the model's lowest point to y (fixes centered-origin models)
+  function place(name, x, z, o) {
+    o = o || {};
+    var s  = (o.s  === undefined) ? 1 : o.s;
+    var ry = (o.ry === undefined) ? 0 : o.ry;
+    var y  = (o.y  === undefined) ? 0 : o.y;
+    var ground = (o.ground === undefined) ? true : o.ground;
+    loader.load(BASE + name + '.glb', function(gltf) {
+      var m = gltf.scene;
+      m.scale.setScalar(s);
+      m.rotation.y = ry;
+      m.traverse(function(c) {
+        if (c.isMesh) {
+          c.castShadow = true; c.receiveShadow = true;
+          if (o.tint && c.material) { c.material = c.material.clone(); c.material.color.setHex(o.tint); }
+        }
+      });
+      m.updateWorldMatrix(true, true);
+      var box = new THREE.Box3().setFromObject(m);
+      m.position.set(x, ground ? (y - box.min.y) : y, z);
+      scene.add(m);
+      if (o.onload) o.onload(m);
+    }, undefined, function() { console.warn('[3DBG] skip:', name); });
+  }
+
+  // placeSpinner — load a rotor/wheel, wrap in a pivot turned to FACE the camera,
+  // and spin it about its own axis. faceY rotates the whole disc toward the viewer.
+  function placeSpinner(name, x, y, z, faceY, speed, s) {
+    loader.load(BASE + name + '.glb', function(gltf) {
+      var m = gltf.scene;
+      m.scale.setScalar(s || 1);
+      m.traverse(function(c) { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+      var pivot = new THREE.Group();
+      pivot.position.set(x, y, z);
+      pivot.rotation.y = faceY;
+      pivot.add(m);
+      scene.add(pivot);
+      spin.push({ o: m, sp: speed });   // m spins about its local X (its native axle)
+    }, undefined, function() { console.warn('[3DBG] skip:', name); });
+  }
+
+  // Procedural flowing-water texture (wavy white streaks on blue), scrolled each frame
+  function makeWaterTex() {
+    var c = document.createElement('canvas'); c.width = 64; c.height = 64;
+    var g = c.getContext('2d');
+    g.fillStyle = '#2E86C0'; g.fillRect(0, 0, 64, 64);
+    g.strokeStyle = 'rgba(220,245,255,0.55)'; g.lineWidth = 3;
+    for (var i = 0; i < 5; i++) {
+      g.beginPath(); g.moveTo(0, i * 14 + 4);
+      g.bezierCurveTo(16, i * 14 - 2, 48, i * 14 + 10, 64, i * 14 + 4);
+      g.stroke();
+    }
+    var t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    return t;
+  }
+
+  // ── BUILDING ASSEMBLER ──────────────────────────────────────────
+  // Builds a box of footprint w×d tiles, `storeys` tall, from 1×1 wall
+  // panels, capped with a roof. Everything snaps to the integer grid.
+  var WALL_H = 1.0;
+  function building(cx, cz, w, d, storeys, opt) {
+    opt = opt || {};
+    var wt   = opt.wall  || 'wall';
+    var roof = opt.roof  || 'roof-gable';
+    for (var s = 0; s < storeys; s++) {
+      var y = s * WALL_H;
+      // left / right faces (run along Z, normal ±X) — unrotated panels
+      for (var i = 0; i < d; i++) {
+        var zc = cz - d / 2 + 0.5 + i;
+        place(wt, cx - w / 2, zc, { y: y });
+        place(wt, cx + w / 2, zc, { y: y });
+      }
+      // front / back faces (run along X, normal ±Z) — rotated 90°
+      for (var j = 0; j < w; j++) {
+        var xc = cx - w / 2 + 0.5 + j;
+        place(wt, xc, cz - d / 2, { y: y, ry: Math.PI / 2 });               // back
+        var front = wt;
+        if (s === 0 && opt.door !== undefined && j === opt.door) front = opt.doorType || 'wall-doorway-square';
+        else if (s > 0 && opt.win) front = opt.win;
+        place(front, xc, cz + d / 2, { y: y, ry: Math.PI / 2 });            // front
+      }
+    }
+    // roof — tile across the whole footprint at the top
+    var ry0 = storeys * WALL_H;
+    if (w === 1 && d === 1 && roof === 'roof-point') {
+      place('roof-point', cx, cz, { y: ry0 });
+    } else {
+      for (var a = 0; a < w; a++) for (var b = 0; b < d; b++) {
+        place(roof, cx - w / 2 + 0.5 + a, cz - d / 2 + 0.5 + b, { y: ry0 });
+      }
+    }
+    if (opt.chimney) place('chimney', cx + w / 2 - 0.4, cz - d / 2 + 0.4, { y: ry0 });
+  }
+
+  // ════════ TOWN LAYOUT — matches reference order, left → right ════════
+  // (z negative = far/back; one storey = 1.0 unit tall)
+
+  // 1) Far-left small green-roof gazebo (open stone structure)
+  building(-11.5, -6, 1, 1, 1, { wall: 'wall-window-glass', roof: 'roof-gable' });
+  place('banner-green', -11.5, -5.4, { y: 1.3, ground: false });
+
+  // 2) Windmill — tall stone tower + rotor facing the camera
+  building(-8.5, -9, 1, 1, 3, { wall: 'wall', roof: 'roof-point', door: 0, win: 'wall-window-small' });
+  placeSpinner('windmill', -8.5, 3.3, -8.3, Math.PI / 2, 0.5, 1.0);
+
+  // 3) Green-roof house with the JIRAIYA sign (the big hero house)
+  building(-2.5, -8.5, 3, 2, 2, { wall: 'wall-wood', roof: 'roof-gable', door: 1, win: 'wall-wood-window-glass', chimney: true });
+  (function () {
+    var cv = document.createElement('canvas'); cv.width = 512; cv.height = 120;
+    var g2 = cv.getContext('2d');
+    g2.fillStyle = '#EADBB4'; g2.fillRect(0, 0, 512, 120);
+    g2.strokeStyle = '#6B4A22'; g2.lineWidth = 12; g2.strokeRect(6, 6, 500, 108);
+    g2.fillStyle = '#3A2A14'; g2.font = 'bold 42px "Courier New", monospace';
+    g2.textAlign = 'center'; g2.textBaseline = 'middle';
+    g2.fillText('All 5 agents operational', 256, 62);
+    var tex = new THREE.CanvasTexture(cv);
+    var sign = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 0.85), new THREE.MeshBasicMaterial({ map: tex }));
+    sign.position.set(-2.5, 2.7, -7.35);
+    scene.add(sign);
+  }());
+
+  // 4) Red-roof house (centre-right)
+  building(4, -8.5, 2, 2, 2, { wall: 'wall-wood', roof: 'roof-high-gable', door: 1, win: 'wall-wood-window-glass', chimney: true });
+
+  // 5) Green-roof mill house (right) + camera-facing water wheel + flowing stream
+  building(9.5, -9, 2, 2, 2, { wall: 'wall-wood', roof: 'roof-gable', door: 0, win: 'wall-wood-window-glass', chimney: true });
+  placeSpinner('watermill', 11.2, 1.5, -8, Math.PI / 2, -0.45, 1.7);
+
+  // -- Flowing stream running from the mill down to the front-right (kept clear of the wheel) --
+  var streamTex = makeWaterTex(); streamTex.repeat.set(1, 5);
+  var streamMat = new THREE.MeshLambertMaterial({ map: streamTex });
+  var stream = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 16), streamMat);
+  stream.rotation.x = -Math.PI / 2; stream.rotation.z = -0.28;
+  stream.position.set(13.2, 0.05, -2);
+  scene.add(stream);
+  flow.push({ map: streamTex, sp: 0.5 });
+
+  // ════════ SCENERY ════════
+  // Dense pine forest backdrop in front of the hills
+  for (var fx = -28; fx <= 28; fx += 2.6) {
+    if (fx > -9 && fx < 9) continue;                 // leave the village centre open
+    var fz = -16 - Math.abs(Math.sin(fx * 0.7)) * 5 - Math.random() * 3;
+    place('tree-high', fx + (Math.random() - 0.5) * 1.2, fz, { s: 1.7 + Math.random() * 0.8 });
+  }
+  // A second, sparser forest row higher on the hill line
+  for (var gx = -26; gx <= 26; gx += 4.5) {
+    place('tree-high', gx + (Math.random() - 0.5), -24 - Math.random() * 4, { s: 2.0 + Math.random() * 0.9 });
+  }
+
+  // Village trees (mid + foreground)
+  [
+    ['tree-high',-13,-7,1.7],['tree-high',13,-8,1.7],
+    ['tree-high-round',-7,-11,1.7],['tree-high-round',4,-11,1.8],
+    ['tree',-11,-3,1.6],['tree',12,-2,1.6],['tree-crooked',-13,1,1.5],
+    ['tree-crooked',13,1,1.5],['tree',-3.5,-6,1.4],['tree',4.5,-6.5,1.4],
+  ].forEach(function(t) { place(t[0], t[1], t[2], { s: t[3] }); });
+
+  // Rocks — kept only as tidy clusters at the far left & right edges (clearing stays open)
+  [
+    ['rock-large',-13,2,1.8],['rock-wide',-13.5,0.5,1.5],
+    ['rock-large',13,2.5,1.8],['rock-wide',13.5,1,1.5],['rock-small',12.5,3,1.1],
+  ].forEach(function(r) { place(r[0], r[1], r[2], { s: r[3], tint: 0x9C968A }); });
+
+  // Flowers — tiny white dots scattered in the grass
+  var flowerMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+  for (var i = 0; i < 22; i++) {
+    var fl = new THREE.Mesh(new THREE.CircleGeometry(0.12, 6), flowerMat);
+    fl.rotation.x = -Math.PI / 2;
+    var ang = Math.random() * Math.PI * 2, rad = 7 + Math.random() * 8;
+    fl.position.set(Math.cos(ang) * rad, 0.05, 1 + Math.sin(ang) * rad * 0.5);
+    scene.add(fl);
+  }
+
+  // Hedges by the houses, one cart
+  place('hedge', -5, -6, { ry: Math.PI/2, s: 1.3 });
+  place('hedge', -5, -7, { ry: Math.PI/2, s: 1.3 });
+  place('cart', -3, -3, { ry: 0.5, s: 1.3 });
+
+  // Glowing blue lanterns (lamp model + a real blue point light)
+  function blueLamp(x, z) {
+    place('lantern', x, z, { s: 1.5 });
+    var L = new THREE.PointLight(0x4BB8FF, 0.9, 7, 2);
+    L.position.set(x, 1.7, z);
+    scene.add(L);
+  }
+  blueLamp(-6, 0);
+  blueLamp(6, -1);
+}());
+
 </script>
 </body>
 </html>
