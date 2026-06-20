@@ -2,56 +2,41 @@
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Visual Polish / Feature
-**Current Project**: JIRAIYA Dashboard (`/Applications/Sites/jiraiya`)
-**Status**: Active
-**Time**: 2026-06-20 ~21:14 GMT+8
+**Session Type**: Tooling / System Improvement
+**Current Project**: JIRAIYA (`/Applications/Sites/jiraiya`)
+**Status**: Wrapping up
+**Time**: 2026-06-20 ~21:21 GMT+8
 
 ## Current Focus
-- **Primary Task**: Ongoing polish of the 3D Three.js dashboard scene in `agents/dashboard.html`
-- **Technical Context**: Three.js r128 (globals via CDN) 3D village behind Phaser transparent canvas; Kenney Fantasy Town Kit GLBs; 5 walking 3D agent characters
-- **Progress**: Multiple rounds of polish today — characters working, buildings scaled, river upgraded, shadows overhauled, Pomodoro removed
+- **Primary Task**: Fixed stale session RAM and hardened the diary skill to enforce `current-session.md` updates
+- **Technical Context**: `current-session.md` was stuck on 2026-06-16; diary files had all entries up to today
+- **Progress**: Complete — SKILL.md and CLAUDE.md updated, session RAM synced
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: `agents/dashboard.html` — 3D scene visual polish
-- **Immediate Goals**: None outstanding from last session — pending final sign-off from Fendy on current visual state
-- **Recent Progress (2026-06-20)**:
-  - **Early morning 01:16**: Built Three.js 3D village (gazebo, windmill, sign house "Fendy SES", red-roof house, mill with water wheel + stream). Added `agents/serve.sh`. Fixed Phaser transparency (was covering 3D). Added collision zones for characters.
-  - **Afternoon 12:30**: Fixed 3D mini-character coordinate mapping (Raycaster + ground plane), walking direction (baseRY:0), drag-and-drop (DOM-level + Raycaster), Jiraiya diary click, golden trail (Three.js GLB clone with gold MeshBasicMaterial), diary date format → DD-MM-YYYY.
-  - **Afternoon 16:42**: All buildings scaled 1.3× via BSCALE constant + THREE.Group wrapper. Signboard changed from "All 5 agents operational" → "Fendy SES" at 66px.
-  - **Evening 18:43**: River upgraded (deep blue, foam layer, AdditiveBlending, pond ripples, sparkles). Red-roof house moved back z=-14, rotated 45° (3/4 isometric). Shadow overhaul — removed fake AO circles, added invisible box shadow-casters per building, fixed noShadow bug (lost in refactor). Removed Pomodoro timer (CSS + HTML + JS IIFE).
-
-- **2026-06-19 (Night 23:03)**: Dashboard terminal button auto-launches `claude .` via AppleScript `do script`; CLI icon switched to real `claude-logo.svg`.
+- **Current Topic**: JIRAIYA memory system reliability
+- **Immediate Goals**: None outstanding
+- **Recent Progress**:
+  - Synced `current-session.md` by reading 2026-06-19 and 2026-06-20 diary files (4 sessions worth of missed context)
+  - Upgraded `Feature/Save-Diary-System/SKILL.md` to Lv.3 — Step 4 is now MANDATORY with explicit field-by-field instructions; added Rule 8
+  - Updated `CLAUDE.md` exit protocol — added Step 1b (update `current-session.md`) as a named mandatory step
+  - Answered Fendy's question on Claude CLI theme options: `auto` (current), `dark`, `light`, `dark-ansi`, `light-ansi`, `system`, `custom:<path>`
 
 ### Important Decisions
-- Three.js r128 loaded as global CDN scripts (importmap ES-module approach failed due to GLTFLoader path issues)
-- Phaser canvas: `transparent:true` + `setBackgroundColor('rgba(0,0,0,0)')` — opaque hex `0x00000000` was silently black
-- `material.visible = false` + `mesh.visible = true` = shadow-only caster in Three.js (depth pass ignores material.visible)
-- BSCALE=1.3 applied via THREE.Group wrapper — async GLB pieces scale automatically as they arrive
-- Collision zones for characters are eye-matched normalized coords, labelled list at top of `GameScene.create()`
+- Session RAM enforcement raised to same level as diary-data.js regeneration — both are now "MANDATORY — never skip"
+- Exit protocol in CLAUDE.md is now the authoritative place that forces `current-session.md` write on every session end
 
 ## Session Recap (For AI Restart)
-- **Previous Session Summary**: 2026-06-19 (23:03) — Terminal button auto-launches claude, Claude logo icon added
-- **Where We Left Off**: Evening session polished river, shadows, and removed Pomodoro. Dashboard in good visual state, not yet committed.
-- **Important Context**:
-  - Serve via `agents/serve.sh` (localhost:8777) — GLBs fail under `file://` (CORS)
-  - All work in `agents/dashboard.html` (single file)
-  - Kenney GLBs: `assets/kenney_fantasy-town-kit_2.0/Models/GLB format/`
-  - Characters: 5 agent NPCs walking on 3D ground via Phaser+Three.js hybrid
+- **Previous Work (earlier today)**: 3D Three.js village dashboard — buildings, characters, river, shadows, Pomodoro removed. See `daily-diary/current/2026-06-20.md` for full detail.
+- **This Session**: Fixed stale session RAM, hardened diary skill (Lv.3), updated exit protocol, answered Claude CLI theme question.
+- **Where We Left Off**: All complete. No pending items.
 
-## Session Achievements (2026-06-20)
-- ✅ Three.js 3D village scene built and working
-- ✅ Character coordinate mapping fixed (Raycaster ground intersection)
-- ✅ Drag-and-drop via DOM + Raycaster
-- ✅ Jiraiya diary click fixed
-- ✅ Golden trail: Three.js GLB clone with gold material
-- ✅ Buildings scaled 1.3× via BSCALE + Group wrapper
-- ✅ Signboard → "Fendy SES"
-- ✅ River fully upgraded (foam, ripples, sparkles, glow)
-- ✅ Shadow overhaul (invisible box casters, noShadow bug fixed)
-- ✅ Red-roof house: repositioned + 45° rotation
-- ✅ Pomodoro timer removed
+## Session Achievements
+- ✅ Diagnosed and fixed stale `current-session.md` (was 4 days behind)
+- ✅ save-diary SKILL.md upgraded to Lv.3 (Step 4 mandatory)
+- ✅ CLAUDE.md exit protocol — Step 1b added
+- ✅ Claude CLI theme options documented (extracted from binary)
+- ✅ Diary entry written and session RAM updated
 
 ---
-*Session updated: 2026-06-20 21:14*
+*Session updated: 2026-06-20 21:21*
