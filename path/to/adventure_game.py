@@ -8,8 +8,8 @@ def main():
     # Define some locations and items
     locations = {
         "start": {"description": "You are at a crossroads. Where do you want to go?", "options": ["left", "right"]},
-        "left": {"description": "You have arrived at a forest. Do you want to explore or turn back?", "options": ["explore", "turn_back"]},
-        "right": {"description": "You have reached a river. Do you want to cross it or go back?", "options": ["cross", "go_back"]}
+        "left": {"description": "You have arrived at a forest. Do you want to explore or turn back?", "options": ["explore", "turn_back", "rest"]},
+        "right": {"description": "You have reached a river. Do you want to cross it or go back?", "options": ["cross", "go_back", "rest"]}
     }
 
     items = {
@@ -40,6 +40,8 @@ def main():
                     print("You have successfully crossed the river.")
                 elif next_location == "turn_back" or next_location == "go_back":
                     current_location = "start"
+                elif next_location == "rest":
+                    print("You rest and regain some energy.")
             else:
                 print("Invalid choice. Please try again.")
 
