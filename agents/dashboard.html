@@ -1820,16 +1820,23 @@ new Phaser.Game({
     return new THREE.CanvasTexture(c);
   })();
   var smokeEmitters = [], smokePuffs = [];
-  function registerSmoke(x, y, z) { smokeEmitters.push({ x: x, y: y, z: z, t: Math.random() * 1.0 }); }
+  // Camera-facing PLANE meshes (not THREE.Sprite — sprites render invisibly under the
+  // renderer's logarithmicDepthBuffer in r128). Planes honour log depth correctly.
+  var smokeGeo = new THREE.PlaneGeometry(1, 1);
+  function registerSmoke(x, y, z) {
+    smokeEmitters.push({ x: x, y: y, z: z, t: Math.random() * 0.4 });
+  }
   function spawnPuff(e) {
-    var mat = new THREE.SpriteMaterial({ map: smokeTex, transparent: true, opacity: 0, depthWrite: false });
-    var s = new THREE.Sprite(mat);
+    var mat = new THREE.MeshBasicMaterial({ map: smokeTex, transparent: true, opacity: 0,
+      depthWrite: false, depthTest: false, side: THREE.DoubleSide });
+    var s = new THREE.Mesh(smokeGeo, mat);
     s.position.set(e.x + (Math.random() - 0.5) * 0.18, e.y, e.z + (Math.random() - 0.5) * 0.18);
-    var sc0 = 0.55 + Math.random() * 0.25; s.scale.set(sc0, sc0, sc0);
-    s.renderOrder = 10;
+    var sc0 = 0.5 + Math.random() * 0.22; s.scale.set(sc0, sc0, sc0);
+    s.quaternion.copy(camera.quaternion);   // billboard toward the camera
+    s.renderOrder = 999;
     scene.add(s);
-    smokePuffs.push({ s: s, life: 0, ttl: 4.5 + Math.random() * 1.6,
-                      vx: 0.14 + Math.random() * 0.08, vy: 0.5 + Math.random() * 0.16, sc0: sc0 });
+    smokePuffs.push({ s: s, life: 0, ttl: 3.8 + Math.random() * 1.4,
+                      vx: 0.12 + Math.random() * 0.07, vy: 0.42 + Math.random() * 0.13, sc0: sc0 });
   }
   function updateSmoke(dt) {
     for (var i = 0; i < smokeEmitters.length; i++) {
@@ -1841,7 +1848,8 @@ new Phaser.Game({
       if (f >= 1) { scene.remove(p.s); p.s.material.dispose(); smokePuffs.splice(k, 1); continue; }
       p.s.position.x += p.vx * dt; p.s.position.y += p.vy * dt;
       var sc = p.sc0 + f * 1.6; p.s.scale.set(sc, sc, sc);
-      p.s.material.opacity = Math.sin(f * Math.PI) * 0.72;
+      p.s.quaternion.copy(camera.quaternion);   // keep facing the camera each frame
+      p.s.material.opacity = Math.sin(f * Math.PI) * 0.6;   // fade in then out over its life
     }
   }
 
@@ -2050,12 +2058,16 @@ new Phaser.Game({
         place(roof, -w / 2 + 0.5 + a, -d / 2 + 0.5 + b, { y: ry0 }, bGroup);
       }
     }
-    if (opt.chimney) place('chimney', w / 2 - 0.4, -d / 2 + 0.4, { y: ry0, onload: function(cm) {
-      cm.updateWorldMatrix(true, true);
-      var _cb = new THREE.Box3().setFromObject(cm);   // top of the chimney in world space
-      var _cp = new THREE.Vector3(); cm.getWorldPosition(_cp);
-      registerSmoke(_cp.x, _cb.max.y + 0.15, _cp.z);  // emit just above the chimney mouth
-    } }, bGroup);
+    if (opt.chimney) {
+      place('chimney', w / 2 - 0.4, -d / 2 + 0.4, { y: ry0 }, bGroup);
+      // Register a smoke column SYNCHRONOUSLY (no async GLB-load dependency).
+      // Compute the chimney's world position from the group transform.
+      var _clx = w / 2 - 0.4, _clz = -d / 2 + 0.4, _cry = opt.ry || 0;
+      var _swx = cx + BSCALE * (_clx * Math.cos(_cry) + _clz * Math.sin(_cry));
+      var _swz = cz + BSCALE * (-_clx * Math.sin(_cry) + _clz * Math.cos(_cry));
+      var _swy = (ry0 + 1.1) * BSCALE;   // just above the chimney mouth / roof peak
+      registerSmoke(_swx, _swy, _swz);
+    }
   }
 
   // ════════ TOWN LAYOUT — matches reference order, left → right ════════
@@ -2102,7 +2114,7 @@ new Phaser.Game({
   stream.rotation.x = -Math.PI / 2; stream.rotation.z = -0.28;
   stream.position.set(13.5, 0.05, -1);
   scene.add(stream);
-  flow.push({ map: streamTex, sp: 0.9 });
+  flow.push({ map: streamTex, sp: 0.4 });
   caustics.push({ tex: streamTex, mat: streamMat, e0: 0.18, eAmp: 0.11, swayAmp: 0.05 });
 
   // Foam overlay — scrolls faster, additive blend for bright glowing foam
@@ -2115,7 +2127,7 @@ new Phaser.Game({
   foam.rotation.x = -Math.PI / 2; foam.rotation.z = -0.28;
   foam.position.set(13.5, 0.07, -1);
   scene.add(foam);
-  flow.push({ map: foamTex, sp: 1.6 });
+  flow.push({ map: foamTex, sp: 0.7 });
 
   // Pond/pool at the base of the mill — wider, glowing
   var pondTex = makeWaterTex(); pondTex.repeat.set(2, 2);
@@ -2129,7 +2141,7 @@ new Phaser.Game({
   pond.rotation.x = -Math.PI / 2;
   pond.position.set(11.5, 0.06, 0.5);
   scene.add(pond);
-  flow.push({ map: pondTex, sp: 0.35 });
+  flow.push({ map: pondTex, sp: 0.16 });
   caustics.push({ tex: pondTex, mat: pondMat, e0: 0.22, eAmp: 0.10, swayAmp: 0.035 });
 
   // Pond foam cap
@@ -2142,7 +2154,7 @@ new Phaser.Game({
   pFoam.rotation.x = -Math.PI / 2;
   pFoam.position.set(11.5, 0.08, 0.5);
   scene.add(pFoam);
-  flow.push({ map: pFoamTex, sp: 0.7 });
+  flow.push({ map: pFoamTex, sp: 0.32 });
 
   // Ripple rings around the pond
   for (var ri = 0; ri < 3; ri++) {
@@ -2316,6 +2328,14 @@ new Phaser.Game({
         c.castShadow = true;
         c.receiveShadow = true;
 
+        // Skinned character meshes need material.skinning=true or the shadow pass
+        // spams "SkinnedMesh with material.skinning set to false" every frame
+        if (c.isSkinnedMesh && c.material) {
+          (Array.isArray(c.material) ? c.material : [c.material]).forEach(function(mm) {
+            mm.skinning = true; mm.needsUpdate = true;
+          });
+        }
+
         // Force nearest-filter on the flat-color atlas (prevents UV-boundary colour bleed)
         if (c.material && c.material.map) {
           c.material.map.minFilter = THREE.NearestFilter;
@@ -2405,7 +2425,9 @@ new Phaser.Game({
     var ghost = src.clone(true);
     ghost.traverse(function(c) {
       if (c.isMesh) {
-        c.material = new THREE.MeshBasicMaterial({ color: 0xFFD700, transparent: true, opacity: 0.55, depthWrite: false });
+        c.material = new THREE.MeshBasicMaterial({ color: 0xFFD700, transparent: true, opacity: 0.55, depthWrite: false, skinning: c.isSkinnedMesh });
+        c.castShadow = false;        // gold afterimages don't cast shadows → keeps skinned
+        c.receiveShadow = false;     // clones out of the shadow pass (no skinning warning)
       }
     });
     ghost.position.copy(src.position);
@@ -2500,6 +2522,16 @@ new Phaser.Game({
       // windmill blades + water wheel + river scroll
       for (var i = 0; i < spin.length; i++) spin[i].o.rotation.x += spin[i].sp * dt;
       for (var j = 0; j < flow.length; j++) flow[j].map.offset.y -= flow[j].sp * dt;
+
+      // ── effects driven from THIS (the live) loop: wind sway, water caustics, chimney smoke ──
+      var tNow = clock.elapsedTime;
+      windUniforms.uTime.value = tNow;                       // tree / grass / flower sway
+      for (var cci = 0; cci < caustics.length; cci++) {      // water shimmer + emissive pulse
+        var ccx = caustics[cci];
+        ccx.tex.offset.x = Math.sin(tNow * 0.6 + cci) * ccx.swayAmp;
+        if (ccx.mat) ccx.mat.emissiveIntensity = ccx.e0 + Math.sin(tNow * 1.3 + cci * 1.7) * ccx.eAmp;
+      }
+      updateSmoke(dt);                                       // chimney smoke puffs
 
       // clouds drift left → right; wrap at x=50 back to x=-50
       for (var ci = 0; ci < clouds3d.length; ci++) {

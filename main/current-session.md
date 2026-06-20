@@ -1,44 +1,47 @@
-# Current Session Memory - 2026-06-20
+# Current Session Memory - 2026-06-21
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: System / Tooling
-**Current Project**: JIRAIYA (`/Applications/Sites/jiraiya`)
+**Session Type**: Feature / Bug Fix / Visual Polish
+**Current Project**: JIRAIYA (`/Applications/Sites/jiraiya`) — dashboard 3D scene
 **Status**: Wrapping up
-**Time**: 2026-06-20 ~22:39 GMT+8
+**Time**: 2026-06-21 ~00:52 GMT+8
 
 ## Current Focus
-- **Primary Task**: Registered all 32 JIRAIYA custom skills into `plugins/ses-skills/skills/`
-- **Technical Context**: `plugins/ses-skills/` had `plugin.json` but no `skills/` folder — Claude Code couldn't auto-discover any skills
-- **Progress**: Complete — 32 skills copied into named subfolders, diary written
+- **Primary Task**: Added a visual effects pack to `agents/dashboard.html` and fixed why chimney smoke wouldn't render
+- **Technical Context**: Three.js 3D village behind a Phaser 2D character layer
+- **Progress**: Complete — all effects live, diary written
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: JIRAIYA skill plugin system
+- **Current Topic**: Dashboard visual effects (wind, grass, smoke, water, battle FX)
 - **Immediate Goals**: None outstanding
 - **Recent Progress**:
-  - Created `plugins/ses-skills/skills/` with 32 named subfolders (one per skill)
-  - Each subfolder contains a copy of the corresponding `Feature/*/SKILL.md`
-  - Originals in `Feature/` are untouched — copies only
-  - Diary entry appended to `2026-06-20.md` (Night - 21:29 entry)
+  - Wind sway on trees + waving grass/flowers (shader `onBeforeCompile` + shared `uTime`)
+  - Chimney smoke (camera-facing plane puffs, registered synchronously from building coords)
+  - Water caustics (offset.x shimmer + emissive pulse); slowed all flow speeds ~half
+  - Battle FX: speed-lines + micro-shake (removed white impact flash + chakra auras per Fendy)
+  - Red-roof house squared up (`noSideWalls`, removed 45° rotation)
+  - Fixed `SkinnedMesh skinning=false` console spam (gold-trail clones + character skinning)
 
 ### Important Decisions
-- Skills were **copied** not moved — `Feature/` directories remain as documentation/source of truth
-- Folder names derived from `name:` frontmatter where present; kebab-case from directory name otherwise
-- Future skill updates in `Feature/` require manual sync to `plugins/ses-skills/skills/`
+- **THE bug**: `agents/dashboard.html` has TWO `setAnimationLoop` calls (~line 1876 and ~2533); the second silently overrides the first. All effect updates must go in the SECOND (live) loop. This had silently killed smoke, tree sway, and water caustics.
+- Removed battle white-flash strobe (hurt Fendy's eyes) and chakra auras (disliked).
+- `THREE.Sprite` unreliable under `logarithmicDepthBuffer` → use camera-facing plane meshes.
 
 ## Session Recap (For AI Restart)
-- **Earlier today**: Multiple 3D Three.js village dashboard sessions — buildings, characters, river, shadows, Pomodoro removed, scale 1.3×, signboard renamed to "Fendy SES". See full `2026-06-20.md` diary.
-- **Previous session (Night - 21:21)**: Fixed stale session RAM, hardened save-diary SKILL.md to Lv.3, updated CLAUDE.md exit protocol with Step 1b.
-- **This session**: Registered 32 JIRAIYA skills into `plugins/ses-skills/skills/` — plugin is now fully wired for Claude Code auto-discovery.
-- **Where We Left Off**: All complete. No pending items.
+- **This session (Late Night 06-21)**: Built dashboard visual FX pack; the headline fix was discovering a duplicate `setAnimationLoop` overriding the effects loop — which revived smoke, wind sway, AND water caustics at once. Also fixed SkinnedMesh warning spam and slowed the river.
+- **Where We Left Off**: All complete. Possible next step: day/night cycle (sun + sky shader + glowing night windows via existing bloom).
+- **Note**: Session ran on Sonnet 4.6; Fendy set default model to Opus 4.8 mid-session.
 
 ## Session Achievements
-- ✅ Diagnosed silent `ses-skills` plugin (missing `skills/` folder)
-- ✅ Created 32 named skill subfolders under `plugins/ses-skills/skills/`
-- ✅ All SKILL.md files copied and confirmed
-- ✅ Diary entry written for this session
-- ✅ `current-session.md` updated
+- ✅ Wind sway on trees + grass/flowers
+- ✅ Chimney smoke working (after long debug → dual-loop root cause)
+- ✅ Water caustics + slowed flow
+- ✅ Battle FX pack (speed-lines + shake), removed flash/chakra
+- ✅ Red-roof house realigned
+- ✅ Killed SkinnedMesh console spam
+- ✅ Diary written
 
 ---
-*Session updated: 2026-06-20 22:39*
+*Session updated: 2026-06-21 00:52*
