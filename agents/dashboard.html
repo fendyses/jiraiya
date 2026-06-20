@@ -2052,8 +2052,9 @@ new Phaser.Game({
     }
     if (opt.chimney) place('chimney', w / 2 - 0.4, -d / 2 + 0.4, { y: ry0, onload: function(cm) {
       cm.updateWorldMatrix(true, true);
+      var _cb = new THREE.Box3().setFromObject(cm);   // top of the chimney in world space
       var _cp = new THREE.Vector3(); cm.getWorldPosition(_cp);
-      registerSmoke(_cp.x, _cp.y + 0.35, _cp.z);
+      registerSmoke(_cp.x, _cb.max.y + 0.15, _cp.z);  // emit just above the chimney mouth
     } }, bGroup);
   }
 
