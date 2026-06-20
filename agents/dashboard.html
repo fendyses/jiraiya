@@ -8,6 +8,13 @@
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/FXAAShader.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Press+Start+2P&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -136,6 +143,19 @@
     #bookCloseBtn{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:#5c3a1e;background:rgba(92,58,30,.1);border:1px solid rgba(92,58,30,.3);border-radius:5px;padding:4px 10px;cursor:pointer;transition:all .15s ease}
     #bookCloseBtn:hover{background:rgba(92,58,30,.22);color:#2a160a}
     @media(max-width:700px){#diaryBook{flex-direction:column;height:min(90vh,720px)}#bookSpine{display:none}#bookLeftPage{width:100%;max-height:140px;padding:12px 14px}}
+
+
+    /* Agent stats panel */
+    #statsOverlay{display:none;position:fixed;inset:0;z-index:1002;background:rgba(2,2,8,.82);backdrop-filter:blur(6px);align-items:center;justify-content:center}
+    #statsOverlay.open{display:flex}
+    #statsBox{background:#0a0a14;border:1.5px solid var(--sc,#D4A017);border-radius:10px;padding:22px 26px;min-width:280px;max-width:360px;position:relative;box-shadow:0 0 40px var(--sg,#FFD700)22}
+    #statsBox .s-name{font-family:'Press Start 2P',monospace;font-size:11px;letter-spacing:2px;margin-bottom:14px}
+    #statsBox .s-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);font-family:'Share Tech Mono',monospace;font-size:12px;color:rgba(255,255,255,.55)}
+    #statsBox .s-row span{color:#fff;font-weight:600}
+    #statsBox .s-quote{margin-top:12px;font-size:10px;font-family:'Share Tech Mono',monospace;color:rgba(255,255,255,.3);font-style:italic;line-height:1.6;min-height:32px}
+    #statsClose{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(255,255,255,.3);font-size:14px;cursor:pointer}
+    #statsClose:hover{color:#fff}
+    .agent-card{cursor:pointer}
   </style>
 </head>
 <body>
@@ -434,7 +454,10 @@ class AgentNPC {
     this.vx=0; this.vy=0; this.waitT=0;
     this.golden = (name==='Jiraiya'); this.trailT=0;  // golden afterimage for Jiraiya
     this.fxT=0;  // per-character walking aura timer
+    this.stats={ battles:0, wins:0, dist:0, quotes:[] };
+    this.tiredness=0;
     this.summoned=false;
+    this.chatWith=null; this.chatTimer=0;
 
     this.shadow=scene.add.graphics();
     this.sprite=scene.add.sprite(x,y,this.atlasKey,'idle').setOrigin(0.5,1).setScale(this.sc).setAlpha(0);
@@ -465,7 +488,7 @@ class AgentNPC {
       ty=this.scene.walkMinY+Math.random()*(H-this.scene.walkMinY-24);
     }while(this.scene.isBlocked&&this.scene.isBlocked(tx,ty)&&++tries<14);
     const dx=tx-this.sprite.x,dy=ty-this.sprite.y,d=Math.sqrt(dx*dx+dy*dy)||1;
-    const spd=ADEF[this.name].speed/1000;
+    const spd=ADEF[this.name].speed*(1-this.tiredness*0.28)/1000;
     this.vx=(dx/d)*spd; this.vy=(dy/d)*spd; this.waitT=0;
     this.setState('walking');
   }
@@ -550,6 +573,9 @@ class AgentNPC {
     sc.tweens.add({targets:w, y:w.y-16-Math.random()*8, alpha:0, duration:520, ease:'Quad.easeOut', onComplete:()=>w.destroy()});
   }
   update(delta){
+    // tiredness grows over 2-hour session, caps at 0.85
+    const elapsed=(Date.now()-(window._sessionStart||Date.now()))/3600000;
+    this.tiredness=Math.min(0.85, elapsed/2);
     if(this.dragging){this.syncUI();return;}
     this.cooldown-=delta;
     if(this.state==='walking'){
@@ -561,6 +587,7 @@ class AgentNPC {
         if(!this.summoned) this.pickTarget();
       } else {
         this.sprite.x=nx; this.sprite.y=ny; this.sprite.setFlipX(this.vx<0);
+        if(this.stats) this.stats.dist+=Math.sqrt(this.vx*this.vx+this.vy*this.vy)*delta/1000;
       }
       if(!this.summoned){
         this.waitT+=delta;
@@ -596,16 +623,31 @@ class AgentNPC {
     this.nametag.setPosition(sx,sy-40).setDepth(d+2);
     const hg=this.hpGfx; hg.clear().setDepth(d+3);
     hg.fillStyle(0x000000,0.55); hg.fillRect(sx-22,sy-52,44,5);
-    hg.fillStyle(this.intColor,0.95); hg.fillRect(sx-21,sy-51,42,3);
+    const tc=this.tiredness;
+    const barCol=tc<0.4?this.intColor:tc<0.7?0xCCAA00:0xFF7700;
+    hg.fillStyle(barCol,0.95); hg.fillRect(sx-21,sy-51,42,3);
     if(this.state==='fighting'){hg.fillStyle(0xFF0000,0.95);hg.fillRect(sx-21+28,sy-51,14,3);}
     // bubble follows the character
     if(this.bubble&&this.bubble.active){this.bubble.setPosition(sx,sy-52).setDepth(d+9000);}
   }
   showBubble(){
     if(this.bubble&&this.bubble.active)this.bubble.destroy();
+    // Jiraiya: 30% chance to quote a real diary line
+    if(this.name==='Jiraiya'&&Math.random()<0.30&&typeof DIARY_DATA!=='undefined'&&DIARY_DATA.length){
+      const entry=DIARY_DATA[Math.floor(Math.random()*Math.min(DIARY_DATA.length,8))];
+      const lines=(entry.content||'').split('\n').map(l=>l.replace(/^[#>*-\s]+/,'').trim()).filter(l=>l.length>20&&l.length<80&&!l.startsWith('`')&&!l.startsWith('|'));
+      if(lines.length){
+        const quote=lines[Math.floor(Math.random()*lines.length)].slice(0,72);
+        this.bubble=spawnBubble(this.scene,this.sprite.x,this.sprite.y-54,'📖 '+quote);
+        if(this.stats&&this.stats.quotes.length<20) this.stats.quotes.push(quote);
+        return;
+      }
+    }
     const pool=(MSGS[this.name]||{}).walking||(MSGS[this.name]||{}).idle||[];
     if(!pool.length)return;
-    this.bubble=spawnBubble(this.scene,this.sprite.x,this.sprite.y-54,pool[Math.floor(Math.random()*pool.length)]);
+    const msg=pool[Math.floor(Math.random()*pool.length)];
+    this.bubble=spawnBubble(this.scene,this.sprite.x,this.sprite.y-54,msg);
+    if(this.stats&&this.stats.quotes.length<20) this.stats.quotes.push(msg);
   }
   pushLine(){
     const st=this.state==='fighting'?'fighting':this.state==='idle'?'idle':'walking';
@@ -628,7 +670,7 @@ class AgentNPC {
     this.setState('fighting');this.pushLine();
   }
   releaseFromBattle(dir){
-    const spd=ADEF[this.name].speed/1000;
+    const spd=ADEF[this.name].speed*(1-this.tiredness*0.28)/1000;
     this.vx=dir*spd*CFG.SEP_SPEED; this.vy=(Math.random()-.5)*spd*0.4;
     this.cooldown=CFG.COOLDOWN_MS; this.waitT=0;
     this.setState('post-battle'); this.sprite.setFlipX(dir<0);
@@ -718,7 +760,7 @@ class GameScene extends Phaser.Scene {
     this.obstacles=[
       [0.19,0.55,0.065,0.080],  // windmill
       [0.43,0.57,0.110,0.090],  // green-roof sign house (widened)
-      [0.63,0.55,0.075,0.085],  // red-roof house (widened)
+      [0.63,0.44,0.055,0.065],  // red-roof house (further back z=-14)
       [0.85,0.57,0.085,0.085],  // mill house (widened)
       [0.35,0.64,0.032,0.045],  // foreground tree (centre-left)
       [0.66,0.66,0.032,0.045],  // foreground tree (centre-right)
@@ -809,6 +851,7 @@ class GameScene extends Phaser.Scene {
     window._jiraiyaNPC = this.npcs.find(a => a.name === 'Jiraiya');
     window._npcs = {};
     this.npcs.forEach(a => { window._npcs[a.name] = a; });
+    window._sessionStart = Date.now();
   }
 
   buildAnims(){
@@ -948,6 +991,30 @@ class GameScene extends Phaser.Scene {
     }
     if(this.summonActive) this.updateSummon(delta,time);
 
+    // ── agent conversations — nearby non-fighting pairs briefly chat ──
+    if(!this.battleActive&&!this.postPhase&&!this.summonActive){
+      for(let ci=0;ci<this.npcs.length;ci++){
+        const a=this.npcs[ci];
+        if(a.chatTimer>0){a.chatTimer-=delta;if(a.chatTimer<=0){a.chatWith=null;a.summoned=false;a.pickTarget();}continue;}
+        if(a.state==='fighting'||a.summoned||a.chatWith) continue;
+        for(let cj=ci+1;cj<this.npcs.length;cj++){
+          const b=this.npcs[cj];
+          if(b.state==='fighting'||b.summoned||b.chatWith||b.chatTimer>0) continue;
+          const dx=a.sprite.x-b.sprite.x,dy=a.sprite.y-b.sprite.y;
+          if(Math.sqrt(dx*dx+dy*dy)<72&&a.state==='walking'&&b.state==='walking'&&Math.random()<0.003){
+            const dur=3000+Math.random()*3000;
+            a.chatWith=b.name; a.chatTimer=dur; a.vx=0;a.vy=0;a.summoned=true;a.setState('idle');
+            b.chatWith=a.name; b.chatTimer=dur; b.vx=0;b.vy=0;b.summoned=true;b.setState('idle');
+            a.sprite.setFlipX(a.sprite.x>b.sprite.x);
+            b.sprite.setFlipX(b.sprite.x>a.sprite.x);
+            const chatMsgs=['> Syncing context...','> Reviewing approach...','> Coordinating tasks.','> Status check.','> All good here.'];
+            spawnBubble(this,a.sprite.x,a.sprite.y-54,chatMsgs[Math.floor(Math.random()*chatMsgs.length)]);
+            spawnBubble(this,b.sprite.x,b.sprite.y-54,chatMsgs[Math.floor(Math.random()*chatMsgs.length)]);
+            break;
+          }
+        }
+      }
+    }
     // battle check — all pairs
     if(!this.battleActive&&!this.postPhase&&!this.summonActive){
       for(const [na,nb] of BATTLE_PAIRS){
@@ -984,6 +1051,8 @@ class GameScene extends Phaser.Scene {
   startBattle(a,b){
     this.fightA=a; this.fightB=b;
     this.battleActive=true; this.battleSecs=CFG.BATTLE_SECS;
+    if(a.stats) a.stats.battles++;
+    if(b.stats) b.stats.battles++;
     const mx=(a.x+b.x)/2,my=Math.max(a.y,b.y);
     a.lockForBattle(mx-58,my,true); b.lockForBattle(mx+58,my,false);
     document.getElementById('battleBanner').innerHTML=`⚔ ${a.name.toUpperCase()} vs ${b.name.toUpperCase()} &nbsp;—&nbsp; <span id="bCount">20</span>s`;
@@ -997,6 +1066,7 @@ class GameScene extends Phaser.Scene {
     this.fxGfx.clear(); this.cameras.main.shake(400,0.015); this.cameras.main.flash(300,255,255,255,false);
     document.getElementById('battleBanner').style.display='none';
     document.getElementById('battleTimerWrapper').style.display='none';
+    if(a.stats) a.stats.wins++;
     a.releaseFromBattle(-1); b.releaseFromBattle(1);
     refreshCard(a); refreshCard(b);
   }
@@ -1190,7 +1260,11 @@ function buildUI(){
       <div class="w-full rounded-full overflow-hidden mb-1" style="height:2px;background:rgba(255,255,255,.06)">
         <div class="power-bar-inner h-full rounded-full" style="width:72%;background:linear-gradient(90deg,${d.color},${d.glow})"></div>
       </div>
-      <div class="mono text-white/15 text-xs truncate">${d.model}</div>`;
+      <div class="flex items-center gap-1">
+        <div class="mono text-white/15 text-xs truncate flex-1">${d.model}</div>
+        <span class="mood-badge text-xs">✨</span>
+      </div>`;
+    card.addEventListener('click',()=>openStatsPanel(name));
     cg.appendChild(card);
     const term=document.createElement('div');
     term.className='terminal'; term.id='term-'+name;
@@ -1216,6 +1290,27 @@ function refreshCard(agent){
   card.classList.toggle('fighting',agent.state==='fighting');
   if(agent.state==='fighting'){st.style.color='#ff5555';bar.style.width='100%';bar.style.background=`linear-gradient(90deg,${agent.color},#ff0000)`;}
   else{st.style.color=agent.color;bar.style.width=(55+Math.random()*38)+'%';bar.style.background=`linear-gradient(90deg,${agent.color},${ADEF[agent.name].glow})`;}
+  const mood=(agent.tiredness||0)>0.65?'😴':(agent.tiredness||0)>0.35?'😐':'✨';
+  const moodEl=card.querySelector('.mood-badge');
+  if(moodEl) moodEl.textContent=mood;
+}
+function openStatsPanel(name){
+  const npc=window._npcs&&window._npcs[name]; if(!npc) return;
+  const d=ADEF[name];
+  const ov=document.getElementById('statsOverlay');
+  ov.style.setProperty('--sc',d.color); ov.style.setProperty('--sg',d.glow||d.color);
+  document.getElementById('statsName').style.color=d.color;
+  document.getElementById('statsName').textContent=name.toUpperCase()+' — '+d.role;
+  const st=npc.stats||{battles:0,wins:0,dist:0,quotes:[]};
+  document.getElementById('sBattles').textContent=st.battles+' ('+st.wins+' wins)';
+  document.getElementById('sDist').textContent=st.dist>=1?(st.dist.toFixed(2)+' km'):(Math.round(st.dist*1000)+' m');
+  const tired=npc.tiredness||0;
+  document.getElementById('sMood').textContent=tired>0.65?'😴 Tired':tired>0.35?'😐 Neutral':'✨ Fresh';
+  const elapsed=Math.round((Date.now()-(window._sessionStart||Date.now()))/60000);
+  document.getElementById('sTime').textContent=elapsed+' min';
+  const q=st.quotes; document.getElementById('sQuote').textContent=q.length?'"'+q[q.length-1]+'"':'No quotes yet.';
+  ov.classList.add('open');
+  ov.onclick=e=>{if(e.target===ov)ov.classList.remove('open');};
 }
 
 // ════════════════════════════════════════════════════════
@@ -1297,13 +1392,40 @@ function fmtDate(s){
   const [y,m,dd]=s.split('-');
   return `${dd}-${m}-${y}`;
 }
-function openDiaryBook(){
+async function openDiaryBook(){
   const ov=document.getElementById('diaryBookOverlay');
   ov.style.display='flex';
   const list=document.getElementById('bookDateList');
+  list.innerHTML='<div style="color:#888;font-size:10px;padding:8px">Loading…</div>';
+  document.getElementById('bookContent').innerHTML='';
+  const close=()=>{ ov.style.display='none'; document.removeEventListener('keydown',escClose); };
+  const escClose=e=>{ if(e.key==='Escape') close(); };
+  document.getElementById('bookCloseBtn').onclick=close;
+  ov.onclick=e=>{ if(e.target===ov) close(); };
+  document.addEventListener('keydown',escClose);
+
+  // Try live fetch from diary-index.json + individual .md files
+  let data=[];
+  try{
+    const idxRes=await fetch('../daily-diary/diary-index.json',{cache:'no-store'});
+    if(idxRes.ok){
+      const index=await idxRes.json();
+      const results=await Promise.all(index.map(async item=>{
+        try{
+          const r=await fetch('../daily-diary/'+item.path,{cache:'no-store'});
+          if(!r.ok) return null;
+          return {date:item.date, content:await r.text()};
+        }catch{return null;}
+      }));
+      data=results.filter(Boolean);
+    }
+  }catch{}
+
+  // Fallback to pre-generated DIARY_DATA if fetch fails
+  if(!data.length && typeof DIARY_DATA!=='undefined') data=DIARY_DATA;
+
   list.innerHTML='';
   const today=todayStr();
-  const data=(typeof DIARY_DATA!=='undefined')?DIARY_DATA:[];
   let selected=data.find(e=>e.date===today)||data[0];
   data.forEach(entry=>{
     const item=document.createElement('div');
@@ -1318,14 +1440,10 @@ function openDiaryBook(){
   });
   if(selected) renderBookContent(selected);
   else document.getElementById('bookContent').innerHTML='<p>No diary entries found.</p>';
-  const close=()=>{ ov.style.display='none'; document.removeEventListener('keydown',escClose); };
-  const escClose=e=>{ if(e.key==='Escape') close(); };
-  document.getElementById('bookCloseBtn').onclick=close;
-  ov.onclick=e=>{ if(e.target===ov) close(); };
-  document.addEventListener('keydown',escClose);
 }
 function renderBookContent(entry){
-  document.getElementById('bookContent').innerHTML=mdToHtml(entry.content);
+  var html=mdToHtml(entry.content).replace(/(\d{4})-(\d{2})-(\d{2})/g,'$3-$2-$1');
+  document.getElementById('bookContent').innerHTML=html;
   document.getElementById('bookContent').scrollTop=0;
 }
 function openCLI(repo, btn){
@@ -1371,6 +1489,7 @@ buildUI();
 buildRepoPanel();
 tick(); setInterval(tick,1000);
 
+
 const wrap=document.getElementById('game-wrap');
 const cols=Math.max(16,Math.floor((wrap.clientWidth||960)/DISP));
 const GW=cols*DISP;
@@ -1401,17 +1520,74 @@ new Phaser.Game({
   canvas.width  = W;
   canvas.height = H;
 
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, logarithmicDepthBuffer: true });
   renderer.setSize(W, H, false);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;  // compress highlights — no more white blowout
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = 0.92;
+
+  // ── POST-PROCESSING STACK ──────────────────────────────────────────────
+  var composer = new THREE.EffectComposer(renderer);
+  composer.addPass(new THREE.RenderPass(null, null));   // scene/camera filled in after they're created
+
+  // Bloom — only the very brightest surfaces (cloud tops, sky zenith) get a halo
+  var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(W, H), 0.18, 0.45, 0.92);
+  composer.addPass(bloomPass);
+
+  // FXAA — smooth edges beyond hardware anti-aliasing
+  var fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
+  fxaaPass.material.uniforms['resolution'].value.set(1 / W, 1 / H);
+  composer.addPass(fxaaPass);
+
+  // Vignette — subtle corner darkening for cinematic framing
+  var vignettePass = new THREE.ShaderPass({
+    uniforms: { tDiffuse: { value: null } },
+    vertexShader: [
+      'varying vec2 vUv;',
+      'void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}'
+    ].join('\n'),
+    fragmentShader: [
+      'uniform sampler2D tDiffuse;varying vec2 vUv;',
+      'void main(){',
+      '  vec4 col=texture2D(tDiffuse,vUv);',
+      '  vec2 uv=(vUv-0.5)*2.0;',
+      '  float v=1.0-dot(uv,uv)*0.20;',
+      '  col.rgb*=clamp(v,0.0,1.0);',
+      '  gl_FragColor=col;',
+      '}'
+    ].join('\n')
+  });
+  composer.addPass(vignettePass);
 
   var scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x46AEEA);   // vivid storybook blue sky
-  scene.fog = new THREE.Fog(0xB6DCEE, 40, 105);   // gentle haze on the far hills only
+  scene.fog = new THREE.Fog(0x8ECFF5, 38, 100);   // fog matches sky horizon colour
+
+  // Sky gradient dome — zenith (deep blue) → horizon (pale blue)
+  var _skyMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(180, 16, 8),
+    new THREE.ShaderMaterial({
+      side: THREE.BackSide, depthWrite: false,
+      uniforms: {
+        topColor:    { value: new THREE.Color(0x1565C0) },
+        bottomColor: { value: new THREE.Color(0x8ECFF5) }
+      },
+      vertexShader: [
+        'varying vec3 vPos;',
+        'void main(){vPos=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}'
+      ].join('\n'),
+      fragmentShader: [
+        'uniform vec3 topColor;uniform vec3 bottomColor;varying vec3 vPos;',
+        'void main(){',
+        '  float t=clamp((normalize(vPos).y+0.15)/1.15,0.0,1.0);',
+        '  gl_FragColor=vec4(mix(bottomColor,topColor,pow(t,0.55)),1.0);',
+        '}'
+      ].join('\n')
+    })
+  );
+  _skyMesh.renderOrder = -1;
+  scene.add(_skyMesh);
 
   // Zoomed-in, low, near-isometric vista — makes the buildings render BIG vs the 2D characters
   var camera = new THREE.PerspectiveCamera(32, W / H, 0.1, 200);
@@ -1427,23 +1603,38 @@ new Phaser.Game({
   sun.castShadow = true;
   sun.shadow.mapSize.width  = 2048;
   sun.shadow.mapSize.height = 2048;
-  sun.shadow.camera.left   = -30;
-  sun.shadow.camera.right  =  30;
-  sun.shadow.camera.top    =  30;
-  sun.shadow.camera.bottom = -30;
-  sun.shadow.camera.far    = 90;
-  sun.shadow.bias = -0.0005;
+  sun.shadow.camera.left   = -20;
+  sun.shadow.camera.right  =  20;
+  sun.shadow.camera.top    =  20;
+  sun.shadow.camera.bottom = -20;
+  sun.shadow.camera.far    = 70;
+  sun.shadow.bias = -0.001;
   sun.shadow.camera.updateProjectionMatrix();
   scene.add(sun);
 
-  // ── GROUND ── (lush saturated grass, like the reference)
-  var grassMat = new THREE.MeshLambertMaterial({ color: 0x66B038 });
+  // ── GROUND ── (PBR + procedural grass texture)
+  var _gc = document.createElement('canvas'); _gc.width = 256; _gc.height = 256;
+  var _gg = _gc.getContext('2d');
+  _gg.fillStyle = '#6BBF38'; _gg.fillRect(0, 0, 256, 256);
+  for (var _gi = 0; _gi < 90; _gi++) {
+    var _gx = Math.random()*256, _gy = Math.random()*256, _gr = 3 + Math.random()*10;
+    _gg.fillStyle = 'rgba(48,98,18,' + (0.12 + Math.random()*0.22) + ')';
+    _gg.beginPath(); _gg.ellipse(_gx, _gy, _gr, _gr*0.5, Math.random()*Math.PI, 0, Math.PI*2); _gg.fill();
+  }
+  for (var _gj = 0; _gj < 45; _gj++) {
+    var _gx2 = Math.random()*256, _gy2 = Math.random()*256;
+    _gg.fillStyle = 'rgba(118,192,48,' + (0.07 + Math.random()*0.11) + ')';
+    _gg.beginPath(); _gg.ellipse(_gx2, _gy2, 2, 1.2, Math.random()*Math.PI, 0, Math.PI*2); _gg.fill();
+  }
+  var _gt = new THREE.CanvasTexture(_gc);
+  _gt.wrapS = _gt.wrapT = THREE.RepeatWrapping; _gt.repeat.set(20, 20);
+  var grassMat = new THREE.MeshStandardMaterial({ map: _gt, roughness: 0.92, metalness: 0.0 });
   var groundM = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), grassMat);
   groundM.rotation.x = -Math.PI / 2;
   groundM.receiveShadow = true;
   scene.add(groundM);
 
-  var darkMat = new THREE.MeshLambertMaterial({ color: 0x4E8E2C });
+  var darkMat = new THREE.MeshStandardMaterial({ color: 0x4E8E2C, roughness: 0.95, metalness: 0.0 });
   [[-9,3],[-13,-2],[7,5],[14,1],[-6,-12],[11,-3],[-3,6],[9,-10],[-18,4],[17,2]].forEach(function(p) {
     var m = new THREE.Mesh(new THREE.PlaneGeometry(4, 3, 1, 1), darkMat);
     m.rotation.x = -Math.PI / 2;
@@ -1452,7 +1643,7 @@ new Phaser.Game({
   });
 
   // ── DIRT GROUND ── (warm sandy clearing where characters walk)
-  var dirtMat = new THREE.MeshLambertMaterial({ color: 0xCFA058 });
+  var dirtMat = new THREE.MeshStandardMaterial({ color: 0xCFA058, roughness: 0.88, metalness: 0.0 });
   function mkDirt(w, d, x, z) {
     var m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), dirtMat);
     m.rotation.x = -Math.PI / 2;
@@ -1465,11 +1656,21 @@ new Phaser.Game({
   mkDirt(46, 7, 2, 1);      // cross path
   mkDirt(10, 14, 17, -2);   // path to the right (well/stalls)
 
-  // ── CLOUDS ── (soft, high, behind everything)
-  var cloudMat = new THREE.MeshLambertMaterial({ color: 0xFFFFFF, transparent: true, opacity: 0.85, fog: false });
-  [[-16,15,-30,1.0],[9,17,-34,0.85],[18,14,-28,0.7],[-4,16,-36,0.95],[-26,16,-26,0.6]].forEach(function(cd) {
+  // ── CLOUDS ── (fluffy puffs in the visible sky, drift left → right)
+  // Camera top-of-screen is ~y=7.5 at these depths, so cloud centres at y=4-6 sit nicely in the sky.
+  var cloudMat = new THREE.MeshStandardMaterial({ color: 0xFFFFFF, roughness: 1.0, metalness: 0.0, transparent: true, opacity: 0.92, fog: false });
+  var clouds3d = [];
+  // [startX, Y,  Z,   scale, speed(u/s)]
+  [[-14, 5.5, -12, 0.80, 0.90],
+   [  4, 6.2, -16, 0.65, 0.60],
+   [ 20, 5.0, -13, 0.55, 1.10],
+   [ -3, 6.0, -18, 0.75, 0.70],
+   [-22, 5.8, -14, 0.50, 1.30],
+   [-34, 6.3, -15, 0.60, 0.80],
+   [ 28, 5.3, -17, 0.70, 0.55]].forEach(function(cd) {
     var g = new THREE.Group();
-    [[0,0,0,3.2],[2.8,0.5,0,2.4],[-2.2,0.3,0,2.0],[0.5,0,2.2,1.8],[0,0,-2,1.5]].forEach(function(b) {
+    // overlapping spheres that form a puffy cloud silhouette
+    [[0,0,0,2.8],[2.4,0.4,0,2.1],[-2.0,0.3,0,1.8],[0.4,0,1.8,1.6],[0,0,-1.8,1.4],[-1.0,0.5,1.2,1.5]].forEach(function(b) {
       var sp = new THREE.Mesh(new THREE.SphereGeometry(b[3], 8, 6), cloudMat);
       sp.position.set(b[0], b[1], b[2]);
       g.add(sp);
@@ -1477,40 +1678,85 @@ new Phaser.Game({
     g.position.set(cd[0], cd[1], cd[2]);
     g.scale.setScalar(cd[3]);
     scene.add(g);
+    clouds3d.push({ g: g, spd: cd[4] });
   });
 
-  // ── ROUNDED FOREST HILLS ── (big green mounds filling the background, like the reference)
+  // ── BIRD FLOCKS ── (simple M-wing birds cross the sky left→right)
+  var birdMat = new THREE.LineBasicMaterial({ color: 0x1a1a2e });
+  var birdFlocks = [];
+  var nextFlockIn = 8;
+
+  function makeBirdGeo() {
+    // "W" shape at original coordinate scale — right-side-up from camera above
+    var pts = [
+      new THREE.Vector3(-0.22,  0.04, 0),
+      new THREE.Vector3(-0.11,  0.10, 0),
+      new THREE.Vector3( 0,     0.01, 0),
+      new THREE.Vector3( 0.11,  0.10, 0),
+      new THREE.Vector3( 0.22,  0.04, 0)
+    ];
+    return new THREE.BufferGeometry().setFromPoints(pts);
+  }
+
+  function spawnFlock() {
+    var count = 4 + Math.floor(Math.random() * 5);
+    var startX = -28 - Math.random() * 10;
+    var baseY  = 5.2 + Math.random() * 1.4;
+    var baseZ  = -11 - Math.random() * 7;
+    var spd    = 1.8 + Math.random() * 1.4;
+    var grp    = new THREE.Group();
+    for (var bi = 0; bi < count; bi++) {
+      var bird = new THREE.Line(makeBirdGeo(), birdMat);
+      bird.scale.setScalar(0.55 + Math.random() * 0.3);
+      var col  = Math.floor(bi / 2) + (bi % 2 === 0 ? 0 : 0.5);
+      var side = (bi % 2 === 0 ? -1 : 1) * Math.ceil(bi / 2);
+      bird.position.set(side * 1.0 - col * 0.6, col * 0.15, col * 0.4);
+      bird._phase = Math.random() * Math.PI * 2;
+      grp.add(bird);
+    }
+    grp.position.set(startX, baseY, baseZ);
+    grp._spd   = spd;
+    grp._baseY = baseY;
+    grp._age   = 0;
+    scene.add(grp);
+    birdFlocks.push(grp);
+  }
+
+  // ── ROUNDED FOREST HILLS ── (pushed back + height halved so sky is visible)
   function hill(x, z, rx, ryy, rz, col) {
     var m = new THREE.Mesh(new THREE.SphereGeometry(1, 28, 18),
-              new THREE.MeshLambertMaterial({ color: col }));
+              new THREE.MeshStandardMaterial({ color: col, roughness: 0.9, metalness: 0.0 }));
     m.scale.set(rx, ryy, rz);
-    m.position.set(x, -ryy * 0.34, z);  // sink the base under the ground line
+    m.position.set(x, -ryy * 0.34, z);
     m.receiveShadow = true;
     scene.add(m);
   }
-  // far darker ridge
-  hill(-19, -46, 22, 14, 16, 0x35752A);
-  hill(7,   -48, 26, 16, 18, 0x35752A);
-  hill(28,  -45, 19, 13, 15, 0x35752A);
+  // far darker ridge — pushed back, heights halved so sky is visible above
+  hill(-19, -63, 22, 3.5, 16, 0x35752A);
+  hill(7,   -66, 26, 4.0, 18, 0x35752A);
+  hill(28,  -61, 19, 3.0, 15, 0x35752A);
   // mid brighter mounds
-  hill(-24, -37, 16, 13, 12, 0x46912F);
-  hill(-4,  -39, 19, 15, 13, 0x46912F);
-  hill(17,  -37, 17, 13, 12, 0x46912F);
-  // near rounded mounds (closest, lightest)
-  hill(-13, -32, 13, 10, 10, 0x53A038);
-  hill(11,  -33, 14, 11, 10, 0x53A038);
+  hill(-24, -54, 16, 3.0, 12, 0x46912F);
+  hill(-4,  -55, 19, 3.5, 13, 0x46912F);
+  hill(17,  -53, 17, 3.0, 12, 0x46912F);
+  // near mounds (closest, lightest)
+  hill(-13, -48, 13, 2.5, 10, 0x53A038);
+  hill(11,  -49, 14, 2.5, 10, 0x53A038);
 
   // ── ANIMATED TARGETS ── (windmill blades, water wheel, flowing water)
   var spin = [];   // each: {o, sp}  → rotates about local X
   var flow = [];   // each: {map, sp} → scrolls a water texture
 
   // ── START RENDER LOOP IMMEDIATELY (sky + ground always visible) ──
+  // Wire scene + camera into the RenderPass now that both are created
+  composer.passes[0].scene  = scene;
+  composer.passes[0].camera = camera;
   var clock = new THREE.Clock();
   renderer.setAnimationLoop(function() {
     var dt = clock.getDelta();
     for (var i = 0; i < spin.length; i++) spin[i].o.rotation.x += spin[i].sp * dt;
     for (var j = 0; j < flow.length; j++) flow[j].map.offset.y -= flow[j].sp * dt;
-    renderer.render(scene, camera);
+    composer.render();
   });
 
   // ── GLB LOADER ──
@@ -1518,40 +1764,45 @@ new Phaser.Game({
   var loader = new THREE.GLTFLoader();
   var BASE = 'assets/kenney_fantasy-town-kit_2.0/Models/GLB%20format/';
 
-  // place(name, x, z, {y, s, ry, ground, onload})
+  // place(name, x, z, {y, s, ry, ground, onload}, _target)
   //  - scale defaults to 1 (modular pieces share a 1-unit grid; DON'T random-scale them)
   //  - ground:true snaps the model's lowest point to y (fixes centered-origin models)
-  function place(name, x, z, o) {
+  //  - _target: optional THREE.Group to add to instead of scene (used by building())
+  function place(name, x, z, o, _target) {
     o = o || {};
     var s  = (o.s  === undefined) ? 1 : o.s;
     var ry = (o.ry === undefined) ? 0 : o.ry;
     var y  = (o.y  === undefined) ? 0 : o.y;
     var ground = (o.ground === undefined) ? true : o.ground;
+    var tgt = _target || scene;
     loader.load(BASE + name + '.glb', function(gltf) {
       var m = gltf.scene;
       m.scale.setScalar(s);
       m.rotation.y = ry;
+      var panelCastShadow = !o.noShadow && !(tgt && tgt.userData && tgt.userData.noShadowCast);
       m.traverse(function(c) {
         if (c.isMesh) {
-          c.castShadow = true; c.receiveShadow = true;
+          c.castShadow    = panelCastShadow;
+          c.receiveShadow = true;
           if (o.tint && c.material) { c.material = c.material.clone(); c.material.color.setHex(o.tint); }
         }
       });
       m.updateWorldMatrix(true, true);
       var box = new THREE.Box3().setFromObject(m);
       m.position.set(x, ground ? (y - box.min.y) : y, z);
-      scene.add(m);
+      tgt.add(m);
       if (o.onload) o.onload(m);
     }, undefined, function() { console.warn('[3DBG] skip:', name); });
   }
 
   // placeSpinner — load a rotor/wheel, wrap in a pivot turned to FACE the camera,
   // and spin it about its own axis. faceY rotates the whole disc toward the viewer.
-  function placeSpinner(name, x, y, z, faceY, speed, s) {
+  // noShadow = true disables shadow casting (e.g. watermill wheel casts a huge foreground shadow)
+  function placeSpinner(name, x, y, z, faceY, speed, s, noShadow) {
     loader.load(BASE + name + '.glb', function(gltf) {
       var m = gltf.scene;
       m.scale.setScalar(s || 1);
-      m.traverse(function(c) { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+      m.traverse(function(c) { if (c.isMesh) { c.castShadow = !noShadow; c.receiveShadow = true; } });
       var pivot = new THREE.Group();
       pivot.position.set(x, y, z);
       pivot.rotation.y = faceY;
@@ -1561,18 +1812,69 @@ new Phaser.Game({
     }, undefined, function() { console.warn('[3DBG] skip:', name); });
   }
 
-  // Procedural flowing-water texture (wavy white streaks on vivid blue), scrolled each frame
+  // Procedural water texture — deep blue gradient with flow lines and sparkle dots
   function makeWaterTex() {
-    var c = document.createElement('canvas'); c.width = 64; c.height = 64;
+    var c = document.createElement('canvas'); c.width = 128; c.height = 128;
     var g = c.getContext('2d');
-    g.fillStyle = '#1B6FD4'; g.fillRect(0, 0, 64, 64);
-    // subtle shimmer layer
-    g.fillStyle = 'rgba(100,180,255,0.25)'; g.fillRect(0, 0, 64, 32);
-    g.strokeStyle = 'rgba(220,245,255,0.70)'; g.lineWidth = 3;
+    var grad = g.createLinearGradient(0, 0, 128, 128);
+    grad.addColorStop(0,   '#0A2D6E');
+    grad.addColorStop(0.3, '#1251A8');
+    grad.addColorStop(0.7, '#1565C0');
+    grad.addColorStop(1,   '#0D3A85');
+    g.fillStyle = grad; g.fillRect(0, 0, 128, 128);
+    // side-to-side shimmer band
+    var sh = g.createLinearGradient(0, 0, 128, 0);
+    sh.addColorStop(0,   'rgba(40,130,255,0)');
+    sh.addColorStop(0.5, 'rgba(120,210,255,0.28)');
+    sh.addColorStop(1,   'rgba(40,130,255,0)');
+    g.fillStyle = sh; g.fillRect(0, 10, 128, 50);
+    // flow lines at varying opacity
+    for (var i = 0; i < 9; i++) {
+      var y0 = i * 15 + 4;
+      var alpha = 0.35 + (i % 3) * 0.2;
+      g.strokeStyle = 'rgba(180,235,255,' + alpha + ')';
+      g.lineWidth = 1.5 + (i % 2);
+      g.beginPath(); g.moveTo(0, y0);
+      g.bezierCurveTo(35, y0 - 9, 93, y0 + 9, 128, y0); g.stroke();
+    }
+    // bright highlight lines
+    g.strokeStyle = 'rgba(255,255,255,0.80)'; g.lineWidth = 2;
+    for (var j = 0; j < 4; j++) {
+      var yh = j * 34 + 10;
+      g.beginPath(); g.moveTo(15, yh);
+      g.bezierCurveTo(48, yh - 7, 82, yh + 7, 115, yh); g.stroke();
+    }
+    // sparkle dots
+    g.fillStyle = 'rgba(220,245,255,0.95)';
+    for (var k = 0; k < 16; k++) {
+      g.beginPath();
+      g.arc(Math.random()*128, Math.random()*128, 1.5, 0, Math.PI*2); g.fill();
+    }
+    var t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    return t;
+  }
+
+  // Foam texture — transparent with white streaks and blobs
+  function makeFoamTex() {
+    var c = document.createElement('canvas'); c.width = 128; c.height = 128;
+    var g = c.getContext('2d');
+    g.clearRect(0, 0, 128, 128);
+    // foam streaks
     for (var i = 0; i < 6; i++) {
-      g.beginPath(); g.moveTo(0, i * 12 + 3);
-      g.bezierCurveTo(18, i * 12 - 3, 46, i * 12 + 11, 64, i * 12 + 3);
-      g.stroke();
+      var y0 = i * 22 + 6;
+      g.strokeStyle = 'rgba(255,255,255,' + (0.55 + i * 0.07) + ')';
+      g.lineWidth = 4 + (i % 3);
+      g.lineCap = 'round';
+      g.beginPath(); g.moveTo(0, y0);
+      g.bezierCurveTo(38, y0 - 10, 90, y0 + 10, 128, y0); g.stroke();
+    }
+    // foam blobs
+    for (var j = 0; j < 24; j++) {
+      var a = 0.4 + Math.random() * 0.55;
+      g.fillStyle = 'rgba(255,255,255,' + a + ')';
+      g.beginPath();
+      g.arc(Math.random()*128, Math.random()*128, 2 + Math.random()*4, 0, Math.PI*2); g.fill();
     }
     var t = new THREE.CanvasTexture(c);
     t.wrapS = t.wrapT = THREE.RepeatWrapping;
@@ -1582,39 +1884,61 @@ new Phaser.Game({
   // ── BUILDING ASSEMBLER ──────────────────────────────────────────
   // Builds a box of footprint w×d tiles, `storeys` tall, from 1×1 wall
   // panels, capped with a roof. Everything snaps to the integer grid.
+  // All buildings are wrapped in a THREE.Group scaled by BSCALE so they
+  // appear 1.3× larger without changing the tile-grid placement logic.
   var WALL_H = 1.0;
+  var BSCALE = 1.3;
   function building(cx, cz, w, d, storeys, opt) {
     opt = opt || {};
     var wt   = opt.wall  || 'wall';
     var roof = opt.roof  || 'roof-gable';
+    // Group centred at (cx, 0, cz); scaling is applied uniformly so the
+    // pieces inside use their normal integer-grid local positions.
+    var bGroup = new THREE.Group();
+    bGroup.position.set(cx, 0, cz);
+    bGroup.scale.setScalar(BSCALE);
+    if (opt.ry) bGroup.rotation.y = opt.ry;
+    scene.add(bGroup);
+    // Wall panels only receive shadows; one clean box casts the building's shadow
+    bGroup.userData.noShadowCast = true;
+    // Invisible box shadow-caster — gives a single clean angled shadow from the sun
+    var shadowH = storeys * WALL_H + 0.85;
+    var shadowMat = new THREE.MeshBasicMaterial({ visible: false });
+    var shadowBox = new THREE.Mesh(new THREE.BoxGeometry(w, shadowH, d), shadowMat);
+    shadowBox.castShadow = true;
+    shadowBox.receiveShadow = false;
+    shadowBox.position.set(0, shadowH / 2, 0);
+    bGroup.add(shadowBox);
     for (var s = 0; s < storeys; s++) {
       var y = s * WALL_H;
-      // left / right faces (run along Z, normal ±X) — unrotated panels
+      // left / right faces (run along Z, normal ±X)
       for (var i = 0; i < d; i++) {
-        var zc = cz - d / 2 + 0.5 + i;
-        place(wt, cx - w / 2, zc, { y: y });
-        place(wt, cx + w / 2, zc, { y: y });
+        var zc = -d / 2 + 0.5 + i;
+        var sideW = (s > 0 && opt.win) ? opt.win : wt;   // windows on upper storeys
+        place(sideW, -w / 2, zc, { y: y }, bGroup);
+        place(sideW,  w / 2, zc, { y: y }, bGroup);
       }
       // front / back faces (run along X, normal ±Z) — rotated 90°
       for (var j = 0; j < w; j++) {
-        var xc = cx - w / 2 + 0.5 + j;
-        place(wt, xc, cz - d / 2, { y: y, ry: Math.PI / 2 });               // back
+        var xc = -w / 2 + 0.5 + j;
+        var backW = (s > 0 && opt.win) ? opt.win : wt;   // back windows on upper storeys
+        place(backW, xc, -d / 2, { y: y, ry: Math.PI / 2 }, bGroup);        // back
         var front = wt;
         if (s === 0 && opt.door !== undefined && j === opt.door) front = opt.doorType || 'wall-doorway-square';
         else if (s > 0 && opt.win) front = opt.win;
-        place(front, xc, cz + d / 2, { y: y, ry: Math.PI / 2 });            // front
+        place(front, xc, d / 2, { y: y, ry: Math.PI / 2 }, bGroup);         // front
       }
     }
     // roof — tile across the whole footprint at the top
     var ry0 = storeys * WALL_H;
     if (w === 1 && d === 1 && roof === 'roof-point') {
-      place('roof-point', cx, cz, { y: ry0 });
+      place('roof-point', 0, 0, { y: ry0 }, bGroup);
     } else {
       for (var a = 0; a < w; a++) for (var b = 0; b < d; b++) {
-        place(roof, cx - w / 2 + 0.5 + a, cz - d / 2 + 0.5 + b, { y: ry0 });
+        place(roof, -w / 2 + 0.5 + a, -d / 2 + 0.5 + b, { y: ry0 }, bGroup);
       }
     }
-    if (opt.chimney) place('chimney', cx + w / 2 - 0.4, cz - d / 2 + 0.4, { y: ry0 });
+    if (opt.chimney) place('chimney', w / 2 - 0.4, -d / 2 + 0.4, { y: ry0 }, bGroup);
   }
 
   // ════════ TOWN LAYOUT — matches reference order, left → right ════════
@@ -1622,7 +1946,7 @@ new Phaser.Game({
 
   // 2) Windmill — tall stone tower + rotor facing the camera
   building(-8.5, -9, 1, 1, 3, { wall: 'wall', roof: 'roof-point', door: 0, win: 'wall-window-small' });
-  placeSpinner('windmill', -8.5, 3.3, -8.3, Math.PI / 2, 0.5, 1.0);
+  placeSpinner('windmill', -8.5, 4.3, -8.1, Math.PI / 2, 0.5, 1.0);
 
   // 3) Green-roof house with the JIRAIYA sign (the big hero house)
   building(-2.5, -8.5, 3, 2, 2, { wall: 'wall-wood', roof: 'roof-gable', door: 1, win: 'wall-wood-window-glass', chimney: true });
@@ -1631,64 +1955,136 @@ new Phaser.Game({
     var g2 = cv.getContext('2d');
     g2.fillStyle = '#EADBB4'; g2.fillRect(0, 0, 512, 120);
     g2.strokeStyle = '#6B4A22'; g2.lineWidth = 12; g2.strokeRect(6, 6, 500, 108);
-    g2.fillStyle = '#3A2A14'; g2.font = 'bold 42px "Courier New", monospace';
+    g2.fillStyle = '#3A2A14'; g2.font = 'bold 66px "Courier New", monospace';
     g2.textAlign = 'center'; g2.textBaseline = 'middle';
-    g2.fillText('All 5 agents operational', 256, 62);
+    g2.fillText('Fendy SES', 256, 62);
     var tex = new THREE.CanvasTexture(cv);
-    var sign = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 0.85), new THREE.MeshBasicMaterial({ map: tex }));
-    sign.position.set(-2.5, 2.7, -7.35);
+    var sign = new THREE.Mesh(new THREE.PlaneGeometry(4.7, 1.1), new THREE.MeshBasicMaterial({ map: tex }));
+    sign.position.set(-2.5, 3.5, -7.0);
     scene.add(sign);
   }());
 
-  // 4) Red-roof house (centre-right)
-  building(4, -8.5, 2, 2, 2, { wall: 'wall-wood', roof: 'roof-high-gable', door: 1, win: 'wall-wood-window-glass', chimney: true });
+  // 4) Red-roof house — set back further, rotated so gable faces camera
+  building(4, -14, 2, 2, 2, { wall: 'wall-wood', roof: 'roof-high-gable', door: 1, win: 'wall-wood-window-glass', chimney: true, ry: Math.PI / 4 });
 
   // 5) Green-roof mill house (right) + camera-facing water wheel + flowing stream
   building(9.5, -9, 2, 2, 2, { wall: 'wall-wood', roof: 'roof-gable', door: 0, win: 'wall-wood-window-glass', chimney: true });
-  placeSpinner('watermill', 11.2, 1.5, -8, Math.PI / 2, -0.45, 1.7);
+  placeSpinner('watermill', 11.7, 2.0, -7.7, Math.PI / 2, -0.45, 1.7, true);
 
-  // -- Flowing river running from the mill down to the front-right --
-  var streamTex = makeWaterTex(); streamTex.repeat.set(1, 6);
-  var streamMat = new THREE.MeshLambertMaterial({ map: streamTex, transparent: true, opacity: 0.92 });
-  var stream = new THREE.Mesh(new THREE.PlaneGeometry(3.5, 20), streamMat);
+  // ── Enhanced river ────────────────────────────────────────────────
+  // Main water channel
+  var streamTex = makeWaterTex(); streamTex.repeat.set(1, 8);
+  var streamMat = new THREE.MeshStandardMaterial({
+    map: streamTex, transparent: true, opacity: 0.93,
+    roughness: 0.05, metalness: 0.25,
+    emissive: new THREE.Color(0x0A2D6E), emissiveIntensity: 0.18,
+    depthWrite: false
+  });
+  var stream = new THREE.Mesh(new THREE.PlaneGeometry(4.8, 22), streamMat);
   stream.rotation.x = -Math.PI / 2; stream.rotation.z = -0.28;
   stream.position.set(13.5, 0.05, -1);
   scene.add(stream);
-  flow.push({ map: streamTex, sp: 0.6 });
-  // Pond/pool at the base of the mill
+  flow.push({ map: streamTex, sp: 0.9 });
+
+  // Foam overlay — scrolls faster, additive blend for bright glowing foam
+  var foamTex = makeFoamTex(); foamTex.repeat.set(1, 5);
+  var foamMat = new THREE.MeshBasicMaterial({
+    map: foamTex, transparent: true, opacity: 0.45,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  });
+  var foam = new THREE.Mesh(new THREE.PlaneGeometry(4.8, 22), foamMat);
+  foam.rotation.x = -Math.PI / 2; foam.rotation.z = -0.28;
+  foam.position.set(13.5, 0.07, -1);
+  scene.add(foam);
+  flow.push({ map: foamTex, sp: 1.6 });
+
+  // Pond/pool at the base of the mill — wider, glowing
   var pondTex = makeWaterTex(); pondTex.repeat.set(2, 2);
-  var pondMat = new THREE.MeshLambertMaterial({ map: pondTex, transparent: true, opacity: 0.88 });
-  var pond = new THREE.Mesh(new THREE.CircleGeometry(2.2, 24), pondMat);
+  var pondMat = new THREE.MeshStandardMaterial({
+    map: pondTex, transparent: true, opacity: 0.90,
+    roughness: 0.04, metalness: 0.30,
+    emissive: new THREE.Color(0x0D3A85), emissiveIntensity: 0.22,
+    depthWrite: false
+  });
+  var pond = new THREE.Mesh(new THREE.CircleGeometry(3.0, 36), pondMat);
   pond.rotation.x = -Math.PI / 2;
   pond.position.set(11.5, 0.06, 0.5);
   scene.add(pond);
-  flow.push({ map: pondTex, sp: 0.3 });
+  flow.push({ map: pondTex, sp: 0.35 });
+
+  // Pond foam cap
+  var pFoamTex = makeFoamTex(); pFoamTex.repeat.set(2, 2);
+  var pFoamMat = new THREE.MeshBasicMaterial({
+    map: pFoamTex, transparent: true, opacity: 0.35,
+    blending: THREE.AdditiveBlending, depthWrite: false
+  });
+  var pFoam = new THREE.Mesh(new THREE.CircleGeometry(3.0, 36), pFoamMat);
+  pFoam.rotation.x = -Math.PI / 2;
+  pFoam.position.set(11.5, 0.08, 0.5);
+  scene.add(pFoam);
+  flow.push({ map: pFoamTex, sp: 0.7 });
+
+  // Ripple rings around the pond
+  for (var ri = 0; ri < 3; ri++) {
+    var rMat = new THREE.MeshBasicMaterial({
+      color: 0x5BC8F5, transparent: true, opacity: 0.22 - ri * 0.05,
+      side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending
+    });
+    var ring = new THREE.Mesh(new THREE.RingGeometry(2.8 + ri * 0.55, 3.05 + ri * 0.55, 36), rMat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.set(11.5, 0.09, 0.5);
+    scene.add(ring);
+  }
+
+  // Blue point light above the pond for water glow
+  var waterLight = new THREE.PointLight(0x3DAEFF, 1.1, 10, 1.8);
+  waterLight.position.set(11.5, 1.8, 0.5);
+  scene.add(waterLight);
+
+  // Sparkle particles along the stream banks
+  var spkMat = new THREE.MeshBasicMaterial({
+    color: 0xAAE8FF, transparent: true, opacity: 0.75,
+    depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  for (var si = 0; si < 18; si++) {
+    var spk = new THREE.Mesh(new THREE.CircleGeometry(0.12 + Math.random() * 0.14, 6), spkMat);
+    spk.rotation.x = -Math.PI / 2;
+    spk.position.set(11 + (Math.random() - 0.5) * 5, 0.09, -4 + si * 0.55 + (Math.random() - 0.5));
+    scene.add(spk);
+  }
 
   // ════════ SCENERY ════════
-  // Dense pine forest backdrop in front of the hills
+  // Dense pine forest backdrop (smaller + pushed back for sky visibility)
   for (var fx = -28; fx <= 28; fx += 2.6) {
     if (fx > -9 && fx < 9) continue;                 // leave the village centre open
-    var fz = -16 - Math.abs(Math.sin(fx * 0.7)) * 5 - Math.random() * 3;
-    place('tree-high', fx + (Math.random() - 0.5) * 1.2, fz, { s: 1.7 + Math.random() * 0.8 });
+    var fz = -21 - Math.abs(Math.sin(fx * 0.7)) * 4 - Math.random() * 2;
+    place('tree-high', fx + (Math.random() - 0.5) * 1.2, fz, { s: 0.85 + Math.random() * 0.35 });
   }
-  // A second, sparser forest row higher on the hill line
+  // A second, sparser forest row
   for (var gx = -26; gx <= 26; gx += 4.5) {
-    place('tree-high', gx + (Math.random() - 0.5), -24 - Math.random() * 4, { s: 2.0 + Math.random() * 0.9 });
+    place('tree-high', gx + (Math.random() - 0.5), -30 - Math.random() * 4, { s: 0.9 + Math.random() * 0.45 });
   }
 
-  // Village trees (mid + foreground)
+  // Village trees — left-side trees cast shadows; right-side trees (x>10) are near
+  // the stream and cast distracting foreground shadows, so noShadow on those.
   [
-    ['tree-high',-13,-7,1.7],['tree-high',13,-8,1.7],
+    ['tree-high',-13,-7,1.7],
     ['tree-high-round',-7,-11,1.7],['tree-high-round',4,-11,1.8],
-    ['tree',-11,-3,1.6],['tree',12,-2,1.6],['tree-crooked',-13,1,1.5],
-    ['tree-crooked',13,1,1.5],['tree',-3.5,-6,1.4],['tree',4.5,-6.5,1.4],
+    ['tree',-11,-3,1.6],['tree-crooked',-13,1,1.5],
+    ['tree',-3.5,-6,1.4],['tree',4.5,-6.5,1.4],
   ].forEach(function(t) { place(t[0], t[1], t[2], { s: t[3] }); });
+  // Right-side trees: noShadow to eliminate the lower-right foreground shadow
+  [
+    ['tree-high',13,-8,1.7],
+    ['tree',12,-2,1.6],
+    ['tree-crooked',13,1,1.5],
+  ].forEach(function(t) { place(t[0], t[1], t[2], { s: t[3], noShadow: true }); });
 
-  // Rocks — kept only as tidy clusters at the far left & right edges (clearing stays open)
+  // Rocks — no directional shadows (too small, create clutter near the stream)
   [
     ['rock-large',-13,2,1.8],['rock-wide',-13.5,0.5,1.5],
     ['rock-large',13,2.5,1.8],['rock-wide',13.5,1,1.5],['rock-small',12.5,3,1.1],
-  ].forEach(function(r) { place(r[0], r[1], r[2], { s: r[3], tint: 0x9C968A }); });
+  ].forEach(function(r) { place(r[0], r[1], r[2], { s: r[3], tint: 0x9C968A, noShadow: true }); });
 
   // Flowers — tiny white dots scattered in the grass
   var flowerMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
@@ -1707,6 +2103,7 @@ new Phaser.Game({
 
   // (lanterns removed)
 
+
   // ════════════════════════════════════════════════════════
   // 3D MINI-CHARACTERS — synced from Phaser NPC positions
   // ════════════════════════════════════════════════════════
@@ -1719,10 +2116,13 @@ new Phaser.Game({
     Hinata:  { file: 'character-female-e', scale: 1.45, baseRY: 0 },
   };
 
-  var char3d    = {};   // name → THREE.Group
-  var charBob   = {};   // accumulated bob time per char
-  var charYOff  = {};   // ground y-offset per char (from bounding box)
-  var goldTrails = [];  // active golden afterimage clones for Jiraiya
+  var char3d      = {};   // name → THREE.Group
+  var charBob     = {};   // accumulated bob time per char (kept for fighting shake)
+  var charYOff    = {};   // ground y-offset per char (from bounding box)
+  var charMixer   = {};   // name → THREE.AnimationMixer
+  var charClips   = {};   // name → { clipName: THREE.AnimationAction }
+  var charCurAnim = {};   // name → currently playing clip name
+  var goldTrails  = [];   // active golden afterimage clones for Jiraiya
 
   // Correct 2D→3D mapping: shoot a ray from the camera through the Phaser
   // screen position and intersect with the ground plane (y=0).
@@ -1750,18 +2150,91 @@ new Phaser.Game({
       m.scale.setScalar(cfg.scale);
       m.rotation.y = cfg.baseRY;
       m.traverse(function(c) {
-        if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; }
+        if (!c.isMesh) return;
+        c.castShadow = true;
+        c.receiveShadow = true;
+
+        // Force nearest-filter on the flat-color atlas (prevents UV-boundary colour bleed)
+        if (c.material && c.material.map) {
+          c.material.map.minFilter = THREE.NearestFilter;
+          c.material.map.magFilter = THREE.NearestFilter;
+          c.material.map.needsUpdate = true;
+        }
+
+        // ── Head geometry fix: hair covers face in complex-hair characters ──
+        // Root cause (verified in binary): spiky/long hair verts extend to Z=0.17-0.21
+        // in the same Y band as the face (Z=0.160), blocking it from the camera.
+        // Fix: (a) push face-feature verts (26-vert U=0.094 cluster) to Z=0.175
+        //      (b) clamp any hair vert at face-level Y with Z>0.162 back to Z=0.145
+        if (c.name === 'head-mesh' && c.geometry) {
+          var geom = c.geometry;
+          var uvAttr  = geom.attributes.uv;
+          var posAttr = geom.attributes.position;
+          if (uvAttr && posAttr) {
+            // Count verts in the U≈0.094 group: ≤30 → face features, >30 → hair (Sasuke/Hinata)
+            var n094 = 0;
+            for (var vi = 0; vi < uvAttr.count; vi++) {
+              if (Math.abs(uvAttr.getX(vi) - 0.094) < 0.015) n094++;
+            }
+            var u094isFace = (n094 <= 30);
+            var dirty = false;
+            for (var vi = 0; vi < uvAttr.count; vi++) {
+              var pu = uvAttr.getX(vi);
+              var py = posAttr.getY(vi);
+              var pz = posAttr.getZ(vi);
+              if (u094isFace && Math.abs(pu - 0.094) < 0.015) {
+                // Face-feature verts: pull forward so hair can't block them
+                if (pz < 0.175) { posAttr.setZ(vi, 0.175); dirty = true; }
+              } else if (pz > 0.162 && py > 0.35 && py < 0.55) {
+                // Any vert at face-level Y protruding in front of face: push back
+                posAttr.setZ(vi, 0.145); dirty = true;
+              }
+            }
+            if (dirty) {
+              posAttr.needsUpdate = true;
+              geom.computeBoundingBox();
+              geom.computeBoundingSphere();
+            }
+          }
+        }
       });
-      // snap model bottom to y=0 (same pattern as the town place() helper)
+      // snap model bottom to y=0
       m.updateWorldMatrix(true, true);
       var box = new THREE.Box3().setFromObject(m);
-      charYOff[name] = -box.min.y;           // lift so lowest point sits on ground
-      m.position.set(0, -99, 0);             // park off-screen until first Phaser sync
+      charYOff[name] = -box.min.y;
+      m.position.set(0, -99, 0);
       scene.add(m);
       char3d[name] = m;
-      console.log('[3D char] loaded', name, 'yOff=', charYOff[name].toFixed(3), 'box:', box.min.y.toFixed(2), '→', box.max.y.toFixed(2));
+
+      // ── Animation mixer ──
+      var mixer = new THREE.AnimationMixer(m);
+      charMixer[name]   = mixer;
+      charClips[name]   = {};
+      charCurAnim[name] = '';
+      gltf.animations.forEach(function(clip) {
+        charClips[name][clip.name] = mixer.clipAction(clip);
+      });
+      // start in idle immediately
+      if (charClips[name]['idle']) {
+        charClips[name]['idle'].play();
+        charCurAnim[name] = 'idle';
+      }
+      console.log('[3D char] loaded', name, '— clips:', Object.keys(charClips[name]).join(', '));
     }, undefined, function() { console.warn('[3D char] FAILED to load:', name); });
   });
+
+  // Crossfade to a new animation clip (no-op if already playing that clip)
+  function setCharAnim(name, clipName) {
+    if (charCurAnim[name] === clipName) return;
+    var clips = charClips[name];
+    if (!clips || !clips[clipName]) return;
+    var prev = charCurAnim[name];
+    if (prev && clips[prev]) {
+      clips[prev].fadeOut(0.20);
+    }
+    clips[clipName].reset().fadeIn(0.20).play();
+    charCurAnim[name] = clipName;
+  }
 
   // Spawn a golden 3D clone of Jiraiya at his current position (replaces the old 2D ghost)
   function spawnGoldTrail() {
@@ -1866,6 +2339,29 @@ new Phaser.Game({
       for (var i = 0; i < spin.length; i++) spin[i].o.rotation.x += spin[i].sp * dt;
       for (var j = 0; j < flow.length; j++) flow[j].map.offset.y -= flow[j].sp * dt;
 
+      // clouds drift left → right; wrap at x=50 back to x=-50
+      for (var ci = 0; ci < clouds3d.length; ci++) {
+        clouds3d[ci].g.position.x += clouds3d[ci].spd * dt;
+        if (clouds3d[ci].g.position.x > 50) clouds3d[ci].g.position.x = -50;
+      }
+
+      // bird flocks cross the sky
+      nextFlockIn -= dt;
+      if (nextFlockIn <= 0) { spawnFlock(); nextFlockIn = 30 + Math.random() * 45; }
+      for (var fi = birdFlocks.length - 1; fi >= 0; fi--) {
+        var fk = birdFlocks[fi];
+        fk._age += dt;
+        fk.position.x += fk._spd * dt;
+        fk.position.y = fk._baseY + Math.sin(fk._age * 0.9) * 0.18;
+        fk.children.forEach(function(b) {
+          b.rotation.z = Math.sin(fk._age * 5.5 + b._phase) * 0.04;
+        });
+        if (fk.position.x > 36) { scene.remove(fk); birdFlocks.splice(fi, 1); }
+      }
+
+      // tick all animation mixers
+      Object.keys(charMixer).forEach(function(name) { charMixer[name].update(dt); });
+
       // sync 3D characters from Phaser NPC state
       var npcData = window._NPC_STATE;
       var meta    = window._NPC_META;
@@ -1876,29 +2372,41 @@ new Phaser.Game({
           if (!d) return;
 
           var wp = phaserTo3D(d.x, d.y);
-          if (!wp) return;    // ray missed ground plane (shouldn't happen)
+          if (!wp) return;
 
-          var yOff = charYOff[name];
           m.position.x = wp.x;
           m.position.z = wp.z;
+          m.position.y = charYOff[name];   // animation drives vertical pose; we just ground it
 
           var isMoving = (d.state === 'walking' || d.state === 'post-battle');
           if (isMoving) {
-            charBob[name] += dt * 7;
-            m.position.y = yOff + Math.abs(Math.sin(charBob[name])) * 0.18;
+            setCharAnim(name, 'walk');
             if (Math.abs(d.vx) > 0.0001) {
-              var targetRY = d.vx > 0 ? -Math.PI * 0.25 : Math.PI * 0.25;
+              // +π/4 = faces right (+X toward camera); −π/4 = faces left (−X toward camera)
+              var targetRY = d.vx > 0 ? Math.PI * 0.25 : -Math.PI * 0.25;
               m.rotation.y += (targetRY - m.rotation.y) * 0.18;
             }
           } else if (d.state === 'fighting') {
-            charBob[name] += dt * 14;
-            m.position.y = yOff + Math.abs(Math.sin(charBob[name])) * 0.10;
+            setCharAnim(name, 'attack-melee-right');
+            // rotate to face the opponent (the other NPC currently in fighting state)
+            var nNames = Object.keys(npcData);
+            for (var fi = 0; fi < nNames.length; fi++) {
+              var oName = nNames[fi];
+              if (oName === name) continue;
+              var od = npcData[oName];
+              if (!od || od.state !== 'fighting') continue;
+              var owp = phaserTo3D(od.x, od.y);
+              if (owp) {
+                // atan2(dx, dz) gives rotation.y angle to face toward opponent in XZ plane
+                var fightRY = Math.atan2(owp.x - m.position.x, owp.z - m.position.z);
+                m.rotation.y += (fightRY - m.rotation.y) * 0.18;
+              }
+              break;
+            }
           } else {
-            charBob[name] += dt * 1.8;
-            m.position.y = yOff + Math.sin(charBob[name]) * 0.04 + 0.04;
+            setCharAnim(name, 'idle');
             m.rotation.y += (CHAR_MAP[name].baseRY - m.rotation.y) * 0.05;
           }
-          // perspective camera handles depth scaling automatically — no manual scale needed
           m.scale.setScalar(CHAR_MAP[name].scale);
         });
       }
@@ -1915,12 +2423,24 @@ new Phaser.Game({
         }
       }
 
-      renderer.render(scene, camera);
+      composer.render();
     });
   }());
 
 }());
 
 </script>
+
+<div id="statsOverlay">
+  <div id="statsBox">
+    <button id="statsClose" onclick="document.getElementById('statsOverlay').classList.remove('open')">✕</button>
+    <div class="s-name" id="statsName"></div>
+    <div class="s-row">Battles <span id="sBattles">0</span></div>
+    <div class="s-row">Distance walked <span id="sDist">0 m</span></div>
+    <div class="s-row">Mood <span id="sMood">✨ Fresh</span></div>
+    <div class="s-row">Session time <span id="sTime">0 min</span></div>
+    <div class="s-quote" id="sQuote">No quotes yet.</div>
+  </div>
+</div>
 </body>
 </html>

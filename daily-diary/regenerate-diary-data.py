@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Regenerates daily-diary/diary-data.js from all current/ + archived/*/ markdown files.
+"""Regenerates daily-diary/diary-data.js and diary-index.json from all
+current/ + archived/*/ markdown files.
 Run this after any write to a diary .md file so the in-game diary book stays in sync."""
 import json
 import os
@@ -8,7 +9,7 @@ import glob
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-def main():
+def collect_entries():
     entries = []
     for path in sorted(glob.glob(os.path.join(SCRIPT_DIR, "current", "*.md"))) + \
                 sorted(glob.glob(os.path.join(SCRIPT_DIR, "archived", "*", "*.md"))):
@@ -16,12 +17,19 @@ def main():
         if not fname[:4].isdigit() or len(fname) < 10:
             continue
         date = fname.replace(".md", "")
+        # store path relative to SCRIPT_DIR so the browser can fetch it
+        rel = os.path.relpath(path, SCRIPT_DIR).replace("\\", "/")
         with open(path, encoding="utf-8") as f:
             content = f.read()
-        entries.append((date, content))
-
+        entries.append((date, rel, content))
     entries.sort(key=lambda e: e[0], reverse=True)
+    return entries
 
+
+def main():
+    entries = collect_entries()
+
+    # ── diary-data.js (legacy fallback) ──────────────────────────────
     lines = [
         "// ════════════════════════════════════════════════════════",
         "// DIARY DATA — auto-synced from daily-diary/ (current + archived)",
@@ -30,15 +38,22 @@ def main():
         "",
         "const DIARY_DATA = [",
     ]
-    for date, content in entries:
+    for date, _rel, content in entries:
         lines.append("  { date:" + json.dumps(date) + ", content:" + json.dumps(content) + " },")
     lines.append("];")
     lines.append("")
 
-    out_path = os.path.join(SCRIPT_DIR, "diary-data.js")
-    with open(out_path, "w", encoding="utf-8") as f:
+    out_js = os.path.join(SCRIPT_DIR, "diary-data.js")
+    with open(out_js, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
-    print(f"wrote {len(entries)} entries to {out_path}")
+
+    # ── diary-index.json (used by the dashboard for live fetching) ───
+    index = [{"date": date, "path": rel} for date, rel, _ in entries]
+    out_idx = os.path.join(SCRIPT_DIR, "diary-index.json")
+    with open(out_idx, "w", encoding="utf-8") as f:
+        json.dump(index, f, ensure_ascii=False, indent=2)
+
+    print(f"wrote {len(entries)} entries → {out_js}  +  {out_idx}")
 
 
 if __name__ == "__main__":
