@@ -441,6 +441,19 @@ function fxSHClash(G,x,y,t){
   G.fillStyle(0xFFB6C1,p*.65);G.fillCircle(x,y,18*p);G.fillStyle(0xE6E6FA,p*.5);G.fillCircle(x,y,28*p);
   for(let i=0;i<4;i++){G.lineStyle(1.5,0xFF69B4,0.35-i*.07);G.strokeCircle(x,y,6+i*8+Math.sin(t*5+i)*3);}
 }
+// Speed lines — anime radial streaks bursting from the clash point
+function fxSpeedLines(G,cx,cy,W,H,t,col,intensity){
+  const n=24, maxR=Math.max(W,H);
+  for(let i=0;i<n;i++){
+    const a=(i/n)*Math.PI*2 + t*0.35;
+    const inner=maxR*(0.20+0.05*Math.sin(t*3+i)), outer=maxR*0.64;
+    G.lineStyle(2+(i%3), col, 0.11*intensity);
+    G.beginPath();
+    G.moveTo(cx+Math.cos(a)*inner, cy+Math.sin(a)*inner);
+    G.lineTo(cx+Math.cos(a)*outer, cy+Math.sin(a)*outer);
+    G.strokePath();
+  }
+}
 
 // ════════════════════════════════════════════════════════
 // AGENT NPC
@@ -449,6 +462,7 @@ class AgentNPC {
   constructor(scene,name,x,y){
     this.scene=scene; this.name=name;
     this.color=ADEF[name].color; this.intColor=parseInt(ADEF[name].color.replace('#',''),16);
+    this.intGlow=parseInt(ADEF[name].glow.replace('#',''),16);
     this.atlasKey=CHAR[name].atlas; this.sc=CHAR[name].sc;
     this.state='idle'; this.cooldown=CFG.INIT_COOLDOWN;
     this.vx=0; this.vy=0; this.waitT=0;
@@ -701,8 +715,11 @@ class PetNPC {
   }
   pickTarget(){
     const W=this.scene.W,H=this.scene.H,minY=this.scene.walkMinY;
-    const tx=80+Math.random()*(W-160);
-    const ty=minY+20+Math.random()*(H-minY-50);
+    let tx,ty,tries=0;
+    do{
+      tx=80+Math.random()*(W-160);
+      ty=minY+20+Math.random()*(H-minY-50);
+    }while(this.scene.isBlocked&&this.scene.isBlocked(tx,ty)&&++tries<14);
     const dx=tx-this.baseX,dy=ty-this.baseY,d=Math.sqrt(dx*dx+dy*dy)||1;
     const spd=0.028+Math.random()*0.022;
     this.vx=(dx/d)*spd; this.vy=(dy/d)*spd;
@@ -712,8 +729,13 @@ class PetNPC {
     if(this.dragging) return;
     this.bobT+=delta*0.006;
     if(this.isWalking){
-      this.baseX=Phaser.Math.Clamp(this.baseX+this.vx*delta,60,this.scene.W-60);
-      this.baseY=Phaser.Math.Clamp(this.baseY+this.vy*delta,this.scene.walkMinY+10,this.scene.H-24);
+      const nx=Phaser.Math.Clamp(this.baseX+this.vx*delta,60,this.scene.W-60);
+      const ny=Phaser.Math.Clamp(this.baseY+this.vy*delta,this.scene.walkMinY+10,this.scene.H-24);
+      if(this.scene.isBlocked&&this.scene.isBlocked(nx,ny)&&!this.scene.isBlocked(this.baseX,this.baseY)){
+        this.isWalking=false; this.waitT=400; this.pickTarget();
+      } else {
+        this.baseX=nx; this.baseY=ny;
+      }
       this.sprite.setFlipX(this.vx<0);
       this.walked+=Math.hypot(this.vx,this.vy)*delta;
       if(this.walked>=this.walkDist*0.97){this.isWalking=false;this.waitT=1200+Math.random()*3500;}
@@ -759,7 +781,7 @@ class GameScene extends Phaser.Scene {
     //    the 3D houses, windmill, mill, or the prominent foreground trees.
     this.obstacles=[
       [0.19,0.55,0.065,0.080],  // windmill
-      [0.43,0.57,0.110,0.090],  // green-roof sign house (widened)
+      [0.43,0.50,0.110,0.090],  // green-roof sign house (moved back to z=-14, same row as red-roof)
       [0.63,0.44,0.055,0.065],  // red-roof house (further back z=-14)
       [0.85,0.57,0.085,0.085],  // mill house (widened)
       [0.35,0.64,0.032,0.045],  // foreground tree (centre-left)
@@ -1035,6 +1057,12 @@ class GameScene extends Phaser.Scene {
       document.getElementById('battleTimerBar').style.width=(frac*100)+'%';
       const bEl=document.getElementById('bCount'); if(bEl) bEl.textContent=Math.max(0,Math.ceil(this.battleSecs));
       this.drawBattleFX(this.fightA,this.fightB,time);
+      // rhythmic impact beats — gentle micro-shake only (no full-screen flash; that hurt the eyes)
+      this._impactBeat-=delta;
+      if(this._impactBeat<=0){
+        this._impactBeat=820+Math.random()*240;
+        this.cameras.main.shake(80,0.005);
+      }
       if(this.battleSecs<=0) this.endBattle(this.fightA,this.fightB);
     }
     if(this.postPhase){this.postTimer-=delta;if(this.postTimer<=0){this.postPhase=false;this.fxGfx.clear();}}
@@ -1059,6 +1087,7 @@ class GameScene extends Phaser.Scene {
     document.getElementById('battleBanner').style.display='block';
     document.getElementById('battleTimerWrapper').style.display='block';
     this.cameras.main.shake(150,0.005);
+    this._impactBeat=820;   // rhythmic impact-frame timer (ms)
     refreshCard(a); refreshCard(b);
   }
   endBattle(a,b){
@@ -1073,15 +1102,16 @@ class GameScene extends Phaser.Scene {
   drawBattleFX(a,b,time){
     const G=this.fxGfx; G.clear(); const t=time*0.003;
     const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2-35;
+    // speed lines burst on clash peaks
+    const clashPulse=Math.max(0,Math.sin(t*9));
+    if(clashPulse>0.25) fxSpeedLines(G,cx,cy+35,this.W,this.H,t,a.intGlow,clashPulse);
     const isNS=(a.name==='Naruto'||a.name==='Sasuke');
     if(isNS){
       const nr=a.name==='Naruto'?a:b, sk=a.name==='Sasuke'?a:b;
       fxRasengan(G,nr.x+26,nr.y-32,t); fxChidori(G,sk.x-26,sk.y-32,t); fxClash(G,cx,cy,t);
-      if(Math.sin(t*10)>0.7){G.fillStyle(0xFF6B1A,0.04);G.fillRect(0,0,this.W,this.H);}
     } else {
       const sa=a.name==='Sakura'?a:b, hi=a.name==='Hinata'?a:b;
       fxMedicalPunch(G,sa.x+22,sa.y-32,t); fxByakugan(G,hi.x-22,hi.y-32,t); fxSHClash(G,cx,cy,t);
-      if(Math.sin(t*8)>0.7){G.fillStyle(0xFF69B4,0.03);G.fillRect(0,0,this.W,this.H);}
     }
   }
 
@@ -1746,16 +1776,92 @@ new Phaser.Game({
   // ── ANIMATED TARGETS ── (windmill blades, water wheel, flowing water)
   var spin = [];   // each: {o, sp}  → rotates about local X
   var flow = [];   // each: {map, sp} → scrolls a water texture
+  var caustics = []; // each: {tex, mat, e0, eAmp, swayAmp} → shimmer + emissive pulse
+
+  // ── WIND ── shared time uniform; patched materials sway per-vertex (taller = more)
+  var windUniforms = { uTime: { value: 0 } };
+  function patchWindMat(mat, opts) {
+    if (!mat || mat.userData._wind) return;
+    opts = opts || {};
+    mat.userData._wind = true;
+    var amp = opts.amp || 0.07, sway = opts.sway || 1.0;
+    mat.onBeforeCompile = function(shader) {
+      shader.uniforms.uTime    = windUniforms.uTime;
+      shader.uniforms.uWindAmp = { value: amp };
+      shader.uniforms.uWindSway= { value: sway };
+      shader.vertexShader =
+        'uniform float uTime;\nuniform float uWindAmp;\nuniform float uWindSway;\n' +
+        shader.vertexShader.replace('#include <begin_vertex>',
+          '#include <begin_vertex>\n' +
+          'float wH = max(transformed.y, 0.0);\n' +
+          'float wPhase = uTime * 1.5 * uWindSway + position.x * 0.5 + position.z * 0.5;\n' +
+          'transformed.x += sin(wPhase) * uWindAmp * wH;\n' +
+          'transformed.z += cos(wPhase * 0.8) * uWindAmp * 0.6 * wH;');
+    };
+    mat.needsUpdate = true;
+  }
+  function patchWind(root, opts) {
+    root.traverse(function(c) {
+      if (!c.isMesh || !c.material) return;
+      var mats = Array.isArray(c.material) ? c.material : [c.material];
+      mats.forEach(function(m) { patchWindMat(m, opts); });
+    });
+  }
+
+  // ── CHIMNEY SMOKE ── soft puffs that rise, drift with the wind, expand & fade
+  var smokeTex = (function() {
+    var c = document.createElement('canvas'); c.width = c.height = 64;
+    var g = c.getContext('2d');
+    var rg = g.createRadialGradient(32, 32, 2, 32, 32, 30);
+    rg.addColorStop(0,   'rgba(255,255,255,0.92)');
+    rg.addColorStop(0.5, 'rgba(228,228,234,0.45)');
+    rg.addColorStop(1,   'rgba(220,220,226,0)');
+    g.fillStyle = rg; g.fillRect(0, 0, 64, 64);
+    return new THREE.CanvasTexture(c);
+  })();
+  var smokeEmitters = [], smokePuffs = [];
+  function registerSmoke(x, y, z) { smokeEmitters.push({ x: x, y: y, z: z, t: Math.random() * 1.0 }); }
+  function spawnPuff(e) {
+    var mat = new THREE.SpriteMaterial({ map: smokeTex, transparent: true, opacity: 0, depthWrite: false });
+    var s = new THREE.Sprite(mat);
+    s.position.set(e.x + (Math.random() - 0.5) * 0.15, e.y, e.z + (Math.random() - 0.5) * 0.15);
+    var sc0 = 0.35 + Math.random() * 0.18; s.scale.set(sc0, sc0, sc0);
+    scene.add(s);
+    smokePuffs.push({ s: s, life: 0, ttl: 4.5 + Math.random() * 1.6,
+                      vx: 0.13 + Math.random() * 0.08, vy: 0.34 + Math.random() * 0.12, sc0: sc0 });
+  }
+  function updateSmoke(dt) {
+    for (var i = 0; i < smokeEmitters.length; i++) {
+      var e = smokeEmitters[i]; e.t -= dt;
+      if (e.t <= 0) { e.t = 0.55 + Math.random() * 0.35; spawnPuff(e); }
+    }
+    for (var k = smokePuffs.length - 1; k >= 0; k--) {
+      var p = smokePuffs[k]; p.life += dt; var f = p.life / p.ttl;
+      if (f >= 1) { scene.remove(p.s); p.s.material.dispose(); smokePuffs.splice(k, 1); continue; }
+      p.s.position.x += p.vx * dt; p.s.position.y += p.vy * dt;
+      var sc = p.sc0 + f * 0.95; p.s.scale.set(sc, sc, sc);
+      p.s.material.opacity = Math.sin(f * Math.PI) * 0.5;
+    }
+  }
 
   // ── START RENDER LOOP IMMEDIATELY (sky + ground always visible) ──
   // Wire scene + camera into the RenderPass now that both are created
   composer.passes[0].scene  = scene;
   composer.passes[0].camera = camera;
   var clock = new THREE.Clock();
+  var tAcc = 0;
   renderer.setAnimationLoop(function() {
     var dt = clock.getDelta();
+    tAcc += dt;
+    windUniforms.uTime.value = tAcc;
     for (var i = 0; i < spin.length; i++) spin[i].o.rotation.x += spin[i].sp * dt;
     for (var j = 0; j < flow.length; j++) flow[j].map.offset.y -= flow[j].sp * dt;
+    for (var ci = 0; ci < caustics.length; ci++) {
+      var cc = caustics[ci];
+      cc.tex.offset.x = Math.sin(tAcc * 0.6 + ci) * cc.swayAmp;
+      if (cc.mat) cc.mat.emissiveIntensity = cc.e0 + Math.sin(tAcc * 1.3 + ci * 1.7) * cc.eAmp;
+    }
+    updateSmoke(dt);
     composer.render();
   });
 
@@ -1787,6 +1893,7 @@ new Phaser.Game({
           if (o.tint && c.material) { c.material = c.material.clone(); c.material.color.setHex(o.tint); }
         }
       });
+      if (o.wind) patchWind(m, { amp: o.windAmp || 0.06, sway: o.windSway || 1.0 });
       m.updateWorldMatrix(true, true);
       var box = new THREE.Box3().setFromObject(m);
       m.position.set(x, ground ? (y - box.min.y) : y, z);
@@ -1901,22 +2008,26 @@ new Phaser.Game({
     scene.add(bGroup);
     // Wall panels only receive shadows; one clean box casts the building's shadow
     bGroup.userData.noShadowCast = true;
-    // Invisible box shadow-caster — gives a single clean angled shadow from the sun
+    // Invisible box shadow-caster — skip if noShadow is set on the building
     var shadowH = storeys * WALL_H + 0.85;
-    var shadowMat = new THREE.MeshBasicMaterial({ visible: false });
-    var shadowBox = new THREE.Mesh(new THREE.BoxGeometry(w, shadowH, d), shadowMat);
-    shadowBox.castShadow = true;
-    shadowBox.receiveShadow = false;
-    shadowBox.position.set(0, shadowH / 2, 0);
-    bGroup.add(shadowBox);
+    if (!opt.noShadow) {
+      var shadowMat = new THREE.MeshBasicMaterial({ visible: false });
+      var shadowBox = new THREE.Mesh(new THREE.BoxGeometry(w, shadowH, d), shadowMat);
+      shadowBox.castShadow = true;
+      shadowBox.receiveShadow = false;
+      shadowBox.position.set(0, shadowH / 2, 0);
+      bGroup.add(shadowBox);
+    }
     for (var s = 0; s < storeys; s++) {
       var y = s * WALL_H;
-      // left / right faces (run along Z, normal ±X)
-      for (var i = 0; i < d; i++) {
-        var zc = -d / 2 + 0.5 + i;
-        var sideW = (s > 0 && opt.win) ? opt.win : wt;   // windows on upper storeys
-        place(sideW, -w / 2, zc, { y: y }, bGroup);
-        place(sideW,  w / 2, zc, { y: y }, bGroup);
+      // left / right faces — skipped if noSideWalls (avoids pole artefacts at building edges)
+      if (!opt.noSideWalls) {
+        for (var i = 0; i < d; i++) {
+          var zc = -d / 2 + 0.5 + i;
+          var sideW = (s > 0 && opt.win) ? opt.win : wt;   // windows on upper storeys
+          place(sideW, -w / 2, zc, { y: y }, bGroup);
+          place(sideW,  w / 2, zc, { y: y }, bGroup);
+        }
       }
       // front / back faces (run along X, normal ±Z) — rotated 90°
       for (var j = 0; j < w; j++) {
@@ -1938,34 +2049,39 @@ new Phaser.Game({
         place(roof, -w / 2 + 0.5 + a, -d / 2 + 0.5 + b, { y: ry0 }, bGroup);
       }
     }
-    if (opt.chimney) place('chimney', w / 2 - 0.4, -d / 2 + 0.4, { y: ry0 }, bGroup);
+    if (opt.chimney) place('chimney', w / 2 - 0.4, -d / 2 + 0.4, { y: ry0, onload: function(cm) {
+      cm.updateWorldMatrix(true, true);
+      var _cp = new THREE.Vector3(); cm.getWorldPosition(_cp);
+      registerSmoke(_cp.x, _cp.y + 0.35, _cp.z);
+    } }, bGroup);
   }
 
   // ════════ TOWN LAYOUT — matches reference order, left → right ════════
   // (z negative = far/back; one storey = 1.0 unit tall)
 
   // 2) Windmill — tall stone tower + rotor facing the camera
-  building(-8.5, -9, 1, 1, 3, { wall: 'wall', roof: 'roof-point', door: 0, win: 'wall-window-small' });
-  placeSpinner('windmill', -8.5, 4.3, -8.1, Math.PI / 2, 0.5, 1.0);
+  building(-8.5, -9, 1, 1, 3, { wall: 'wall', roof: 'roof-point', door: 0, win: 'wall-window-small', noSideWalls: true });
+  placeSpinner('windmill', -8.5, 3.9, -9, Math.PI / 2, 0.5, 1.3, true);
 
-  // 3) Green-roof house with the JIRAIYA sign (the big hero house)
-  building(-2.5, -8.5, 3, 2, 2, { wall: 'wall-wood', roof: 'roof-gable', door: 1, win: 'wall-wood-window-glass', chimney: true });
+  // 3) Green-roof house with the JIRAIYA sign — pushed back to align with red-roof house
+  building(-2.5, -14, 3, 2, 2, { wall: 'wall-wood', roof: 'roof-gable', door: 1, win: 'wall-wood-window-glass', chimney: true, noSideWalls: true, noShadow: true });
   (function () {
     var cv = document.createElement('canvas'); cv.width = 512; cv.height = 120;
     var g2 = cv.getContext('2d');
     g2.fillStyle = '#EADBB4'; g2.fillRect(0, 0, 512, 120);
     g2.strokeStyle = '#6B4A22'; g2.lineWidth = 12; g2.strokeRect(6, 6, 500, 108);
-    g2.fillStyle = '#3A2A14'; g2.font = 'bold 66px "Courier New", monospace';
-    g2.textAlign = 'center'; g2.textBaseline = 'middle';
-    g2.fillText('Fendy SES', 256, 62);
+    g2.fillStyle = '#3A2A14'; g2.font = 'bold 43px "Courier New", monospace';
+    g2.textAlign = 'right'; g2.textBaseline = 'middle';
+    g2.fillText('by Fendy SES', 496, 62);
     var tex = new THREE.CanvasTexture(cv);
     var sign = new THREE.Mesh(new THREE.PlaneGeometry(4.7, 1.1), new THREE.MeshBasicMaterial({ map: tex }));
-    sign.position.set(-2.5, 3.5, -7.0);
+    sign.position.set(-2.5, 3.5, -12.5);
     scene.add(sign);
   }());
 
-  // 4) Red-roof house — set back further, rotated so gable faces camera
-  building(4, -14, 2, 2, 2, { wall: 'wall-wood', roof: 'roof-high-gable', door: 1, win: 'wall-wood-window-glass', chimney: true, ry: Math.PI / 4 });
+  // 4) Red-roof house — squared up to face the camera; noSideWalls kills the edge-on
+  //    side panels that showed as a pole (left) and a jutting angled panel (right)
+  building(4, -14, 2, 2, 2, { wall: 'wall-wood', roof: 'roof-high-gable', door: 1, win: 'wall-wood-window-glass', chimney: true, noSideWalls: true });
 
   // 5) Green-roof mill house (right) + camera-facing water wheel + flowing stream
   building(9.5, -9, 2, 2, 2, { wall: 'wall-wood', roof: 'roof-gable', door: 0, win: 'wall-wood-window-glass', chimney: true });
@@ -1985,6 +2101,7 @@ new Phaser.Game({
   stream.position.set(13.5, 0.05, -1);
   scene.add(stream);
   flow.push({ map: streamTex, sp: 0.9 });
+  caustics.push({ tex: streamTex, mat: streamMat, e0: 0.18, eAmp: 0.11, swayAmp: 0.05 });
 
   // Foam overlay — scrolls faster, additive blend for bright glowing foam
   var foamTex = makeFoamTex(); foamTex.repeat.set(1, 5);
@@ -2011,6 +2128,7 @@ new Phaser.Game({
   pond.position.set(11.5, 0.06, 0.5);
   scene.add(pond);
   flow.push({ map: pondTex, sp: 0.35 });
+  caustics.push({ tex: pondTex, mat: pondMat, e0: 0.22, eAmp: 0.10, swayAmp: 0.035 });
 
   // Pond foam cap
   var pFoamTex = makeFoamTex(); pFoamTex.repeat.set(2, 2);
@@ -2058,27 +2176,26 @@ new Phaser.Game({
   for (var fx = -28; fx <= 28; fx += 2.6) {
     if (fx > -9 && fx < 9) continue;                 // leave the village centre open
     var fz = -21 - Math.abs(Math.sin(fx * 0.7)) * 4 - Math.random() * 2;
-    place('tree-high', fx + (Math.random() - 0.5) * 1.2, fz, { s: 0.85 + Math.random() * 0.35 });
+    place('tree-high', fx + (Math.random() - 0.5) * 1.2, fz, { s: 0.85 + Math.random() * 0.35, wind: true, windAmp: 0.04 });
   }
   // A second, sparser forest row
   for (var gx = -26; gx <= 26; gx += 4.5) {
-    place('tree-high', gx + (Math.random() - 0.5), -30 - Math.random() * 4, { s: 0.9 + Math.random() * 0.45 });
+    place('tree-high', gx + (Math.random() - 0.5), -30 - Math.random() * 4, { s: 0.9 + Math.random() * 0.45, wind: true, windAmp: 0.04 });
   }
 
   // Village trees — left-side trees cast shadows; right-side trees (x>10) are near
   // the stream and cast distracting foreground shadows, so noShadow on those.
   [
     ['tree-high',-13,-7,1.7],
-    ['tree-high-round',-7,-11,1.7],['tree-high-round',4,-11,1.8],
-    ['tree',-11,-3,1.6],['tree-crooked',-13,1,1.5],
+      ['tree',-11,-3,1.6],['tree-crooked',-13,1,1.5],
     ['tree',-3.5,-6,1.4],['tree',4.5,-6.5,1.4],
-  ].forEach(function(t) { place(t[0], t[1], t[2], { s: t[3] }); });
+  ].forEach(function(t) { place(t[0], t[1], t[2], { s: t[3], wind: true, windAmp: 0.07 }); });
   // Right-side trees: noShadow to eliminate the lower-right foreground shadow
   [
     ['tree-high',13,-8,1.7],
     ['tree',12,-2,1.6],
     ['tree-crooked',13,1,1.5],
-  ].forEach(function(t) { place(t[0], t[1], t[2], { s: t[3], noShadow: true }); });
+  ].forEach(function(t) { place(t[0], t[1], t[2], { s: t[3], noShadow: true, wind: true, windAmp: 0.07 }); });
 
   // Rocks — no directional shadows (too small, create clutter near the stream)
   [
@@ -2086,20 +2203,63 @@ new Phaser.Game({
     ['rock-large',13,2.5,1.8],['rock-wide',13.5,1,1.5],['rock-small',12.5,3,1.1],
   ].forEach(function(r) { place(r[0], r[1], r[2], { s: r[3], tint: 0x9C968A, noShadow: true }); });
 
-  // Flowers — tiny white dots scattered in the grass
-  var flowerMat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
-  for (var i = 0; i < 22; i++) {
-    var fl = new THREE.Mesh(new THREE.CircleGeometry(0.12, 6), flowerMat);
-    fl.rotation.x = -Math.PI / 2;
-    var ang = Math.random() * Math.PI * 2, rad = 7 + Math.random() * 8;
-    fl.position.set(Math.cos(ang) * rad, 0.05, 1 + Math.sin(ang) * rad * 0.5);
+  // ── Waving grass tufts ── upright blade clusters that sway in the wind
+  var grassTuftTex = (function() {
+    var c = document.createElement('canvas'); c.width = c.height = 64;
+    var g = c.getContext('2d'); g.clearRect(0, 0, 64, 64);
+    function blade(x, h, w, col) {
+      g.fillStyle = col; g.beginPath(); g.moveTo(x, 64);
+      g.quadraticCurveTo(x + w * 0.5, 64 - h * 0.6, x + w, 64 - h);
+      g.lineTo(x + w + 2.5, 64 - h + 3);
+      g.quadraticCurveTo(x + w * 0.6, 64 - h * 0.55, x + 2.5, 64); g.fill();
+    }
+    blade(20, 46, 4, '#5BA82E'); blade(30, 58, 5, '#6BBF38');
+    blade(40, 40, 4, '#4E9626'); blade(26, 34, 3, '#7ACB45'); blade(46, 30, 3, '#5BA82E');
+    return new THREE.CanvasTexture(c);
+  })();
+  var grassTuftMat = new THREE.MeshStandardMaterial({ map: grassTuftTex, transparent: true,
+    alphaTest: 0.35, side: THREE.DoubleSide, roughness: 1, metalness: 0 });
+  patchWindMat(grassTuftMat, { amp: 0.16, sway: 1.8 });
+  var grassTuftGeo = new THREE.PlaneGeometry(0.75, 0.75);
+  grassTuftGeo.translate(0, 0.375, 0);   // pivot at base so the whole blade sways from the ground
+  for (var gt = 0; gt < 70; gt++) {
+    var gAng = Math.random() * Math.PI * 2, gRad = 4 + Math.random() * 10;
+    var gZ = 1 + Math.sin(gAng) * gRad * 0.55;
+    if (gZ < -4) continue;               // keep tufts out of the far building row
+    var tuft = new THREE.Mesh(grassTuftGeo, grassTuftMat);
+    tuft.position.set(Math.cos(gAng) * gRad, 0, gZ);
+    tuft.rotation.y = Math.random() * Math.PI;
+    tuft.castShadow = false; tuft.receiveShadow = true;
+    scene.add(tuft);
+  }
+
+  // ── Swaying flowers ── upright little blossoms on stems that nod in the breeze
+  var flowerTex = (function() {
+    var c = document.createElement('canvas'); c.width = c.height = 32;
+    var g = c.getContext('2d'); g.clearRect(0, 0, 32, 32);
+    g.strokeStyle = '#3E8E2C'; g.lineWidth = 2; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(16, 32); g.lineTo(16, 15); g.stroke();
+    g.fillStyle = '#FFFFFF';
+    for (var i = 0; i < 5; i++) { var a = i * 1.2566;
+      g.beginPath(); g.ellipse(16 + Math.cos(a) * 5, 11 + Math.sin(a) * 5, 3, 4.2, a, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = '#FFC107'; g.beginPath(); g.arc(16, 11, 2.6, 0, Math.PI * 2); g.fill();
+    return new THREE.CanvasTexture(c);
+  })();
+  var flowerMat = new THREE.MeshStandardMaterial({ map: flowerTex, transparent: true,
+    alphaTest: 0.4, side: THREE.DoubleSide, roughness: 1, metalness: 0 });
+  patchWindMat(flowerMat, { amp: 0.12, sway: 1.4 });
+  var flowerGeo = new THREE.PlaneGeometry(0.5, 0.5);
+  flowerGeo.translate(0, 0.25, 0);
+  for (var fi = 0; fi < 22; fi++) {
+    var fAng = Math.random() * Math.PI * 2, fRad = 7 + Math.random() * 8;
+    var fl = new THREE.Mesh(flowerGeo, flowerMat);
+    fl.position.set(Math.cos(fAng) * fRad, 0, 1 + Math.sin(fAng) * fRad * 0.5);
+    fl.rotation.y = Math.random() * Math.PI;
     scene.add(fl);
   }
 
-  // Hedges by the houses, one cart
-  place('hedge', -5, -6, { ry: Math.PI/2, s: 1.3 });
-  place('hedge', -5, -7, { ry: Math.PI/2, s: 1.3 });
-  place('cart', -3, -3, { ry: 0.5, s: 1.3 });
+  // One cart
+  place('cart', -3, -3, { ry: 0.5, s: 1.3, noShadow: true });
 
   // (lanterns removed)
 

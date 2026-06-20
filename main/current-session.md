@@ -2,41 +2,43 @@
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Tooling / System Improvement
+**Session Type**: System / Tooling
 **Current Project**: JIRAIYA (`/Applications/Sites/jiraiya`)
 **Status**: Wrapping up
-**Time**: 2026-06-20 ~21:21 GMT+8
+**Time**: 2026-06-20 ~22:39 GMT+8
 
 ## Current Focus
-- **Primary Task**: Fixed stale session RAM and hardened the diary skill to enforce `current-session.md` updates
-- **Technical Context**: `current-session.md` was stuck on 2026-06-16; diary files had all entries up to today
-- **Progress**: Complete — SKILL.md and CLAUDE.md updated, session RAM synced
+- **Primary Task**: Registered all 32 JIRAIYA custom skills into `plugins/ses-skills/skills/`
+- **Technical Context**: `plugins/ses-skills/` had `plugin.json` but no `skills/` folder — Claude Code couldn't auto-discover any skills
+- **Progress**: Complete — 32 skills copied into named subfolders, diary written
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: JIRAIYA memory system reliability
+- **Current Topic**: JIRAIYA skill plugin system
 - **Immediate Goals**: None outstanding
 - **Recent Progress**:
-  - Synced `current-session.md` by reading 2026-06-19 and 2026-06-20 diary files (4 sessions worth of missed context)
-  - Upgraded `Feature/Save-Diary-System/SKILL.md` to Lv.3 — Step 4 is now MANDATORY with explicit field-by-field instructions; added Rule 8
-  - Updated `CLAUDE.md` exit protocol — added Step 1b (update `current-session.md`) as a named mandatory step
-  - Answered Fendy's question on Claude CLI theme options: `auto` (current), `dark`, `light`, `dark-ansi`, `light-ansi`, `system`, `custom:<path>`
+  - Created `plugins/ses-skills/skills/` with 32 named subfolders (one per skill)
+  - Each subfolder contains a copy of the corresponding `Feature/*/SKILL.md`
+  - Originals in `Feature/` are untouched — copies only
+  - Diary entry appended to `2026-06-20.md` (Night - 21:29 entry)
 
 ### Important Decisions
-- Session RAM enforcement raised to same level as diary-data.js regeneration — both are now "MANDATORY — never skip"
-- Exit protocol in CLAUDE.md is now the authoritative place that forces `current-session.md` write on every session end
+- Skills were **copied** not moved — `Feature/` directories remain as documentation/source of truth
+- Folder names derived from `name:` frontmatter where present; kebab-case from directory name otherwise
+- Future skill updates in `Feature/` require manual sync to `plugins/ses-skills/skills/`
 
 ## Session Recap (For AI Restart)
-- **Previous Work (earlier today)**: 3D Three.js village dashboard — buildings, characters, river, shadows, Pomodoro removed. See `daily-diary/current/2026-06-20.md` for full detail.
-- **This Session**: Fixed stale session RAM, hardened diary skill (Lv.3), updated exit protocol, answered Claude CLI theme question.
+- **Earlier today**: Multiple 3D Three.js village dashboard sessions — buildings, characters, river, shadows, Pomodoro removed, scale 1.3×, signboard renamed to "Fendy SES". See full `2026-06-20.md` diary.
+- **Previous session (Night - 21:21)**: Fixed stale session RAM, hardened save-diary SKILL.md to Lv.3, updated CLAUDE.md exit protocol with Step 1b.
+- **This session**: Registered 32 JIRAIYA skills into `plugins/ses-skills/skills/` — plugin is now fully wired for Claude Code auto-discovery.
 - **Where We Left Off**: All complete. No pending items.
 
 ## Session Achievements
-- ✅ Diagnosed and fixed stale `current-session.md` (was 4 days behind)
-- ✅ save-diary SKILL.md upgraded to Lv.3 (Step 4 mandatory)
-- ✅ CLAUDE.md exit protocol — Step 1b added
-- ✅ Claude CLI theme options documented (extracted from binary)
-- ✅ Diary entry written and session RAM updated
+- ✅ Diagnosed silent `ses-skills` plugin (missing `skills/` folder)
+- ✅ Created 32 named skill subfolders under `plugins/ses-skills/skills/`
+- ✅ All SKILL.md files copied and confirmed
+- ✅ Diary entry written for this session
+- ✅ `current-session.md` updated
 
 ---
-*Session updated: 2026-06-20 21:21*
+*Session updated: 2026-06-20 22:39*
