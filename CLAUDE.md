@@ -67,7 +67,9 @@ When a trigger matches, read and follow the full protocol in that SKILL.md file.
 
 When Fendy says **"bye"**, **"goodbye"**, or **"exit"**, execute every step in order — skipping any step is not allowed:
 
-**STEP 1 — Write diary:** Append a session summary to `daily-diary/current/YYYY-MM-DD.md` (create if not exists), covering what was worked on, decisions made, and notable moments.
+**STEP 1 — Write diary:** Append a session summary to `daily-diary/current/YYYY-MM-DD.md` (create if not exists), covering what was worked on, decisions made, and notable moments. Then run `python3 daily-diary/regenerate-diary-data.py` to rebuild `diary-data.js`.
+
+**STEP 1b — Update session RAM (MANDATORY — never skip):** Overwrite `main/current-session.md` with a fresh snapshot of this session (follow `main/session-format.md`). Include: today's date, what was worked on, key decisions, where things stand, and a 2–3 line "Session Recap" so the next session brief is accurate. Use real clock time for the footer timestamp. This step must run even if Step 1 was skipped — `current-session.md` is the only cross-session RAM and must never be left stale.
 
 **STEP 2 — Display farewell banner:** Output the JIRAIYA ASCII art above in **purple color** (ANSI `\033[38;5;99m` … `\033[0m`). Do NOT wrap in a code block.
 

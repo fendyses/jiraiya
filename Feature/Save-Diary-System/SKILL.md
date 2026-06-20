@@ -55,11 +55,15 @@ When this skill activates, output:
   - Looking forward (next steps)
 - [ ] APPEND entry to today's file (never overwrite existing content)
 
-### Step 4: Update Session Memory
-- [ ] Update `main/current-session.md` with:
-  - Session recap and key achievements
-  - Current working state for continuity
-  - Next steps identified
+### Step 4: Update Session Memory (MANDATORY — never skip)
+- [ ] Overwrite `main/current-session.md` with a fresh snapshot using `main/session-format.md` as the template:
+  - **Session Context** block: today's date, session type, current project, time
+  - **Current Focus**: what was being worked on and progress state
+  - **Working Memory**: active context, recent progress bullets (one per significant task), important decisions made this session
+  - **Session Recap** (for AI restart): 2–3 line summary of where things stand + any critical context
+  - **Session Achievements**: bulleted ✅ list of completed items
+  - Footer: `*Session updated: YYYY-MM-DD HH:MM*` using real clock time
+- [ ] This step is required even if no code was written — always reflect the actual end-of-session state so the next session brief is accurate
 - [ ] Confirm diary entry saved with timestamp
 
 ### Step 5: Regenerate Dashboard Diary Snapshot (MANDATORY — never skip)
@@ -75,6 +79,7 @@ When this skill activates, output:
 5. **Evidence-based** — document actual session content, not generic summaries
 6. **Follow existing protocol** — use `daily-diary/daily-diary-protocol.md` for entry structure
 7. **Always regenerate `diary-data.js` after writing or editing any diary `.md` file** — run `python3 daily-diary/regenerate-diary-data.py`. This applies to new entries, corrections, and archival moves alike.
+8. **Always update `main/current-session.md` after every diary write (Step 4 above).** This is the only persistent cross-session RAM — if it is stale, the next session brief will be wrong. Never finish a diary write without also writing a fresh current-session snapshot.
 
 ## Edge Cases
 
@@ -89,3 +94,4 @@ When this skill activates, output:
 ## Level History
 - **Lv.1** — Base: 4-step diary write protocol with monthly archival, append-only entries, session memory update, and existing protocol reference for entry format.
 - **Lv.2** — Added mandatory real-clock timestamps (rule 3) and a mandatory Step 5 that regenerates `daily-diary/diary-data.js` via `regenerate-diary-data.py` after every diary write, so the in-game dashboard diary book never goes stale.
+- **Lv.3** — Made Step 4 (`current-session.md` update) MANDATORY with explicit field-by-field instructions and a dedicated rule (rule 8). Stale session RAM was causing wrong session briefs — now enforced at the same level as diary-data.js regeneration.
