@@ -187,3 +187,107 @@ function buildRepoPanel(){
 const VSCODE_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M17 2 7 11l-4-3-2 1 4 4-4 4 2 1 4-3 10 9 5-2V4l-5-2Zm1 5v10l-7-5 7-5Z" fill="#3aa0ff" opacity=".75"/></svg>';
 const CLI_SVG='<img src="assets/pics/claude-logo.svg" width="11" height="11" style="opacity:.8">';
 
+// ════════════════════════════════════════════════════════
+// TODO — date-grouped task list (todo.php)
+// ════════════════════════════════════════════════════════
+let _todoData={ongoing:[],completed:[]};
+let _todoView='ongoing';
+async function todoApi(params){
+  let url='todo.php',opt={cache:'no-store'};
+  if(params.action==='list'){ url+='?action=list'; }
+  else { opt.method='POST'; opt.body=new URLSearchParams(params); }
+  const r=await fetch(url,opt);
+  if(!r.ok) throw new Error('todo '+r.status);
+  return r.json();
+}
+function _ymd(dt){ return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); }
+function todoDateLabel(d){
+  const t=_ymd(new Date()), y=_ymd(new Date(Date.now()-86400000));
+  if(d===t) return 'Today';
+  if(d===y) return 'Yesterday';
+  const dt=new Date(d+'T00:00:00');
+  return isNaN(dt)?d:dt.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+}
+function todoBadge(){
+  const n=(_todoData.ongoing||[]).length;
+  const b=document.getElementById('todoDockCount');
+  if(b){ if(n){b.textContent=n;b.style.display='';}else{b.style.display='none';} }
+  const hc=document.getElementById('todoHeadCount');
+  if(hc) hc.textContent=n?('· '+n+' ongoing'):'· all clear';
+}
+function todoTab(which){
+  _todoView=which;
+  document.getElementById('todoTabOngoing').classList.toggle('active',which==='ongoing');
+  document.getElementById('todoTabDone').classList.toggle('active',which==='done');
+  const add=document.querySelector('.todo-add'); if(add) add.style.display=which==='ongoing'?'flex':'none';
+  todoRender();
+}
+function todoGroup(items,key){
+  const groups=[],map={};
+  items.forEach((it,idx)=>{ const d=it[key]; if(!map[d]){map[d]=[];groups.push([d,map[d]]);} map[d].push({it,idx}); });
+  return groups;
+}
+function todoRender(){
+  const list=document.getElementById('todoList'); if(!list) return;
+  todoBadge(); list.innerHTML='';
+  if(_todoView==='ongoing'){
+    const items=_todoData.ongoing||[];
+    if(!items.length){ list.innerHTML='<div class="todo-empty">✓ Nothing ongoing — add a task below</div>'; return; }
+    todoGroup(items,'date').forEach(([d,arr])=>{
+      const h=document.createElement('div'); h.className='todo-date'; h.textContent=todoDateLabel(d); list.appendChild(h);
+      arr.forEach(({it,idx})=>list.appendChild(todoRow(it.text,idx,false)));
+    });
+  } else {
+    const items=_todoData.completed||[];
+    if(!items.length){ list.innerHTML='<div class="todo-empty">No completed tasks yet</div>'; return; }
+    todoGroup(items,'done').forEach(([d,arr])=>{
+      const h=document.createElement('div'); h.className='todo-date'; h.textContent=todoDateLabel(d); list.appendChild(h);
+      arr.forEach(({it,idx})=>list.appendChild(todoRow(it.text,idx,true)));
+    });
+  }
+}
+function todoRow(text,i,done){
+  const row=document.createElement('div'); row.className='todo-item'+(done?' is-done':'');
+  const t=document.createElement('div'); t.className='todo-txt'; t.textContent=text;
+  if(!done){ t.title='Click to edit'; t.onclick=()=>todoEdit(row,i,text); }
+  row.appendChild(t);
+  const mk=(cls,sym,title,fn)=>{ const e=document.createElement('div'); e.className='todo-ico '+cls; e.textContent=sym; e.title=title; e.onclick=fn; return e; };
+  if(!done){
+    row.appendChild(mk('done','✓','Mark done',()=>todoDo({action:'complete',i})));
+    row.appendChild(mk('del','🗑','Delete',()=>{ if(confirm('Delete this task?')) todoDo({action:'delete',i}); }));
+  } else {
+    row.appendChild(mk('restore','↺','Move back to ongoing',()=>todoDo({action:'restore',i})));
+    row.appendChild(mk('del','🗑','Remove',()=>{ if(confirm('Remove this completed task?')) todoDo({action:'deldone',i}); }));
+  }
+  return row;
+}
+function todoEdit(row,i,text){
+  const inp=document.createElement('input'); inp.className='todo-edit'; inp.value=text; inp.maxLength=300;
+  row.replaceChild(inp,row.querySelector('.todo-txt')); inp.focus(); inp.setSelectionRange(text.length,text.length);
+  let saved=false;
+  const save=()=>{ if(saved)return; saved=true; const v=inp.value.trim(); if(v&&v!==text) todoDo({action:'update',i,text:v}); else todoRender(); };
+  inp.onkeydown=e=>{ if(e.key==='Enter'){e.preventDefault();save();} else if(e.key==='Escape'){saved=true;todoRender();} };
+  inp.onblur=save;
+}
+async function todoDo(params){ try{ _todoData=await todoApi(params); todoRender(); }catch(e){ console.error(e); } }
+function todoEsc(e){ if(e.key==='Escape') closeTodo(); }
+async function openTodo(){
+  const ov=document.getElementById('todoOverlay'); ov.classList.add('open');
+  ov.onclick=e=>{ if(e.target===ov) closeTodo(); };
+  document.addEventListener('keydown',todoEsc);
+  try{ _todoData=await todoApi({action:'list'}); }catch(e){ _todoData={ongoing:[],completed:[]}; }
+  todoTab('ongoing');
+  const inp=document.getElementById('todoInput'); if(inp) inp.focus();
+}
+function closeTodo(){
+  document.getElementById('todoOverlay').classList.remove('open');
+  document.removeEventListener('keydown',todoEsc);
+}
+async function addTodo(){
+  const inp=document.getElementById('todoInput'); const v=inp.value.trim(); if(!v) return;
+  inp.value=''; if(_todoView!=='ongoing') _todoView='ongoing';
+  await todoDo({action:'add',text:v});
+  todoTab('ongoing'); inp.focus();
+}
+(function(){ const inp=document.getElementById('todoInput');
+  if(inp) inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();addTodo();} }); })();

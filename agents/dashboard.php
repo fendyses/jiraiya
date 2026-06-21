@@ -20,11 +20,11 @@ if ($sess = @file_get_contents($REPO . '/main/current-session.md')) {
     }
     if (preg_match('/\*\*Status\*\*:\s*(.+)/', $sess, $m)) $projStatus = trim($m[1]);
 }
-$openReminders = [];
-if ($rem = @file_get_contents($REPO . '/main/reminders.md')) {
-    if (preg_match('/##\s*Open(.*?)(?:##\s*Completed|$)/s', $rem, $m) &&
-        preg_match_all('/^\s*-\s+(.+)$/m', $m[1], $items)) {
-        $openReminders = array_map('trim', $items[1]);
+$todoOngoing = [];
+if ($td = @file_get_contents($REPO . '/main/todo.md')) {
+    if (preg_match('/##\s*Ongoing(.*?)(?:##\s*Completed|$)/s', $td, $m) &&
+        preg_match_all('/^\s*-\s+\d{4}-\d{2}-\d{2}\s*::\s*(.+?)\s*$/m', $m[1], $items)) {
+        $todoOngoing = array_map('trim', $items[1]);
     }
 }
 ?>
@@ -50,6 +50,28 @@ if ($rem = @file_get_contents($REPO . '/main/reminders.md')) {
   <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
+
+<div id="todoOverlay">
+  <div id="todoBox" class="glass relative">
+    <div class="cdeco tl"></div><div class="cdeco tr"></div>
+    <div class="cdeco bl"></div><div class="cdeco br"></div>
+    <div class="flex items-center gap-2 mb-3">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span class="text-white font-bold text-base tracking-wide">ToDo</span>
+      <span id="todoHeadCount" class="mono text-white/30 text-xs"></span>
+      <button id="todoClose" class="ml-auto" onclick="closeTodo()">✕</button>
+    </div>
+    <div class="todo-tabs">
+      <button id="todoTabOngoing" class="todo-tab active" onclick="todoTab('ongoing')">Ongoing</button>
+      <button id="todoTabDone" class="todo-tab" onclick="todoTab('done')">Completed</button>
+    </div>
+    <div id="todoList" class="todo-list"></div>
+    <div class="todo-add">
+      <input id="todoInput" type="text" maxlength="300" placeholder="Add a task…" autocomplete="off">
+      <button id="todoAddBtn" class="cf-btn cf-ok" onclick="addTodo()">Add</button>
+    </div>
+  </div>
+</div>
 
 <div id="confirmOverlay">
   <div id="confirmBox" class="glass relative">
@@ -118,17 +140,16 @@ if ($rem = @file_get_contents($REPO . '/main/reminders.md')) {
           <?php if ($projDesc): ?><div class="ck-desc"><?= $ck_md($projDesc) ?></div><?php endif; ?>
           <?php if ($projStatus): ?><div class="ck-status"><?= $ck_md($projStatus) ?></div><?php endif; ?>
         <?php endif; ?>
-        <div class="ck-rem-head">OPEN REMINDERS<span class="ck-badge<?= $openReminders ? '' : ' zero' ?>"><?= count($openReminders) ?></span></div>
-        <?php if ($openReminders): foreach (array_slice($openReminders, 0, 4) as $r): ?>
+        <div class="ck-rem-head">ONGOING TODO<span class="ck-badge<?= $todoOngoing ? '' : ' zero' ?>"><?= count($todoOngoing) ?></span></div>
+        <?php if ($todoOngoing): foreach (array_slice($todoOngoing, 0, 4) as $r): ?>
           <div class="ck-rem">› <?= $ck_md($r) ?></div>
         <?php endforeach; else: ?>
           <div class="ck-none">✓ all clear</div>
         <?php endif; ?>
       </div>
 
-      <div class="mono text-yellow-700 text-xs tracking-[2px] uppercase mb-1">// WORKSPACE</div>
-      <div class="flex items-center gap-2 mb-3">
-        <span class="text-yellow-400 font-bold text-sm tracking-wider">REPO SYSTEMS</span>
+      <div class="flex items-center mb-3">
+        <span class="mono text-yellow-700 text-xs tracking-[2px] uppercase">// REPOSITORIES</span>
         <span id="repoCount" class="mono text-white/30 text-xs ml-auto"></span>
       </div>
       <div id="repoList" class="flex flex-col gap-2 flex-1"></div>
@@ -156,6 +177,14 @@ if ($rem = @file_get_contents($REPO . '/main/reminders.md')) {
 </div>
 
 <div id="app-dock">
+  <button class="app-sc" onclick="openTodo()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 11l3 3L22 4"/>
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+    </svg>
+    <span id="todoDockCount" class="app-badge"<?= $todoOngoing ? '' : ' style="display:none"' ?>><?= count($todoOngoing) ?></span>
+    <span class="app-label">ToDo</span>
+  </button>
   <button class="app-sc" onclick="window.location.href='servbay://'" >
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
       <rect x="2" y="3" width="20" height="5.5" rx="1.5" fill="#00C4A7" opacity=".9"/>

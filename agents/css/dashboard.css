@@ -28,6 +28,36 @@
     .ck-badge.zero{background:rgba(255,255,255,.12);color:rgba(255,255,255,.5)}
     .ck-rem{font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(255,225,150,.85);line-height:1.45;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .ck-none{font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(110,200,120,.6)}
+    /* ── ToDo modal ── */
+    .app-badge{position:absolute;top:-3px;right:-3px;min-width:14px;height:14px;padding:0 3px;border-radius:7px;background:#D4A017;color:#1a1a2e;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:9px;line-height:14px;text-align:center;box-shadow:0 0 6px rgba(212,160,23,.6)}
+    #todoOverlay{display:none;position:fixed;inset:0;z-index:1003;background:rgba(2,2,10,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);align-items:center;justify-content:center;animation:ovFade .15s ease}
+    #todoOverlay.open{display:flex}
+    #todoBox{width:min(94vw,480px);max-height:82vh;display:flex;flex-direction:column;padding:20px 22px;border:1px solid rgba(212,160,23,.3);box-shadow:0 0 44px rgba(212,160,23,.14);animation:boxPop .18s cubic-bezier(.2,1.2,.4,1)}
+    #todoClose{background:none;border:none;color:rgba(255,255,255,.35);font-size:15px;cursor:pointer;transition:color .15s}
+    #todoClose:hover{color:#fff}
+    .todo-tabs{display:flex;gap:6px;margin-bottom:12px}
+    .todo-tab{flex:1;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:7px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.45);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);transition:all .15s}
+    .todo-tab:hover{color:rgba(255,255,255,.8)}
+    .todo-tab.active{color:#1a1a2e;background:#D4A017;border-color:#D4A017}
+    .todo-list{flex:1;overflow-y:auto;min-height:90px;max-height:50vh;display:flex;flex-direction:column;margin-bottom:14px;padding-right:4px}
+    .todo-list::-webkit-scrollbar{width:6px}
+    .todo-list::-webkit-scrollbar-thumb{background:rgba(212,160,23,.35);border-radius:3px}
+    .todo-date{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(212,160,23,.8);margin:10px 0 6px;padding-bottom:3px;border-bottom:1px solid rgba(212,160,23,.15)}
+    .todo-date:first-child{margin-top:0}
+    .todo-item{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:7px;padding:8px 10px;margin-bottom:6px;transition:border-color .18s}
+    .todo-item:hover{border-color:rgba(212,160,23,.3)}
+    .todo-item .todo-txt{flex:1;min-width:0;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:14px;color:rgba(255,255,255,.85);line-height:1.3;word-break:break-word;cursor:text}
+    .todo-item.is-done .todo-txt{color:rgba(255,255,255,.4);text-decoration:line-through}
+    .todo-item input.todo-edit{flex:1;min-width:0;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:14px;color:#fff;background:rgba(0,0,0,.35);border:1px solid rgba(212,160,23,.5);border-radius:5px;padding:4px 7px;outline:none}
+    .todo-ico{flex-shrink:0;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:5px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:rgba(255,255,255,.5);cursor:pointer;font-size:13px;transition:all .15s}
+    .todo-ico:hover{color:#fff;transform:scale(1.1)}
+    .todo-ico.done:hover{background:rgba(110,200,120,.2);border-color:rgba(110,200,120,.5);color:#7ed98a}
+    .todo-ico.restore:hover{background:rgba(58,160,255,.18);border-color:rgba(58,160,255,.5);color:#7ab8ff}
+    .todo-ico.del:hover{background:rgba(255,90,90,.18);border-color:rgba(255,90,90,.5);color:#ff8a8a}
+    .todo-empty{font-family:'Share Tech Mono',monospace;font-size:12px;color:rgba(110,200,120,.6);text-align:center;padding:26px 0}
+    .todo-add{display:flex;gap:8px;border-top:1px solid rgba(255,255,255,.07);padding-top:14px}
+    #todoInput{flex:1;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:14px;color:#fff;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12);border-radius:7px;padding:9px 12px;outline:none;transition:border-color .18s,box-shadow .18s}
+    #todoInput:focus{border-color:#D4A017;box-shadow:0 0 0 3px rgba(212,160,23,.15)}
     .repo-item{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:7px;padding:7px 9px;transition:all .25s ease;cursor:default}
     .repo-item:hover{background:rgba(58,160,255,.04);border-color:rgba(58,160,255,.2)}
     .repo-item.active{border-color:rgba(212,160,23,.5);background:rgba(212,160,23,.08)}
@@ -38,7 +68,7 @@
     .repo-btn.cli.copied{background:rgba(217,119,87,.25);border-color:rgba(217,119,87,.7)}
     .lang-badge{font-family:'Share Tech Mono',monospace;font-size:8px;padding:1px 5px;border-radius:3px;letter-spacing:.5px;white-space:nowrap}
     .lang-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
-    #repoList{overflow-y:auto;min-height:0;max-height:352px;padding-right:4px}
+    #repoList{overflow-y:auto;min-height:0;max-height:236px;padding-right:4px}
     #repoList::-webkit-scrollbar{width:6px}
     #repoList::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:3px}
     #repoList::-webkit-scrollbar-thumb{background:rgba(212,160,23,.35);border-radius:3px}
