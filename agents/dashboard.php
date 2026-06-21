@@ -271,7 +271,6 @@ if (empty($_SESSION['jiraiya_auth'])) {
     </div>
   </div>
   <div id="cardGrid" class="grid gap-3 monitors-grid" style="grid-template-columns:1fr 1fr 1fr 1.7fr"></div>
-  <div id="termGrid" class="grid gap-3 terms-grid" style="grid-template-columns:repeat(5,1fr)"></div>
 </div>
 
 <div id="app-dock">
@@ -1304,25 +1303,9 @@ class GameScene extends Phaser.Scene {
 // ════════════════════════════════════════════════════════
 // HTML PANELS
 // ════════════════════════════════════════════════════════
-function buildUI(){
-  const tg=document.getElementById('termGrid');
-  Object.entries(ADEF).forEach(([name,d])=>{
-    const term=document.createElement('div');
-    term.className='terminal'; term.id='term-'+name;
-    term.innerHTML=`
-      <div class="term-header" style="color:${d.color}">
-        <div class="term-dots">
-          <div class="term-dot" style="background:${d.color}"></div>
-          <div class="term-dot" style="background:rgba(255,255,255,.2)"></div>
-          <div class="term-dot" style="background:rgba(255,255,255,.1)"></div>
-        </div>
-        <span class="text-white/30">//</span><span>${name.toUpperCase()}</span>
-        <span class="text-white/25 ml-auto text-xs">${d.role}</span>
-      </div>
-      <div class="term-body"></div>`;
-    tg.appendChild(term);
-  });
-}
+// Agent terminals were removed; their text logic is now a harmless no-op
+// (NPC.pushLine guards on a missing term element).
+function buildUI(){}
 function refreshCard(agent){
   const card=document.getElementById('card-'+agent.name); if(!card)return;
   const dot=card.querySelector('.sdot'),st=card.querySelector('.st-text'),bar=card.querySelector('.power-bar-inner');

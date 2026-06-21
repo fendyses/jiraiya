@@ -4,6 +4,11 @@
 header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache, must-revalidate');
 
+// php-fpm (ServBay) runs with a minimal PATH that omits /usr/sbin and /sbin,
+// where sysctl / netstat / route live — without this they silently fail and
+// CPU pegs at 100%, RAM total reads 0, and network shows 0 B/s.
+putenv('PATH=/usr/sbin:/sbin:/usr/bin:/bin:/usr/local/bin');
+
 function sh($cmd) { return trim((string) @shell_exec($cmd)); }
 
 // ───────── CPU ───────── instantaneous utilisation = Σ per-process %cpu / cores
