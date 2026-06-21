@@ -73,7 +73,6 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
   window.JIRAIYA_DEBUG = false;
   (function () {
     var MUTE = [
-      'cdn.tailwindcss.com',   // Tailwind dev-build notice — this is a local dashboard, not real prod
       'KHR_texture_transform'  // GLTFLoader: custom UV sets unsupported — harmless, from the Kenney models
     ];
     var _warn = console.warn.bind(console);
@@ -84,8 +83,9 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
     };
   })();
   </script>
+  <!-- Precompiled Tailwind (built from tailwind.config.js — no runtime CDN/JIT) -->
+  <link rel="stylesheet" href="css/tailwind.css">
   <!-- Self-hosted vendor libs (offline-capable, no CDN dependency) -->
-  <script src="vendor/tailwindcss.js"></script>
   <script src="vendor/phaser.min.js"></script>
   <script src="vendor/three.min.js"></script>
   <script src="vendor/three/GLTFLoader.js"></script>
