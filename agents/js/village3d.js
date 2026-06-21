@@ -1151,7 +1151,7 @@
 
   // Replace the initial render loop with one that also syncs character positions
   (function patchLoop() {
-    renderer.setAnimationLoop(function() {
+    var liveLoop = function() {
       var dt = clock.getDelta();
 
       updateDayNight();   // sky/sun/fog/lights follow the real local clock
@@ -1295,6 +1295,14 @@
       }
 
       composer.render();
+    };
+    renderer.setAnimationLoop(liveLoop);
+
+    // Pause rendering while the tab is hidden — saves GPU/CPU/battery. On return,
+    // discard the elapsed gap (clock.getDelta) so motion doesn't jump, then resume.
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { renderer.setAnimationLoop(null); }
+      else { clock.getDelta(); renderer.setAnimationLoop(liveLoop); }
     });
   }());
 

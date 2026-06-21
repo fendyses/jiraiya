@@ -61,6 +61,9 @@ function buildMonitors(){
     </div>`;
   pollSystemStats();
   setInterval(pollSystemStats,1500);
+  // Re-poll immediately when the tab becomes visible again (the interval skips
+  // its server fetch while hidden — see pollSystemStats — so refresh on return).
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden) pollSystemStats(); });
 }
 function drawSpark(canvas,data,color,maxOverride){
   if(!canvas) return;
@@ -84,6 +87,7 @@ function drawSpark(canvas,data,color,maxOverride){
   ctx.lineWidth=1.6; ctx.strokeStyle=color; ctx.shadowColor=color; ctx.shadowBlur=6; ctx.stroke(); ctx.shadowBlur=0;
 }
 async function pollSystemStats(){
+  if(document.hidden) return;   // don't run server shell_exec polls for a hidden tab
   let s;
   try{ const r=await fetch('system-stats.php',{cache:'no-store'}); if(!r.ok) throw 0; s=await r.json(); }
   catch(e){ const sub=document.getElementById('cpuSub'); if(sub) sub.textContent='stats endpoint offline'; return; }
