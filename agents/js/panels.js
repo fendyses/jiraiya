@@ -28,7 +28,7 @@ function tick(){
   document.getElementById('dateDisp').textContent=`${DAY[d.getDay()]} · ${p(d.getDate())} ${MON[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-// LANG and REPO_SYS loaded from ../main/repos.js
+// LANG and REPO_SYS are generated server-side from /.env (see dashboard.php head)
 function openInVSCode(repo){
   // VSCode registers the vscode:// URL protocol — opens the folder in a window
   showConfirm(repo, ()=>{ window.location.href='vscode://file'+repo.path; });
