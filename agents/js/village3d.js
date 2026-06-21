@@ -1036,7 +1036,7 @@
         charClips[name]['idle'].play();
         charCurAnim[name] = 'idle';
       }
-      console.log('[3D char] loaded', name, '— clips:', Object.keys(charClips[name]).join(', '));
+      if (window.JIRAIYA_DEBUG) console.log('[3D char] loaded', name, '— clips:', Object.keys(charClips[name]).join(', '));
     }, undefined, function() { console.warn('[3D char] FAILED to load:', name); });
   });
 

@@ -67,6 +67,23 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JIRAIYA — Live Agent Ecosystem</title>
+  <script>
+  // Quiet known-harmless third-party console noise so real errors stay visible.
+  // Flip window.JIRAIYA_DEBUG = true (here or in the console) to restore verbose logs.
+  window.JIRAIYA_DEBUG = false;
+  (function () {
+    var MUTE = [
+      'cdn.tailwindcss.com',   // Tailwind dev-build notice — this is a local dashboard, not real prod
+      'KHR_texture_transform'  // GLTFLoader: custom UV sets unsupported — harmless, from the Kenney models
+    ];
+    var _warn = console.warn.bind(console);
+    console.warn = function () {
+      var msg = arguments.length ? String(arguments[0]) : '';
+      for (var i = 0; i < MUTE.length; i++) if (msg.indexOf(MUTE[i]) !== -1) return;
+      return _warn.apply(console, arguments);
+    };
+  })();
+  </script>
   <!-- Self-hosted vendor libs (offline-capable, no CDN dependency) -->
   <script src="vendor/tailwindcss.js"></script>
   <script src="vendor/phaser.min.js"></script>
@@ -307,6 +324,8 @@ window.dispatchEvent(new CustomEvent('bg3dReady', {detail:{w:GW,h:GH}}));
 
 new Phaser.Game({
   type:Phaser.AUTO,
+  banner:false,
+  audio:{ noAudio:true },   // dashboard has no sound — skip Web Audio init entirely
   width:GW, height:GH,
   parent:'game-container',
   transparent:true,
