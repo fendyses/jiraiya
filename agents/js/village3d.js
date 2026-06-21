@@ -1296,14 +1296,17 @@
 
       composer.render();
     };
-    renderer.setAnimationLoop(liveLoop);
-
-    // Pause rendering while the tab is hidden — saves GPU/CPU/battery. On return,
-    // discard the elapsed gap (clock.getDelta) so motion doesn't jump, then resume.
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) { renderer.setAnimationLoop(null); }
-      else { clock.getDelta(); renderer.setAnimationLoop(liveLoop); }
-    });
+    // Run the village only when the tab is visible AND Lite mode is off — otherwise
+    // freeze it to save GPU/CPU/battery. On resume, discard the elapsed clock gap so
+    // motion doesn't jump. Driven by tab visibility + the global LiteMode (header toggle).
+    var _lite = window.LiteMode ? window.LiteMode.get() : false;
+    function applyRunState() {
+      if (!document.hidden && !_lite) { clock.getDelta(); renderer.setAnimationLoop(liveLoop); }
+      else { renderer.setAnimationLoop(null); }
+    }
+    document.addEventListener('visibilitychange', applyRunState);
+    if (window.LiteMode) window.LiteMode.subscribe(function (on) { _lite = on; applyRunState(); });
+    else applyRunState();
   }());
 
 }());

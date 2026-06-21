@@ -16,6 +16,9 @@
     #battleTimerWrapper{display:none;position:absolute;top:0;left:0;right:0;height:4px;z-index:21}
     #battleTimerBar{height:100%;width:100%;background:linear-gradient(90deg,#FF6B1A,#fff,#7B2FFF);transition:width .15s linear}
     .clockbox{font-family:'Press Start 2P',monospace}
+    .lite-toggle{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);transition:all .2s ease}
+    .lite-toggle:hover{border-color:rgba(212,160,23,.4);color:rgba(255,255,255,.7)}
+    .lite-toggle.on{color:#D4A017;border-color:rgba(212,160,23,.5);background:rgba(212,160,23,.08);box-shadow:0 0 10px rgba(212,160,23,.15)}
     /* ── JIRAIYA cockpit (active project + open reminders) ── */
     .cockpit{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.07)}
     .ck-proj{display:flex;align-items:center;gap:6px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;color:#c9a8ff}

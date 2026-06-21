@@ -169,9 +169,12 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
         <span class="text-white/70 text-lg font-semibold">Live Agent Ecosystem</span>
       </h1>
     </div>
-    <div class="text-right">
-      <div id="clock" class="clockbox text-yellow-400/90 text-lg tracking-wider"></div>
-      <div id="dateDisp" class="mono text-white/25 text-xs mt-1.5"></div>
+    <div class="flex items-center gap-7">
+      <button id="liteToggle" class="lite-toggle" type="button">◉ LIVE</button>
+      <div class="text-right">
+        <div id="clock" class="clockbox text-yellow-400/90 text-lg tracking-wider"></div>
+        <div id="dateDisp" class="mono text-white/25 text-xs mt-1.5"></div>
+      </div>
     </div>
   </div>
   <div class="cdeco bl"></div><div class="cdeco br"></div>
@@ -303,52 +306,7 @@ const REPO_SYS = <?= json_encode($repoSys, JSON_UNESCAPED_SLASHES | JSON_UNESCAP
 <script src="js/monitors.js"></script>
 <script src="js/agents-scene.js"></script>
 <script src="js/panels.js"></script>
-<script>
-'use strict';
-// ════════════════════════════════════════════════════════
-// BOOT
-// ════════════════════════════════════════════════════════
-buildUI();
-buildMonitors();
-buildRepoPanel();
-tick(); setInterval(tick,1000);
-
-
-const wrap=document.getElementById('game-wrap');
-const cols=Math.max(16,Math.floor((wrap.clientWidth||960)/DISP));
-const GW=cols*DISP;
-const GH=9*DISP;
-
-window.BG3D_SIZE = {w:GW, h:GH};
-window.dispatchEvent(new CustomEvent('bg3dReady', {detail:{w:GW,h:GH}}));
-
-new Phaser.Game({
-  type:Phaser.AUTO,
-  banner:false,
-  audio:{ noAudio:true },   // dashboard has no sound — skip Web Audio init entirely
-  width:GW, height:GH,
-  parent:'game-container',
-  transparent:true,
-  pixelArt:true,
-  roundPixels:true,
-  scale:{ mode:Phaser.Scale.FIT, autoCenter:Phaser.Scale.CENTER_HORIZONTALLY, width:GW, height:GH },
-  scene:GameScene
-});
-
-// Keep the repositories panel exactly as tall as the game window, scrolling its
-// list internally. Desktop only — on mobile the panel stacks and sizes to content.
-(function syncRepoHeight(){
-  const panel=document.getElementById('repoPanel');
-  const gw=document.getElementById('game-wrap');
-  if(!panel||!gw) return;
-  const apply=()=>{ panel.style.height = (window.innerWidth<=780) ? '' : gw.offsetHeight+'px'; };
-  apply();
-  if(window.ResizeObserver) new ResizeObserver(apply).observe(gw);
-  window.addEventListener('resize',apply);
-  setTimeout(apply,300); setTimeout(apply,1200);
-})();
-</script>
-
+<script src="js/boot.js"></script>
 <script src="js/village3d.js"></script>
 </body>
 </html>
