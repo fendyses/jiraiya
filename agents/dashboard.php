@@ -1,3 +1,11 @@
+<?php
+// Auth gate — only authenticated sessions may load the dashboard.
+session_start();
+if (empty($_SESSION['jiraiya_auth'])) {
+    header('Location: ../index.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,8 +88,8 @@
     .cf-ok{background:rgba(58,160,255,.15);color:#3aa0ff;border-color:rgba(58,160,255,.5)}
     .cf-ok:hover{background:rgba(58,160,255,.28);color:#fff;box-shadow:0 0 14px rgba(58,160,255,.4)}
     @media(max-width:780px){.stage-row{flex-direction:column}#repoPanel{width:100%!important}}
-    @media(max-width:900px){.cards-grid{grid-template-columns:repeat(3,1fr)!important}.terms-grid{grid-template-columns:repeat(2,1fr)!important}}
-    @media(max-width:520px){.cards-grid{grid-template-columns:repeat(2,1fr)!important}.terms-grid{grid-template-columns:repeat(1,1fr)!important}}
+    @media(max-width:900px){.cards-grid{grid-template-columns:repeat(3,1fr)!important}.terms-grid{grid-template-columns:repeat(2,1fr)!important}.monitors-grid{grid-template-columns:repeat(2,1fr)!important}}
+    @media(max-width:520px){.cards-grid{grid-template-columns:repeat(2,1fr)!important}.terms-grid{grid-template-columns:repeat(1,1fr)!important}.monitors-grid{grid-template-columns:1fr!important}}
     #app-dock{position:fixed;right:0;top:50%;transform:translateY(-50%);z-index:200;display:flex;flex-direction:column;gap:6px;padding:10px 5px;background:rgba(10,10,24,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.07);border-right:none;border-radius:10px 0 0 10px}
     .app-sc{position:relative;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);cursor:pointer;transition:all .22s ease;padding:0;flex-shrink:0}
     .app-sc:hover{transform:scale(1.14);border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.1);box-shadow:0 0 10px rgba(255,255,255,.1)}
@@ -155,7 +163,25 @@
     #statsBox .s-quote{margin-top:12px;font-size:10px;font-family:'Share Tech Mono',monospace;color:rgba(255,255,255,.3);font-style:italic;line-height:1.6;min-height:32px}
     #statsClose{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(255,255,255,.3);font-size:14px;cursor:pointer}
     #statsClose:hover{color:#fff}
-    .agent-card{cursor:pointer}
+    .agent-card{cursor:default}
+    /* ── System monitor boxes ── */
+    .mon{position:relative;overflow:hidden;padding:13px 15px;display:flex;flex-direction:column;border-radius:10px;background:linear-gradient(160deg,rgba(255,255,255,.04),rgba(255,255,255,.015));border:1px solid var(--mc,#888)33}
+    .mon::before{content:'';position:absolute;inset:0;border-radius:10px;box-shadow:inset 0 0 22px -8px var(--mc,#888);pointer-events:none}
+    .mon-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+    .mon-ico{width:26px;height:26px;flex-shrink:0;color:var(--mc,#888);filter:drop-shadow(0 0 5px var(--mc,#888)66)}
+    .mon-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:1.5px;color:#e8e8ef}
+    .mon-spark{width:100%;height:54px;display:block;border-radius:6px;background:rgba(0,0,0,.32)}
+    .mon-big{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:23px;letter-spacing:.5px;color:#fff;line-height:1.1}
+    .mon-sub{font-family:'Share Tech Mono',monospace;font-size:10.5px;letter-spacing:.5px;color:var(--mc,#888);opacity:.85;margin-top:2px;text-transform:uppercase}
+    .mon-bar{position:relative;width:100%;height:21px;border-radius:5px;background:rgba(0,0,0,.4);border:1px solid var(--mc,#888)33;overflow:hidden}
+    .mon-bar-fill{position:absolute;inset:0;width:0;border-radius:4px;background:linear-gradient(90deg,var(--mc,#888),var(--mc2,var(--mc,#888)));transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 12px -2px var(--mc,#888)}
+    .mon-bar-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+    .mon-net-row{display:flex;align-items:center;gap:11px;flex:1}
+    .mon-net-row+.mon-net-row{margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,255,255,.06)}
+    .mon-net-info{min-width:96px;flex-shrink:0}
+    .mon-net-rate{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:19px;color:#fff;line-height:1.05;display:flex;align-items:center;gap:6px}
+    .mon-net-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+    .mon-arrow{font-size:16px;line-height:1}
   </style>
 </head>
 <body>
@@ -244,7 +270,7 @@
       </div>
     </div>
   </div>
-  <div id="cardGrid" class="grid gap-3 cards-grid" style="grid-template-columns:repeat(5,1fr)"></div>
+  <div id="cardGrid" class="grid gap-3 monitors-grid" style="grid-template-columns:1fr 1fr 1fr 1.7fr"></div>
   <div id="termGrid" class="grid gap-3 terms-grid" style="grid-template-columns:repeat(5,1fr)"></div>
 </div>
 
@@ -298,6 +324,14 @@
       <path d="M17.87 7.06 5.6 11.67c-.83.33-.82.8-.15 1l3.14.98 7.28-4.6c.34-.21.66-.1.4.13L10.1 14.3l-.18 3.27c.26 0 .37-.12.5-.25l1.2-1.16 3.17 2.34c.58.32 1 .16 1.15-.54l2.08-9.8c.2-.8-.3-1.16-.95-.1Z" fill="#fff" opacity=".95"/>
     </svg>
     <span class="app-label">Telegram</span>
+  </button>
+  <button class="app-sc" onclick="if(confirm('Log out of JIRAIYA?'))window.location.href='../logout.php'" style="border-color:rgba(255,90,90,.3)">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+      <path d="M16 17l5-5-5-5"/>
+      <path d="M21 12H9"/>
+    </svg>
+    <span class="app-label">Log out</span>
   </button>
 </div>
 
@@ -1271,31 +1305,8 @@ class GameScene extends Phaser.Scene {
 // HTML PANELS
 // ════════════════════════════════════════════════════════
 function buildUI(){
-  const cg=document.getElementById('cardGrid'),tg=document.getElementById('termGrid');
+  const tg=document.getElementById('termGrid');
   Object.entries(ADEF).forEach(([name,d])=>{
-    const card=document.createElement('div');
-    card.id='card-'+name; card.className='agent-card glass p-3 relative overflow-hidden';
-    card.style.setProperty('--cc',d.color); card.style.borderColor=d.color+'33';
-    card.innerHTML=`
-      <div class="cdeco tl" style="border-color:${d.color}44"></div>
-      <div class="cdeco br" style="border-color:${d.color}44"></div>
-      <div class="flex items-center gap-2 mb-2">
-        <div class="flex-1 min-w-0">
-          <div class="font-bold text-sm tracking-wider truncate" style="color:${d.color}">${name.toUpperCase()}</div>
-          <div class="text-xs text-white/35">${d.role}</div>
-        </div>
-        <span class="sdot idle"></span>
-      </div>
-      <div class="mono text-xs mb-2"><span class="text-white/25">ST: </span><span class="st-text" style="color:${d.color}">Idle</span></div>
-      <div class="w-full rounded-full overflow-hidden mb-1" style="height:2px;background:rgba(255,255,255,.06)">
-        <div class="power-bar-inner h-full rounded-full" style="width:72%;background:linear-gradient(90deg,${d.color},${d.glow})"></div>
-      </div>
-      <div class="flex items-center gap-1">
-        <div class="mono text-white/15 text-xs truncate flex-1">${d.model}</div>
-        <span class="mood-badge text-xs">✨</span>
-      </div>`;
-    card.addEventListener('click',()=>openStatsPanel(name));
-    cg.appendChild(card);
     const term=document.createElement('div');
     term.className='terminal'; term.id='term-'+name;
     term.innerHTML=`
@@ -1513,9 +1524,124 @@ const VSCODE_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><p
 const CLI_SVG='<img src="assets/pics/claude-logo.svg" width="11" height="11" style="opacity:.8">';
 
 // ════════════════════════════════════════════════════════
+// SYSTEM MONITORS — live CPU / RAM / storage / network
+// ════════════════════════════════════════════════════════
+const MON_LEN=48;
+const monHist={cpu:[],down:[],up:[]};
+const MON_ICONS={
+  cpu:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor" stroke="none" opacity=".3"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg>',
+  ram:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="2" y="7" width="20" height="10" rx="1.5"/><path d="M6 7V5M10 7V5M14 7V5M18 7V5"/><rect x="5" y="10" width="3" height="4" rx=".5" fill="currentColor" stroke="none" opacity=".35"/><rect x="10.5" y="10" width="3" height="4" rx=".5" fill="currentColor" stroke="none" opacity=".35"/><rect x="16" y="10" width="3" height="4" rx=".5" fill="currentColor" stroke="none" opacity=".35"/></svg>',
+  disk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none" opacity=".35"/><path d="M12 3a9 9 0 0 1 9 9" opacity=".5"/></svg>',
+  net:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v11M7 15l-3.2-3.2M7 15l3.2-3.2M17 20V9M17 9l-3.2 3.2M17 9l3.2 3.2"/></svg>'
+};
+function fmtBytes(b){
+  if(b>=1099511627776) return (b/1099511627776).toFixed(b>=10995116277760?0:1)+' TB';
+  if(b>=1073741824)    return (b/1073741824).toFixed(b>=107374182400?0:1)+' GB';
+  if(b>=1048576)       return (b/1048576).toFixed(0)+' MB';
+  return (b/1024).toFixed(0)+' KB';
+}
+function fmtRate(bps){
+  if(bps>=1048576) return (bps/1048576).toFixed(1)+' MB/s';
+  if(bps>=1024)    return (bps/1024).toFixed(1)+' KB/s';
+  return Math.round(bps)+' B/s';
+}
+function monPush(arr,v){ arr.push(v); if(arr.length>MON_LEN) arr.shift(); }
+function buildMonitors(){
+  const cg=document.getElementById('cardGrid');
+  cg.innerHTML=`
+    <div class="mon" style="--mc:#ff5a4d">
+      <div class="mon-head"><div class="mon-ico">${MON_ICONS.cpu}</div><div class="mon-title">CPU LOADS</div></div>
+      <canvas class="mon-spark" id="cpuSpark"></canvas>
+      <div class="mon-big" id="cpuBig" style="margin-top:9px">—% LOAD</div>
+      <div class="mon-sub" id="cpuSub">Core Avg: —</div>
+    </div>
+    <div class="mon" style="--mc:#3a9bff;--mc2:#1e5fd0">
+      <div class="mon-head"><div class="mon-ico">${MON_ICONS.ram}</div><div class="mon-title">RAM USED</div></div>
+      <div class="mon-bar" style="margin-bottom:11px"><div class="mon-bar-fill" id="ramFill"></div><div class="mon-bar-pct" id="ramPct">—%</div></div>
+      <div class="mon-big" id="ramBig">— / —</div>
+      <div class="mon-sub" id="ramSub">—% USED</div>
+    </div>
+    <div class="mon" style="--mc:#4dd980;--mc2:#23a557">
+      <div class="mon-head"><div class="mon-ico">${MON_ICONS.disk}</div><div class="mon-title">STORAGE</div></div>
+      <div class="mon-bar" style="margin-bottom:11px"><div class="mon-bar-fill" id="diskFill"></div><div class="mon-bar-pct" id="diskPct">—%</div></div>
+      <div class="mon-big" id="diskBig">— / —</div>
+      <div class="mon-sub" id="diskSub">—% USED</div>
+    </div>
+    <div class="mon" style="--mc:#8a8fa3">
+      <div class="mon-head"><div class="mon-ico">${MON_ICONS.net}</div><div class="mon-title">NETWORK</div></div>
+      <div class="mon-net-row">
+        <div class="mon-net-info">
+          <div class="mon-net-rate"><span class="mon-arrow" style="color:#4dd980">↓</span><span id="downRate">—</span></div>
+          <div class="mon-net-lbl" style="color:#4dd980">Current Down</div>
+        </div>
+        <canvas class="mon-spark" id="downSpark" style="flex:1;height:42px"></canvas>
+      </div>
+      <div class="mon-net-row">
+        <div class="mon-net-info">
+          <div class="mon-net-rate"><span class="mon-arrow" style="color:#3a9bff">↑</span><span id="upRate">—</span></div>
+          <div class="mon-net-lbl" style="color:#3a9bff">Current Up</div>
+        </div>
+        <canvas class="mon-spark" id="upSpark" style="flex:1;height:42px"></canvas>
+      </div>
+    </div>`;
+  pollSystemStats();
+  setInterval(pollSystemStats,1500);
+}
+function drawSpark(canvas,data,color,maxOverride){
+  if(!canvas) return;
+  const dpr=window.devicePixelRatio||1, w=canvas.clientWidth, h=canvas.clientHeight;
+  if(!w||!h) return;
+  if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}
+  const ctx=canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  if(data.length<2) return;
+  const max=Math.max(maxOverride||0,...data,1e-6), n=data.length, stepX=w/(MON_LEN-1), x0=w-(n-1)*stepX;
+  const y=v=>h-3-(v/max)*(h-7);
+  ctx.beginPath(); ctx.moveTo(x0,h);
+  data.forEach((v,i)=>ctx.lineTo(x0+i*stepX,y(v)));
+  ctx.lineTo(x0+(n-1)*stepX,h); ctx.closePath();
+  const g=ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,color+'66'); g.addColorStop(1,color+'05');
+  ctx.fillStyle=g; ctx.fill();
+  ctx.beginPath();
+  data.forEach((v,i)=>{const px=x0+i*stepX,py=y(v); i?ctx.lineTo(px,py):ctx.moveTo(px,py);});
+  ctx.lineWidth=1.6; ctx.strokeStyle=color; ctx.shadowColor=color; ctx.shadowBlur=6; ctx.stroke(); ctx.shadowBlur=0;
+}
+async function pollSystemStats(){
+  let s;
+  try{ const r=await fetch('system-stats.php',{cache:'no-store'}); if(!r.ok) throw 0; s=await r.json(); }
+  catch(e){ const sub=document.getElementById('cpuSub'); if(sub) sub.textContent='stats endpoint offline'; return; }
+  // CPU
+  monPush(monHist.cpu,s.cpu.pct);
+  document.getElementById('cpuBig').textContent=Math.round(s.cpu.pct)+'% LOAD';
+  document.getElementById('cpuSub').textContent='Core Avg: '+Math.round(s.cpu.pct)+'% · '+s.cpu.chip;
+  drawSpark(document.getElementById('cpuSpark'),monHist.cpu,'#ff5a4d',100);
+  // RAM
+  const rp=Math.round(s.ram.pct);
+  document.getElementById('ramFill').style.width=s.ram.pct+'%';
+  document.getElementById('ramPct').textContent=rp+'%';
+  document.getElementById('ramBig').textContent=fmtBytes(s.ram.usedBytes)+' / '+fmtBytes(s.ram.totalBytes);
+  document.getElementById('ramSub').textContent=rp+'% USED';
+  // Storage
+  const dp=Math.round(s.disk.pct);
+  document.getElementById('diskFill').style.width=s.disk.pct+'%';
+  document.getElementById('diskPct').textContent=dp+'%';
+  document.getElementById('diskBig').textContent=fmtBytes(s.disk.usedBytes)+' / '+fmtBytes(s.disk.totalBytes);
+  document.getElementById('diskSub').textContent=dp+'% USED';
+  // Network
+  monPush(monHist.down,s.net.downBps); monPush(monHist.up,s.net.upBps);
+  document.getElementById('downRate').textContent=fmtRate(s.net.downBps);
+  document.getElementById('upRate').textContent=fmtRate(s.net.upBps);
+  drawSpark(document.getElementById('downSpark'),monHist.down,'#4dd980');
+  drawSpark(document.getElementById('upSpark'),monHist.up,'#3a9bff');
+}
+
+// ════════════════════════════════════════════════════════
 // BOOT
 // ════════════════════════════════════════════════════════
 buildUI();
+buildMonitors();
 buildRepoPanel();
 tick(); setInterval(tick,1000);
 
@@ -2084,9 +2210,9 @@ new Phaser.Game({
     var g2 = cv.getContext('2d');
     g2.fillStyle = '#EADBB4'; g2.fillRect(0, 0, 512, 120);
     g2.strokeStyle = '#6B4A22'; g2.lineWidth = 12; g2.strokeRect(6, 6, 500, 108);
-    g2.fillStyle = '#3A2A14'; g2.font = 'bold 43px "Courier New", monospace';
-    g2.textAlign = 'right'; g2.textBaseline = 'middle';
-    g2.fillText('by Fendy SES', 496, 62);
+    g2.fillStyle = '#3A2A14'; g2.font = 'bold 32px "Courier New", monospace';
+    g2.textAlign = 'right'; g2.textBaseline = 'bottom';
+    g2.fillText('by Fendy SES', 496, 104);
     var tex = new THREE.CanvasTexture(cv);
     var sign = new THREE.Mesh(new THREE.PlaneGeometry(4.7, 1.1), new THREE.MeshBasicMaterial({ map: tex }));
     sign.position.set(-2.5, 3.5, -12.5);
