@@ -729,8 +729,21 @@
     scene.add(fl);
   }
 
-  // One cart
-  place('cart', -3, -3, { ry: 0.5, s: 1.3, noShadow: true });
+  // One cart — characters occasionally stroll over and hop on top (cart-visit director).
+  // Also publish its screen-space footprint so the Phaser collision layer treats it as
+  // a solid obstacle (characters path around it instead of walking through it).
+  place('cart', -3, -3, { ry: 0.5, s: 1.56, noShadow: true, onload: function (m) {
+    var b = new THREE.Box3().setFromObject(m);
+    CART = { x: m.position.x, z: m.position.z, top: b.max.y };
+    var proj = function (wx, wy, wz) {
+      var v = new THREE.Vector3(wx, wy, wz).project(camera);
+      return { x: (v.x * 0.5 + 0.5) * W, y: (-v.y * 0.5 + 0.5) * H };
+    };
+    var c  = proj(CART.x, 0, CART.z);                              // base centre on screen
+    var ex = proj(CART.x + (b.max.x - b.min.x) * 0.5, 0, CART.z);  // footprint edge
+    var rx = Math.max(20, Math.abs(ex.x - c.x) * 1.15);
+    window.CART_BLOCK = { x: c.x, y: c.y, rx: rx, ry: rx * 0.7 };
+  } });
 
   // (lanterns removed)
 
@@ -754,6 +767,86 @@
   var charClips   = {};   // name → { clipName: THREE.AnimationAction }
   var charCurAnim = {};   // name → currently playing clip name
   var goldTrails  = [];   // active golden afterimage clones for Jiraiya
+
+  // ── Cart-visit director + idle fidgets ──────────────────────────────────
+  // The Phaser sprites are invisible/logic-only, so these behaviours live here
+  // in 3D. A character occasionally strolls to the wheelbarrow, hops on top,
+  // does a happy little dance, then hops down — driven by overriding that one
+  // character's position for the duration. Idle characters also play random
+  // emote "fidgets" so they aren't frozen between walks.
+  var CART         = null;   // {x, z, top}  filled when the cart GLB loads
+  var cartShow     = null;   // {name, phase, t, danceT} while a visit runs
+  var cartCooldown = 6;      // seconds until the next visit may start
+  var charFidget   = {};     // name → {t, dur} one-shot idle emote in progress
+  var fidgetTimer  = {};     // name → seconds until next idle fidget
+
+  // Play a one-shot (non-looping) clip; returns its duration (0 if missing).
+  function playCharOnce(name, clipName) {
+    var clips = charClips[name];
+    if (!clips || !clips[clipName]) return 0;
+    var prev = charCurAnim[name];
+    if (prev && prev !== clipName && clips[prev]) clips[prev].fadeOut(0.15);
+    var a = clips[clipName];
+    a.reset(); a.setLoop(THREE.LoopOnce, 1); a.clampWhenFinished = true;
+    a.fadeIn(0.15).play();
+    charCurAnim[name] = clipName;
+    return a.getClip().duration;
+  }
+
+  // Move m toward (tx,tz) at spd units/sec, facing travel direction; returns
+  // the distance that remained at the start of this step.
+  function stepToward(m, tx, tz, spd, dt) {
+    var dx = tx - m.position.x, dz = tz - m.position.z;
+    var dist = Math.sqrt(dx * dx + dz * dz) || 0.0001;
+    var step = Math.min(dist, spd * dt);
+    m.position.x += (dx / dist) * step;
+    m.position.z += (dz / dist) * step;
+    if (Math.abs(dx) > 0.0001) {
+      var tRY = dx > 0 ? Math.PI * 0.25 : -Math.PI * 0.25;
+      m.rotation.y += (tRY - m.rotation.y) * 0.18;
+    }
+    return dist;
+  }
+
+  // Advance the active cart visit for one character (position + animation).
+  function updateCartVisit(name, m, d, dt) {
+    var cs = cartShow, base = charYOff[name];
+    var groundY = base, topY = CART.top + base;
+    cs.t += dt;
+    if (cs.phase === 'approach') {
+      m.position.y = groundY;
+      setCharAnim(name, 'walk');
+      if (stepToward(m, CART.x, CART.z, 2.4, dt) < 0.35) {
+        cs.phase = 'hopon'; cs.t = 0; playCharOnce(name, 'jump');
+      }
+    } else if (cs.phase === 'hopon') {
+      var k = Math.min(1, cs.t / 0.5);
+      m.position.x = CART.x; m.position.z = CART.z;
+      m.position.y = groundY + (topY - groundY) * k + Math.sin(k * Math.PI) * 0.4; // arc
+      if (cs.t >= 0.5) { cs.phase = 'dance'; cs.t = 0; cs.danceT = 0; }
+    } else if (cs.phase === 'dance') {
+      m.position.x = CART.x; m.position.z = CART.z; m.position.y = topY;
+      m.rotation.y += (Math.PI * 0.25 - m.rotation.y) * 0.1;   // turn to face camera
+      cs.danceT -= dt;
+      if (cs.danceT <= 0) {
+        var moves = ['emote-yes', 'jump', 'emote-yes', 'emote-no'];
+        playCharOnce(name, moves[Math.floor(Math.random() * moves.length)]);
+        cs.danceT = 1.0;
+      }
+      if (cs.t >= 6.5) { cs.phase = 'hopoff'; cs.t = 0; playCharOnce(name, 'jump'); }
+    } else if (cs.phase === 'hopoff') {
+      var k2 = Math.min(1, cs.t / 0.45);
+      m.position.x = CART.x; m.position.z = CART.z;
+      m.position.y = topY + (groundY - topY) * k2;
+      if (cs.t >= 0.45) { cs.phase = 'leave'; cs.t = 0; }
+    } else {   // 'leave' — walk back toward the (invisible) sprite, then release
+      m.position.y = groundY;
+      setCharAnim(name, 'walk');
+      var wp = phaserTo3D(d.x, d.y);
+      var rem = wp ? stepToward(m, wp.x, wp.z, 2.2, dt) : 0;
+      if (!wp || rem < 0.4 || cs.t > 6) { cartShow = null; cartCooldown = 14 + Math.random() * 14; }
+    }
+  }
 
   // Correct 2D→3D mapping: shoot a ray from the camera through the Phaser
   // screen position and intersect with the ground plane (y=0).
@@ -1022,6 +1115,13 @@
           var d = npcData[name];
           if (!d) return;
 
+          // ── Cart visit overrides this character's position + animation ──
+          if (cartShow && cartShow.name === name && CART) {
+            updateCartVisit(name, m, d, dt);
+            m.scale.setScalar(CHAR_MAP[name].scale);
+            return;
+          }
+
           var wp = phaserTo3D(d.x, d.y);
           if (!wp) return;
 
@@ -1031,6 +1131,7 @@
 
           var isMoving = (d.state === 'walking' || d.state === 'post-battle');
           if (isMoving) {
+            charFidget[name] = null;
             setCharAnim(name, 'walk');
             if (Math.abs(d.vx) > 0.0001) {
               // +π/4 = faces right (+X toward camera); −π/4 = faces left (−X toward camera)
@@ -1038,6 +1139,7 @@
               m.rotation.y += (targetRY - m.rotation.y) * 0.18;
             }
           } else if (d.state === 'fighting') {
+            charFidget[name] = null;
             setCharAnim(name, 'attack-melee-right');
             // rotate to face the opponent (the other NPC currently in fighting state)
             var nNames = Object.keys(npcData);
@@ -1055,11 +1157,42 @@
               break;
             }
           } else {
-            setCharAnim(name, 'idle');
+            // idle — play a random emote "fidget" now and then so they aren't frozen
+            if (charFidget[name]) {
+              charFidget[name].t += dt;
+              if (charFidget[name].t >= charFidget[name].dur) charFidget[name] = null;
+            } else {
+              setCharAnim(name, 'idle');
+              var ft = fidgetTimer[name];
+              fidgetTimer[name] = (ft === undefined) ? (5 + Math.random() * 9) : ft - dt;
+              if (fidgetTimer[name] <= 0) {
+                var emotes = ['emote-yes', 'emote-no', 'crouch', 'interact-right', 'pick-up'];
+                var dur = playCharOnce(name, emotes[Math.floor(Math.random() * emotes.length)]);
+                if (dur) charFidget[name] = { t: 0, dur: dur };
+                fidgetTimer[name] = 8 + Math.random() * 12;
+              }
+            }
             m.rotation.y += (CHAR_MAP[name].baseRY - m.rotation.y) * 0.05;
           }
           m.scale.setScalar(CHAR_MAP[name].scale);
         });
+
+        // ── Cart-visit director: occasionally send a wandering character over ──
+        if (CART && !cartShow) {
+          cartCooldown -= dt;
+          if (cartCooldown <= 0) {
+            var cand = [];
+            Object.keys(char3d).forEach(function (nm) {
+              var dd = npcData[nm];
+              if (dd && (dd.state === 'walking' || dd.state === 'idle')) cand.push(nm);
+            });
+            if (cand.length) {
+              cartShow = { name: cand[Math.floor(Math.random() * cand.length)], phase: 'approach', t: 0, danceT: 0 };
+              charFidget[cartShow.name] = null;
+            }
+            cartCooldown = 6;   // re-check window if nobody was available
+          }
+        }
       }
 
       // fade out Jiraiya gold afterimage clones

@@ -485,6 +485,9 @@ class GameScene extends Phaser.Scene {
         const o=this.obstacles[i],dx=(x-o.x)/o.rx,dy=(y-o.y)/o.ry;
         if(dx*dx+dy*dy<1) return true;
       }
+      // the wheelbarrow — footprint published by the 3D layer once its GLB loads
+      const c=window.CART_BLOCK;
+      if(c){ const dx=(x-c.x)/c.rx, dy=(y-c.y)/c.ry; if(dx*dx+dy*dy<1) return true; }
       return false;
     };
 
