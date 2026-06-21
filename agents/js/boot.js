@@ -6,17 +6,17 @@
 
 // ── Lite mode — a battery saver ──────────────────────────────────────────────
 // When ON, the 3D village and the Phaser game freeze (their render loops stop)
-// while the live gauges, repos and todo keep updating. The choice is remembered
-// across reloads. Components subscribe and react; subscribe() also fires once
-// immediately with the current state so late-loading code self-syncs.
+// while the live gauges, repos and todo keep updating. NOT persisted: every load
+// starts in Live so the scene always paints (freezing before the first render
+// would show a black screen). Lite is a per-session toggle. Components subscribe
+// and react; subscribe() also fires once immediately so late-loading code syncs.
 window.LiteMode = (function () {
-  const KEY = 'jiraiya.lite';
-  let on = localStorage.getItem(KEY) === '1';
+  let on = false;
   const subs = [];
   function emit() { subs.forEach(function (f) { try { f(on); } catch (e) {} }); }
   return {
     get: function () { return on; },
-    set: function (v) { on = !!v; localStorage.setItem(KEY, on ? '1' : '0'); emit(); },
+    set: function (v) { on = !!v; emit(); },
     toggle: function () { this.set(!on); },
     subscribe: function (f) { subs.push(f); try { f(on); } catch (e) {} }
   };
