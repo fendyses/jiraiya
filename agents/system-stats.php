@@ -1,6 +1,14 @@
 <?php
 // Live system metrics for the JIRAIYA dashboard (macOS, served by ServBay PHP).
 // Polled by dashboard.php every ~1.5s. Same-origin → no separate process / CORS.
+require __DIR__ . '/../auth.php';
+if (!jiraiya_is_authed()) {
+    http_response_code(403);
+    header('Content-Type: application/json');
+    echo '{"error":"unauthorized"}';
+    exit;
+}
+session_write_close();   // release the session lock so polls don't serialize
 header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache, must-revalidate');
 

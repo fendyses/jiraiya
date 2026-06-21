@@ -1,10 +1,7 @@
 <?php
 // Auth gate — only authenticated sessions may load the dashboard.
-session_start();
-if (empty($_SESSION['jiraiya_auth'])) {
-    header('Location: ../index.php');
-    exit;
-}
+require __DIR__ . '/../auth.php';
+jiraiya_require_auth('../index.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">

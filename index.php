@@ -1,27 +1,19 @@
 <?php
-session_start();
-
-// ─────────────────────────────────────────────────────────────
-//  JIRAIYA — login gate
-//  Change the credentials below.
-//  To set a new password, run:
-//    php -r "echo password_hash('YOUR_NEW_PASSWORD', PASSWORD_DEFAULT);"
-//  and paste the result into JIRAIYA_PASS_HASH.
-// ─────────────────────────────────────────────────────────────
-const JIRAIYA_USER      = 'fendy';
-const JIRAIYA_PASS_HASH = '$2y$10$8vR5.w63TjWbODy7.tMUyedF2pW7DsLAfyJZRu5TLnH9ZdFQcpMNC'; // password: 199254
+// JIRAIYA — login gate. Credentials live outside the web root (see auth.php).
+require __DIR__ . '/auth.php';
 
 // Already authenticated → straight to the dashboard.
-if (!empty($_SESSION['jiraiya_auth'])) {
+if (jiraiya_is_authed()) {
     header('Location: agents/dashboard.php');
     exit;
 }
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $cfg = jiraiya_config();
     $u = trim($_POST['username'] ?? '');
     $p = (string) ($_POST['password'] ?? '');
-    if (hash_equals(JIRAIYA_USER, $u) && password_verify($p, JIRAIYA_PASS_HASH)) {
+    if (hash_equals($cfg['user'], $u) && password_verify($p, $cfg['pass_hash'])) {
         session_regenerate_id(true);
         $_SESSION['jiraiya_auth'] = true;
         $_SESSION['jiraiya_user'] = $u;
