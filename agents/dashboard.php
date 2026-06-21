@@ -27,6 +27,39 @@ if ($td = @file_get_contents($REPO . '/main/todo.md')) {
         $todoOngoing = array_map('trim', $items[1]);
     }
 }
+
+// ── Repositories: load from the portable .env registry (see /.env) ──
+// Colour/label map for language tags. Tags not listed fall back to a grey badge.
+$LANG_DEFS = [
+    'laravel' => ['label' => 'Laravel',    'color' => '#FF2D20'],
+    'vue'     => ['label' => 'Vue.js',     'color' => '#42B883'],
+    'angular' => ['label' => 'Angular',    'color' => '#f218ca'],
+    'php'     => ['label' => 'PHP',        'color' => '#00b3ff'],
+    'ts'      => ['label' => 'TypeScript', 'color' => '#3178C6'],
+    'md'      => ['label' => 'Markdown',   'color' => '#D4A017'],
+    'js'      => ['label' => 'JavaScript', 'color' => '#F7DF1E'],
+];
+$repoSys = [];
+if ($envRaw = @file_get_contents($REPO . '/.env')) {
+    foreach (preg_split('/\r\n|\r|\n/', $envRaw) as $ln) {
+        $ln = trim($ln);
+        if ($ln === '' || $ln[0] === '#') continue;                 // skip blanks + comments
+        if (!preg_match('/^REPO(?:\[\])?\s*=\s*(.+)$/i', $ln, $m)) continue;
+        $parts = array_map('trim', explode('|', $m[1]));
+        if (($parts[0] ?? '') === '') continue;                     // name is required
+        $langs = (isset($parts[1]) && $parts[1] !== '')
+            ? array_values(array_filter(array_map('trim', explode(',', $parts[1])), 'strlen'))
+            : [];
+        $entry = [
+            'name'  => $parts[0],
+            'langs' => $langs,
+            'note'  => $parts[2] ?? '',
+            'path'  => $parts[3] ?? '',
+        ];
+        if (isset($parts[4]) && strtolower($parts[4]) === 'active') $entry['active'] = true;
+        $repoSys[] = $entry;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -244,7 +277,11 @@ if ($td = @file_get_contents($REPO . '/main/todo.md')) {
   </button>
 </div>
 
-<script src="../main/repos.js"></script>
+<script>
+// Repository registry — generated server-side from /.env (portable across machines)
+const LANG = <?= json_encode($LANG_DEFS, JSON_UNESCAPED_SLASHES) ?>;
+const REPO_SYS = <?= json_encode($repoSys, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
+</script>
 <script src="../daily-diary/diary-data.js"></script>
 <script src="js/monitors.js"></script>
 <script src="js/agents-scene.js"></script>
