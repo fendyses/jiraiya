@@ -90,7 +90,7 @@ async function pollSystemStats(){
   // CPU
   monPush(monHist.cpu,s.cpu.pct);
   document.getElementById('cpuBig').textContent=Math.round(s.cpu.pct)+'% LOAD';
-  document.getElementById('cpuSub').textContent='Core Avg: '+Math.round(s.cpu.pct)+'% · '+s.cpu.chip;
+  document.getElementById('cpuSub').textContent='Core Avg: '+Math.round(s.cpu.pct)+'%';
   drawSpark(document.getElementById('cpuSpark'),monHist.cpu,'#ff5a4d',100);
   // RAM
   const rp=Math.round(s.ram.pct);

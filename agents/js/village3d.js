@@ -111,6 +111,9 @@
     scene.add(L);
     return L;
   });
+  // Lamp posts (lanterns): point lights + emissive "bulb" materials, lit at night only.
+  var _lampLights = [];
+  var _lampBulbs  = [];
   // [hour, skyTop, skyBottom, fog, sunColor, sunIntensity, ambient, hemi, sunElevDeg, nightAmount]
   var _dnKeys = [
     { h: 0.0,  top: 0x060814, bot: 0x0c1430, fog: 0x0c1430, sun: 0x2a3a66, si: 0.06, amb: 0.20, hemi: 0.12, elev: -20, night: 1.00 },
@@ -143,6 +146,9 @@
     _hemi.intensity = L(a.hemi, b.hemi);
     var night = L(a.night, b.night);
     for (var w = 0; w < _warmLights.length; w++) _warmLights[w].intensity = night * 1.6;
+    // Lamp posts: bright amber glow after dusk, fully off by day.
+    for (var lp = 0; lp < _lampLights.length; lp++) _lampLights[lp].intensity = night * 2.4;
+    for (var lb = 0; lb < _lampBulbs.length; lb++) _lampBulbs[lb].emissiveIntensity = night * 3.0;
   }
   updateDayNight();   // set the correct mood immediately on load
 
@@ -432,6 +438,34 @@
     }, undefined, function() { console.warn('[3DBG] skip:', name); });
   }
 
+  // placeLamp — drop a lantern lamp post, snapped to the ground, with a warm
+  // point light + an emissive "bulb" sphere near its head. Both stay dark by day
+  // and fade in at night (driven by updateDayNight via _lampLights / _lampBulbs).
+  function placeLamp(x, z, ry) {
+    loader.load(BASE + 'lantern.glb', function(gltf) {
+      var m = gltf.scene;
+      m.rotation.y = ry || 0;
+      m.traverse(function(c) { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+      m.updateWorldMatrix(true, true);
+      var box = new THREE.Box3().setFromObject(m);
+      var topY = box.max.y - box.min.y;          // model height after grounding
+      var bulbY = topY * 0.82;                   // lamp head sits near the top
+      m.position.set(x, -box.min.y, z);
+      scene.add(m);
+      // visible glowing bulb at the lamp head
+      var bulbMat = new THREE.MeshStandardMaterial({ color: 0xFFC76A, emissive: 0xFFB060, emissiveIntensity: 0 });
+      var bulb = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), bulbMat);
+      bulb.position.set(x, bulbY, z);
+      scene.add(bulb);
+      _lampBulbs.push(bulbMat);
+      // pooled illumination
+      var L = new THREE.PointLight(0xFFB060, 0, 8, 2);
+      L.position.set(x, bulbY, z);
+      scene.add(L);
+      _lampLights.push(L);
+    }, undefined, function() { console.warn('[3DBG] skip: lantern'); });
+  }
+
   // Procedural water texture — deep blue gradient with flow lines and sparkle dots
   function makeWaterTex() {
     var c = document.createElement('canvas'); c.width = 128; c.height = 128;
@@ -604,6 +638,10 @@
   // 5) Green-roof mill house (right) + camera-facing water wheel + flowing stream
   building(9.5, -9, 2, 2, 2, { wall: 'wall-wood', roof: 'roof-gable', door: 0, win: 'wall-wood-window-glass', chimney: true });
   placeSpinner('watermill', 11.7, 2.0, -7.7, Math.PI / 2, -0.45, 1.7, true);
+
+  // 6) Two lamp posts flanking the village front — dark by day, glowing at night
+  placeLamp(-6, -3, Math.PI / 5);
+  placeLamp( 6, -3, -Math.PI / 5);
 
   // ── Enhanced river ────────────────────────────────────────────────
   // Main water channel

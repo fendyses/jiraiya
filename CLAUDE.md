@@ -24,7 +24,7 @@ At the start of every new session, before responding to the first message:
 
 6. Deliver session brief **before** responding to the first message (max 12 lines after banner):
    - 1–2 line recap from `main/current-session.md`
-   - Open reminders count from `main/reminders.md` (skip if none)
+   - To Do list — open items from `main/todo.md` under `## Ongoing` (skip if none)
    - Active project + health flags (if LRU installed)
    - Time-based greeting
 

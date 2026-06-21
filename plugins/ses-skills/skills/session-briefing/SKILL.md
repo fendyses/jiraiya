@@ -18,7 +18,7 @@ Fires automatically at the start of every new conversation session, before proce
 
 ## Behavior
 1. Read `main/current-session.md` — extract last session recap (1–2 lines)
-2. Read `main/reminders.md` — count open items (skip section if none)
+2. Read `main/todo.md` — list open items under `## Ongoing` (skip section if none)
 3. Read project list — identify active project + 🔴/🟡 health flags (if LRU System installed)
 4. Check current time — determine time period (if Time-based-Aware System installed)
 5. Read `JIRAIYA-hub/data/inbox.json` — surface queued tasks if present; ask user which to tackle first (Lv.4)
@@ -27,7 +27,7 @@ Fires automatically at the start of every new conversation session, before proce
 ## Ownership Boundaries (Lv.4)
 - `session-briefing` owns the automatic startup brief
 - `JIRAIYA-recall` handles on-demand or deep workspace recall only
-- `check-reminders` handles reminder-specific operations only
+- `main/todo.md` is the source of truth for the startup To Do list (managed from the dashboard)
 - `session-briefing` does not orchestrate inbox tasks — surfaces them and asks user to pick
 
 ## Output Rules
@@ -39,7 +39,7 @@ Fires automatically at the start of every new conversation session, before proce
 ## Companion Skills
 - Time-based-Aware-System → time period + work suggestion
 - LRU-Project-Management-System → active project + health flags
-- Reminders-System → open reminder items
+- To Do list → open items from `main/todo.md` (`## Ongoing`)
 
 ## Level History
 - **Lv.1** — Base: session recap + time suggestion
