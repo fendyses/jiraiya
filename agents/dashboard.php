@@ -2,6 +2,31 @@
 // Auth gate — only authenticated sessions may load the dashboard.
 require __DIR__ . '/../auth.php';
 jiraiya_require_auth('../index.php');
+
+// ── JIRAIYA cockpit: read active project + open reminders from the memory files ──
+$REPO = dirname(__DIR__);
+$ck_md = function ($s) {                       // strip light markdown, then escape
+    $s = preg_replace('/\*\*(.+?)\*\*/', '$1', $s);
+    $s = preg_replace('/`([^`]+)`/', '$1', $s);
+    return htmlspecialchars(trim($s));
+};
+$projName = $projDesc = $projStatus = '';
+if ($sess = @file_get_contents($REPO . '/main/current-session.md')) {
+    if (preg_match('/\*\*Current Project\*\*:\s*(.+)/', $sess, $m)) {
+        $line = trim($m[1]);
+        if (preg_match('/^(.+?)\s*\(.*?\)\s*[—-]*\s*(.*)$/', $line, $mm)) {
+            $projName = trim($mm[1]); $projDesc = trim($mm[2]);
+        } else { $projName = $line; }
+    }
+    if (preg_match('/\*\*Status\*\*:\s*(.+)/', $sess, $m)) $projStatus = trim($m[1]);
+}
+$openReminders = [];
+if ($rem = @file_get_contents($REPO . '/main/reminders.md')) {
+    if (preg_match('/##\s*Open(.*?)(?:##\s*Completed|$)/s', $rem, $m) &&
+        preg_match_all('/^\s*-\s+(.+)$/m', $m[1], $items)) {
+        $openReminders = array_map('trim', $items[1]);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,17 +34,18 @@ jiraiya_require_auth('../index.php');
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JIRAIYA — Live Agent Ecosystem</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/FXAAShader.js"></script>
+  <!-- Self-hosted vendor libs (offline-capable, no CDN dependency) -->
+  <script src="vendor/tailwindcss.js"></script>
+  <script src="vendor/phaser.min.js"></script>
+  <script src="vendor/three.min.js"></script>
+  <script src="vendor/three/GLTFLoader.js"></script>
+  <script src="vendor/three/EffectComposer.js"></script>
+  <script src="vendor/three/RenderPass.js"></script>
+  <script src="vendor/three/ShaderPass.js"></script>
+  <script src="vendor/three/UnrealBloomPass.js"></script>
+  <script src="vendor/three/LuminosityHighPassShader.js"></script>
+  <script src="vendor/three/CopyShader.js"></script>
+  <script src="vendor/three/FXAAShader.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Press+Start+2P&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/dashboard.css">
 </head>
@@ -83,6 +109,23 @@ jiraiya_require_auth('../index.php');
   <div class="stage-row flex gap-3 items-start">
     <aside id="repoPanel" class="glass p-3 relative flex flex-col" style="width:236px;flex-shrink:0">
       <div class="cdeco tl"></div><div class="cdeco br"></div>
+
+      <!-- JIRAIYA cockpit (server-rendered from the memory files) -->
+      <div class="cockpit">
+        <div class="mono text-yellow-700 text-xs tracking-[2px] uppercase mb-1">// JIRAIYA</div>
+        <?php if ($projName): ?>
+          <div class="ck-proj"><span class="ck-dot"></span><?= $ck_md($projName) ?></div>
+          <?php if ($projDesc): ?><div class="ck-desc"><?= $ck_md($projDesc) ?></div><?php endif; ?>
+          <?php if ($projStatus): ?><div class="ck-status"><?= $ck_md($projStatus) ?></div><?php endif; ?>
+        <?php endif; ?>
+        <div class="ck-rem-head">OPEN REMINDERS<span class="ck-badge<?= $openReminders ? '' : ' zero' ?>"><?= count($openReminders) ?></span></div>
+        <?php if ($openReminders): foreach (array_slice($openReminders, 0, 4) as $r): ?>
+          <div class="ck-rem">› <?= $ck_md($r) ?></div>
+        <?php endforeach; else: ?>
+          <div class="ck-none">✓ all clear</div>
+        <?php endif; ?>
+      </div>
+
       <div class="mono text-yellow-700 text-xs tracking-[2px] uppercase mb-1">// WORKSPACE</div>
       <div class="flex items-center gap-2 mb-3">
         <span class="text-yellow-400 font-bold text-sm tracking-wider">REPO SYSTEMS</span>

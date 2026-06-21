@@ -16,6 +16,18 @@
     #battleTimerWrapper{display:none;position:absolute;top:0;left:0;right:0;height:4px;z-index:21}
     #battleTimerBar{height:100%;width:100%;background:linear-gradient(90deg,#FF6B1A,#fff,#7B2FFF);transition:width .15s linear}
     .clockbox{font-family:'Press Start 2P',monospace}
+    /* ── JIRAIYA cockpit (active project + open reminders) ── */
+    .cockpit{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.07)}
+    .ck-proj{display:flex;align-items:center;gap:6px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;color:#c9a8ff}
+    .ck-dot{width:7px;height:7px;border-radius:50%;background:#7B2FFF;box-shadow:0 0 7px #7B2FFF;flex-shrink:0;animation:sdP 2.4s ease infinite}
+    @keyframes sdP{0%,100%{opacity:1}50%{opacity:.4}}
+    .ck-desc{font-family:'Share Tech Mono',monospace;font-size:9.5px;color:rgba(255,255,255,.4);margin:2px 0 0 13px;line-height:1.4}
+    .ck-status{font-family:'Share Tech Mono',monospace;font-size:9px;color:rgba(110,200,120,.75);margin:3px 0 0 13px}
+    .ck-rem-head{display:flex;align-items:center;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:rgba(255,255,255,.3);text-transform:uppercase;margin:9px 0 5px}
+    .ck-badge{margin-left:auto;min-width:16px;text-align:center;padding:0 5px;border-radius:8px;font-weight:700;color:#1a1a2e;background:#D4A017}
+    .ck-badge.zero{background:rgba(255,255,255,.12);color:rgba(255,255,255,.5)}
+    .ck-rem{font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(255,225,150,.85);line-height:1.45;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .ck-none{font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(110,200,120,.6)}
     .repo-item{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:7px;padding:7px 9px;transition:all .25s ease;cursor:default}
     .repo-item:hover{background:rgba(58,160,255,.04);border-color:rgba(58,160,255,.2)}
     .repo-item.active{border-color:rgba(212,160,23,.5);background:rgba(212,160,23,.08)}

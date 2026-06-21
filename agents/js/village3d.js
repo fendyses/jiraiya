@@ -82,8 +82,8 @@
   camera.lookAt(0, 2.2, -7);
 
   // ── LIGHTING ── (bright sunny, but tone-mapped so highlights don't clip to white)
-  scene.add(new THREE.AmbientLight(0xFFFFFF, 0.5));
-  scene.add(new THREE.HemisphereLight(0xAFD4F0, 0x6E9A40, 0.35)); // softer blue bounce (less icy rocks)
+  var _amb  = new THREE.AmbientLight(0xFFFFFF, 0.5);             scene.add(_amb);
+  var _hemi = new THREE.HemisphereLight(0xAFD4F0, 0x6E9A40, 0.35); scene.add(_hemi); // softer blue bounce
 
   var sun = new THREE.DirectionalLight(0xFFF3D2, 1.5);
   sun.position.set(10, 22, 12);
@@ -98,6 +98,53 @@
   sun.shadow.bias = -0.001;
   sun.shadow.camera.updateProjectionMatrix();
   scene.add(sun);
+
+  // ── DAY / NIGHT CYCLE ──────────────────────────────────────────────────
+  // Sky, sun, fog and ambient light follow the real local clock. Warm "window"
+  // lights near the houses fade in after dusk. Keyframes are interpolated by hour.
+  var _skyU = _skyMesh.material.uniforms;
+  var _warmLights = [
+    [-8.5, 2.2, -8.0], [-2.5, 2.2, -12.5], [4.0, 2.2, -12.5], [9.5, 2.2, -8.0]
+  ].map(function (p) {
+    var L = new THREE.PointLight(0xFFB060, 0, 9, 2);   // intensity 0 by day
+    L.position.set(p[0], p[1], p[2]);
+    scene.add(L);
+    return L;
+  });
+  // [hour, skyTop, skyBottom, fog, sunColor, sunIntensity, ambient, hemi, sunElevDeg, nightAmount]
+  var _dnKeys = [
+    { h: 0.0,  top: 0x060814, bot: 0x0c1430, fog: 0x0c1430, sun: 0x2a3a66, si: 0.06, amb: 0.20, hemi: 0.12, elev: -20, night: 1.00 },
+    { h: 5.0,  top: 0x10183a, bot: 0x243a66, fog: 0x2a3e60, sun: 0x4a5a88, si: 0.16, amb: 0.26, hemi: 0.16, elev: -4,  night: 0.90 },
+    { h: 6.5,  top: 0x2d4a86, bot: 0xE8915A, fog: 0xE0A070, sun: 0xFFA050, si: 1.05, amb: 0.42, hemi: 0.30, elev: 8,   night: 0.25 },
+    { h: 9.0,  top: 0x1565C0, bot: 0x8ECFF5, fog: 0x8ECFF5, sun: 0xFFF3D2, si: 1.55, amb: 0.50, hemi: 0.35, elev: 42,  night: 0.00 },
+    { h: 13.0, top: 0x1366c8, bot: 0x9ED8F8, fog: 0x9ED8F8, sun: 0xFFFFFA, si: 1.65, amb: 0.55, hemi: 0.38, elev: 66,  night: 0.00 },
+    { h: 16.5, top: 0x1565C0, bot: 0x8ECFF5, fog: 0x8ECFF5, sun: 0xFFEFC8, si: 1.40, amb: 0.50, hemi: 0.34, elev: 28,  night: 0.00 },
+    { h: 18.2, top: 0x3a3f80, bot: 0xF0884A, fog: 0xE88a55, sun: 0xFF7330, si: 0.95, amb: 0.40, hemi: 0.28, elev: 5,   night: 0.30 },
+    { h: 19.6, top: 0x141033, bot: 0x2a2450, fog: 0x2a2450, sun: 0x4a3a70, si: 0.18, amb: 0.26, hemi: 0.16, elev: -5,  night: 0.85 },
+    { h: 24.0, top: 0x060814, bot: 0x0c1430, fog: 0x0c1430, sun: 0x2a3a66, si: 0.06, amb: 0.20, hemi: 0.12, elev: -20, night: 1.00 }
+  ];
+  var _dnA = new THREE.Color(), _dnB = new THREE.Color();
+  function _dnLerp(out, a, b, t) { _dnA.setHex(a); _dnB.setHex(b); out.copy(_dnA).lerp(_dnB, t); }
+  function updateDayNight() {
+    var now = new Date();
+    var h = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+    var i = 0; for (; i < _dnKeys.length - 1; i++) if (h >= _dnKeys[i].h && h < _dnKeys[i + 1].h) break;
+    var a = _dnKeys[i], b = _dnKeys[i + 1] || a;
+    var t = (h - a.h) / ((b.h - a.h) || 1); t = t < 0 ? 0 : t > 1 ? 1 : t;
+    var L = function (x, y) { return x + (y - x) * t; };
+    _dnLerp(_skyU.topColor.value,    a.top, b.top, t);
+    _dnLerp(_skyU.bottomColor.value, a.bot, b.bot, t);
+    _dnLerp(scene.fog.color,         a.fog, b.fog, t);
+    _dnLerp(sun.color,               a.sun, b.sun, t);
+    sun.intensity = L(a.si, b.si);
+    var elev = L(a.elev, b.elev) * Math.PI / 180;
+    sun.position.set(10, Math.max(3, Math.sin(elev) * 26), 12);
+    _amb.intensity  = L(a.amb, b.amb);
+    _hemi.intensity = L(a.hemi, b.hemi);
+    var night = L(a.night, b.night);
+    for (var w = 0; w < _warmLights.length; w++) _warmLights[w].intensity = night * 1.6;
+  }
+  updateDayNight();   // set the correct mood immediately on load
 
   // ── GROUND ── (PBR + procedural grass texture)
   var _gc = document.createElement('canvas'); _gc.width = 256; _gc.height = 256;
@@ -1068,6 +1115,8 @@
   (function patchLoop() {
     renderer.setAnimationLoop(function() {
       var dt = clock.getDelta();
+
+      updateDayNight();   // sky/sun/fog/lights follow the real local clock
 
       // windmill blades + water wheel + river scroll
       for (var i = 0; i < spin.length; i++) spin[i].o.rotation.x += spin[i].sp * dt;
