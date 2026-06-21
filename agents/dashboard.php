@@ -153,7 +153,6 @@ if ($td = @file_get_contents($REPO . '/main/todo.md')) {
         <span id="repoCount" class="mono text-white/30 text-xs ml-auto"></span>
       </div>
       <div id="repoList" class="flex flex-col gap-2 flex-1"></div>
-      <div class="mono text-white/15 text-[9px] mt-3 pt-2 border-t border-white/5">main/repos.md · auto-synced</div>
     </aside>
     <div id="game-wrap" class="flex-1 min-w-0">
       <canvas id="bg3d"></canvas>
@@ -279,6 +278,19 @@ new Phaser.Game({
   scale:{ mode:Phaser.Scale.FIT, autoCenter:Phaser.Scale.CENTER_HORIZONTALLY, width:GW, height:GH },
   scene:GameScene
 });
+
+// Keep the repositories panel exactly as tall as the game window, scrolling its
+// list internally. Desktop only — on mobile the panel stacks and sizes to content.
+(function syncRepoHeight(){
+  const panel=document.getElementById('repoPanel');
+  const gw=document.getElementById('game-wrap');
+  if(!panel||!gw) return;
+  const apply=()=>{ panel.style.height = (window.innerWidth<=780) ? '' : gw.offsetHeight+'px'; };
+  apply();
+  if(window.ResizeObserver) new ResizeObserver(apply).observe(gw);
+  window.addEventListener('resize',apply);
+  setTimeout(apply,300); setTimeout(apply,1200);
+})();
 </script>
 
 <script src="js/village3d.js"></script>

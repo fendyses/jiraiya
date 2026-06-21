@@ -2,47 +2,41 @@
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Feature / Infrastructure / Refactor
-**Current Project**: JIRAIYA (`/Applications/Sites/jiraiya`) — dashboard → ServBay app
-**Status**: Complete — committed & pushed
-**Time**: 2026-06-21 ~13:24 GMT+8
+**Session Type**: Feature / Polish / Dashboard
+**Current Project**: JIRAIYA (`/Applications/Sites/jiraiya`) — dashboard + briefing tweaks
+**Status**: Complete (not yet committed)
+**Time**: 2026-06-21 ~20:51 GMT+8
 
 ## Current Focus
-- **Primary Task**: Turned `agents/dashboard.php` into a real ServBay-hosted app: auth login, live system-monitor gadgets, and a maintainability file split.
-- **Technical Context**: ServBay (nginx + php-fpm 8.3) serving `jiraiya.es`; Three.js 3D village + Phaser 2D layer; gadgets fed by a same-origin PHP stats endpoint.
-- **Progress**: All done. Pushed to `origin/main` (HEAD `6dec29e`).
+- **Primary Task**: Switch startup brief from reminders → dashboard ToDo list, trim the CPU widget, and add night-only lamp posts to the 3D village.
+- **Technical Context**: ServBay (nginx + php-fpm 8.3) serving `jiraiya.es`; Three.js village in `agents/js/village3d.js`; brief logic in `session-briefing/SKILL.md` + `CLAUDE.md`.
+- **Progress**: All three done and syntax-verified. Changes are in the working tree, not yet committed.
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: Login gate + live CPU/RAM/storage/network gadgets + file split
-- **Immediate Goals**: None outstanding
+- **Current Topic**: Briefing ToDo display, CPU widget cleanup, day/night lamp posts
+- **Immediate Goals**: None outstanding (optional: commit, close todo items)
 - **Recent Progress**:
-  - Signboard "by Fendy SES" repositioned (bottom/right) + font tuned
-  - Removed agent-box click → stats panel; removed the fake agent terminal panels
-  - Replaced 5 agent cards with 4 live monitor boxes (CPU/RAM/Storage/Network) + sparklines
-  - Login system: `index.php`, `logout.php`, session-gated `agents/dashboard.php` (was `.html`)
-  - Same-origin stats endpoint `agents/system-stats.php`; Python `scripts/stats-server.py` kept as optional fallback
-  - Split CSS + monitors JS + Three.js village into `agents/css/dashboard.css`, `agents/js/monitors.js`, `agents/js/village3d.js` (2749 → 1395 lines)
+  - Startup brief now reads `main/todo.md` (`## Ongoing`) instead of `main/reminders.md` — updated `session-briefing/SKILL.md` + `CLAUDE.md` step 6
+  - Removed processor name ("Apple M2") from CPU LOAD widget subtitle in `agents/js/monitors.js` → now `Core Avg: NN%`
+  - Added 2 lamp posts (`lantern.glb`) at `(-6,-3)`/`(6,-3)` via new `placeLamp()` in `village3d.js`; warm PointLight + emissive bulb sphere each
 
 ### Important Decisions
-- **Credentials**: fendy / 199254 (bcrypt hash in `index.php`; change via `php -r "echo password_hash(...)"`).
-- **php-fpm PATH bug**: ServBay php-fpm strips `/usr/sbin` & `/sbin`, so `sysctl`/`netstat`/`route` failed → CPU 100%, RAM "0 KB", net 0 B/s. Fixed with `putenv('PATH=/usr/sbin:/sbin:/usr/bin:/bin:/usr/local/bin')` at top of `system-stats.php`. `df` worked because it's in `/bin`.
-- Stats are now same-origin PHP (ServBay) — no separate process; Python server is fallback only.
-- `village3d.js` must load AFTER the main script (reads `window._npcs` at runtime); load order preserved.
+- **Lamp day/night**: hooked into existing `updateDayNight()` `night` value (0=day→1=night). `_lampLights` intensity = `night * 2.4`; `_lampBulbs` emissiveIntensity = `night * 3.0`. Tracks real local clock every frame — no new timer.
+- **CPU chip**: `chip` still computed in `system-stats.php`, just no longer displayed (left in place in case it's wanted back).
+- **todo.md** is now the source of truth for the startup brief's task list (managed from the dashboard).
 
 ## Session Recap (For AI Restart)
-- **This session (Afternoon 06-21)**: Built the dashboard's login gate + live system gadgets and refactored the monolith. Headline gotcha was a php-fpm PATH that silently broke half the metrics — diagnosed by the "storage right, rest wrong" pattern and a restricted-PATH repro, verified on live `jiraiya.es`.
-- **Where We Left Off**: Everything committed & pushed. Optional next: extract the Phaser scene (~800 lines still inline) and delete the dead `#statsOverlay`/`openStatsPanel()` leftovers.
-- **Note**: Site is registered in ServBay as `jiraiya.es` (nginx + PHP 8.3); keep `shell_exec` enabled or gadgets go blank.
+- **This session (Evening 06-21)**: Repointed the session brief at `main/todo.md` instead of reminders, stripped the processor name from the CPU widget, and added 2 working lamp posts to the 3D village that glow at night and go dark by day (driven by the existing day/night `night` interpolation).
+- **Where We Left Off**: All changes in working tree, syntax-checked, NOT yet committed. It's ~20:51 (night) so lamps render lit on reload of `jiraiya.es`.
+- **Optional next**: commit the changes; mark the two `todo.md` items complete; extract the Phaser scene (~800 lines inline) + delete dead `#statsOverlay`/`openStatsPanel()`.
 
 ## Session Achievements
-- ✅ Signboard repositioned + font tuned
-- ✅ Removed agent-box stats panel + fake terminal panels
-- ✅ 4 live system-monitor gadgets (CPU/RAM/storage/network) with sparklines
-- ✅ PHP login system + session-gated dashboard (html → php)
-- ✅ Same-origin PHP stats endpoint + php-fpm PATH fix
-- ✅ Split CSS/monitors/village into separate files (49% smaller main file)
-- ✅ Committed (3 commits) and pushed to origin/main
+- ✅ Startup brief shows ToDo list (`main/todo.md`) instead of reminders
+- ✅ Removed processor name from CPU LOAD widget
+- ✅ Added 2 night-only lamp posts to the 3D village (new `placeLamp()`)
+- ✅ Hooked lamps into the existing day/night cycle (lit at night, off by day)
+- ✅ Syntax-checked `village3d.js` clean
 
 ---
-*Session updated: 2026-06-21 13:24*
+*Session updated: 2026-06-21 20:51*
