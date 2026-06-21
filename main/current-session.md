@@ -2,46 +2,47 @@
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Feature / Bug Fix / Visual Polish
-**Current Project**: JIRAIYA (`/Applications/Sites/jiraiya`) — dashboard 3D scene
-**Status**: Wrapping up
-**Time**: 2026-06-21 ~00:52 GMT+8
+**Session Type**: Feature / Infrastructure / Refactor
+**Current Project**: JIRAIYA (`/Applications/Sites/jiraiya`) — dashboard → ServBay app
+**Status**: Complete — committed & pushed
+**Time**: 2026-06-21 ~13:24 GMT+8
 
 ## Current Focus
-- **Primary Task**: Added a visual effects pack to `agents/dashboard.html` and fixed why chimney smoke wouldn't render
-- **Technical Context**: Three.js 3D village behind a Phaser 2D character layer
-- **Progress**: Complete — all effects live, diary written
+- **Primary Task**: Turned `agents/dashboard.php` into a real ServBay-hosted app: auth login, live system-monitor gadgets, and a maintainability file split.
+- **Technical Context**: ServBay (nginx + php-fpm 8.3) serving `jiraiya.es`; Three.js 3D village + Phaser 2D layer; gadgets fed by a same-origin PHP stats endpoint.
+- **Progress**: All done. Pushed to `origin/main` (HEAD `6dec29e`).
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: Dashboard visual effects (wind, grass, smoke, water, battle FX)
+- **Current Topic**: Login gate + live CPU/RAM/storage/network gadgets + file split
 - **Immediate Goals**: None outstanding
 - **Recent Progress**:
-  - Wind sway on trees + waving grass/flowers (shader `onBeforeCompile` + shared `uTime`)
-  - Chimney smoke (camera-facing plane puffs, registered synchronously from building coords)
-  - Water caustics (offset.x shimmer + emissive pulse); slowed all flow speeds ~half
-  - Battle FX: speed-lines + micro-shake (removed white impact flash + chakra auras per Fendy)
-  - Red-roof house squared up (`noSideWalls`, removed 45° rotation)
-  - Fixed `SkinnedMesh skinning=false` console spam (gold-trail clones + character skinning)
+  - Signboard "by Fendy SES" repositioned (bottom/right) + font tuned
+  - Removed agent-box click → stats panel; removed the fake agent terminal panels
+  - Replaced 5 agent cards with 4 live monitor boxes (CPU/RAM/Storage/Network) + sparklines
+  - Login system: `index.php`, `logout.php`, session-gated `agents/dashboard.php` (was `.html`)
+  - Same-origin stats endpoint `agents/system-stats.php`; Python `scripts/stats-server.py` kept as optional fallback
+  - Split CSS + monitors JS + Three.js village into `agents/css/dashboard.css`, `agents/js/monitors.js`, `agents/js/village3d.js` (2749 → 1395 lines)
 
 ### Important Decisions
-- **THE bug**: `agents/dashboard.html` has TWO `setAnimationLoop` calls (~line 1876 and ~2533); the second silently overrides the first. All effect updates must go in the SECOND (live) loop. This had silently killed smoke, tree sway, and water caustics.
-- Removed battle white-flash strobe (hurt Fendy's eyes) and chakra auras (disliked).
-- `THREE.Sprite` unreliable under `logarithmicDepthBuffer` → use camera-facing plane meshes.
+- **Credentials**: fendy / 199254 (bcrypt hash in `index.php`; change via `php -r "echo password_hash(...)"`).
+- **php-fpm PATH bug**: ServBay php-fpm strips `/usr/sbin` & `/sbin`, so `sysctl`/`netstat`/`route` failed → CPU 100%, RAM "0 KB", net 0 B/s. Fixed with `putenv('PATH=/usr/sbin:/sbin:/usr/bin:/bin:/usr/local/bin')` at top of `system-stats.php`. `df` worked because it's in `/bin`.
+- Stats are now same-origin PHP (ServBay) — no separate process; Python server is fallback only.
+- `village3d.js` must load AFTER the main script (reads `window._npcs` at runtime); load order preserved.
 
 ## Session Recap (For AI Restart)
-- **This session (Late Night 06-21)**: Built dashboard visual FX pack; the headline fix was discovering a duplicate `setAnimationLoop` overriding the effects loop — which revived smoke, wind sway, AND water caustics at once. Also fixed SkinnedMesh warning spam and slowed the river.
-- **Where We Left Off**: All complete. Possible next step: day/night cycle (sun + sky shader + glowing night windows via existing bloom).
-- **Note**: Session ran on Sonnet 4.6; Fendy set default model to Opus 4.8 mid-session.
+- **This session (Afternoon 06-21)**: Built the dashboard's login gate + live system gadgets and refactored the monolith. Headline gotcha was a php-fpm PATH that silently broke half the metrics — diagnosed by the "storage right, rest wrong" pattern and a restricted-PATH repro, verified on live `jiraiya.es`.
+- **Where We Left Off**: Everything committed & pushed. Optional next: extract the Phaser scene (~800 lines still inline) and delete the dead `#statsOverlay`/`openStatsPanel()` leftovers.
+- **Note**: Site is registered in ServBay as `jiraiya.es` (nginx + PHP 8.3); keep `shell_exec` enabled or gadgets go blank.
 
 ## Session Achievements
-- ✅ Wind sway on trees + grass/flowers
-- ✅ Chimney smoke working (after long debug → dual-loop root cause)
-- ✅ Water caustics + slowed flow
-- ✅ Battle FX pack (speed-lines + shake), removed flash/chakra
-- ✅ Red-roof house realigned
-- ✅ Killed SkinnedMesh console spam
-- ✅ Diary written
+- ✅ Signboard repositioned + font tuned
+- ✅ Removed agent-box stats panel + fake terminal panels
+- ✅ 4 live system-monitor gadgets (CPU/RAM/storage/network) with sparklines
+- ✅ PHP login system + session-gated dashboard (html → php)
+- ✅ Same-origin PHP stats endpoint + php-fpm PATH fix
+- ✅ Split CSS/monitors/village into separate files (49% smaller main file)
+- ✅ Committed (3 commits) and pushed to origin/main
 
 ---
-*Session updated: 2026-06-21 00:52*
+*Session updated: 2026-06-21 13:24*
