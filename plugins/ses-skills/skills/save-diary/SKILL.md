@@ -71,6 +71,38 @@ When this skill activates, output:
 - [ ] This rebuilds `daily-diary/diary-data.js` from every `current/*.md` + `archived/*/*.md` file
 - [ ] Required because `agents/dashboard.html`'s in-game diary book reads only this generated snapshot, never the `.md` files directly — skipping this step leaves the book showing stale/wrong content (including old timestamps) even after the `.md` file is fixed
 
+### Step 6: CR Log — UiTM Repos Only
+- [ ] Read `main/current-session.md` → get **Current Project** name (e.g. "Nilam", "MyStudent")
+- [ ] Read `/Applications/Sites/jiraiya/.env` → find the matching `REPO[]=` line by name → read the `category` field (6th pipe-delimited value)
+- [ ] If category is **NOT** `UiTM` — skip this step entirely
+- [ ] If category **IS** `UiTM`:
+  1. Ask: *"Any CR entries to log today? Give me the details for each one (System/App, Module, Classification 1–5, Justification). Type `skip` to skip."*
+  2. If user says `skip` or provides nothing — end here
+  3. For each CR the user provides, build the block:
+     ```
+     Permohonan CR: https://bsm.uitm.edu.my/
+     1. System/Application : [value]
+     2. Module/SubModule : [value]
+     3. Clasification : [value]
+     4. Justifications : [value]
+     ```
+     Classification labels: 1=Module Improvement, 2=Process Improvement, 3=Screen Improvement, 4=ISSUE/BUG/DEFECT, 5=Reporting
+     **Justification language rule:** Write in Bahasa Melayu. IT/technical terms may remain in English (e.g. "upload", "button", "dropdown", "module"). Do not write full English sentences in the Justification field.
+  4. Determine the monthly file: `/Applications/Sites/jiraiya/CR/M-YYYY.md` (e.g. `6-2026.md` — no zero-padding on month)
+  5. If file does not exist — create it (empty, no header needed)
+  6. Check if today's `## YYYY-MM-DD` header already exists in the file
+     - **If yes** — append the new CR block(s) under it (before the next `---` or EOF)
+     - **If no** — append at end of file:
+       ```
+       ## DD-MM-YYYY
+
+       [CR blocks separated by blank lines]
+
+       ---
+       ```
+  7. Confirm: *"CR logged to CR/M-YYYY.md."*
+  - Reference: `/Applications/Sites/jiraiya/CR/cr-format.md`
+
 ## Mandatory Rules
 1. **Always APPEND** — never overwrite existing diary entries
 2. **One file per day** — multiple entries separated by `---`
@@ -95,3 +127,4 @@ When this skill activates, output:
 - **Lv.1** — Base: 4-step diary write protocol with monthly archival, append-only entries, session memory update, and existing protocol reference for entry format.
 - **Lv.2** — Added mandatory real-clock timestamps (rule 3) and a mandatory Step 5 that regenerates `daily-diary/diary-data.js` via `regenerate-diary-data.py` after every diary write, so the in-game dashboard diary book never goes stale.
 - **Lv.3** — Made Step 4 (`current-session.md` update) MANDATORY with explicit field-by-field instructions and a dedicated rule (rule 8). Stale session RAM was causing wrong session briefs — now enforced at the same level as diary-data.js regeneration.
+- **Lv.4** — Added Step 6: UiTM CR logging. After diary write, if active repo category is `UiTM` (read from `.env`), prompt for Change Request entries and append them to `/Applications/Sites/jiraiya/CR/M-YYYY.md` in the format defined in `CR/cr-format.md`.
