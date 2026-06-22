@@ -51,10 +51,11 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
             ? array_values(array_filter(array_map('trim', explode(',', $parts[1])), 'strlen'))
             : [];
         $entry = [
-            'name'  => $parts[0],
-            'langs' => $langs,
-            'note'  => $parts[2] ?? '',
-            'path'  => $parts[3] ?? '',
+            'name'     => $parts[0],
+            'langs'    => $langs,
+            'note'     => $parts[2] ?? '',
+            'path'     => $parts[3] ?? '',
+            'category' => $parts[5] ?? '',
         ];
         if (isset($parts[4]) && strtolower($parts[4]) === 'active') $entry['active'] = true;
         $repoSys[] = $entry;

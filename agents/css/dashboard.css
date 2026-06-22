@@ -71,6 +71,9 @@
     .repo-btn.cli.copied{background:rgba(217,119,87,.25);border-color:rgba(217,119,87,.7)}
     .lang-badge{font-family:'Share Tech Mono',monospace;font-size:8px;padding:1px 5px;border-radius:3px;letter-spacing:.5px;white-space:nowrap}
     .lang-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+    .repo-cat-badge{font-family:'Share Tech Mono',monospace;font-size:7px;padding:1px 6px;border-radius:3px;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
+    .repo-cat-personal{color:#c084fc;background:rgba(192,132,252,.12);border:1px solid rgba(192,132,252,.3)}
+    .repo-cat-uitm{color:#f87171;background:rgba(139,0,0,.18);border:1px solid rgba(248,113,113,.3)}
     #repoPanel{overflow:hidden}
     #repoList{overflow-y:auto;min-height:0;padding-right:4px}
     #repoList::-webkit-scrollbar{width:6px}

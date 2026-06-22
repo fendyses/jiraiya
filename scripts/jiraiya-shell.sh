@@ -33,6 +33,21 @@ function ses() {
 }
 # ─────────────────────────────────────────────────────────────────────────────
 
+# ─── Claude wrapper — shows JIRAIYA banner on start and after exit ──────────
+function claude() {
+  # Show banner immediately at terminal level (before Claude loads)
+  bash /Applications/Sites/jiraiya/banner.sh
+  printf '\e[38;5;183m  JIRAIYA is loading... stand by.\e[0m\n\n'
+
+  # Run the real claude binary
+  command claude "$@"
+
+  # Show banner again after /exit
+  bash /Applications/Sites/jiraiya/banner.sh
+  printf '\e[38;5;135m  Session closed. See you soon, Fendy!\e[0m\n\n'
+}
+# ─────────────────────────────────────────────────────────────────────────────
+
 # ─── Copilot wrapper — shows JIRAIYA banner after exit ───────────────────────
 function copilot() {
   # Auto-detect the copilot CLI binary across different VS Code install paths

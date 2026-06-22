@@ -167,6 +167,9 @@ function buildRepoPanel(){
       return `<span class="lang-badge flex items-center gap-1" style="background:${L.color}22;color:${L.color};border:1px solid ${L.color}55">
                 <span class="lang-dot" style="background:${L.color}"></span>${L.label}</span>`;
     }).join('');
+    const catBadge = r.category
+      ? `<span class="repo-cat-badge repo-cat-${r.category.toLowerCase().replace(/\s+/g,'-')}">${r.category}</span>`
+      : '';
     el.innerHTML=`
       <div class="flex items-center gap-1.5">
         <span class="font-bold text-xs tracking-wide truncate" style="color:${r.active?'#D4A017':'#fff'}">${r.name}</span>
@@ -176,7 +179,7 @@ function buildRepoPanel(){
           <button class="repo-btn cli" title="Open CLI here">${CLI_SVG}</button>
         </div>
       </div>
-      <div class="flex flex-wrap gap-1">${badges}</div>`;
+      <div class="flex flex-wrap items-center gap-1">${badges}${catBadge ? `<span class="ml-auto">${catBadge}</span>` : ''}</div>`;
     const vsBtn=el.querySelector('.repo-btn.vs');
     const cliBtn=el.querySelector('.repo-btn.cli');
     vsBtn.addEventListener('click',e=>{ e.stopPropagation(); openInVSCode(r); });
