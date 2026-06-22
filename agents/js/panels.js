@@ -187,6 +187,107 @@ function buildRepoPanel(){
     list.appendChild(el);
   });
 }
+// ════════════════════════════════════════════════════════
+// CR — change request log modal (cr.php → /CR/*.md)
+// ════════════════════════════════════════════════════════
+function showCRBubble(wx, wy, wz) {
+  const bubble = document.getElementById('crBubble');
+  const canvas = document.getElementById('bg3d');
+  if (!bubble || !canvas) return;
+  // Project world position to canvas pixels, then scale to displayed size
+  if (window._bg3dProject) {
+    const raw = window._bg3dProject(wx, wy, wz);
+    const sx  = raw.x * (canvas.clientWidth  / canvas.width);
+    const sy  = raw.y * (canvas.clientHeight / canvas.height);
+    bubble.style.left = sx + 'px';
+    bubble.style.top  = sy + 'px';
+  } else {
+    bubble.style.left = '18%';
+    bubble.style.top  = '30%';
+  }
+  bubble.style.display = 'block';
+  const yes = document.getElementById('crBubbleYes');
+  const no  = document.getElementById('crBubbleNo');
+  const close = () => {
+    bubble.style.display = 'none';
+    yes.onclick = null; no.onclick = null; document.onkeydown = null;
+  };
+  yes.onclick = () => { close(); openCRBook(); };
+  no.onclick  = close;
+  document.onkeydown = e => {
+    if (e.key === 'Escape') close();
+    if (e.key === 'Enter') { close(); openCRBook(); }
+  };
+}
+function _crEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function renderCRContent(md) {
+  const el = document.getElementById('crBookContent');
+  const MONTHS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let html = '', lines = md.split('\n'), i = 0;
+  while (i < lines.length) {
+    const line = lines[i].trim();
+    if (/^## /.test(line)) {
+      html += `<div class="cr-date-header">${_crEsc(line.replace(/^## /,''))}</div>`;
+      i++;
+    } else if (/^Permohonan CR:/.test(line)) {
+      const url = line.replace('Permohonan CR:','').trim();
+      let fields = ''; i++;
+      while (i < lines.length && !/^---/.test(lines[i]) && !/^## /.test(lines[i]) && !/^Permohonan CR:/.test(lines[i])) {
+        const fl = lines[i].trim(); i++;
+        if (!fl) continue;
+        const m = fl.match(/^(\d+\.\s*[^:]+):\s*(.*)$/);
+        fields += m
+          ? `<div class="cr-entry-field"><span class="cr-label">${_crEsc(m[1])}:</span>${_crEsc(m[2])}</div>`
+          : `<div class="cr-entry-field">${_crEsc(fl)}</div>`;
+      }
+      html += `<div class="cr-entry"><div class="cr-entry-link">Permohonan CR: ${_crEsc(url)}</div>${fields}</div>`;
+    } else if (/^---/.test(line)) {
+      html += '<hr class="cr-divider">'; i++;
+    } else { i++; }
+  }
+  el.innerHTML = html || '<p style="color:#4ade80;opacity:.4">No entries.</p>';
+  el.scrollTop = 0;
+}
+async function openCRBook() {
+  const ov = document.getElementById('crBookOverlay');
+  ov.style.display = 'flex';
+  const fileList = document.getElementById('crFileList');
+  const content  = document.getElementById('crBookContent');
+  fileList.innerHTML = '<div style="color:#4ade80;opacity:.4;font-size:10px;padding:8px">Loading…</div>';
+  content.innerHTML  = '';
+  const MONTHS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const close = () => { ov.style.display='none'; document.removeEventListener('keydown', escClose); };
+  const escClose = e => { if (e.key==='Escape') close(); };
+  document.getElementById('crBookCloseBtn').onclick = close;
+  ov.onclick = e => { if (e.target===ov) close(); };
+  document.addEventListener('keydown', escClose);
+  let data = [];
+  try {
+    const res = await fetch('cr.php', { cache: 'no-store' });
+    if (res.ok) data = await res.json();
+  } catch(e) {}
+  fileList.innerHTML = '';
+  if (!data.length) {
+    fileList.innerHTML = '<div style="color:#4ade80;opacity:.4;font-size:10px;padding:8px">No CR records found.</div>';
+    return;
+  }
+  let selected = data[0];
+  data.forEach(item => {
+    const parts = item.file.split('-');
+    const label = (MONTHS[+parts[0]] || parts[0]) + ' ' + (parts[1] || '');
+    const el = document.createElement('div');
+    el.className = 'cr-file-item' + (item === selected ? ' active' : '');
+    el.textContent = label;
+    el.onclick = () => {
+      fileList.querySelectorAll('.cr-file-item').forEach(x => x.classList.remove('active'));
+      el.classList.add('active');
+      renderCRContent(item.content);
+    };
+    fileList.appendChild(el);
+  });
+  if (selected) renderCRContent(selected.content);
+}
+
 const VSCODE_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M17 2 7 11l-4-3-2 1 4 4-4 4 2 1 4-3 10 9 5-2V4l-5-2Zm1 5v10l-7-5 7-5Z" fill="#3aa0ff" opacity=".75"/></svg>';
 const CLI_SVG='<img src="assets/pics/claude-logo.svg" width="11" height="11" style="opacity:.8">';
 

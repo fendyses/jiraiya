@@ -142,6 +142,23 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
 </div>
 
 
+<div id="crBookOverlay">
+  <div id="crBook">
+    <div id="crBookLeftPage" class="cr-book-page">
+      <div class="cr-book-title">📋 CR Records</div>
+      <div id="crFileList"></div>
+    </div>
+    <div id="crBookSpine"></div>
+    <div id="crBookRightPage" class="cr-book-page">
+      <div id="crBookHeader">
+        <span style="font-family:'IM Fell English SC',serif;font-size:11px;color:#a85d2e;opacity:.8">Change Request Archive — UiTM BSM</span>
+        <button id="crBookCloseBtn">Close ✕</button>
+      </div>
+      <div id="crBookContent"></div>
+    </div>
+  </div>
+</div>
+
 <div id="diaryBookOverlay">
   <div id="diaryBook">
     <div id="bookLeftPage" class="book-page">
@@ -222,6 +239,17 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
             <button id="bubbleYes" class="gbtn yes">YES</button>
           </div>
           <div class="gb-tail"></div>
+        </div>
+      </div>
+      <div id="crBubble">
+        <div class="gb-box cr-gb-box">
+          <div class="gb-name cr-gb-name">CR LOG</div>
+          <div class="gb-text">View change<br>records?</div>
+          <div class="gb-actions">
+            <button id="crBubbleNo" class="gbtn no">NO</button>
+            <button id="crBubbleYes" class="gbtn yes">YES</button>
+          </div>
+          <div class="gb-tail cr-gb-tail"></div>
         </div>
       </div>
     </div>

@@ -81,6 +81,12 @@
   camera.position.set(0, 9, 13);
   camera.lookAt(0, 2.2, -7);
 
+  // Expose 3D→canvas-pixel projection so panels.js can position overlays over 3D objects
+  window._bg3dProject = function(wx, wy, wz) {
+    var v = new THREE.Vector3(wx, wy, wz).project(camera);
+    return { x: (v.x * 0.5 + 0.5) * W, y: (-v.y * 0.5 + 0.5) * H };
+  };
+
   // ── LIGHTING ── (bright sunny, but tone-mapped so highlights don't clip to white)
   var _amb  = new THREE.AmbientLight(0xFFFFFF, 0.5);             scene.add(_amb);
   var _hemi = new THREE.HemisphereLight(0xAFD4F0, 0x6E9A40, 0.35); scene.add(_hemi); // softer blue bounce
@@ -615,6 +621,21 @@
   building(-8.5, -9, 1, 1, 3, { wall: 'wall', roof: 'roof-point', door: 0, win: 'wall-window-small', noSideWalls: true });
   placeSpinner('windmill', -8.5, 3.9, -9, Math.PI / 2, 0.5, 1.3, true);
 
+  // CR signboard on windmill second floor (front face, ~wall sized)
+  (function() {
+    var crTex = new THREE.TextureLoader().load('assets/pics/sharingan.png',
+      undefined, undefined, function() { console.warn('[3DBG] sharingan.png not found'); });
+    var crSign = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.26, 1.32),
+      new THREE.MeshBasicMaterial({ map: crTex, transparent: true, side: THREE.FrontSide })
+    );
+    // Centre of full 3-storey tower: y = (3 * BSCALE) / 2 = 1.95
+    // Front face: z = cz + 0.5*BSCALE = -9 + 0.65 = -8.35; push out 0.02
+    crSign.position.set(-8.5, 1.95, -8.33);
+    scene.add(crSign);
+    window._crSignboard = crSign;
+  }());
+
   // 3) Green-roof house with the JIRAIYA sign — pushed back to align with red-roof house
   building(-2.5, -14, 3, 2, 2, { wall: 'wall-wood', roof: 'roof-gable', door: 1, win: 'wall-wood-window-glass', chimney: true, noSideWalls: true, noShadow: true });
   (function () {
@@ -1081,6 +1102,7 @@
     var _ndc   = new THREE.Vector2();
     var _active = null;   // name of NPC being interacted with
     var _downX = 0, _downY = 0, _isDrag = false;
+    var _crActive = false;  // true when pointerdown hit the CR signboard
 
     function pickCharacter(e) {
       var rect = wrap.getBoundingClientRect();
@@ -1095,8 +1117,12 @@
     }
 
     wrap.addEventListener('pointerdown', function(e) {
-      _downX = e.clientX; _downY = e.clientY; _isDrag = false;
+      _downX = e.clientX; _downY = e.clientY; _isDrag = false; _crActive = false;
       _active = pickCharacter(e);
+      // After pickCharacter the raycaster is already set; check CR signboard if no character hit
+      if (!_active && window._crSignboard) {
+        _crActive = _rc.intersectObject(window._crSignboard, false).length > 0;
+      }
       if (_active && window._npcs && window._npcs[_active]) {
         var npc = window._npcs[_active];
         npc.wasDragged = false;
@@ -1141,10 +1167,13 @@
         return;
       }
 
-      // Pure click (no drag) — open diary if Jiraiya
+      // Pure click (no drag) — open diary if Jiraiya, CR if signboard
       if (name === 'Jiraiya') {
         var npc = window._jiraiyaNPC;
         if (npc && typeof showDiaryBubble === 'function') showDiaryBubble(npc);
+      } else if (_crActive && typeof showCRBubble === 'function') {
+        showCRBubble(-8.5, 2.5, -8.33);
+        _crActive = false;
       }
     });
   }());
