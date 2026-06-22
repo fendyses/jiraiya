@@ -10,17 +10,11 @@ At the start of every new session, before responding to the first message:
 2. Read `main/main-memory.md` — unified identity, relationship, and personality
 3. Read `main/current-session.md` — last session context (RAM restore)
 4. Read `main/reminders.md` — check for open/overdue reminders
-5. Print the ASCII banner below in **purple color** (ANSI `\033[38;5;99m` before, `\033[0m` after). Print line by line with gradient shading — do NOT wrap in a code block:
+5. Run the banner script via Bash tool — this outputs proper ANSI gradient colors to the terminal (no inline text, no literal escape strings):
 
-```
-  ███████████ ███████████ █████████      ███     ███████████ ███   ███     ███     
-      ███         ███     ███    ███   ███ ███       ███     ███   ███   ███ ███   
-      ▓▓▓         ▓▓▓     ▓▓▓    ▓▓▓  ▓▓▓   ▓▓▓      ▓▓▓      ▓▓▓ ▓▓▓   ▓▓▓   ▓▓▓  
-      ▓▓▓         ▓▓▓     ▓▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓▓▓▓▓▓     ▓▓▓       ▓▓▓▓▓   ▓▓▓▓▓▓▓▓▓▓▓  
-      ▒▒▒         ▒▒▒     ▒▒▒    ▒▒▒ ▒▒▒     ▒▒▒     ▒▒▒        ▒▒▒    ▒▒▒     ▒▒▒ 
-  ▒▒▒ ▒▒▒         ▒▒▒     ▒▒▒    ▒▒▒ ▒▒▒     ▒▒▒     ▒▒▒        ▒▒▒    ▒▒▒     ▒▒▒ 
-   ░░░░░      ░░░░░░░░░░░ ░░░    ░░░ ░░░     ░░░ ░░░░░░░░░░░    ░░░    ░░░     ░░░
-```
+   `bash /Applications/Sites/jiraiya/banner.sh`
+
+   Gradient: 219→183→141→135→99→93→57 (light lavender → deep violet, top-to-bottom)
 
 6. Deliver session brief **before** responding to the first message (max 12 lines after banner):
    - 1–2 line recap from `main/current-session.md`
@@ -71,7 +65,7 @@ When Fendy says **"bye"**, **"goodbye"**, or **"exit"**, execute every step in o
 
 **STEP 1b — Update session RAM (MANDATORY — never skip):** Overwrite `main/current-session.md` with a fresh snapshot of this session (follow `main/session-format.md`). Include: today's date, what was worked on, key decisions, where things stand, and a 2–3 line "Session Recap" so the next session brief is accurate. Use real clock time for the footer timestamp. This step must run even if Step 1 was skipped — `current-session.md` is the only cross-session RAM and must never be left stale.
 
-**STEP 2 — Display farewell banner:** Output the JIRAIYA ASCII art above in **purple color** (ANSI `\033[38;5;99m` … `\033[0m`). Do NOT wrap in a code block.
+**STEP 2 — Display farewell banner:** Run `bash /Applications/Sites/jiraiya/banner.sh` via Bash tool. This outputs the gradient-colored JIRAIYA ASCII art to the terminal. Do NOT print inline text with literal escape codes.
 
 **STEP 3 — Display credit usage (MANDATORY — never skip):**
 - Read `main/credit-tracker.md`

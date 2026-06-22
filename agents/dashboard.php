@@ -237,6 +237,14 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
     <span id="todoDockCount" class="app-badge"<?= $todoOngoing ? '' : ' style="display:none"' ?>><?= count($todoOngoing) ?></span>
     <span class="app-label">ToDo</span>
   </button>
+  <button class="app-sc" onclick="window.location.href='terminal://'">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+      <rect x="2" y="3" width="20" height="16" rx="2.5" fill="none" stroke="#A78BFA" stroke-width="1.6" opacity=".85"/>
+      <path d="M6 9l4 3-4 3" stroke="#A78BFA" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+      <path d="M13 15h5" stroke="#A78BFA" stroke-width="1.7" stroke-linecap="round" opacity=".75"/>
+    </svg>
+    <span class="app-label">Terminal</span>
+  </button>
   <button class="app-sc" onclick="window.location.href='servbay://'" >
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
       <rect x="2" y="3" width="20" height="5.5" rx="1.5" fill="#00C4A7" opacity=".9"/>
