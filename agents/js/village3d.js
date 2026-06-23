@@ -81,10 +81,12 @@
   camera.position.set(0, 9, 13);
   camera.lookAt(0, 2.2, -7);
 
-  // Expose 3D→canvas-pixel projection so panels.js can position overlays over 3D objects
+  // Expose 3D→canvas projection so panels.js can position overlays over 3D objects.
+  // Returns NORMALIZED 0..1 coords (left→right, top→bottom) so callers can scale by
+  // the displayed CSS size — avoids any devicePixelRatio mismatch with canvas.width.
   window._bg3dProject = function(wx, wy, wz) {
     var v = new THREE.Vector3(wx, wy, wz).project(camera);
-    return { x: (v.x * 0.5 + 0.5) * W, y: (-v.y * 0.5 + 0.5) * H };
+    return { x: v.x * 0.5 + 0.5, y: -v.y * 0.5 + 0.5 };
   };
 
   // ── LIGHTING ── (bright sunny, but tone-mapped so highlights don't clip to white)
@@ -623,15 +625,15 @@
 
   // CR signboard on windmill second floor (front face, ~wall sized)
   (function() {
-    var crTex = new THREE.TextureLoader().load('assets/pics/sharingan.png',
-      undefined, undefined, function() { console.warn('[3DBG] sharingan.png not found'); });
+    var crTex = new THREE.TextureLoader().load('assets/pics/uci.png',
+      undefined, undefined, function() { console.warn('[3DBG] uci.png not found'); });
     var crSign = new THREE.Mesh(
       new THREE.PlaneGeometry(1.26, 1.32),
       new THREE.MeshBasicMaterial({ map: crTex, transparent: true, side: THREE.FrontSide })
     );
     // Centre of full 3-storey tower: y = (3 * BSCALE) / 2 = 1.95
     // Front face: z = cz + 0.5*BSCALE = -9 + 0.65 = -8.35; push out 0.02
-    crSign.position.set(-8.5, 1.95, -8.33);
+    crSign.position.set(-8.3, 1.95, -8.33);
     scene.add(crSign);
     window._crSignboard = crSign;
   }());
@@ -952,6 +954,15 @@
       var rem = wp ? stepToward(m, wp.x, wp.z, 2.2, dt) : 0;
       if (!wp || rem < 0.4 || cs.t > 6) { cartShow = null; cartCooldown = 14 + Math.random() * 14; }
     }
+
+    // Pin the 2D nametag/HP bar to the model while it's away from its sprite.
+    // Feet world Y = m.position.y - base (base = -box.min.y grounding offset).
+    if (cartShow) {
+      window._CART_VISIT = world3DToPhaser(m.position.x, m.position.y - base, m.position.z);
+      window._CART_VISIT.name = name;
+    } else {
+      window._CART_VISIT = null;
+    }
   }
 
   // Correct 2D→3D mapping: shoot a ray from the camera through the Phaser
@@ -969,6 +980,15 @@
     return _rCaster.ray.intersectPlane(_rGround, _rPoint)
       ? { x: _rPoint.x, z: _rPoint.z }
       : null;
+  }
+
+  // Inverse of phaserTo3D: project a 3D world point back to Phaser screen
+  // coords, so 2D UI (nametag/HP bar) can pin onto a 3D model that has left
+  // its logic-sprite — e.g. while a character is hopped up on the cart.
+  var _projV = new THREE.Vector3();
+  function world3DToPhaser(x, y, z) {
+    _projV.set(x, y, z).project(camera);
+    return { x: (_projV.x * 0.5 + 0.5) * W, y: (-_projV.y * 0.5 + 0.5) * H };
   }
 
   Object.keys(CHAR_MAP).forEach(function(name) {
@@ -1172,7 +1192,7 @@
         var npc = window._jiraiyaNPC;
         if (npc && typeof showDiaryBubble === 'function') showDiaryBubble(npc);
       } else if (_crActive && typeof showCRBubble === 'function') {
-        showCRBubble(-8.5, 2.5, -8.33);
+        showCRBubble(-8.3, 2.5, -8.33);
         _crActive = false;
       }
     });

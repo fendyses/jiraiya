@@ -324,7 +324,12 @@ class AgentNPC {
     if(this.termT<=0){this.pushLine();this.termT=this.state==='fighting'?700+Math.random()*500:1800+Math.random()*1400;}
   }
   syncUI(){
-    const sx=this.sprite.x,sy=this.sprite.y,sh=this.sprite.displayHeight,d=Math.floor(sy);
+    let sx=this.sprite.x,sy=this.sprite.y;
+    // While this character is hopped up on the cart, the 3D model has left its
+    // logic-sprite — pin the nametag/HP bar to the model's projected position.
+    const cv=window._CART_VISIT;
+    if(cv&&cv.name===this.name){ sx=cv.x; sy=cv.y; }
+    const sh=this.sprite.displayHeight,d=Math.floor(sy);
     this.sprite.setDepth(d);
     // nametag floats above the 3D model (approximate: sprite.y - 40px)
     this.nametag.setPosition(sx,sy-40).setDepth(d+2);

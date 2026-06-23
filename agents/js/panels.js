@@ -194,13 +194,11 @@ function showCRBubble(wx, wy, wz) {
   const bubble = document.getElementById('crBubble');
   const canvas = document.getElementById('bg3d');
   if (!bubble || !canvas) return;
-  // Project world position to canvas pixels, then scale to displayed size
+  // Project world position (normalized 0..1) onto the displayed canvas size
   if (window._bg3dProject) {
-    const raw = window._bg3dProject(wx, wy, wz);
-    const sx  = raw.x * (canvas.clientWidth  / canvas.width);
-    const sy  = raw.y * (canvas.clientHeight / canvas.height);
-    bubble.style.left = sx + 'px';
-    bubble.style.top  = sy + 'px';
+    const n = window._bg3dProject(wx, wy, wz);
+    bubble.style.left = (n.x * canvas.clientWidth)  + 'px';
+    bubble.style.top  = (n.y * canvas.clientHeight) + 'px';
   } else {
     bubble.style.left = '18%';
     bubble.style.top  = '30%';
