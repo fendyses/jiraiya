@@ -2,42 +2,44 @@
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Bug Investigation + Fix
+**Session Type**: Bug Investigation
 **Current Project**: MyStudent (`/Applications/Sites/mystudentvue`)
-**Status**: Session active — multiple fixes applied and deployed.
-**Time**: 2026-06-29 (morning, 09:33)
+**Status**: Active — banner carousel bug investigation in progress
+**Time**: 2026-06-29 (morning, 11:22)
 
 ## Current Focus
-- **Primary Task**: Student-reported bug investigations (3 issues)
-- **Technical Context**: Vue SPA, Firebase/Firestore, branch: `development`
-- **Progress**: All 3 issues diagnosed and fixed. Diary saved.
+- **Primary Task**: Homepage banner carousel not appearing
+- **Technical Context**: Vue SPA, Firebase/Firestore `mystudent/setting`, branch: `development`
+- **Progress**: `v-if` condition fixed. Debug log added. Awaiting user console output.
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: mystudentvue bug fixes — sponsor page, medical form, SSO login
-- **Immediate Goals**: Deploy changes, confirm fixes with students
+- **Current Topic**: `HomePage.vue` banner carousel not rendering
+- **Immediate Goals**: Confirm whether `homepagevideo` field in Firestore has a value at runtime
 - **Recent Progress**:
-  - Fixed `/sponsor` dark page (Bootstrap modal backdrop not cleaned on SPA navigation) → `router.afterEach()` cleanup in `router/index.js`
-  - Fixed medical form upload error message — "failed to fetch" now correctly points to Chrome's Local Network permission, not token expiry. Added pre-upload token re-read + 401 → token refresh modal
-  - Fixed "Invalid SSO state." stuck loop — clean URL on state mismatch, remove stale localStorage keys, added in-app browser detection warning banner with platform-aware browser names (Safari/Chrome/Firefox/Huawei)
+  - Fixed `/sponsor` dark page (router.afterEach modal cleanup) — committed
+  - Fixed medical form error message — Chrome PNA guidance + pre-upload token re-read
+  - Fixed "Invalid SSO state." stuck loop — URL cleanup + in-app browser detection banner
+  - Investigating homepage banner: changed `v-if="settings.homepagevideo == ''"` → `v-if="!settings.homepagevideo"`
+  - Added debug console.log in mounted() to reveal homepagevideo + banner values
+  - Firebase shows `banner` array IS populated with valid URLs
 
 ### Important Decisions
-- `router.afterEach()` for modal cleanup chosen over per-component cleanup — covers all future modals globally
-- "Failed to fetch" for medical form NOT treated as token error (token valid until July 9) — root cause is Chrome PNA blocking private-IP API
-- In-app browser warning shows "🌐 Buka dalam Browser" button + platform-aware browser name (Safari/Chrome/Firefox/Huawei)
+- Used `!settings.homepagevideo` (falsy check) instead of `== ''` — covers null/undefined from Firestore missing field
+- Debug log: `console.log('[HomePage] settings.homepagevideo:', response.homepagevideo, '| settings.banner:', response.banner)`
 
 ## Session Recap (For AI Restart)
-- **This session (29-06-2026, morning)**: Investigated and fixed 3 student-reported bugs on mystudentvue. (1) `/sponsor` dark page — Bootstrap backdrop not cleaned on Vue Router navigation, fixed with `router.afterEach()`. (2) Medical form "Gagal memuat naik gambar" — Chrome Private Network Access blocking private-IP upload, not token expiry; fixed error message + pre-upload token check. (3) SSO "Invalid SSO state" login stuck loop — in-app browser / stale URL issue; fixed with URL cleanup on mismatch + in-app browser detection banner.
-- **Where We Left Off**: All fixes applied. Diary saved. Ready to deploy or continue with other issues.
-- **Note**: Repo category = UiTM. CR entries logged to `CR/6-2026.md` for today's work.
+- **This session (29-06-2026)**: Multiple mystudentvue bug fixes. Banner carousel on homepage not showing — fixed `v-if` condition from strict `== ''` to `!settings.homepagevideo`. Banner data confirmed in Firestore. Added debug log. Awaiting user console output to determine if `homepagevideo` field has content that's overriding the carousel, or if there's a different issue.
+- **Where We Left Off**: Asked user to check DevTools console for `[HomePage]` log line. User then requested diary save.
 
 ## Session Achievements
-- ✅ Fixed `/sponsor` dark/inactive page (router.afterEach modal cleanup)
-- ✅ Fixed medical form upload error message (Chrome PNA diagnosis + Local Network hint)
+- ✅ Fixed `/sponsor` dark/inactive page (router.afterEach modal cleanup) — committed
+- ✅ Fixed medical form upload error message (Chrome PNA + Local Network hint)
 - ✅ Added pre-upload server token re-read + 401 → token refresh modal
 - ✅ Fixed "Invalid SSO state." stuck loop (URL cleanup on mismatch)
-- ✅ Added in-app browser detection + warning banner (platform-aware: Safari/Chrome/Firefox/Huawei)
-- ✅ Diary saved
+- ✅ Added in-app browser detection + warning banner (platform-aware)
+- ✅ Fixed `v-if` condition for homepage banner carousel
+- 🔄 Banner still not appearing — console log debug added, awaiting confirmation
 
 ---
-*Session updated: 2026-06-29 09:33*
+*Session updated: 2026-06-29 11:22*

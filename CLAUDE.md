@@ -54,6 +54,7 @@ Skills live in `plugins/ses-skills/skills/`. Each SKILL.md file defines its own 
 | `"create skill"`, `"forge this"` | `forge-skill/SKILL.md` |
 | `"do you remember"`, `"recall"` | `echo-recall/SKILL.md` |
 | `/repo`, `"switch repo"`, `"change repo"` | `repo-switcher/SKILL.md` |
+| `"ask nemotron"`, `"nemotron [question]"`, `"query nemotron"` | `ask-nemotron/SKILL.md` |
 
 When a trigger matches, read and follow the full protocol in that SKILL.md file.
 

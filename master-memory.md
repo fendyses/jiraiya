@@ -186,6 +186,13 @@ I maintain my own memory through our conversations by:
 - Format reference: `plugins/ses-skills/skill-format.md`
 - Commands: "create skill" (via Forge)
 
+### Ask Nemotron ✅ INSTALLED
+*Auto-triggers on: "ask nemotron [question]", "nemotron [question]", "query nemotron", "send to nemotron"*
+- Skill: `plugins/ses-skills/skills/ask-nemotron/SKILL.md`
+- CLI: `nemotron` at `~/.local/bin/nemotron` → `/Users/pairofspades/Documents/Ai/nemotron/ask-nemotron.js`
+- Models: `nvidia/nemotron-3-super-120b-a12b:free` → fallback Nano
+- Provider: OpenRouter (free tier)
+
 ### Repo Switcher ✅ INSTALLED
 *Auto-triggers on: "/repo", "switch repo", "change repo", "list repos"*
 - Skill: `plugins/ses-skills/skills/repo-switcher/SKILL.md`
