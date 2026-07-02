@@ -1,0 +1,131 @@
+{
+  "providers": {
+    "openrouter": {
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY"
+    },
+    "groq": {
+      "base_url": "https://api.groq.com/openai/v1",
+      "api_key_env": "GROQ_API_KEY"
+    }
+  },
+  "models": [
+    {
+      "name": "Nemotron 3 Ultra",
+      "id": "nvidia/nemotron-3-ultra-550b-a55b",
+      "provider": "openrouter",
+      "description": "NVIDIA Nemotron 3 Ultra 550B — large reasoning and orchestration model",
+      "context_length": 131072,
+      "max_tokens": 4096,
+      "best_for": ["reasoning", "orchestration", "complex tasks"]
+    },
+    {
+      "name": "Qwen3 Coder",
+      "id": "qwen/qwen3-coder",
+      "provider": "openrouter",
+      "description": "Qwen3-Coder-480B-A35B-Instruct — MoE code generation model, 1M context",
+      "context_length": 1000000,
+      "max_tokens": 2048,
+      "best_for": ["code generation", "code review", "debugging", "refactoring"]
+    },
+    {
+      "name": "DeepSeek V4 Flash",
+      "id": "deepseek/deepseek-v4-flash",
+      "provider": "openrouter",
+      "description": "DeepSeek V4 Flash — fast, cost-effective general purpose model",
+      "context_length": 131072,
+      "max_tokens": 4096,
+      "best_for": ["general chat", "fast responses", "summarization"]
+    },
+    {
+      "name": "GPT OSS 120B",
+      "id": "openai/gpt-oss-120b:free",
+      "provider": "openrouter",
+      "description": "OpenAI open-source 120B model — powerful free general purpose model",
+      "context_length": 131072,
+      "max_tokens": 4096,
+      "best_for": ["general chat", "reasoning", "writing", "analysis"]
+    },
+    {
+      "name": "Gemma 4 31B",
+      "id": "google/gemma-4-31b-it:free",
+      "provider": "openrouter",
+      "description": "Google Gemma 4 31B — capable open-source model for general tasks",
+      "context_length": 131072,
+      "max_tokens": 4096,
+      "best_for": ["general chat", "reasoning", "summarization"]
+    },
+    {
+      "name": "Nemotron 3 Super 120B",
+      "id": "nvidia/nemotron-3-super-120b-a12b:free",
+      "provider": "openrouter",
+      "description": "NVIDIA Nemotron 3 Super 120B — strong free reasoning and orchestration model",
+      "context_length": 131072,
+      "max_tokens": 4096,
+      "best_for": ["reasoning", "orchestration", "complex tasks"]
+    },
+    {
+      "name": "Laguna M.1",
+      "id": "poolside/laguna-m.1:free",
+      "provider": "openrouter",
+      "description": "Poolside Laguna M.1 — flagship free coding agent with tool calling and reasoning",
+      "context_length": 262144,
+      "max_tokens": 4096,
+      "best_for": ["code generation", "agentic coding", "software engineering"]
+    },
+    {
+      "name": "North Mini Code",
+      "id": "cohere/north-mini-code:free",
+      "provider": "openrouter",
+      "description": "Cohere North Mini Code — efficient MoE coding model, 256k context",
+      "context_length": 256000,
+      "max_tokens": 4096,
+      "best_for": ["code generation", "agentic coding", "fast code tasks"]
+    },
+    {
+      "name": "Owl Alpha",
+      "id": "openrouter/owl-alpha",
+      "provider": "openrouter",
+      "description": "OpenRouter Owl Alpha — agentic model with native tool use, 1M context",
+      "context_length": 1048576,
+      "max_tokens": 4096,
+      "best_for": ["agentic tasks", "tool use", "long context", "orchestration"]
+    },
+    {
+      "name": "Llama 3.3 70B (Groq)",
+      "id": "llama-3.3-70b-versatile",
+      "provider": "groq",
+      "description": "Meta Llama 3.3 70B served on Groq's LPU inference — fast, versatile general purpose model",
+      "context_length": 131072,
+      "max_tokens": 4096,
+      "best_for": ["general chat", "reasoning", "fast inference"]
+    },
+    {
+      "name": "Llama 3.1 8B Instant (Groq)",
+      "id": "llama-3.1-8b-instant",
+      "provider": "groq",
+      "description": "Meta Llama 3.1 8B on Groq — very low latency, good for quick simple tasks",
+      "context_length": 131072,
+      "max_tokens": 4096,
+      "best_for": ["fast responses", "simple tasks", "low latency"]
+    },
+    {
+      "name": "Qwen3 32B (Groq)",
+      "id": "qwen/qwen3-32b",
+      "provider": "groq",
+      "description": "Qwen3 32B on Groq — reasoning model with tool use support",
+      "context_length": 131072,
+      "max_tokens": 4096,
+      "best_for": ["reasoning", "code generation", "tool use"]
+    },
+    {
+      "name": "GPT OSS 120B (Groq)",
+      "id": "openai/gpt-oss-120b",
+      "provider": "groq",
+      "description": "OpenAI's open-weight 120B model served on Groq — fast reasoning with tool use",
+      "context_length": 131072,
+      "max_tokens": 4096,
+      "best_for": ["general chat", "reasoning", "tool use", "fast inference"]
+    }
+  ]
+}

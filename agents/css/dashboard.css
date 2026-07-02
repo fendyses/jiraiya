@@ -69,6 +69,8 @@
     .repo-btn.vs:hover{background:rgba(58,160,255,.2);border-color:rgba(58,160,255,.5);box-shadow:0 0 8px rgba(58,160,255,.3)}
     .repo-btn.cli:hover{background:rgba(217,119,87,.15);border-color:rgba(217,119,87,.45);box-shadow:0 0 8px rgba(217,119,87,.25)}
     .repo-btn.cli.copied{background:rgba(217,119,87,.25);border-color:rgba(217,119,87,.7)}
+    .repo-btn.sakura:hover{background:rgba(255,105,180,.15);border-color:rgba(255,105,180,.45);box-shadow:0 0 8px rgba(255,105,180,.25)}
+    .repo-btn.sakura.copied{background:rgba(255,105,180,.25);border-color:rgba(255,105,180,.7)}
     .lang-badge{font-family:'Share Tech Mono',monospace;font-size:8px;padding:1px 5px;border-radius:3px;letter-spacing:.5px;white-space:nowrap}
     .lang-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
     .repo-cat-badge{font-family:'Share Tech Mono',monospace;font-size:7px;padding:1px 6px;border-radius:3px;letter-spacing:.8px;text-transform:uppercase;white-space:nowrap}
