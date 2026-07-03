@@ -74,11 +74,48 @@ Only offer if the response seems substantive (not a one-liner).
 | Rate limited → falls back to Nano | Note: "Nemotron Nano responded (Super rate limited)" |
 | Multi-part question | Pass the full question as one string |
 
+## File Access
+
+Nemotron can read files/folders you grant access to.
+
+### Config — `~/.nemotron/config.json`
+```json
+{
+  "trusted_folders": ["/applications/sites/jiraiya"],
+  "trusted_files": [],
+  "auto_load": false,
+  "max_file_kb": 50,
+  "max_total_kb": 120
+}
+```
+- `auto_load: true` → preloads all trusted folders on every startup (slow)
+- `auto_load: false` (default) → folders are trusted but only loaded on demand
+
+### CLI Flags
+| Flag | Example | Effect |
+|------|---------|--------|
+| `--file <path>` | `nemotron --file /path/to/file.md "summarise"` | Inject one file as context |
+| `--folder <path>` | `nemotron --folder /apps/jiraiya "question"` | Scan folder (≤2 levels, ≤120 KB total) |
+
+### Interactive Commands
+| Input | Effect |
+|-------|--------|
+| `@/path/to/file` | Attach a file inline (must be in a trusted folder) |
+| `load /path` | Load a file or folder into current session context |
+| `list` | Show trusted folders and currently loaded files |
+
+### Security
+- `@path` syntax validates against `trusted_folders` — blocks paths outside trusted scope
+- `load <path>` bypasses trust check for explicit one-time loads in interactive mode
+- Max 50 KB per file, 120 KB total context budget
+
 ## CLI Info
 - **Script**: `/Users/pairofspades/Documents/Ai/nemotron/ask-nemotron.js`
 - **Command**: `nemotron` (symlinked at `~/.local/bin/nemotron`)
+- **Config**: `~/.nemotron/config.json`
 - **Models**: `nvidia/nemotron-3-super-120b-a12b:free` → fallback `nvidia/nemotron-3-nano-30b-a3b:free`
 - **Provider**: OpenRouter (free tier)
 
 ## Level History
 - **Lv.1** — Base: trigger detection, one-shot CLI query, inline display, follow-up offer.
+- **Lv.2** — File access: `--file`, `--folder` flags; `@path` inline injection; `load`/`list` interactive commands; trusted-folder config; 120 KB context budget.
