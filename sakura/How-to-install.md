@@ -1,7 +1,8 @@
 # Installing Sakura CLI on a New Machine
 
-Sakura is a single-file Node.js CLI (`sakura.js`) that gives you an interactive terminal AI assistant with real file read/write/list tools, backed by two providers:
+Sakura is a single-file Node.js CLI (`sakura.js`) that gives you an interactive terminal AI assistant with real file read/write/list tools, backed by three providers:
 
+- **Gemini** — direct (`generativelanguage.googleapis.com`, via Google's OpenAI-compatible endpoint), fetched live at startup
 - **Groq** — direct, fast inference (`api.groq.com`), fetched live at startup
 - **OpenRouter** — free-tier models (`openrouter.ai`), fetched live at startup
 
@@ -14,10 +15,11 @@ It has **zero npm dependencies** — only Node's built-in `https`, `readline`, `
   node -v
   ```
 - API keys for at least one provider:
+  - **Gemini** — https://aistudio.google.com/apikey
   - **Groq** — https://console.groq.com/keys
   - **OpenRouter** — https://openrouter.ai/keys
 
-  You only need one, but having both gives you the full model list (Groq's direct models + OpenRouter's free ones). A model whose provider key is missing is simply skipped — Sakura still starts, just with a smaller list.
+  You only need one, but having all three gives you the full model list (Gemini's direct models + Groq's direct models + OpenRouter's free ones). A provider whose key is missing is simply skipped — Sakura still starts, just with a smaller list.
 
 ## 1. Copy the project to this exact path
 
@@ -40,13 +42,16 @@ Copy just `sakura.js`, `.env` (see step 2), and `.gitignore` — that's the enti
 Create `/Applications/Sites/jiraiya/sakura/.env`:
 
 ```
+GEMINI_API_KEY=your-gemini-key-here
 OPENROUTER_API_KEY=your-openrouter-key-here
 GROQ_API_KEY=your-groq-key-here
 ```
 
-Omit whichever provider you're not using. (`.gitignore` already excludes `.env` from git, so it won't get committed by accident.)
+Omit whichever provider(s) you're not using. (`.gitignore` already excludes `.env` from git, so it won't get committed by accident.)
 
 > **Don't confuse Groq with Grok.** `GROQ_API_KEY` is for **Groq** (groq.com — a fast-inference hosting company, key prefix `gsk_`). It has nothing to do with xAI's **Grok** model — Groq does not host any model actually named "grok". This has caused real confusion in this project before; the "Groq Models" section in Sakura's banner is genuinely Groq-hosted models (Llama, Qwen, GPT-OSS, etc.), not Grok.
+
+> **Gemini key format**: keys from Google AI Studio typically start with `AQ.` or `AIza`. Sakura calls Gemini through Google's OpenAI-compatibility layer, so no separate SDK or client library is needed — just the same `Authorization: Bearer` pattern used for the other two providers.
 
 ## 3. Make it executable
 
@@ -129,11 +134,12 @@ sakura
 ```
 
 You should see a live model fetch, then a wide, colorized bordered banner listing:
-- Groq models (direct via `api.groq.com`), each numbered, with `★` marking which ones support real file tools (agentic/tool-calling) and `❯` marking the currently active one
+- Gemini models (direct via `generativelanguage.googleapis.com`), each numbered, with `★` marking which ones support real file tools (agentic/tool-calling) and `❯` marking the currently active one
+- Groq models (direct via `api.groq.com`), same markers
 - OpenRouter free models, same markers
 - A commands list at the bottom
 
-If you see `[Sakura] Warning: GROQ_API_KEY missing` or the equivalent for OpenRouter, that provider's key isn't set — Sakura still runs, just with fewer models. If **both** keys are missing, it exits immediately with an error.
+If you see `[Sakura] Warning: GEMINI_API_KEY missing` (or the equivalent for Groq/OpenRouter), that provider's key isn't set — Sakura still runs, just with fewer models. If **all three** keys are missing, it exits immediately with an error.
 
 ## Usage quick reference
 
@@ -152,6 +158,7 @@ If you see `[Sakura] Warning: GROQ_API_KEY missing` or the equivalent for OpenRo
 One-shot mode also works without entering the interactive prompt:
 ```
 sakura "your question here"
+sakura --model gemini-2.5-flash "your question"
 sakura --model llama-3.3-70b-versatile "your question"
 ```
 
@@ -167,7 +174,8 @@ If you can't/don't want to install at `/Applications/Sites/jiraiya/sakura/`, upd
 | Symptom | Cause |
 |---|---|
 | `command not found: sakura` | Shim not created, not executable, or its directory isn't on `PATH` |
-| `[Sakura] Missing both OPENROUTER_API_KEY and GROQ_API_KEY in .env` | `.env` missing, in the wrong location, or both keys empty |
-| Groq or OpenRouter section missing from the banner | That provider's key is missing — the other still works |
-| A model says it can't read/write files | That specific model doesn't support tool-calling (marked without `★`, no `groq · direct`/`openrouter · free` — shows `no tools` instead) — switch to a `★` model via `models` |
+| `[Sakura] Missing OPENROUTER_API_KEY, GROQ_API_KEY, and GEMINI_API_KEY in .env` | `.env` missing, in the wrong location, or all three keys empty |
+| Gemini, Groq, or OpenRouter section missing from the banner | That provider's key is missing — the others still work |
+| A model says it can't read/write files | That specific model doesn't support tool-calling (marked without `★`, shows `no tools` instead) — switch to a `★` model via `models` |
 | Banner/picker look misaligned in a narrow terminal | The table is 120 columns wide (`BOX_W` in `sakura.js`) — widen your terminal window, or lower `BOX_W` if you prefer a narrower fixed layout |
+| `401`/`403` error calling Gemini | Key is invalid, revoked, or restricted in Google AI Studio — regenerate at https://aistudio.google.com/apikey |

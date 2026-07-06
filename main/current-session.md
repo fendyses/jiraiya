@@ -1,54 +1,51 @@
-# Current Session Memory - 2026-07-03
+# Current Session Memory - 2026-07-06
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Work (Feature + Bugfix + UI polish)
+**Session Type**: Work (Feature)
 **Current Project**: Sakura CLI (`/Applications/Sites/jiraiya/sakura/`)
 **Status**: Wrapping up — task complete, diary saved
-**Time**: 2026-07-03 (afternoon, 15:11)
+**Time**: 2026-07-06 (afternoon, 12:38)
 
 ## Current Focus
-- **Primary Task**: Fixed per-model tool-calling detection (some Groq/OpenRouter models genuinely don't support it), then a run of UI follow-ups: agentic star marker, full color palette, boxed picker matching the banner, progressive widening to 120 columns
-- **Technical Context**: Node.js CLI (`sakura.js`), capability detection via provider metadata (`supported_features`/`supported_parameters`), shared color/box-drawing helpers with visible-width-aware padding
-- **Progress**: Complete — all asks implemented and verified live (real API calls, real pty terminal tests, byte-level alignment checks)
+- **Primary Task**: Added Google Gemini as a third direct provider in Sakura CLI, alongside Groq and OpenRouter
+- **Technical Context**: `sakura.js` — Gemini integrated via Google's OpenAI-compatible endpoint (`generativelanguage.googleapis.com/v1beta/openai/...`), so it reuses `agentLoop()`/`execTool()`/`callAPI()` unmodified
+- **Progress**: Complete — implemented, reordered per follow-up request (Gemini section first), verified live
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: Sakura CLI — tool-capability honesty, banner/picker visual design
+- **Current Topic**: Sakura CLI — Gemini provider integration
 - **Immediate Goals**: Done for this session
 - **Recent Progress**:
-  - Diagnosed why `groq/compound-mini` "cannot read files": Groq's own `supported_features` metadata confirms it (and `groq/compound`, `allam-2-7b`) genuinely lack tool-calling support — a real platform limitation, not a bug
-  - Rewired model discovery to capture `supportsTools` per model (from Groq's `supported_features` / OpenRouter's `supported_parameters`) instead of guess-and-retry
-  - Split system prompt into tools/no-tools variants (`systemFor(activeSupportsTools)`) so the model is never told it has capabilities it doesn't have this turn — fixed the earlier hallucination bug at the root, not just the crash
-  - Verified live: switching to `groq/compound-mini` now shows an immediate warning, and asking it to read a file gets an honest refusal instead of fabricated content
-  - Redesigned `models` picker to render as the same bordered box as the startup banner (was a plain bullet list before), redrawn in place — verified via raw cursor-reposition escape codes in the byte stream, not just visual inspection
-  - Added `★` marker for agentic-capable models; reassigned the pre-existing "active model" indicator from `★` to `❯` to resolve a symbol clash
-  - Built a shared `CLR` color palette + `visLen()`/`padVisible()` helpers (pad/clip on visible width, colorize after) so ANSI codes never break box alignment
-  - Widened the shared table progressively: 80 → 96 → 120 columns, refactored into one `BOX_W` constant used by both banner and picker so they can't drift apart
-  - Verified alignment integrity at each width with a byte-level check (0 misaligned lines across 136 bordered lines)
+  - Fendy pasted a live Gemini API key directly in chat; flagged it as compromised-by-exposure (same as already-pending OpenRouter/Groq key rotation) before proceeding
+  - Confirmed live that Gemini's OpenAI-compat layer matches the OpenAI chat-completions shape exactly: `/models` list, plain chat, `tool_calls`, and `role: tool` result feeding all verified via direct curl tests
+  - Added `GEMINI_API_KEY` to `.env` (gitignored, untracked — confirmed via `git check-ignore`/`git ls-files`)
+  - Added `GEMINI_EXCLUDE` filter list — Gemini's `/models` endpoint returns everything (TTS, image/video gen, embeddings, live/audio, research agents), filtered down to real chat models
+  - Added `fetchGeminiModels()`, a `providerConfig()` branch for `gemini`, extended `modelItems()` to a third group, added a `gemini` color (orchid, `\x1b[38;5;213m`) to the shared `CLR` palette
+  - Updated both `printBanner()` and `interactiveModelPicker()` with a Gemini section
+  - Mid-task follow-up: Fendy asked for the Gemini section to render **first** (before Groq) in both the banner and the picker, numbered first — reordered `modelItems()`/`printBanner()`/`interactiveModelPicker()` accordingly
+  - Verified live: `node sakura.js -m gemini-2.5-flash "..."` actually read `sakura.js` via the real `read_file` tool; picker shows 19 Gemini models first, then 10 Groq, then OpenRouter free; box alignment held at 120 cols (`node --check` clean, no misalignment)
 
 ### Important Decisions
-- Kept the earlier no-tools-retry fallback as a safety net even after adding proper upfront capability detection, in case provider metadata is ever stale/wrong
-- Chose `❯` for "active model" and reserved `★` exclusively for "agentic-capable" — one symbol, one meaning, in both banner and picker
+- `supportsTools` defaults to `true` for every Gemini model that survives `GEMINI_EXCLUDE` filtering, since Gemini's `/models` endpoint (unlike Groq/OpenRouter) exposes no per-model tool-support metadata — verified correct via a live tool-call test rather than assumed
+- Model list ordering is now Gemini → Groq → OpenRouter free, in both the banner and the picker (changed from the original Groq-first design per Fendy's explicit request)
 
 ## Session Recap (For AI Restart)
-- **This session (2026-07-03)**: Continued Sakura CLI work. Fixed the root cause of "can't read files" on certain Groq models (no tool-calling support, detected via provider metadata, with an honest system-prompt fallback instead of hallucination). Then handled a rapid sequence of UI polish requests: agentic star marker, full color palette, picker redesigned to match the banner's bordered-box style, and progressive widening from 80 to 120 columns — all verified live via pty tests and byte-level alignment checks, not just visual inspection.
-- **Where We Left Off**: All requested work complete and verified. Still outstanding from earlier today: user should rotate `OPENROUTER_API_KEY` and `GROQ_API_KEY` (exposed earlier in the transcript) — not yet confirmed done.
-- **Important Context**: `sakura.js` now has `BOX_W` as a single source of truth for table width, and `CLR`/`visLen`/`padVisible` as shared color/alignment helpers — any future banner/picker tweaks should reuse these rather than reintroducing local width constants.
+- **This session (2026-07-06)**: Added Gemini as Sakura CLI's third provider (alongside Groq/OpenRouter), using Google's OpenAI-compatible endpoint — verified as a genuine drop-in with zero changes needed to the existing agent loop or tool-execution code. Reordered the menu/picker per Fendy's follow-up so Gemini renders and numbers first.
+- **Where We Left Off**: Feature complete and verified live. Outstanding: Fendy should rotate all three exposed API keys — OpenRouter, Groq (flagged in an earlier session), and now Gemini (key was pasted in this session's chat) — not yet confirmed done.
+- **Important Context**: `sakura.js` provider pattern is now: `providerConfig(provider)` branches on `'groq' | 'gemini' | 'openrouter'`; `modelItems(groqModels, geminiModels, freeModels)` returns gemini-first; shared `CLR`/`BOX_W`/`visLen`/`padVisible` helpers (from the 2026-07-03 session) are reused as-is — no new width/alignment logic was introduced.
 
 ## Session Achievements
-- ✅ Diagnosed and fixed why certain Groq models (`groq/compound`, `groq/compound-mini`, `allam-2-7b`) couldn't use file tools — genuine platform limitation, now detected via provider metadata
-- ✅ Fixed the hallucination root cause: system prompt no longer claims capabilities a model doesn't have that turn
-- ✅ Verified honest refusal behavior live (no more fabricated file contents)
-- ✅ Redesigned the `models` picker to match the startup banner's bordered-box style, redrawn in place
-- ✅ Added unambiguous `★` (agentic) vs `❯` (active) markers with an on-screen legend
-- ✅ Built a reusable color palette + alignment-safe padding system
-- ✅ Widened the shared table to 120 columns via one `BOX_W` constant, verified zero misalignment
+- ✅ Verified Google's Gemini OpenAI-compat endpoint is a genuine drop-in (models list, chat, tool-calling, tool-result round-trip) via live curl tests before writing any code
+- ✅ Wired Gemini into `sakura.js` as a third provider: `.env` key, `providerConfig()`, `fetchGeminiModels()` with a non-chat-model exclusion filter, extended `modelItems()`, banner + picker rendering, new palette color
+- ✅ Verified live end-to-end with a real tool-calling request (`read_file` on `sakura.js` via `gemini-2.5-flash`)
+- ✅ Reordered Gemini to render/number first across banner, picker, and `modelItems()` per follow-up request, re-verified alignment
+- ✅ Flagged key exposure risk twice (before implementing, and in the final summary) — three keys now need rotation total
 
 ## Quick Context for Next Session
-- **Where We Left Off**: Sakura CLI's banner and picker are now colorized, 120 columns wide, and share all layout logic; tool-calling support is accurately detected and honestly communicated per model
-- **What's Working**: Everything tested this session — model switching, honest no-tools handling, picker redraw, color/alignment at 120 cols
-- **What Needs Attention**: User should still rotate the two exposed API keys (OpenRouter, Groq) from earlier today — not yet confirmed done
+- **Where We Left Off**: Sakura CLI now supports Gemini, Groq, and OpenRouter as direct/free providers, all sharing one agent loop, tool-execution path, and rendering system; Gemini is the default-first section in menus
+- **What's Working**: Everything tested this session — Gemini model fetch/filter, chat, tool-calling round-trip, banner/picker rendering and alignment at 120 cols
+- **What Needs Attention**: User should rotate OPENROUTER_API_KEY, GROQ_API_KEY, and GEMINI_API_KEY — all three have been exposed in chat transcripts across sessions; not yet confirmed done
 
 ---
-*Session updated: 2026-07-03 15:11*
+*Session updated: 2026-07-06 12:38*

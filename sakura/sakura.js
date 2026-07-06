@@ -16,20 +16,32 @@ function loadEnv(envPath) {
     }, {});
   } catch { return {}; }
 }
-const ENV      = loadEnv('/Applications/Sites/jiraiya/sakura/.env');
-const API_KEY  = ENV.OPENROUTER_API_KEY || '';   // OpenRouter — free-tier models
-const GROQ_KEY = ENV.GROQ_API_KEY       || '';   // Groq — direct, fast-inference models
-if (!API_KEY && !GROQ_KEY) {
-  console.error('[Sakura] Missing both OPENROUTER_API_KEY and GROQ_API_KEY in .env');
+const ENV        = loadEnv('/Applications/Sites/jiraiya/sakura/.env');
+const API_KEY    = ENV.OPENROUTER_API_KEY || '';   // OpenRouter — free-tier models
+const GROQ_KEY   = ENV.GROQ_API_KEY       || '';   // Groq — direct, fast-inference models
+const GEMINI_KEY = ENV.GEMINI_API_KEY     || '';   // Gemini — direct, via OpenAI-compat endpoint
+if (!API_KEY && !GROQ_KEY && !GEMINI_KEY) {
+  console.error('[Sakura] Missing OPENROUTER_API_KEY, GROQ_API_KEY, and GEMINI_API_KEY in .env');
   process.exit(1);
 }
-if (!GROQ_KEY) console.error('[Sakura] Warning: GROQ_API_KEY missing — Groq models unavailable.');
-if (!API_KEY)  console.error('[Sakura] Warning: OPENROUTER_API_KEY missing — OpenRouter free models unavailable.');
+if (!GROQ_KEY)   console.error('[Sakura] Warning: GROQ_API_KEY missing — Groq models unavailable.');
+if (!API_KEY)    console.error('[Sakura] Warning: OPENROUTER_API_KEY missing — OpenRouter free models unavailable.');
+if (!GEMINI_KEY) console.error('[Sakura] Warning: GEMINI_API_KEY missing — Gemini models unavailable.');
 // ─────────────────────────────────────────────────────────
 
 // Groq's chat models come straight from its /models endpoint (fetched at
 // startup). These aren't chat-completion models, so they're filtered out.
 const GROQ_EXCLUDE = ['whisper', 'guard', 'orpheus'];
+
+// Gemini's /models endpoint (via the OpenAI-compat layer) lists every model
+// the API serves — TTS, image/video generation, embeddings, live/audio,
+// research agents, etc. — none of which are text chat-completion models, so
+// they're filtered out the same way GROQ_EXCLUDE filters Groq's list.
+const GEMINI_EXCLUDE = [
+  'tts', 'image', 'embedding', 'aqa', 'imagen', 'veo', 'lyria', 'live',
+  'audio', 'robotics', 'computer-use', 'antigravity', 'deep-research',
+  'nano-banana', 'omni-flash',
+];
 
 const DEFAULT_MODEL    = 'llama-3.3-70b-versatile';
 const DEFAULT_PROVIDER = 'groq';
@@ -265,6 +277,14 @@ function providerConfig(provider) {
       extraHeaders: {},
     };
   }
+  if (provider === 'gemini') {
+    return {
+      hostname: 'generativelanguage.googleapis.com',
+      path: '/v1beta/openai/chat/completions',
+      apiKey: GEMINI_KEY,
+      extraHeaders: {},
+    };
+  }
   return {
     hostname: 'openrouter.ai',
     path: '/api/v1/chat/completions',
@@ -372,6 +392,40 @@ function fetchGroqModels() {
   });
 }
 
+// Gemini — direct, fetched live via the OpenAI-compat /models endpoint
+// (excludes TTS/image/video/embedding/live/research/etc. non-chat models).
+// No supported_features-style metadata is exposed here, so supportsTools
+// defaults to true — verified live: every remaining gemini-*/gemma-* chat
+// model accepts the same `tools` shape as Groq/OpenRouter.
+function fetchGeminiModels() {
+  return new Promise(resolve => {
+    if (!GEMINI_KEY) return resolve([]);
+    const opts = {
+      hostname: 'generativelanguage.googleapis.com',
+      path    : '/v1beta/openai/models',
+      method  : 'GET',
+      headers : { 'Authorization': `Bearer ${GEMINI_KEY}` },
+    };
+    const req = https.request(opts, res => {
+      let raw = '';
+      res.on('data', c => raw += c);
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(raw);
+          const models = (json.data || [])
+            .map(m => ({ id: m.id.replace(/^models\//, '') }))
+            .filter(m => !GEMINI_EXCLUDE.some(x => m.id.toLowerCase().includes(x)))
+            .map(m => ({ id: m.id, supportsTools: true }));
+          resolve(models);
+        } catch { resolve([]); }
+      });
+    });
+    req.on('error', () => resolve([]));
+    req.setTimeout(10000, () => { req.destroy(); resolve([]); });
+    req.end();
+  });
+}
+
 // OpenRouter — free-tier models, fetched live from openrouter.ai
 function fetchFreeModels() {
   return new Promise(resolve => {
@@ -409,11 +463,17 @@ function fetchFreeModels() {
   });
 }
 
-// Build a single numbered list: Groq models first, then OpenRouter free models.
-// Each item carries its own `provider` so routing is never guessed from the id
-// (the same id string can legitimately exist on both providers).
-function modelItems(groqModels, freeModels) {
+// Build a single numbered list: Gemini models first, then Groq, then
+// OpenRouter free models. Each item carries its own `provider` so routing is
+// never guessed from the id (the same id string can legitimately exist on
+// more than one provider).
+function modelItems(groqModels, geminiModels, freeModels) {
   let n = 1;
+  const gemini = geminiModels.map(m => ({
+    n: n++, id: m.id, short: m.id, group: 'gemini', provider: 'gemini',
+    supportsTools: m.supportsTools,
+    tag: m.supportsTools ? 'gemini · direct' : 'gemini · direct · no tools',
+  }));
   const groq = groqModels.map(m => ({
     n: n++, id: m.id, short: m.id, group: 'groq', provider: 'groq',
     supportsTools: m.supportsTools,
@@ -424,7 +484,7 @@ function modelItems(groqModels, freeModels) {
     supportsTools: m.supportsTools,
     tag: m.supportsTools ? 'openrouter · free' : 'openrouter · free · no tools',
   }));
-  return [...groq, ...free];
+  return [...gemini, ...groq, ...free];
 }
 
 // ── Shared box-drawing + color helpers ──────────────────────
@@ -441,6 +501,7 @@ const CLR = {
   title:   '\x1b[38;5;219m\x1b[1m',
   sub:     '\x1b[38;5;183m', // soft lavender
   groq:    '\x1b[38;5;80m',  // teal
+  gemini:  '\x1b[38;5;213m', // orchid
   openrouter: '\x1b[38;5;111m', // periwinkle
   star:    '\x1b[38;5;220m', // gold
   active:  '\x1b[38;5;120m', // green
@@ -479,21 +540,33 @@ function printBanner(items) {
   top();
   line();
   line(centerText(`${CLR.title}🌸  Sakura CLI${CLR.reset}`, W));
-  line(centerText(`${CLR.groq}Groq (direct)${CLR.reset}  ${CLR.dim}×${CLR.reset}  ${CLR.openrouter}OpenRouter (free)${CLR.reset}`, W));
+  line(centerText(`${CLR.gemini}Gemini (direct)${CLR.reset}  ${CLR.dim}×${CLR.reset}  ${CLR.groq}Groq (direct)${CLR.reset}  ${CLR.dim}×${CLR.reset}  ${CLR.openrouter}OpenRouter (free)${CLR.reset}`, W));
   line(centerText(`${CLR.dim}${CLR.star}★${CLR.reset}${CLR.dim} = agentic (supports read/write/list_dir tools)${CLR.reset}`, W));
   line();
   div();
 
   // ❯ (green) marks the currently active model; ★ (gold) in front of the
   // name marks agentic-capable models (tool-calling support).
-  const groqItems = items.filter(it => it.group === 'groq');
-  line(`  ${CLR.groq}${CLR.bold}Groq Models${CLR.reset} ${CLR.dim}— direct via api.groq.com  (${groqItems.length})${CLR.reset}:`);
-  groqItems.forEach(it => {
+  const geminiItems = items.filter(it => it.group === 'gemini');
+  line(`  ${CLR.gemini}${CLR.bold}Gemini Models${CLR.reset} ${CLR.dim}— direct via generativelanguage.googleapis.com  (${geminiItems.length})${CLR.reset}:`);
+  geminiItems.forEach(it => {
     const active  = it.id === activeModel && it.provider === activeProvider ? `${CLR.active}❯${CLR.reset}` : ' ';
     const agentic = it.supportsTools ? `${CLR.star}★${CLR.reset}` : ' ';
     const display = it.short.length > 78 ? it.short.slice(0, 75) + '…' : it.short;
     line(`  ${active} ${CLR.dim}[${String(it.n).padStart(2)}]${CLR.reset} ${agentic} ${display.padEnd(80)} ${CLR.dim}(${it.tag})${CLR.reset}`);
   });
+
+  const groqItems = items.filter(it => it.group === 'groq');
+  if (groqItems.length) {
+    div();
+    line(`  ${CLR.groq}${CLR.bold}Groq Models${CLR.reset} ${CLR.dim}— direct via api.groq.com  (${groqItems.length})${CLR.reset}:`);
+    groqItems.forEach(it => {
+      const active  = it.id === activeModel && it.provider === activeProvider ? `${CLR.active}❯${CLR.reset}` : ' ';
+      const agentic = it.supportsTools ? `${CLR.star}★${CLR.reset}` : ' ';
+      const display = it.short.length > 78 ? it.short.slice(0, 75) + '…' : it.short;
+      line(`  ${active} ${CLR.dim}[${String(it.n).padStart(2)}]${CLR.reset} ${agentic} ${display.padEnd(80)} ${CLR.dim}(${it.tag})${CLR.reset}`);
+    });
+  }
 
   const freeItems = items.filter(it => it.group === 'free');
   if (freeItems.length) {
@@ -550,8 +623,9 @@ function interactiveModelPicker(items, activeId) {
     const top = `${CLR.border}╔${'═'.repeat(W)}╗${CLR.reset}`;
     const bot = `${CLR.border}╚${'═'.repeat(W)}╝${CLR.reset}`;
 
-    const groqItems = items.filter(it => it.group === 'groq');
-    const freeItems = items.filter(it => it.group === 'free');
+    const groqItems   = items.filter(it => it.group === 'groq');
+    const geminiItems = items.filter(it => it.group === 'gemini');
+    const freeItems   = items.filter(it => it.group === 'free');
     let selected = Math.max(0, items.findIndex(it => it.id === activeId)); // index into `items`; items.length == Cancel row
 
     // ★ in front of the name marks agentic-capable models (tool-calling support).
@@ -571,12 +645,22 @@ function interactiveModelPicker(items, activeId) {
       out.push(div);
 
       let idx = 0;
-      out.push(plainLine(`  ${CLR.groq}${CLR.bold}Groq Models${CLR.reset} ${CLR.dim}— direct via api.groq.com  (${groqItems.length})${CLR.reset}:`));
-      groqItems.forEach(opt => {
+      out.push(plainLine(`  ${CLR.gemini}${CLR.bold}Gemini Models${CLR.reset} ${CLR.dim}— direct via generativelanguage.googleapis.com  (${geminiItems.length})${CLR.reset}:`));
+      geminiItems.forEach(opt => {
         const hl = idx === selected;
         out.push(rowLine(`  ${hl ? '❯' : ' '} ${rowText(opt)}`, hl));
         idx++;
       });
+
+      if (groqItems.length) {
+        out.push(div);
+        out.push(plainLine(`  ${CLR.groq}${CLR.bold}Groq Models${CLR.reset} ${CLR.dim}— direct via api.groq.com  (${groqItems.length})${CLR.reset}:`));
+        groqItems.forEach(opt => {
+          const hl = idx === selected;
+          out.push(rowLine(`  ${hl ? '❯' : ' '} ${rowText(opt)}`, hl));
+          idx++;
+        });
+      }
 
       if (freeItems.length) {
         out.push(div);
@@ -637,10 +721,10 @@ function interactiveModelPicker(items, activeId) {
 const oneShot = queryParts.join(' ').trim();
 
 (async () => {
-  process.stdout.write('  🌸 Fetching models (Groq + OpenRouter)...\r');
-  const [groqModels, freeModels] = await Promise.all([fetchGroqModels(), fetchFreeModels()]);
+  process.stdout.write('  🌸 Fetching models (Gemini + Groq + OpenRouter)...\r');
+  const [groqModels, geminiModels, freeModels] = await Promise.all([fetchGroqModels(), fetchGeminiModels(), fetchFreeModels()]);
   process.stdout.write('                                                              \r');
-  const items = modelItems(groqModels, freeModels);
+  const items = modelItems(groqModels, geminiModels, freeModels);
 
   // Resolve the default model against the fetched items (in case metadata
   // ever disagrees with the DEFAULT_MODEL/DEFAULT_PROVIDER assumption above).
@@ -648,8 +732,8 @@ const oneShot = queryParts.join(' ').trim();
   if (defaultItem) activeSupportsTools = defaultItem.supportsTools;
 
   if (modelOverride) {
-    // items is ordered groq-first, so an id that (rarely) exists on both
-    // providers resolves to Groq — matches the "prefer direct Groq" intent.
+    // items is ordered gemini-first, so an id that (rarely) exists on more
+    // than one provider resolves to Gemini.
     const found = items.find(it => it.id === modelOverride || it.short === modelOverride);
     activeModel        = modelOverride;
     activeProvider     = found ? found.provider : DEFAULT_PROVIDER;
