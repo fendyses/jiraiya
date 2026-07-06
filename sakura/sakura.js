@@ -37,10 +37,19 @@ const GROQ_EXCLUDE = ['whisper', 'guard', 'orpheus'];
 // the API serves — TTS, image/video generation, embeddings, live/audio,
 // research agents, etc. — none of which are text chat-completion models, so
 // they're filtered out the same way GROQ_EXCLUDE filters Groq's list.
+//
+// 'pro' and '2.0-flash' are excluded for a different reason: verified live
+// (direct chat-completion probes against every listed model) that a free-tier
+// Gemini API key gets `RESOURCE_EXHAUSTED` / quota limit 0 on every -pro
+// model and the legacy 2.0 Flash family — not a transient rate limit, a
+// permanent per-model 0 quota on this tier. 2.5/3.x Flash, Flash-Lite, and
+// Gemma models all work. Listing the blocked ones just gives users a picker
+// full of models that error out on first use, so they're pre-filtered here.
+// If a paid/upgraded key ever needs them back, drop 'pro'/'2.0-flash' below.
 const GEMINI_EXCLUDE = [
   'tts', 'image', 'embedding', 'aqa', 'imagen', 'veo', 'lyria', 'live',
   'audio', 'robotics', 'computer-use', 'antigravity', 'deep-research',
-  'nano-banana', 'omni-flash',
+  'nano-banana', 'omni-flash', 'pro', '2.0-flash',
 ];
 
 const DEFAULT_MODEL    = 'llama-3.3-70b-versatile';
