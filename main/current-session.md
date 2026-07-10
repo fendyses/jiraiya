@@ -1,51 +1,50 @@
-# Current Session Memory - 2026-07-06
+# Current Session Memory - 2026-07-10
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Work (Feature)
-**Current Project**: Sakura CLI (`/Applications/Sites/jiraiya/sakura/`)
+**Session Type**: Work (Bug Fix + Polish)
+**Current Project**: Jiraiya (`/Applications/Sites/jiraiya/`) — Dashboard
 **Status**: Wrapping up — task complete, diary saved
-**Time**: 2026-07-06 (afternoon, 12:38)
+**Time**: 2026-07-10 (morning, 11:57)
 
 ## Current Focus
-- **Primary Task**: Added Google Gemini as a third direct provider in Sakura CLI, alongside Groq and OpenRouter
-- **Technical Context**: `sakura.js` — Gemini integrated via Google's OpenAI-compatible endpoint (`generativelanguage.googleapis.com/v1beta/openai/...`), so it reuses `agentLoop()`/`execTool()`/`callAPI()` unmodified
-- **Progress**: Complete — implemented, reordered per follow-up request (Gemini section first), verified live
+- **Primary Task**: Fixed diary book date-list readability/font issues in `agents/dashboard.php`, then diagnosed and fixed a real layout bug (not a font/caching issue) causing rows to look "cut" once the list grew past ~20 dates
+- **Technical Context**: Root cause was `#bookDateList{display:flex;flex-direction:column}` with `.book-date-item` missing `flex-shrink:0` — flex-shrink compressed all rows to fit once content overflowed the box, instead of letting `overflow-y:auto` scroll. Diagnosed via a headless Playwright repro (found bundled inside the globally-installed `@executeautomation/playwright-mcp-server` package) that loaded the real `dashboard.css`/`panels.js` and inspected computed styles/screenshots directly.
+- **Progress**: Complete — font changed to Lora (from `IM Fell English`/`SC`) across diary + CR Records book, `flex-shrink:0` fix applied to both the diary list and the CR file list (preemptive), cache-busting added to `dashboard.css`/`panels.js`, verified fix via headless screenshot before reporting done
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: Sakura CLI — Gemini provider integration
+- **Current Topic**: Dashboard diary/CR book — font + layout fix, now complete
 - **Immediate Goals**: Done for this session
 - **Recent Progress**:
-  - Fendy pasted a live Gemini API key directly in chat; flagged it as compromised-by-exposure (same as already-pending OpenRouter/Groq key rotation) before proceeding
-  - Confirmed live that Gemini's OpenAI-compat layer matches the OpenAI chat-completions shape exactly: `/models` list, plain chat, `tool_calls`, and `role: tool` result feeding all verified via direct curl tests
-  - Added `GEMINI_API_KEY` to `.env` (gitignored, untracked — confirmed via `git check-ignore`/`git ls-files`)
-  - Added `GEMINI_EXCLUDE` filter list — Gemini's `/models` endpoint returns everything (TTS, image/video gen, embeddings, live/audio, research agents), filtered down to real chat models
-  - Added `fetchGeminiModels()`, a `providerConfig()` branch for `gemini`, extended `modelItems()` to a third group, added a `gemini` color (orchid, `\x1b[38;5;213m`) to the shared `CLR` palette
-  - Updated both `printBanner()` and `interactiveModelPicker()` with a Gemini section
-  - Mid-task follow-up: Fendy asked for the Gemini section to render **first** (before Groq) in both the banner and the picker, numbered first — reordered `modelItems()`/`printBanner()`/`interactiveModelPicker()` accordingly
-  - Verified live: `node sakura.js -m gemini-2.5-flash "..."` actually read `sakura.js` via the real `read_file` tool; picker shows 19 Gemini models first, then 10 Groq, then OpenRouter free; box alignment held at 120 cols (`node --check` clean, no misalignment)
+  - Swapped `.book-title`, `.book-date-item`, `#bookContent` (+headings) from `IM Fell English`/`IM Fell English SC` to `Lora` — the old font used old-style figures that made dates hard to read
+  - Added `Lora` to the Google Fonts `<link>` in `dashboard.php`
+  - Added a bottom `mask-image` fade + `attachFade()`/`snapListHeight()` JS helpers in `agents/js/panels.js` to avoid a partial row showing at rest (useful polish, but not the actual root cause of the reported bug)
+  - Added cache-busting (`?v=<?= filemtime(...) ?>`) to `dashboard.css` and `panels.js` `<link>`/`<script>` tags in `dashboard.php` — neither had versioning before, ruled out as the cause but worth keeping
+  - Built an isolated Playwright repro (`file://` load of real CSS/JS + dummy 30-date list) after "still the same" feedback persisted through two CSS-only fixes — found `.book-date-item` was missing `flex-shrink:0`, causing flex-shrink to silently compress all rows once content overflowed the box (worked fine when the list was short, which is why Fendy hadn't seen it before)
+  - Fixed with `flex-shrink:0` on `.book-date-item`; confirmed via before/after headless screenshots (row height went from a compressed ~13.7px to natural ~30px, list now genuinely scrolls)
+  - Applied the same `Lora` font swap + preemptive `flex-shrink:0` fix to the CR Records book (`.cr-book-title`, `#crBookContent`, `.cr-date-header`, `.cr-file-item`, `#crFileList`, and the inline-styled archive header label in `dashboard.php`)
 
 ### Important Decisions
-- `supportsTools` defaults to `true` for every Gemini model that survives `GEMINI_EXCLUDE` filtering, since Gemini's `/models` endpoint (unlike Groq/OpenRouter) exposes no per-model tool-support metadata — verified correct via a live tool-call test rather than assumed
-- Model list ordering is now Gemini → Groq → OpenRouter free, in both the banner and the picker (changed from the original Groq-first design per Fendy's explicit request)
+- Chose `Lora` over other serif options for the diary/CR parchment aesthetic — readable lining figures for dates while keeping an elegant book-like feel, rather than switching to a sans-serif that would clash with the parchment/old-book design
+- After two failed CSS-only fix attempts based on screenshot inspection, switched to building a real headless-browser reproduction instead of continuing to guess from screenshots — this immediately found the actual bug (a flex-shrink layout issue) that CSS reasoning alone hadn't surfaced
 
 ## Session Recap (For AI Restart)
-- **This session (2026-07-06)**: Added Gemini as Sakura CLI's third provider (alongside Groq/OpenRouter), using Google's OpenAI-compatible endpoint — verified as a genuine drop-in with zero changes needed to the existing agent loop or tool-execution code. Reordered the menu/picker per Fendy's follow-up so Gemini renders and numbers first.
-- **Where We Left Off**: Feature complete and verified live. Outstanding: Fendy should rotate all three exposed API keys — OpenRouter, Groq (flagged in an earlier session), and now Gemini (key was pasted in this session's chat) — not yet confirmed done.
-- **Important Context**: `sakura.js` provider pattern is now: `providerConfig(provider)` branches on `'groq' | 'gemini' | 'openrouter'`; `modelItems(groqModels, geminiModels, freeModels)` returns gemini-first; shared `CLR`/`BOX_W`/`visLen`/`padVisible` helpers (from the 2026-07-03 session) are reused as-is — no new width/alignment logic was introduced.
+- **This session (2026-07-10)**: Fixed the JIRAIYA dashboard's diary book (and CR Records book) — changed an unreadable historical font (`IM Fell English`) to `Lora`, then root-caused a persistent "list looks cut off" bug via a headless Playwright repro to a missing `flex-shrink:0` on flex-column list items (only manifests once the list grows past what fits in the box).
+- **Where We Left Off**: Feature complete and verified via headless screenshot. Fendy has not yet re-confirmed the fix live in the actual dashboard (last two attempts before this one were reported as not working) — worth a quick check-in next session if not already confirmed.
+- **Important Context**: `agents/dashboard.php`, `agents/css/dashboard.css`, `agents/js/panels.js` were all touched. Both the diary date list (`#bookDateList`/`.book-date-item`) and CR file list (`#crFileList`/`.cr-file-item`) now have `flex-shrink:0` — worth checking any *other* flex-column scrollable list in this dashboard for the same latent bug if one is added later.
 
 ## Session Achievements
-- ✅ Verified Google's Gemini OpenAI-compat endpoint is a genuine drop-in (models list, chat, tool-calling, tool-result round-trip) via live curl tests before writing any code
-- ✅ Wired Gemini into `sakura.js` as a third provider: `.env` key, `providerConfig()`, `fetchGeminiModels()` with a non-chat-model exclusion filter, extended `modelItems()`, banner + picker rendering, new palette color
-- ✅ Verified live end-to-end with a real tool-calling request (`read_file` on `sakura.js` via `gemini-2.5-flash`)
-- ✅ Reordered Gemini to render/number first across banner, picker, and `modelItems()` per follow-up request, re-verified alignment
-- ✅ Flagged key exposure risk twice (before implementing, and in the final summary) — three keys now need rotation total
+- ✅ Diagnosed and fixed unreadable diary date font (`IM Fell English` → `Lora`, old-style figures were the actual legibility problem)
+- ✅ Added cache-busting to `dashboard.css`/`panels.js` (general hygiene fix, ruled out as root cause but correct regardless)
+- ✅ Built a headless Playwright reproduction of the real widget to stop guessing from screenshots — found the true root cause (missing `flex-shrink:0` causing flex-shrink row compression once content overflows)
+- ✅ Fixed the diary date list and confirmed via before/after headless screenshots
+- ✅ Proactively applied the same font + flex-shrink fix to the CR Records book before it could exhibit the same bug
 
 ## Quick Context for Next Session
-- **Where We Left Off**: Sakura CLI now supports Gemini, Groq, and OpenRouter as direct/free providers, all sharing one agent loop, tool-execution path, and rendering system; Gemini is the default-first section in menus
-- **What's Working**: Everything tested this session — Gemini model fetch/filter, chat, tool-calling round-trip, banner/picker rendering and alignment at 120 cols
-- **What Needs Attention**: User should rotate OPENROUTER_API_KEY, GROQ_API_KEY, and GEMINI_API_KEY — all three have been exposed in chat transcripts across sessions; not yet confirmed done
+- **Where We Left Off**: Dashboard diary/CR book font + layout fix complete, diary written, session memory updated
+- **What's Working**: Verified in headless Chromium (Playwright) — not yet re-confirmed by Fendy in the live browser after this specific fix (prior two attempts were reported as not resolving it)
+- **What Needs Attention**: Confirm live in-browser that the diary date list now renders and scrolls correctly; still-outstanding key rotation reminder from 2026-07-06 (`OPENROUTER_API_KEY`, `GROQ_API_KEY`, `GEMINI_API_KEY`)
 
 ---
-*Session updated: 2026-07-06 12:38*
+*Session updated: 2026-07-10 11:57*
