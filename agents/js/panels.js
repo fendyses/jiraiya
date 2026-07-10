@@ -97,17 +97,42 @@ function fmtDate(s){
   const [y,m,dd]=s.split('-');
   return `${dd}-${m}-${y}`;
 }
+function attachFade(el){
+  if(el.dataset.fadeBound) { el._updateFade(); return; }
+  el.dataset.fadeBound='1';
+  const update=()=>{
+    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 2;
+    el.classList.toggle('at-bottom', atBottom);
+  };
+  el.addEventListener('scroll', update);
+  el._updateFade = update;
+  update();
+}
+// Cap the date list to whole rows so the last visible row is never sliced mid-line.
+function snapListHeight(el){
+  const first=el.firstElementChild;
+  if(!first) return;
+  el.style.maxHeight='';
+  const rowH=first.getBoundingClientRect().height;
+  const gap=parseFloat(getComputedStyle(el).rowGap)||0;
+  if(!rowH) return;
+  const avail=el.clientHeight;
+  const rows=Math.max(1,Math.floor((avail+gap)/(rowH+gap)));
+  el.style.maxHeight=(rows*(rowH+gap)-gap)+'px';
+}
 async function openDiaryBook(){
   const ov=document.getElementById('diaryBookOverlay');
   ov.style.display='flex';
   const list=document.getElementById('bookDateList');
   list.innerHTML='<div style="color:#888;font-size:10px;padding:8px">Loading…</div>';
   document.getElementById('bookContent').innerHTML='';
-  const close=()=>{ ov.style.display='none'; document.removeEventListener('keydown',escClose); };
+  const onResize=()=>{ snapListHeight(list); if(list._updateFade) list._updateFade(); };
+  const close=()=>{ ov.style.display='none'; document.removeEventListener('keydown',escClose); window.removeEventListener('resize',onResize); };
   const escClose=e=>{ if(e.key==='Escape') close(); };
   document.getElementById('bookCloseBtn').onclick=close;
   ov.onclick=e=>{ if(e.target===ov) close(); };
   document.addEventListener('keydown',escClose);
+  window.addEventListener('resize',onResize);
 
   // Try live fetch from diary-index.json + individual .md files
   let data=[];
@@ -145,11 +170,14 @@ async function openDiaryBook(){
   });
   if(selected) renderBookContent(selected);
   else document.getElementById('bookContent').innerHTML='<p>No diary entries found.</p>';
+  requestAnimationFrame(()=>{ snapListHeight(list); attachFade(list); });
 }
 function renderBookContent(entry){
   var html=mdToHtml(entry.content).replace(/(\d{4})-(\d{2})-(\d{2})/g,'$3-$2-$1');
-  document.getElementById('bookContent').innerHTML=html;
-  document.getElementById('bookContent').scrollTop=0;
+  const content=document.getElementById('bookContent');
+  content.innerHTML=html;
+  content.scrollTop=0;
+  requestAnimationFrame(()=>attachFade(content));
 }
 function openCLI(repo, btn){
   btn.classList.add('copied');

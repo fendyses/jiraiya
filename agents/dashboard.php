@@ -97,8 +97,8 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
   <script src="vendor/three/LuminosityHighPassShader.js"></script>
   <script src="vendor/three/CopyShader.js"></script>
   <script src="vendor/three/FXAAShader.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Press+Start+2P&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Press+Start+2P&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/dashboard.css?v=<?= @filemtime(__DIR__ . '/css/dashboard.css') ?: time() ?>">
 </head>
 <body>
 
@@ -151,7 +151,7 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
     <div id="crBookSpine"></div>
     <div id="crBookRightPage" class="cr-book-page">
       <div id="crBookHeader">
-        <span style="font-family:'IM Fell English SC',serif;font-size:11px;color:#a85d2e;opacity:.8">Change Request Archive — UiTM UNIDEV</span>
+        <span style="font-family:'Lora',serif;font-size:11px;color:#a85d2e;opacity:.8">Change Request Archive — UiTM UNIDEV</span>
         <button id="crBookCloseBtn">Close ✕</button>
       </div>
       <div id="crBookContent"></div>
@@ -342,7 +342,7 @@ const REPO_SYS = <?= json_encode($repoSys, JSON_UNESCAPED_SLASHES | JSON_UNESCAP
 <script src="../daily-diary/diary-data.js"></script>
 <script src="js/monitors.js"></script>
 <script src="js/agents-scene.js"></script>
-<script src="js/panels.js"></script>
+<script src="js/panels.js?v=<?= @filemtime(__DIR__ . '/js/panels.js') ?: time() ?>"></script>
 <script src="js/boot.js"></script>
 <script src="js/village3d.js"></script>
 </body>
