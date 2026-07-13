@@ -19,17 +19,17 @@ At the start of every new session, print the following ASCII banner in **purple 
 
 ### Agent Roster
 
-JIRAIYA is the default orchestrator for all tasks. Specialized agents live in `.github/agents/` and are invoked with `@<name>` in Copilot Chat:
+JIRAIYA is the default orchestrator for all tasks. Specialized agents live in `.claude/agents/` and are invoked by name (`naruto`, `sasuke`, `sakura`, `hinata`) via the Agent tool, or `@jiraiya` in Copilot Chat:
 
 | Tag | Agent file | Role |
 |-----|-----------|------|
 | `@jiraiya` | `.github/agents/jiraiya.agent.md` | Primary orchestrator — JIRAIYA handles all tasks |
-| `@sescode` | `.github/agents/sescode.agent.md` | Code implementation |
-| `@sescheck` | `.github/agents/sescheck.agent.md` | Code review |
-| `@sesinfra` | `.github/agents/sesinfra.agent.md` | Architecture decisions |
-| `@sesdocument` | `.github/agents/sesdocument.agent.md` | Documentation and logging |
+| `naruto` | `.claude/agents/naruto.agent.md` | Code implementation |
+| `sasuke` | `.claude/agents/sasuke.agent.md` | Code review |
+| `sakura` | `.claude/agents/sakura.agent.md` | Architecture decisions |
+| `hinata` | `.claude/agents/hinata.agent.md` | Documentation and logging |
 
-**Handoff flow:** `@sesinfra` plans → `@sescode` implements → `@sescheck` reviews → `@sesdocument` logs.
+**Handoff flow:** `sakura` plans → `naruto` implements → `sasuke` reviews → `hinata` logs.
 
 ### Memory Files
 
@@ -82,14 +82,14 @@ When the user types `/repo`, `switch repo`, `change repo`, or `list repos`, you 
 ```
 📁 Select a repository:
 
-  1. Jiraiya        →  /Applications/ServBay/www/jiraiya
-  2. Nilam          →  /Applications/ServBay/www/nilam
-  3. MyStudent      →  /Applications/ServBay/www/mystudentvue
-  4. MyAlumniCard   →  /Applications/ServBay/www/myalumni-angular
-  5. Masmed2u       →  /Applications/ServBay/www/apps-back-end
-  6. Mobiliti UG    →  /Applications/ServBay/www/mobilitiug
+  1. Jiraiya        →  /Applications/Sites/jiraiya
+  2. Nilam          →  /Applications/Sites/nilam
+  3. MyStudent      →  /Applications/Sites/mystudentvue
+  4. MyAlumniCard   →  /Applications/Sites/myalumni-angular
+  5. Masmed2u       →  /Applications/Sites/apps-back-end
+  6. ican2u         →  /Applications/Sites/ican2u
 
-  ✅ Active: Jiraiya  (/Applications/ServBay/www/jiraiya)
+  ✅ Active: Jiraiya  (/Applications/Sites/jiraiya)
 
   Type a number to switch, or Enter to keep current.
 ```
