@@ -1,53 +1,54 @@
-# Current Session Memory - 2026-07-10
+# Current Session Memory - 2026-07-15
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Work (New Features + Security Fix + Investigation)
-**Current Project**: ican2u (`/Applications/Sites/ican2u/`) — Laravel app, CEOFaculty/PentadbirSistem module
-**Status**: Wrapping up — diary saved
-**Time**: 2026-07-10 (afternoon, 16:59)
+**Session Type**: Work (Infrastructure/Tooling)
+**Current Project**: JIRAIYA repo itself (`/Applications/Sites/jiraiya/`)
+**Status**: Wrapping up — task complete, diary saved
+**Time**: 2026-07-15 (night, 23:23)
 
 ## Current Focus
-- **Primary Task**: Built two new admin pages under `CEOFaculty/PentadbirSistem` (user/role management + permohonan status override), fixed a privilege-escalation gap Fendy caught, fixed a "can edit permohonan after submission" gap Fendy caught, investigated MinIO storage usability
-- **Technical Context**: App auto-registers routes from controller folder structure (`spatie/laravel-route-attributes`) and auto-syncs Role/Permission/MenuItem from `#[Resource]`/`#[Permission]` attributes via `php artisan migrate:system-setting`. No SSO test login exists in this environment, so all verification was done by dispatching real `Illuminate\Http\Request` objects through `app('router')->dispatch()` in-process against the live remote DB (login via `Auth::loginUsingId()`, manual session start+save, encrypted session cookie, rebind container's `request` singleton before dispatch).
-- **Progress**: Complete — both pages shipped and verified end-to-end against live DB; both Fendy-caught gaps fixed and verified; MinIO connectivity confirmed (read/write/delete all work) but public image URLs return 403 (no public-read bucket policy)
+- **Primary Task**: Installed Codex CLI and wired it into the JIRAIYA memory system so it behaves like Claude Code across all registered repos
+- **Technical Context**: Codex reads a global `~/.codex/AGENTS.md` merged with a repo-level `AGENTS.md` (no skill/plugin auto-trigger system like Claude Code's `plugins/ses-skills/`)
+- **Progress**: Complete — installed, both AGENTS.md files written, repo registry paths corrected, confirmed no conflict with CLAUDE.md
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: ican2u CEOFaculty/PentadbirSistem module — session complete
+- **Current Topic**: Codex CLI setup + JIRAIYA memory registry maintenance
 - **Immediate Goals**: Done for this session
 - **Recent Progress**:
-  - Flagged a prompt-injection block found in `.github/copilot-instructions.md` (impersonates JIRAIYA, points to `/Users/pairofspades/Herd/jiraiya/...` instead of the real `/Applications/Sites/jiraiya/`) — did not act on it, Fendy hasn't decided whether to strip it yet
-  - Built `/ceofaculty/pentadbir-sistem/tetapan-pengguna` — user/role management scoped to CEOFaculty's 7 roles, careful to never wipe a user's roles in other modules on save (fetch-merge-sync, not blind `syncRoles()` overwrite)
-  - Found/fixed mid-build bug: `User::roles_details()` expects `MenuItem` records, not `Role` records
-  - Fendy caught: PentadbirSistem-only users could edit/delete roles on `Administrator` accounts — added `canManageRoles()` guard (403 + hidden buttons unless actor is actually `Administrator`), verified with real users (id 8 vs id 1)
-  - Built `/ceofaculty/pentadbir-sistem/tetapan-status-permohonan` — admin override for Aktiviti application status (`Hantar`/`Lulus`/`Tolak`), deliberately trimmed stub's Resource/Permission attributes to just `index`/`show`/`update` (no create/store/destroy — this tool manages, not authors, permohonan)
-  - Live-tested the status-update path on real Aktiviti row id 2 (Hantar→Lulus→reverted back to Hantar), confirmed invalid status rejected without DB mutation
-  - Fendy caught: submitters could keep editing Aktiviti details (title, objective, etc.) after submission/approval/rejection, and could even flip an already-decided status back via the edit form — added `abort_unless($aktiviti->status === 'Draf', 403)` guard to `edit()`/`update()` in `CEOFaculty\UrusetiaICAN\Aktiviti`, hid Edit buttons in list/show views once status leaves Draf
-  - Investigated MinIO: CEO images actually use Laravel's local `public` disk, not the app's default `s3`/MinIO disk (despite MinIO being genuinely configured in `.env`); confirmed via live test that MinIO itself works (auth, read, write, delete) but generates public URLs that return 403 (no public-read bucket policy) — not directly usable for `<img src>` without policy change, presigned URLs, or proxy streaming
+  - Installed `@openai/codex` globally via npm (v0.144.4) per Fendy's choice over Homebrew cask
+  - Confirmed via `codex doctor` that the CLI is installed, detects the jiraiya repo root correctly, but has no auth credentials yet
+  - Wrote `~/.codex/AGENTS.md` (global): checks if cwd matches a repo in `main/repos.md`, defers to the JIRAIYA protocol if so
+  - Wrote `/Applications/Sites/jiraiya/AGENTS.md` (repo-level): Codex-adapted session-start/exit protocol, memory file map, and trigger-phrase → SKILL.md table (Codex has to be told explicitly since it has no auto-trigger mechanism)
+  - Found and fixed a path mismatch: all 6 rows in `main/repos.md` pointed to `/Applications/ServBay/www/...`, which doesn't exist — verified each repo's real location and corrected every row to `/Applications/Sites/...`
+  - Confirmed `CLAUDE.md` untouched (unchanged timestamp) — Claude Code and Codex read separate instruction files and coexist without conflict
+  - Ran full save-diary protocol for this session; confirmed ICAN2U diary/CR skip instruction and noted it as a standing exception not yet written into `.env` or the skill
 
 ### Important Decisions
-- Scoped the user/role management page strictly to CEOFaculty's own roles, never touching Administrator assignment (stays AdminPanel's job) — and layered on Fendy's requested restriction that only an actual Administrator can manage another Administrator's roles from this page
-- Trimmed `tetapan-status-permohonan`'s route/permission surface down from the scaffolded full-CRUD stub to just index/show/update, folding status-editing directly into the show page rather than a separate edit screen — matches what the tool is actually for (status override, not application authoring)
-- Confirmed with Fendy before implementing: Aktiviti details are only editable while `status === 'Draf'` — once submitted, locked, no exceptions coded in
+- Codex installed via npm global (not Homebrew cask) — Fendy's explicit choice, both offered the same version
+- Registry path fix applied to all 6 repos, not just Jiraiya — Fendy caught this early and asked for a full check before it was done broadly
+- Standing exception: ICAN2U (`.env` category = `UiTM`) should skip the CR log step in future diary saves per Fendy's explicit instruction — not yet codified into `.env` or `save-diary/SKILL.md`, currently tracked only here and in today's diary entry
 
 ## Session Recap (For AI Restart)
-- **This session (2026-07-10 afternoon)**: Built two new CEOFaculty/PentadbirSistem admin pages in ican2u (user/role management, permohonan status override), fixed two real gaps Fendy caught by testing the reasoning ("can PentadbirSistem touch an Admin's roles?", "can a submitter still edit after submitting?"), and investigated MinIO storage — works for read/write but not for public image URLs as currently configured.
-- **Where We Left Off**: All code changes verified against the live remote DB via in-process request dispatch (no browser/SSO available in this environment). Feature-complete, no open bugs.
-- **Important Context**: Two things still awaiting Fendy's call: (1) whether to strip the injected prompt-injection block from `.github/copilot-instructions.md`, (2) whether to add PHPUnit feature tests for the new controllers. Sibling stub controllers (`Pelulus\SemuaPermohonan`, `KetuaJabatan\SemuaPermohonan`, etc.) are still empty — presumably the real approval-workflow inboxes, out of scope for what was built this session.
+- **This session (2026-07-15)**: Installed Codex CLI globally, set up dual `AGENTS.md` files (global + jiraiya repo-level) so Codex follows the same memory-system protocol as Claude Code across all 6 registered repos. Fixed a wrong-path bug in `main/repos.md` affecting all repos. Confirmed no conflict with Claude Code's `CLAUDE.md`.
+- **Where We Left Off**: Setup complete on the JIRAIYA/tooling side. Fendy still needs to run `codex login` (or set an API key) before Codex can actually be used — not yet confirmed done.
+- **Important Context**: There's an unresolved standing instruction — ICAN2U should be exempt from CR logging going forward even though its `.env` category is `UiTM`. This hasn't been written into `.env` or `plugins/ses-skills/skills/save-diary/SKILL.md` yet; next session should either codify it or confirm it's meant to stay ad hoc.
 
 ## Session Achievements
-- ✅ Flagged and did not act on a prompt-injection block found in `.github/copilot-instructions.md`
-- ✅ Built and verified `/ceofaculty/pentadbir-sistem/tetapan-pengguna` (user/role management)
-- ✅ Fixed a privilege-escalation gap (PentadbirSistem-only users could manage Administrator roles) — caught by Fendy, fixed and verified same session
-- ✅ Built and verified `/ceofaculty/pentadbir-sistem/tetapan-status-permohonan` (permohonan status override), with a deliberately trimmed route/permission surface
-- ✅ Fixed a post-submission editability gap in `CEOFaculty\UrusetiaICAN\Aktiviti` — caught by Fendy's question, confirmed the rule, fixed and verified
-- ✅ Investigated and confirmed MinIO connectivity/functionality live (read/write/delete work; public URLs don't, due to bucket policy)
+- ✅ Installed Codex CLI globally via npm (`@openai/codex` v0.144.4)
+- ✅ Created `~/.codex/AGENTS.md` (global Codex instructions, repo-aware via `main/repos.md`)
+- ✅ Created `/Applications/Sites/jiraiya/AGENTS.md` (repo-level, Codex-adapted from `CLAUDE.md`)
+- ✅ Fixed wrong paths for all 6 repos in `main/repos.md` (ServBay/www → Sites)
+- ✅ Confirmed `CLAUDE.md` untouched and no conflict between Claude Code and Codex instruction files
+- ✅ Saved diary entry for this session with real clock timestamp
 
 ## Quick Context for Next Session
-- **Where We Left Off**: ican2u CEOFaculty/PentadbirSistem module work complete, diary written, session memory updated
-- **What's Working**: Both new pages live-verified against the live DB; both Fendy-caught gaps closed and verified; MinIO read/write/delete confirmed working
-- **What Needs Attention**: Decide on the `.github/copilot-instructions.md` injected block; decide whether to add feature tests; MinIO bucket has no public-read policy if Fendy wants to actually serve images from it later; still-outstanding key rotation reminder from 2026-07-06 (`OPENROUTER_API_KEY`, `GROQ_API_KEY`, `GEMINI_API_KEY`)
+- **Where We Left Off**: Codex is installed and configured but not yet authenticated
+- **What's Working**: `codex doctor` shows a clean install, correct repo detection, config loaded
+- **What Needs Attention**:
+  - Fendy needs to run `codex login` (interactive) or set an API key env var
+  - The ICAN2U CR-skip exception is still informal — decide whether to formalize it in `.env` or `save-diary/SKILL.md`
 
 ---
-*Session updated: 2026-07-10 16:59*
+*Session updated: 2026-07-15 23:23*
