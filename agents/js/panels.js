@@ -189,6 +189,11 @@ function openSakura(repo, btn){
   setTimeout(()=>btn.classList.remove('copied'), 900);
   window.location.href='jiraiya-sakura://'+repo.path;
 }
+function openCodex(repo, btn){
+  btn.classList.add('copied');
+  setTimeout(()=>btn.classList.remove('copied'), 900);
+  window.location.href='jiraiya-codex://'+repo.path;
+}
 function buildRepoPanel(){
   const list=document.getElementById('repoList');
   document.getElementById('repoCount').textContent=REPO_SYS.length+' repos';
@@ -210,15 +215,18 @@ function buildRepoPanel(){
         <div class="flex gap-1 ml-auto flex-shrink-0">
           <button class="repo-btn vs" title="Open in VS Code">${VSCODE_SVG}</button>
           <button class="repo-btn cli" title="Open CLI here">${CLI_SVG}</button>
+          <button class="repo-btn codex" title="Open Codex here">${CODEX_SVG}</button>
           <button class="repo-btn sakura" title="Open Sakura here">${SAKURA_SVG}</button>
         </div>
       </div>
       <div class="flex flex-wrap items-center gap-1">${badges}${catBadge ? `<span class="ml-auto">${catBadge}</span>` : ''}</div>`;
     const vsBtn=el.querySelector('.repo-btn.vs');
     const cliBtn=el.querySelector('.repo-btn.cli');
+    const codexBtn=el.querySelector('.repo-btn.codex');
     const sakuraBtn=el.querySelector('.repo-btn.sakura');
     vsBtn.addEventListener('click',e=>{ e.stopPropagation(); openInVSCode(r); });
     cliBtn.addEventListener('click',e=>{ e.stopPropagation(); openCLI(r,cliBtn); });
+    codexBtn.addEventListener('click',e=>{ e.stopPropagation(); openCodex(r,codexBtn); });
     sakuraBtn.addEventListener('click',e=>{ e.stopPropagation(); openSakura(r,sakuraBtn); });
     list.appendChild(el);
   });
@@ -324,6 +332,7 @@ async function openCRBook() {
 
 const VSCODE_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M17 2 7 11l-4-3-2 1 4 4-4 4 2 1 4-3 10 9 5-2V4l-5-2Zm1 5v10l-7-5 7-5Z" fill="#3aa0ff" opacity=".75"/></svg>';
 const CLI_SVG='<img src="assets/pics/claude-logo.svg" width="11" height="11" style="opacity:.8">';
+const CODEX_SVG='<img src="assets/pics/gpt-logo1.png" width="11" height="11" style="opacity:.8">';
 const SAKURA_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><g fill="#FF9EC4" opacity=".9">'
   +'<ellipse cx="12" cy="6.5" rx="3.1" ry="4.2"/>'
   +'<ellipse cx="12" cy="6.5" rx="3.1" ry="4.2" transform="rotate(72 12 12)"/>'
