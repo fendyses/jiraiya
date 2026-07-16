@@ -214,7 +214,7 @@ function buildRepoPanel(){
         ${r.active?'<span class="mono text-[8px] text-yellow-500/70 ml-1">● ACTIVE</span>':''}
         <div class="flex gap-1 ml-auto flex-shrink-0">
           <button class="repo-btn vs" title="Open in VS Code">${VSCODE_SVG}</button>
-          <button class="repo-btn cli" title="Open CLI here">${CLI_SVG}</button>
+          <button class="repo-btn cli" title="Open Claude here">${CLI_SVG}</button>
           <button class="repo-btn codex" title="Open Codex here">${CODEX_SVG}</button>
           <button class="repo-btn sakura" title="Open Sakura here">${SAKURA_SVG}</button>
         </div>

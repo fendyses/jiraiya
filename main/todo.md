@@ -3,8 +3,7 @@
 
 ## Ongoing
 
-- 2026-06-22 :: Dashboard 2nd world — use MP4 approach (day + night video pairs) via a world selector
-- 2026-06-22 :: When building a real 3D world, set up the screenshot harness first (preview.html + shot.js) so Claude can see
+- 2026-07-16 :: icanU2, semak balik menu/sub menu, roles perlu *yang tak perlu delete
 
 ## Completed
 
