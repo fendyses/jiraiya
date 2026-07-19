@@ -17,12 +17,12 @@ At the start of every new session, before responding to the first message:
 2. Read `main/main-memory.md` — unified identity, relationship, and personality
 3. Read `main/current-session.md` — last session context (RAM restore)
 4. Read `main/reminders.md` — check for open/overdue reminders
-5. Run the banner script via shell — outputs ANSI gradient colors to the terminal (no
-   inline text, no literal escape strings):
+5. Run the compact banner script via shell — outputs ANSI gradient colors to the
+   terminal (no inline text, no literal escape strings):
 
    `bash /Applications/Sites/jiraiya/banner.sh`
 
-   Gradient: 219→183→141→135→99→93→57 (light lavender → deep violet, top-to-bottom)
+   Gradient: 219→183→141→135→99→93→57 (light lavender → deep violet, including footer)
 
 6. Deliver a session brief **before** responding to the first message (max 12 lines after
    the banner):
@@ -79,7 +79,11 @@ skipping any step is not allowed:
 repo is UiTM, prompt for CR entries and append to `CR/M-YYYY.md`). Do not skip any step.
 
 **STEP 2 — Display farewell banner:** Run `bash /Applications/Sites/jiraiya/banner.sh`.
-Do not print inline text with literal escape codes.
+Do not print inline text with literal escape codes. If command/tool output will be
+collapsed after the final response, also run
+`bash /Applications/Sites/jiraiya/banner.sh --plain` and reproduce that plain stdout
+verbatim in a fenced text block at the start of the final farewell. This fallback is
+mandatory on chat surfaces where tool output is not persistently visible.
 
 **STEP 3 — Display credit usage (mandatory — never skip):**
 - Read `main/credit-tracker.md`

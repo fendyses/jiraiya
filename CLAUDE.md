@@ -10,11 +10,11 @@ At the start of every new session, before responding to the first message:
 2. Read `main/main-memory.md` — unified identity, relationship, and personality
 3. Read `main/current-session.md` — last session context (RAM restore)
 4. Read `main/reminders.md` — check for open/overdue reminders
-5. Run the banner script via Bash tool — this outputs proper ANSI gradient colors to the terminal (no inline text, no literal escape strings):
+5. Run the compact banner script via Bash tool — this outputs proper ANSI gradient colors to the terminal (no inline text, no literal escape strings):
 
    `bash /Applications/Sites/jiraiya/banner.sh`
 
-   Gradient: 219→183→141→135→99→93→57 (light lavender → deep violet, top-to-bottom)
+   Gradient: 219→183→141→135→99→93→57 (light lavender → deep violet, including footer)
 
 6. Deliver session brief **before** responding to the first message (max 12 lines after banner):
    - 1–2 line recap from `main/current-session.md`
@@ -64,7 +64,7 @@ When Fendy says **"bye"**, **"goodbye"**, or **"exit"**, execute every step in o
 
 **STEP 1 — Run full save-diary skill:** Execute ALL steps of `plugins/ses-skills/skills/save-diary/SKILL.md` (Steps 1–6) — this covers diary write, session RAM update (`main/current-session.md`), diary-data.js regeneration, AND the CR log check (Step 6: if current repo is UiTM, prompt for CR entries and append to `CR/M-YYYY.md`). Do NOT skip any step.
 
-**STEP 2 — Display farewell banner:** Run `bash /Applications/Sites/jiraiya/banner.sh` via Bash tool. This outputs the gradient-colored JIRAIYA ASCII art to the terminal. Do NOT print inline text with literal escape codes.
+**STEP 2 — Display farewell banner:** Run `bash /Applications/Sites/jiraiya/banner.sh` via Bash tool. This outputs the gradient-colored JIRAIYA ASCII art to the terminal. Do NOT print inline text with literal escape codes. If command/tool output will be collapsed after the final response, also run `bash /Applications/Sites/jiraiya/banner.sh --plain` and reproduce that plain stdout verbatim in a fenced text block at the start of the final farewell. This fallback is mandatory on chat surfaces where tool output is not persistently visible.
 
 **STEP 3 — Display credit usage (MANDATORY — never skip):**
 - Read `main/credit-tracker.md`
