@@ -12,6 +12,10 @@
 | 5 | Masmed2u | /Applications/Sites/apps-back-end |
 | 6 | Mobiliti UG | /Applications/Sites/mobilitiug |
 | 7 | ican2u | /Applications/Sites/ican2u |
+| 8 | Credit | /Applications/Sites/credit |
+| 9 | Credit Laravel | /Applications/Sites/creditLaravel |
+| 10 | ForexPulse | /Applications/Sites/forexpulse |
+| 11 | HEPWeb | /Applications/Sites/hepweb |
 
 ## Active Repo
 - **Name**: Jiraiya
