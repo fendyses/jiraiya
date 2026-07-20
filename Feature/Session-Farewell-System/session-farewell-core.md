@@ -18,26 +18,12 @@ Read `main/reminders.md` — count open (unchecked) items.
 - If count = 0 or Reminders-System not installed: skip this line entirely
 
 ### Step 3: Render Farewell Banner
-Output the following **inside a fenced code block** (triple backticks) — this preserves monospace alignment in all terminals and chat interfaces:
+Run `bash /Applications/Sites/jiraiya/banner.sh`.
 
-```
-╔══════════════════════════════════════════════════════╗
-║▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓║
-║▓▒░                                              ░▒▓║
-║▓▒░    ░░░   ░   ░░░    ░   ░ ░ ░░░  ░░          ░▒▓║
-║▓▒░   ░   ░  ░  ░   ░  ░░  ░  ░  ░  ░ ░          ░▒▓║
-║▓▒░    ░░    ░  ░   ░  ░ ░ ░  ░░░   ░░           ░▒▓║
-║▓▒░      ░░  ░  ░ ░ ░  ░  ░░  ░ ░  ░ ░           ░▒▓║
-║▓▒░   ░░░   ░░░  ░ ░   ░   ░  ░  ░ ░  ░           ░▒▓║
-║▓▒░                                              ░▒▓║
-║▓▒░            ✦  J I R A I Y A  ✦               ░▒▓║
-║▓▒░                 · by  S E S ·                ░▒▓║
-║▓▒░                                              ░▒▓║
-║▓▒░         Session saved  ·  Rest well 🌙        ░▒▓║
-║▓▒░                                              ░▒▓║
-║▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓║
-╚══════════════════════════════════════════════════════╝
-```
+If terminal output will be collapsed on the current surface, also run
+`bash /Applications/Sites/jiraiya/banner.sh --plain` and reproduce its stdout verbatim inside a fenced code block.
+
+`banner.sh` is the single source of truth. Do not maintain or emit separate embedded banner art.
 
 ### Step 4: Sign Off
 Output 1–2 lines of warm farewell, personal to Ses. Keep it brief and genuine.
