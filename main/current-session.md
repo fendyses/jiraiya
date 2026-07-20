@@ -1,60 +1,61 @@
-# Current Session Memory - 2026-07-19
+# Current Session Memory - 2026-07-20
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Personal development (ForexPulse Flutter/iOS)
-**Current Project**: ForexPulse (`/Applications/Sites/ForexPulse`)
-**Status**: Closed — diary and restart context saved
-**Time**: 2026-07-19 23:20
+**Session Type**: JIRAIYA system development
+**Current Project**: Jiraiya (`/Applications/Sites/jiraiya`)
+**Status**: Active — diary and restart context saved
+**Time**: 2026-07-20 23:29
 
 ## Current Focus
-- **Primary Task**: Turn ForexPulse into a polished forex information application and deploy a test build to Fendy's iPhone
-- **Technical Context**: Flutter 3.44.6, Xcode 26.6, iOS 26.5 platform runtime, Swift Package Manager plugins, bundle ID `com.fendyses.forexpulse`, Apple team `DR9QS22QGJ`
-- **Progress**: ForexPulse 1.0.0 build 2 is installed on Fendy's iPhone 17 Pro Max with its new branded launcher icon
+- **Primary Task**: Improve JIRAIYA's skill/agent system and expose the active skill registry through Hinata on the dashboard
+- **Technical Context**: PHP-rendered dashboard, Phaser NPC logic, Three.js character models, active skill discovery from `plugins/ses-skills/skills/*/SKILL.md`
+- **Progress**: Hinata's 34-skill archive is implemented, its broken first click path is repaired, and the complete browser interaction is verified
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: ForexPulse iOS packaging and product polish
-- **Immediate Goals**: Session complete; resume from the saved follow-up list when ready
+- **Current Topic**: Session documentation after the Hinata interaction fix and learning review
+- **Immediate Goals**: Preserve the session; decide whether to confirm the drafted post-mortem and whether to install Mulahazah
 - **Recent Progress**:
-  - Built the ForexPulse MVP with live rates, favorites, unified alerts, converter support for MYR/IDR/THB, dark mode, and polished glassmorphism/gradient UI
-  - Integrated Finnhub news/economic-calendar content and Twelve Data OHLC chart data
-  - Added TradingView-style candlesticks, pinch zoom, short-timeframe density handling, and pair-selectable AI Analysis
-  - Changed the iOS bundle ID from Flutter's placeholder to `com.fendyses.forexpulse`
-  - Installed Xcode's missing 8.52 GB iOS 26.5 platform runtime and prepared physical-device support
-  - Produced `build/ios/ipa/ForexPulse.ipa` using development export after App Store export was rejected for lack of Distribution permissions
-  - Guided Fendy through enabling Developer Mode and installed the app through Xcode
-  - Replaced all Flutter launcher icons with the ForexPulse gradient market icon for iOS/iPadOS and Android
-  - Bumped the app to build 2, rebuilt the IPA, installed it, and verified `ForexPulse 1.0.0 (2)` on the device
-- **Next Steps**: Optional branded launch screen, backend API-key protection before publication, paid Apple distribution setup, and commit current changes
+  - Documented the authoritative agent roster and aligned the Delegate skill with Jiraiya, Sakura, Naruto, Sasuke, and Hinata
+  - Normalized YAML discovery descriptions across active skills
+  - Audited redundant files and identified runtime skills as canonical while `Feature/` remains an optional installer catalog
+  - Added a dynamic 34-skill archive to `agents/dashboard.php`, sourced directly from active `SKILL.md` frontmatter
+  - Added Hinata's “List the skills?” Yes/No interaction in both Phaser and Three.js rendering paths
+  - Reproduced the nonresponsive Hinata click in Chrome and isolated the pointer-delivery failure
+  - Fixed the interaction using capture-phase event handling, screen-space NPC hitbox fallback, and script cache-busting
+  - Verified click Hinata → bubble → Yes → 34 skill cards in WebGL-enabled Chrome
+  - Created the project instinct `verify-interactive-path-before-completion` with confidence 0.60
+  - Drafted, but did not log, a post-mortem for reporting the first interaction complete without browser click-path verification
+- **Next Steps**: Confirm or discard the post-mortem draft; optionally install Mulahazah; decide how to synchronize `Feature/` skill copies; push local commits when ready
 
 ### Important Decisions
-- Keep Finnhub and Twelve Data credentials in local `.env.json` during private testing; do not store client secrets in Firestore
-- Use a development-signed IPA for the registered iPhone because the current Apple team cannot create App Store distribution profiles
-- Use the existing in-app gradient market mark as the launcher identity instead of introducing an unrelated generated logo
-- Keep the current AI Analysis implementation local and deterministic until an AI backend/API design is chosen
+- Treat `plugins/ses-skills/skills/` as the canonical active skill source
+- Generate the dashboard skill archive dynamically instead of maintaining another hardcoded list
+- Require browser-level verification for interactive UI flows before reporting completion
+- Keep the drafted post-mortem out of the protected log until Fendy explicitly confirms it
 
 ## Session Recap (For AI Restart)
-- **Previous Session Summary**: ForexPulse was expanded into a real-data forex MVP and successfully packaged for iOS after resolving Xcode platform, signing, provisioning, and Developer Mode blockers.
-- **Where We Left Off**: ForexPulse version 1.0.0 build 2 is installed on Fendy's iPhone with the custom gradient market icon. The updated development IPA is at `/Applications/Sites/ForexPulse/build/ios/ipa/ForexPulse.ipa`.
-- **Important Context**: The development profile expires July 26, 2026. API keys are embedded in this private testing build and must be moved behind a backend before public release. The launch-screen placeholder remains, although the launcher icon validation now passes.
-- **User's Current State**: Ended the session after the successful device installation, branded icon update, and diary save.
+- **Previous Session Summary**: JIRAIYA's agent and skill metadata were clarified, active skills were audited, and Hinata was turned into the dashboard skill archivist with a dynamic 34-skill display.
+- **Where We Left Off**: The first Hinata click implementation failed because Phaser prevented the Three.js pointer handler from receiving events. Commit `0c41490` repaired it and a WebGL browser test confirmed the complete interaction.
+- **Important Context**: The post-mortem draft is pending confirmation and has not been appended. Mulahazah's skill definition exists, but `~/.claude/mulahazah/` is not installed. The new project instinct lives under hash `373bba755a3c`.
+- **User's Current State**: Requested the session diary after running Continuous Improvement and drafting a post-mortem.
 
 ## Session Achievements
-- ✅ Delivered a polished multi-feature ForexPulse Flutter MVP
-- ✅ Integrated real Twelve Data OHLC market charts and Finnhub content
-- ✅ Added zoomable TradingView-style chart behavior and AI Analysis
-- ✅ Configured the real iOS bundle ID and Apple development team
-- ✅ Resolved the missing Xcode iOS platform runtime and device-support blockers
-- ✅ Built a development-signed IPA and validated its registered-device profile
-- ✅ Enabled the physical-device deployment path and installed ForexPulse on Fendy's iPhone
-- ✅ Replaced Flutter's placeholder app icon with the ForexPulse brand across Apple and Android assets
-- ✅ Rebuilt and verified ForexPulse version 1.0.0 build 2 on the iPhone
+- ✅ Established and documented the authoritative JIRAIYA agent roster
+- ✅ Added reliable discovery descriptions to active skill frontmatter
+- ✅ Completed a redundancy audit of active skills, Feature copies, caches, and legacy files
+- ✅ Added Hinata's dynamic 34-skill dashboard archive
+- ✅ Reproduced and repaired the failed Hinata click interaction
+- ✅ Verified the complete user-facing interaction in WebGL-enabled Chrome
+- ✅ Recorded a browser-interaction verification instinct at confidence 0.60
+- ✅ Prepared an evidence-based post-mortem draft without writing it before confirmation
+- ✅ Saved the July 20 session diary and restart context
 
 ## Quick Context for Next Session
-- **Where We Left Off**: The app is installed and working on Fendy's physical iPhone
-- **What's Working**: Development signing, IPA export, iPhone installation, real data integrations, charts, converter, news, alerts, and AI Analysis
-- **What Needs Attention**: Branded launch screen, API-key backend proxy before publishing, paid Apple distribution if needed, and committing the current uncommitted changes
+- **Where We Left Off**: Hinata's skill archive works and the session is documented
+- **What's Working**: Agent roster, skill discovery metadata, dynamic skill rendering, Hinata bubble, Yes/No controls, and 34-card archive overlay
+- **What Needs Attention**: Post-mortem confirmation, optional Mulahazah installation, Feature/runtime skill synchronization policy, and pushing local commits
 
 ---
-*Session updated: 2026-07-19 23:20*
+*Session updated: 2026-07-20 23:29*
