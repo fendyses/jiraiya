@@ -417,9 +417,9 @@ const REPO_SYS = <?= json_encode($repoSys, JSON_UNESCAPED_SLASHES | JSON_UNESCAP
 </script>
 <script src="../daily-diary/diary-data.js"></script>
 <script src="js/monitors.js"></script>
-<script src="js/agents-scene.js"></script>
+<script src="js/agents-scene.js?v=<?= @filemtime(__DIR__ . '/js/agents-scene.js') ?: time() ?>"></script>
 <script src="js/panels.js?v=<?= @filemtime(__DIR__ . '/js/panels.js') ?: time() ?>"></script>
 <script src="js/boot.js"></script>
-<script src="js/village3d.js"></script>
+<script src="js/village3d.js?v=<?= @filemtime(__DIR__ . '/js/village3d.js') ?: time() ?>"></script>
 </body>
 </html>

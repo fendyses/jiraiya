@@ -1133,7 +1133,30 @@
       for (var i = 0; i < names.length; i++) {
         if (_rc.intersectObject(char3d[names[i]], true).length > 0) return names[i];
       }
-      return null;
+
+      // Animated/skinned meshes can occasionally miss raycasting. Fall back to
+      // the matching screen-space NPC footprint used to position each model.
+      var npcs = window._npcs;
+      var meta = window._NPC_META;
+      if (!npcs || !meta) return null;
+      var px = (e.clientX - rect.left) / rect.width * meta.W;
+      var py = (e.clientY - rect.top) / rect.height * meta.H;
+      var best = null;
+      var bestDistance = Infinity;
+      Object.keys(npcs).forEach(function(name) {
+        var npc = npcs[name];
+        var halfW = Math.max(26, npc.sprite.displayWidth * 0.65);
+        var halfH = Math.max(38, npc.sprite.displayHeight * 0.65);
+        var cx = npc.sprite.x;
+        var cy = npc.sprite.y - npc.sprite.displayHeight * 0.48;
+        var dx = Math.abs(px - cx);
+        var dy = Math.abs(py - cy);
+        if (dx <= halfW && dy <= halfH && dx + dy < bestDistance) {
+          best = name;
+          bestDistance = dx + dy;
+        }
+      });
+      return best;
     }
 
     wrap.addEventListener('pointerdown', function(e) {
@@ -1149,7 +1172,7 @@
         npc.vx = 0; npc.vy = 0; npc.summoned = true;
         npc.setState('idle');
       }
-    });
+    }, true);
 
     wrap.addEventListener('pointermove', function(e) {
       if (!_active || !e.buttons) return;
@@ -1170,7 +1193,7 @@
         npc.wasDragged = true;
         wrap.style.cursor = 'grabbing';
       }
-    });
+    }, true);
 
     wrap.addEventListener('pointerup', function(e) {
       var name = _active;
@@ -1198,7 +1221,7 @@
         showCRBubble(-8.3, 2.5, -8.33);
         _crActive = false;
       }
-    });
+    }, true);
   }());
 
   // Replace the initial render loop with one that also syncs character positions
