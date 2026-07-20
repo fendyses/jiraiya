@@ -1,3 +1,8 @@
+---
+name: break-reminder
+description: "Provide supportive, context-aware break guidance by estimating session duration, suggesting practical rest actions, and optionally establishing reminder cadence. Use when the user says they are tired, burnt out, have worked too long, asks for a break reminder, or previously requested wellness nudges during a long session."
+---
+
 # 🌿 Break Reminder System — Skill Plugin
 
 ## Skill Name
@@ -80,3 +85,4 @@ Example nudge:
 ## Level History
 - **Lv.1** — Base: wellness reminder, acknowledge + recommend break + restart plan, auto-nudge mode when user previously requested reminders. (Origin: Wellness protocol JIRAIYA, xdaxzurairi)
 - **Lv.2** — Session Duration Probe: read diary timestamp of first entry today to estimate working time — gives context-aware reminder with actual elapsed time instead of generic message. (Origin: Pattern of working long sessions without noticing, 2026-04-28)
+- **Lv.3** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

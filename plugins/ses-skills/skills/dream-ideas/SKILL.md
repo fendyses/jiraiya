@@ -1,3 +1,8 @@
+---
+name: dream-ideas
+description: "Generate three to five creative, non-obvious, workspace-aware ideas and offer to preserve the best ones. Use when the user says 'dream', 'brainstorm', 'bagi idea baru', 'inspirasi', 'imagine', 'JIRAIYA, cuba impikan', or otherwise requests creative ideation rather than factual analysis."
+---
+
 # 💭 Dream Ideas System — Skill Plugin
 
 ## Skill Name
@@ -68,3 +73,4 @@ Produce 3–5 ideas. For each:
 ## Level History
 - **Lv.1** — Base: dream mode, generate 3–5 ideas with brief descriptions, save to diary or dream-ideas.md. (Origin: Creative brainstorming protocol JIRAIYA, xdaxzurairi)
 - **Lv.2** — Workspace-Aware: tailor ideas to current project domain based on workspace path — eWorks, eRuangNiaga, XJIRAIYAX, or other. Ideas are more relevant and actionable. (Origin: Pattern from brainstorm sessions pwa_eworks, 2026-04-15 and 2026-04-28)
+- **Lv.3** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

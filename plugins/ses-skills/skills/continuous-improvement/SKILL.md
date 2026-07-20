@@ -1,3 +1,8 @@
+---
+name: continuous-improvement
+description: "Reflect on significant completed work, analyze accumulated observations, create or reinforce conservative behavioral instincts, and report the project's learning level. Use when the user says 'continuous-improvement' or '/continuous-improvement', or deliberately requests a post-work reflection and instinct-learning pass."
+---
+
 # 📈 Continuous Improvement System — Skill Plugin
 
 ## Skill Name
@@ -118,3 +123,4 @@ updated: [date]
 
 ## Level History
 - **Lv.1** — Base: 3-step loop (reflect, analyze observations, show status), instinct creation from 3+ patterns, confidence levels (CAPTURE→ANALYZE→SUGGEST→AUTO-APPLY), instinct YAML format. (Origin: Self-improvement system JIRAIYA, xdaxzurairi)
+- **Lv.2** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

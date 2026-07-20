@@ -1,3 +1,8 @@
+---
+name: code-sharp
+description: "Enforce fast, clean, precise, and project-consistent code by scanning existing conventions, limiting edit scope, and checking correctness before delivery. Use automatically before creating or editing any code file, or when the user says 'code-sharp', 'sharp', or 'ikut standard'."
+---
+
 # ✏️ Code-Sharp System — Skill Plugin
 
 ## Skill Name
@@ -115,3 +120,4 @@ Scan is silent — only adjusts output if inconsistency is found.
 ## Level History
 - **Lv.1** — Base: 4 principles (FAST, CLEAN, CONSISTENT, PRECISE), 6-item pre-send checklist, anti-pattern table, output format rules, decision hierarchy. (Origin: JIRAIYA production code generation standard, xdaxzurairi)
 - **Lv.2** — Stack-Aware Scan: auto-detect file extension and tailor scan to PHP/JS/SQL/CSS specific patterns — checks additional conventions silently without requiring explicit instruction. (Origin: PHP+MSSQL+JS project stack, 2026-04-28)
+- **Lv.3** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

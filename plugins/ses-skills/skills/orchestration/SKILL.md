@@ -1,3 +1,8 @@
+---
+name: orchestration
+description: "Design and coordinate complex multi-step, multi-domain, multi-file, or multi-source workflows by selecting an execution pattern, building a minimal plan, delegating when useful, synthesizing evidence, and verifying the result. Use for complete audits, roadmaps, strategies, task decomposition, multi-source comparisons, end-to-end plans, or work requiring workflow selection and integrated reasoning beyond direct task execution."
+---
+
 # 🎯 Orchestration System — Skill Plugin
 
 ## Skill Name
@@ -165,3 +170,4 @@ When this skill is active, output follows this structure:
 - **Lv.1** — Base: 5 core principles (start simple, decompose, ground, verify loops, visible progress), 8-step orchestration loop, decision matrix with 5 patterns (prompt chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer). (Origin: JIRAIYA production orchestration framework)
 - **Lv.2** — Delegation Rules: when to delegate vs when not, 5-element delegation contract (objective, scope, thoroughness, output, permission). Verification contract: correctness, coverage, consistency, risk, readability. (Origin: Complex multi-file tasks, April 2026)
 - **Lv.3** — Mini Templates + Guardrails: 3 ready-to-use templates (complex audit, multi-file engineering, research+recommendation), trigger-to-pattern table, anti-fabrication guardrails, standard 6-item output pattern. (Origin: Production audit patterns, April 2026)
+- **Lv.4** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

@@ -1,3 +1,8 @@
+---
+name: session-briefing
+description: "Deliver the automatic startup brief by restoring the last-session recap, ongoing To Do items, project health, time context, and queued inbox work in no more than twelve lines. Use at every session start unless the user says 'skip brief', and when the user says 'brief', 'session brief', 'what did we do last time', or 'where did we leave off'."
+---
+
 # 📋 Session Briefing — Skill Plugin
 
 ## Skill Name
@@ -46,3 +51,4 @@ Fires automatically at the start of every new conversation session, before proce
 - **Lv.2** — Reminders integration (requires Reminders-System)
 - **Lv.3** — Project health flags (requires LRU-Project-Management-System)
 - **Lv.4** — Inbox integration: reads `JIRAIYA-hub/data/inbox.json` and surfaces queued tasks in brief — asks user which to tackle first. Ownership boundaries clarified: session-briefing owns startup brief, JIRAIYA-recall owns on-demand recall, check-reminders owns reminder operations. (Origin: XJIRAIYAX operator workflow, xdaxzurairi)
+- **Lv.5** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

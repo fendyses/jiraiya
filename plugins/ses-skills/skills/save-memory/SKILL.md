@@ -1,3 +1,8 @@
+---
+name: save-memory
+description: "Preserve important user preferences, feedback, project decisions, and external references in the appropriate memory files while avoiding trivial or duplicate context and flagging stale records. Use when the user says 'save memory', 'save this preference', 'update memory', 'ingat', 'simpan', or 'ingat ni', and when clear memory-worthy signals are detected. Do not use when 'save' clearly refers to Git changes, a diary entry, or project execution state."
+---
+
 # 💾 Save Memory System — Skill Plugin
 
 ## Skill Name
@@ -98,3 +103,4 @@ Not subject to audit:
 - **Lv.1** — Base: save conversation insights to memory files on command, confirm what was saved. (Origin: Memory persistence protocol JIRAIYA, xdaxzurairi)
 - **Lv.2** — Smart Auto-Detect: passively monitor conversation for memory-worthy signals — auto-save clear signals, ask for ambiguous ones. Prevents important context from being lost when user forgets to save. (Origin: Upgrade batch, 2026-04-20)
 - **Lv.3** — Staleness Audit: flag memories that reference specific files/paths past age threshold — verify before acting on potentially outdated claims. Prevents memory from describing code that no longer exists. (Origin: Pattern of stale memory referencing refactored code, 2026-04-28)
+- **Lv.4** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

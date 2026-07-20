@@ -1,3 +1,8 @@
+---
+name: session-farewell
+description: "Execute the complete JIRAIYA session-closing sequence: run Save Diary, update session context, surface open reminders, display the farewell banner and credit usage, and sign off warmly. Use when the user says 'bye', 'goodbye', 'see you', 'exit', 'quit', 'goodnight', 'done for today', 'wrapping up', 'that is all', 'that is all for today', or 'signing off', unless they say 'skip farewell'."
+---
+
 # 🌙 Session Farewell System
 
 ## Purpose
@@ -88,3 +93,4 @@ When the user says goodbye, the farewell system:
 ## Level History
 - **Lv.1** — Base: farewell banner + auto-save on exit
 - **Lv.2** — Reminders nudge before banner (requires Reminders-System)
+- **Lv.3** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

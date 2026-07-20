@@ -1,3 +1,8 @@
+---
+name: auto-worker
+description: "Execute broad goals with two or more hidden steps by decomposing them into scoped workstreams, dispatching suitable workers, resolving routine blockers, and synthesizing completed results. Use when the user says 'set up [X]', 'clean up [X]', 'research [X] and recommend', 'fix everything', 'handle [X] for me', or requests a multi-step outcome without specifying the method. Do not use for a single action, explicit step-by-step instructions, or inspection-only work."
+---
+
 # 🤖 Auto-Worker System — Skill Plugin
 
 ## Skill Name
@@ -116,3 +121,4 @@ Nota:
 
 ## Level History
 - **Lv.1** — Base: intent parsing, task decomposition (parallel/sequential/risky), worker dispatch (subagent/direct/specialist), self-resolution for worker blockers, minimum escalation with structured format, synthesis report ≤ 8 lines. (Origin: Rewrite from 6-line placeholder to full protocol, 2026-04-28, xdaxzurairi)
+- **Lv.2** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

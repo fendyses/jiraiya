@@ -1,3 +1,8 @@
+---
+name: security-audit
+description: "Triage supplied security findings by severity, plan safe remediation, batch repeated issue types with confirmation, verify fixes, clean temporary scripts, and report outcomes. Use when the user provides a security audit or security findings list, says 'security audit', 'security audit report', or 'isu security', or supplies Semgrep, CodeQL, or manual security results. Do not use for general project audits without security findings."
+---
+
 # 🔒 Security Audit System — Skill Plugin
 
 ## Skill Name
@@ -130,3 +135,4 @@ Commit created: [yes / pending]
 ## Level History
 - **Lv.1** — Base: triage by severity (Critical/High/Medium/Low), batch planning for same-type issues, temp script cleanup, commit per category, post-fix summary. (Origin: Repeated pattern 3× in April 2026 — eRuangNiaga security cleanup, full remediation, eWorks security hardening, xdaxzurairi)
 - **Lv.2** — Reference Docs: `references/` folder with PHP security patterns and mass fix checklist — knowledge base separated from protocol so skill file stays lean. (Origin: aitmpl.com template research, 2026-04-28)
+- **Lv.3** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

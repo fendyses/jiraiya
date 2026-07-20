@@ -1,3 +1,8 @@
+---
+name: token-guard
+description: "Reduce context waste through compact responses, targeted reads, batched tools, proactive limit warnings, and resumable checkpoints without lowering work quality. Use when the user says 'token guard', 'save token', 'jimat token', 'hemat token', 'token limit', 'context limit', 'compact mode', 'compress context', 'checkpoint', 'reset context', or 'resume dari checkpoint', and proactively when context-pressure signals appear."
+---
+
 # 🔋 Token Guard System — Skill Plugin
 
 ## Skill Name
@@ -126,3 +131,4 @@ Do not interrupt work — one line only, then continue.
 ## Level History
 - **Lv.1** — Base: 4 mechanisms (Compact Mode, Smart Tool Rules, Context Pruning, Session Checkpoint), 4 operation modes (compact/checkpoint/resume/status), full default protocol. (Origin: Token management protocol JIRAIYA, xdaxzurairi)
 - **Lv.2** — Proactive Early Warning: auto-detect context nearing full via tool call count, large file reads, repeat queries — insert silent one-line warning before user notices. (Origin: Pattern of user being surprised by context overflow, 2026-04-28)
+- **Lv.3** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

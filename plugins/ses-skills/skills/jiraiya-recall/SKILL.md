@@ -1,3 +1,8 @@
+---
+name: jiraiya-recall
+description: "Perform on-demand deep workspace recall by loading the matching project context, current-session memory, and relevant reminders, then present a concise continuation path. Use when the user says 'JIRAIYA', 'recall', 'ingat semula', requests full workspace context, or starts in a known workspace where Session Briefing is unavailable."
+---
+
 # 🔍 JIRAIYA Recall System — Skill Plugin
 
 ## Skill Name
@@ -59,3 +64,4 @@ If continuation is not clear from context:
 
 ## Level History
 - **Lv.1** — Base: workspace detection, project registry lookup, global memory load (current-session + reminders), concise recap, direction ask. (Origin: JIRAIYA workspace recall protocol, xdaxzurairi)
+- **Lv.2** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

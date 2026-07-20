@@ -1,3 +1,8 @@
+---
+name: dashboard
+description: "Render a visual snapshot of project observations, instinct confidence, learning level, health flags, and available instinct packs. Use when the user says 'dashboard', 'instinct dashboard', 'learning status', 'instinct confidence', or 'instinct health', and after a continuous-improvement run when a visual learning summary is needed."
+---
+
 # 📊 Dashboard System — Skill Plugin
 
 ## Skill Name
@@ -110,3 +115,4 @@ After displaying dashboard:
 
 ## Level History
 - **Lv.1** — Base: project hash detection, observations count, instinct confidence breakdown with ASCII bars, health flags (stale/decaying/reinforced), post-render action suggestions. (Origin: Continuous Improvement visual layer, xdaxzurairi)
+- **Lv.2** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

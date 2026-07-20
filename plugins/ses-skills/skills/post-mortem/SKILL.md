@@ -1,3 +1,8 @@
+---
+name: post-mortem
+description: "Capture established failures with context, root cause, lessons, and preventive action, append approved analyses to the post-mortem log, and surface relevant lessons in future work. Use when the user says 'post-mortem', 'postmortem', 'log this failure', or 'write a post-mortem', and passively offer it after crashes, regressions, reversals, wasted time, security incidents, or data loss. A diagnosis-only request does not authorize writing the post-mortem log."
+---
+
 # 🔥 Post-Mortem — Skill Plugin
 
 ## Skill Name
@@ -45,3 +50,4 @@ When starting work in a domain that has a past post-mortem:
 - **Lv.1** — Base: manual trigger + append to log
 - **Lv.2** — Auto-detection of failure signals + passive prompting
 - **Lv.3** — Domain reference: flag relevant post-mortems at session start or task start
+- **Lv.4** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)

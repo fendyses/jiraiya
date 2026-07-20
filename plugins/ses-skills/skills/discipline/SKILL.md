@@ -1,3 +1,8 @@
+---
+name: discipline
+description: "Apply JIRAIYA's seven execution laws for research, scope control, focus, verification, reflection, iteration, and learning. Use when the user says 'discipline', '7 laws', or 'self-check', before significant tasks, and whenever red-flag phrases indicate rushed work, scope creep, assumptions, or unrecorded lessons."
+---
+
 # ⚖️ Discipline System — Skill Plugin
 
 ## Skill Name
@@ -56,3 +61,4 @@ When the following phrases appear in AI output, pause and apply the relevant law
 
 ## Level History
 - **Lv.1** — Base: 7 laws with check questions and red flags, execution loop, pre-done self-check, red flag detection table. (Origin: AI agent discipline framework, xdaxzurairi)
+- **Lv.2** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)
