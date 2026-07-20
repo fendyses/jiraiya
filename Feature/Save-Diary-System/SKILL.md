@@ -71,6 +71,50 @@ When this skill activates, output:
 - [ ] This rebuilds `daily-diary/diary-data.js` from every `current/*.md` + `archived/*/*.md` file
 - [ ] Required because `agents/dashboard.html`'s in-game diary book reads only this generated snapshot, never the `.md` files directly — skipping this step leaves the book showing stale/wrong content (including old timestamps) even after the `.md` file is fixed
 
+### Step 6: CR Log — UiTM Repos Only
+
+**First — determine repo type (mandatory, runs every diary save):**
+- [ ] Read `main/current-session.md` → get **Current Project** name and **repo path**
+- [ ] Read `/Applications/Sites/jiraiya/.env` → match the `REPO[]=` line by name → read the 6th pipe-delimited field (`category`)
+- [ ] **If category = `Personal`** → skip this step entirely
+- [ ] **If category = `UiTM`** → continue below
+
+**Git cross-check (always runs for UiTM repos — regardless of whether work was done this session):**
+1. Determine the monthly CR file: `/Applications/Sites/jiraiya/CR/M-YYYY.md` (e.g. `6-2026.md` — no zero-padding on month)
+2. If the file exists, scan it for the most recent `## DD-MM-YYYY` header that has a `System/Application` block matching this project's name → that is the **last CR date** for this repo. If none found → use 30 days ago as lookback.
+3. Run: `git -C [repo-path] log --after="YYYY-MM-DD" --format="%ad | %s" --date=short` (where `YYYY-MM-DD` = last CR date)
+4. For each commit returned, check if a CR block for that same date + similar description already exists in the file
+5. For any commit **not already captured** → infer a CR block from the commit message and date
+6. Also infer any additional blocks from the diary entry just written + `main/current-session.md` achievements (session work)
+7. Deduplicate across both sources (same date + same module intent = one block)
+8. If zero new blocks after dedup → skip silently
+
+**Write to CR file:**
+1. If file does not exist → create it (empty, no header needed)
+2. Group new blocks by date. For each date:
+   - If `## DD-MM-YYYY` header already exists → append new block(s) under it (before the next `---` or EOF)
+   - If no header for that date → append at end of file:
+     ```
+     ## DD-MM-YYYY
+
+     [CR blocks separated by blank lines]
+
+     ---
+     ```
+3. Each CR block format:
+   ```
+   Permohonan CR: https://bsm.uitm.edu.my/
+   1. System/Application : [value]
+   2. Module/SubModule : [value]
+   3. Clasification : [value]
+   4. Justifications : [value]
+   ```
+   Classification labels: Module Improvement, Process Improvement, Screen Improvement, ISSUE/BUG/DEFECT, Reporting
+   **Classification output rule:** Write the label only. Never prefix it with a number or `N -` (for example, write `Clasification : ISSUE/BUG/DEFECT`, not `Clasification : 4 - ISSUE/BUG/DEFECT`).
+   **Justification language rule:** Write in Bahasa Melayu. IT/technical terms may remain in English (e.g. "upload", "button", "dropdown", "module"). Do not write full English sentences in the Justification field.
+4. Confirm: *"CR logged to CR/M-YYYY.md."*
+- Reference: `/Applications/Sites/jiraiya/CR/cr-format.md`
+
 ## Mandatory Rules
 1. **Always APPEND** — never overwrite existing diary entries
 2. **One file per day** — multiple entries separated by `---`
@@ -95,3 +139,7 @@ When this skill activates, output:
 - **Lv.1** — Base: 4-step diary write protocol with monthly archival, append-only entries, session memory update, and existing protocol reference for entry format.
 - **Lv.2** — Added mandatory real-clock timestamps (rule 3) and a mandatory Step 5 that regenerates `daily-diary/diary-data.js` via `regenerate-diary-data.py` after every diary write, so the in-game dashboard diary book never goes stale.
 - **Lv.3** — Made Step 4 (`current-session.md` update) MANDATORY with explicit field-by-field instructions and a dedicated rule (rule 8). Stale session RAM was causing wrong session briefs — now enforced at the same level as diary-data.js regeneration.
+- **Lv.4** — Added Step 6: UiTM CR logging. After diary write, if active repo category is `UiTM` (read from `.env`), prompt for Change Request entries and append them to `/Applications/Sites/jiraiya/CR/M-YYYY.md` in the format defined in `CR/cr-format.md`.
+- **Lv.5** — Step 6 no longer prompts the user. JIRAIYA auto-infers CR entries from session work (diary entry + achievements). If nothing was done, skip silently. Never ask for CR details.
+- **Lv.6** — Step 6 now starts with an explicit repo-type check (UiTM vs Personal) on every diary save. For UiTM repos, a git cross-check always runs regardless of whether work was done in the session — finds the last CR date for this repo in `CR/M-YYYY.md`, then runs `git log --after=[last-CR-date]` to catch any uncaptured commits. Session work is also inferred and merged. Only skips if both sources return nothing. Prevents silent misses when diary is saved before code is written.
+- **Lv.7** — CR classification values now use labels only; numeric prefixes such as `4 - ISSUE/BUG/DEFECT` are forbidden.

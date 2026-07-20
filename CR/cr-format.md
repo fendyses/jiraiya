@@ -13,7 +13,7 @@
 Permohonan CR: https://bsm.uitm.edu.my/
 1. System/Application : [value]
 2. Module/SubModule : [value]
-3. Clasification : [value]
+3. Clasification : [label only]
 4. Justifications : [value]
 
 ---
@@ -27,8 +27,16 @@ Multiple CRs on the same date — repeat the `Permohonan CR:` block, separated b
 - Do not write full English sentences in the Justification field
 
 ## Classification Options
-1. Module Improvement
-2. Process Improvement
-3. Screen Improvement (Skrin)
-4. ISSUE/BUG/DEFECT (Bugs)
-5. Reporting
+- Module Improvement
+- Process Improvement
+- Screen Improvement
+- ISSUE/BUG/DEFECT
+- Reporting
+
+Write only the classification label in a CR entry. Never include its former option number or a numeric prefix.
+
+Correct:
+`3. Clasification : ISSUE/BUG/DEFECT`
+
+Incorrect:
+`3. Clasification : 4 - ISSUE/BUG/DEFECT`

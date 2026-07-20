@@ -109,7 +109,8 @@ When this skill activates, output:
    3. Clasification : [value]
    4. Justifications : [value]
    ```
-   Classification labels: 1=Module Improvement, 2=Process Improvement, 3=Screen Improvement, 4=ISSUE/BUG/DEFECT, 5=Reporting
+   Classification labels: Module Improvement, Process Improvement, Screen Improvement, ISSUE/BUG/DEFECT, Reporting
+   **Classification output rule:** Write the label only. Never prefix it with a number or `N -` (for example, write `Clasification : ISSUE/BUG/DEFECT`, not `Clasification : 4 - ISSUE/BUG/DEFECT`).
    **Justification language rule:** Write in Bahasa Melayu. IT/technical terms may remain in English (e.g. "upload", "button", "dropdown", "module"). Do not write full English sentences in the Justification field.
 4. Confirm: *"CR logged to CR/M-YYYY.md."*
 - Reference: `/Applications/Sites/jiraiya/CR/cr-format.md`
@@ -141,3 +142,4 @@ When this skill activates, output:
 - **Lv.4** — Added Step 6: UiTM CR logging. After diary write, if active repo category is `UiTM` (read from `.env`), prompt for Change Request entries and append them to `/Applications/Sites/jiraiya/CR/M-YYYY.md` in the format defined in `CR/cr-format.md`.
 - **Lv.5** — Step 6 no longer prompts the user. JIRAIYA auto-infers CR entries from session work (diary entry + achievements). If nothing was done, skip silently. Never ask for CR details.
 - **Lv.6** — Step 6 now starts with an explicit repo-type check (UiTM vs Personal) on every diary save. For UiTM repos, a git cross-check always runs regardless of whether work was done in the session — finds the last CR date for this repo in `CR/M-YYYY.md`, then runs `git log --after=[last-CR-date]` to catch any uncaptured commits. Session work is also inferred and merged. Only skips if both sources return nothing. Prevents silent misses when diary is saved before code is written.
+- **Lv.7** — CR classification values now use labels only; numeric prefixes such as `4 - ISSUE/BUG/DEFECT` are forbidden.
