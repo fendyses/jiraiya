@@ -275,6 +275,20 @@ Type this at the start of any session. JIRAIYA will:
 
 ---
 
+### 🎯 Delegate (Parallel Agent Execution)
+
+| Command | What it does |
+|---------|-------------|
+| `delegate [prompt]` | JIRAIYA routes the mission to the appropriate staff agents |
+| `delegate this` | Delegates the current task or immediately preceding mission |
+| `delegate task: [prompt]` | Explicit task form with the same workflow |
+
+> JIRAIYA remains the HCO and coordinator. Independent role assignments run simultaneously
+> within the available agent limit; dependencies run in waves. Each responsible agent reports
+> completed work, artifacts, verification, and blockers before JIRAIYA provides the integrated result.
+
+---
+
 ### ✏️ Code Quality (Code-Sharp)
 
 Runs **automatically** before every code write or edit. Manual triggers:

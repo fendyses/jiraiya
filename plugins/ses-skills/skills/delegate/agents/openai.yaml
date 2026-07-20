@@ -1,0 +1,4 @@
+interface:
+  display_name: "Delegate"
+  short_description: "Dispatch work to role-based agents in parallel"
+  default_prompt: "Use $delegate to assign this task to the right JIRAIYA agents and return their completed work."

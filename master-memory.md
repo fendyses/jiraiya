@@ -35,6 +35,7 @@ When you type **"JIRAIYA"** in any conversation:
 "resume plan"        → Resume plan after context reset
 "post-mortem"        → Log a failure analysis
 "create skill"       → Forge a new skill
+"delegate [prompt]"  → JIRAIYA routes work to responsible agents in parallel and reports completion
 "check patches"      → Check for system patches
 "update memory"      → Refresh knowledge and preferences  
 "review growth"      → Check development progress
@@ -182,9 +183,16 @@ I maintain my own memory through our conversations by:
 
 ### Skill Plugin System ✅ INSTALLED
 - Plugin: `plugins/ses-skills/` (Claude Code plugin)
-- 11 active skills with auto-trigger detection
+- 34 active skill folders with manual and auto-trigger detection
 - Format reference: `plugins/ses-skills/skill-format.md`
 - Commands: "create skill" (via Forge)
+
+### Delegate ✅ INSTALLED
+*Auto-triggers on: "delegate [prompt]", "delegate this", "delegate task"*
+- Skill: `plugins/ses-skills/skills/delegate/SKILL.md`
+- JIRAIYA acts as HCO: routes work to the appropriate staff roles, dispatches independent
+  work simultaneously within available concurrency, monitors completion, and integrates results
+- Every responsible agent returns an attributed completion, artifact, verification, and flags report
 
 ### Ask Nemotron ✅ INSTALLED
 *Auto-triggers on: "ask nemotron [question]", "nemotron [question]", "query nemotron", "send to nemotron"*
