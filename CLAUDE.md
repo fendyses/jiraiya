@@ -66,14 +66,7 @@ When Fendy says **"bye"**, **"goodbye"**, or **"exit"**, execute every step in o
 
 **STEP 2 — Display farewell banner:** Run `bash /Applications/Sites/jiraiya/banner.sh` via Bash tool. This outputs the gradient-colored JIRAIYA ASCII art to the terminal. Do NOT print inline text with literal escape codes. If command/tool output will be collapsed after the final response, also run `bash /Applications/Sites/jiraiya/banner.sh --plain` and reproduce that plain stdout verbatim in a fenced text block at the start of the final farewell. This fallback is mandatory on chat surfaces where tool output is not persistently visible.
 
-**STEP 3 — Display credit usage (MANDATORY — never skip):**
-- Read `main/credit-tracker.md`
-- Extract `Used` and `Total` values from the table
-- Calculate: `percentage = round((used / total) * 100, 1)`
-- Output this line immediately after the banner (always show, even if used is 0):
-  `📊 Credit Used: [X]%  ([used]/[total])`
-
-**STEP 4 — Say goodbye warmly.**
+**STEP 3 — Say goodbye warmly.**
 
 ## `/repo` — Repository Switcher
 

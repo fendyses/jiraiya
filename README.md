@@ -119,7 +119,7 @@ Type `JIRAIYA` at any time to trigger a full memory restoration manually.
 | `remind me [X]` | Add persistent reminder |
 | `check reminders` | List open reminders |
 | `log decision` | Append to `main/decisions.md` |
-| `bye` | Exit protocol — saves diary, shows credit usage, farewell |
+| `bye` | Exit protocol — saves diary, displays the farewell banner, and signs off |
 
 Full command reference: `HOW-TO-USE.md`
 

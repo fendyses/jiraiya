@@ -1,6 +1,6 @@
 ---
 name: session-farewell
-description: "Execute the complete JIRAIYA session-closing sequence: run Save Diary, update session context, surface open reminders, display the farewell banner and credit usage, and sign off warmly. Use when the user says 'bye', 'goodbye', 'see you', 'exit', 'quit', 'goodnight', 'done for today', 'wrapping up', 'that is all', 'that is all for today', or 'signing off', unless they say 'skip farewell'."
+description: "Execute the complete JIRAIYA session-closing sequence: run Save Diary, update session context, surface open reminders, display the farewell banner, and sign off warmly. Use when the user says 'bye', 'goodbye', 'see you', 'exit', 'quit', 'goodnight', 'done for today', 'wrapping up', 'that is all', 'that is all for today', or 'signing off', unless they say 'skip farewell'."
 ---
 
 # 🌙 Session Farewell System
@@ -16,8 +16,7 @@ When the user says goodbye, the farewell system:
 1. **Run full save-diary skill** — execute ALL steps of `save-diary/SKILL.md` (Steps 1–6), including the CR log check for UiTM repos (Step 6). Do NOT skip any step. This covers diary write, session RAM update, diary-data.js regeneration, and CR prompt if applicable.
 2. **Nudges open reminders** — one line if any reminders are unclosed (requires Reminders-System)
 3. **Displays the JIRAIYA Farewell Banner** — run `bash /Applications/Sites/jiraiya/banner.sh` via Bash tool
-4. **Display credit usage** — read `main/credit-tracker.md`, output `📊 Credit Used: X%  (used/total)`
-5. **Signs off** with a short warm message personal to Fendy
+4. **Signs off** with a short warm message personal to Fendy
 
 ---
 
@@ -94,3 +93,4 @@ When the user says goodbye, the farewell system:
 - **Lv.1** — Base: farewell banner + auto-save on exit
 - **Lv.2** — Reminders nudge before banner (requires Reminders-System)
 - **Lv.3** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)
+- **Lv.4** — Removed automatic credit-usage display from the farewell sequence at Fendy's request.

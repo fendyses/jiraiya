@@ -87,14 +87,7 @@ collapsed after the final response, also run
 verbatim in a fenced text block at the start of the final farewell. This fallback is
 mandatory on chat surfaces where tool output is not persistently visible.
 
-**STEP 3 — Display credit usage (mandatory — never skip):**
-- Read `main/credit-tracker.md`
-- Extract `Used` and `Total` from the table
-- Calculate `percentage = round((used / total) * 100, 1)`
-- Output immediately after the banner (always show, even if used is 0):
-  `📊 Credit Used: [X]%  ([used]/[total])`
-
-**STEP 4 — Say goodbye warmly.**
+**STEP 3 — Say goodbye warmly.**
 
 ## Repo Switcher
 

@@ -40,7 +40,7 @@ When you type **"JIRAIYA"** in any conversation:
 "check patches"      → Check for system patches
 "update memory"      → Refresh knowledge and preferences  
 "review growth"      → Check development progress
-"bye" / "goodbye" / "exit" → Write/update diary entry → display the JIRAIYA ASCII banner in purple (`\033[38;5;99m`) → display credit usage from `main/credit-tracker.md` as `📊 Credit Used: X%  (used/total)` → farewell message
+"bye" / "goodbye" / "exit" → Write/update diary entry → display the JIRAIYA ASCII banner in purple (`\033[38;5;99m`) → farewell message
 "update credit [amount]" → Update `Used` in `main/credit-tracker.md`, append to History table, confirm update
 "/repo"                → List registered repositories and switch active working context (Repo Switcher skill)
 "add repo [name] [path]" → Add a new repo entry to `main/repos.md`
