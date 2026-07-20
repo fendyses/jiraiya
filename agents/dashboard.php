@@ -28,6 +28,50 @@ if ($td = @file_get_contents($REPO . '/main/todo.md')) {
     }
 }
 
+// ── Skills: discover active plugins directly from their SKILL.md frontmatter ──
+$skills = [];
+foreach (glob($REPO . '/plugins/ses-skills/skills/*/SKILL.md') ?: [] as $skillFile) {
+    $skillMd = @file_get_contents($skillFile);
+    if (!$skillMd || !preg_match('/\A---\s*\R(.*?)\R---/s', $skillMd, $frontmatter)) continue;
+
+    if (!preg_match('/^name:\s*["\']?([^"\'\r\n]+)["\']?\s*$/m', $frontmatter[1], $nameMatch)) continue;
+    $name = trim($nameMatch[1]);
+    $description = '';
+    if (preg_match('/^description:\s*"((?:[^"\\\\]|\\\\.)*)"/ms', $frontmatter[1], $descriptionMatch)) {
+        $description = stripcslashes($descriptionMatch[1]);
+    } elseif (preg_match("/^description:\\s*'([^']*)'/ms", $frontmatter[1], $descriptionMatch)) {
+        $description = $descriptionMatch[1];
+    } elseif (preg_match('/^description:\s*(.+)$/m', $frontmatter[1], $descriptionMatch)) {
+        $description = $descriptionMatch[1];
+    }
+    $description = trim(preg_replace('/\s+/', ' ', $description));
+    $simpleDescription = preg_split('/(?<=[.!?])\s+/', $description, 2)[0] ?? $description;
+
+    preg_match_all("/'([^']+)'/", $description, $triggerMatches);
+    $triggers = array_values(array_unique(array_filter(
+        $triggerMatches[1] ?? [],
+        fn($trigger) => mb_strlen($trigger) <= 60
+    )));
+
+    preg_match_all('/^###\s+(?:Step\s+\d+|Fasa\s+\d+)\s*[—–-]?\s*(.+)$/mi', $skillMd, $stepMatches);
+    $steps = array_slice(array_map(
+        fn($step) => trim(preg_replace('/[*_`]/', '', $step)),
+        $stepMatches[1] ?? []
+    ), 0, 5);
+
+    $skills[] = [
+        'name' => $name,
+        'description' => $simpleDescription ?: 'Runs the documented JIRAIYA skill protocol.',
+        'usage' => $triggers
+            ? 'Type “' . implode('”, “', array_slice($triggers, 0, 5)) . '”.'
+            : 'Activates automatically when your request matches this workflow.',
+        'process' => $steps
+            ? implode(' → ', $steps)
+            : 'Loads its SKILL.md instructions, follows the protocol, and reports the result.',
+    ];
+}
+usort($skills, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+
 // ── Repositories: load from the portable .env registry (see /.env) ──
 // Colour/label map for language tags. Tags not listed fall back to a grey badge.
 $LANG_DEFS = [
@@ -141,6 +185,27 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
   </div>
 </div>
 
+<div id="skillsOverlay">
+  <div id="skillsPanel">
+    <div id="skillsHeader">
+      <div>
+        <div class="skills-eyebrow">HINATA · SKILL ARCHIVE</div>
+        <div class="skills-title">Available Skills <span><?= count($skills) ?></span></div>
+      </div>
+      <button id="skillsCloseBtn">Close ✕</button>
+    </div>
+    <div id="skillsList">
+      <?php foreach ($skills as $skill): ?>
+        <article class="skill-item">
+          <div class="skill-name"><?= htmlspecialchars($skill['name']) ?></div>
+          <div class="skill-description"><?= htmlspecialchars($skill['description']) ?></div>
+          <div class="skill-detail"><strong>How to use</strong><?= htmlspecialchars($skill['usage']) ?></div>
+          <div class="skill-detail"><strong>How it works</strong><?= htmlspecialchars($skill['process']) ?></div>
+        </article>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</div>
 
 <div id="crBookOverlay">
   <div id="crBook">
@@ -250,6 +315,17 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
             <button id="crBubbleYes" class="gbtn yes">YES</button>
           </div>
           <div class="gb-tail cr-gb-tail"></div>
+        </div>
+      </div>
+      <div id="skillsBubble">
+        <div class="gb-box skills-gb-box">
+          <div class="gb-name skills-gb-name">HINATA</div>
+          <div class="gb-text">List the skills?</div>
+          <div class="gb-actions">
+            <button id="skillsBubbleNo" class="gbtn no">NO</button>
+            <button id="skillsBubbleYes" class="gbtn yes">YES</button>
+          </div>
+          <div class="gb-tail skills-gb-tail"></div>
         </div>
       </div>
     </div>

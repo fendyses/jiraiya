@@ -179,6 +179,45 @@ function renderBookContent(entry){
   content.scrollTop=0;
   requestAnimationFrame(()=>attachFade(content));
 }
+
+// ════════════════════════════════════════════════════════
+// SKILLS — Hinata's active skill archive
+// ════════════════════════════════════════════════════════
+function showSkillsBubble(npc){
+  const bubble=document.getElementById('skillsBubble');
+  const canvas=document.querySelector('#game-wrap canvas');
+  if(!bubble||!canvas) return;
+  npc.summoned=true; npc.vx=0; npc.vy=0; npc.setState('idle');
+  const scale=canvas.clientWidth/GW;
+  const sx=npc.sprite.x*scale;
+  const sy=(npc.sprite.y-npc.sprite.displayHeight)*scale-14;
+  bubble.style.left=sx+'px';
+  bubble.style.top=sy+'px';
+  bubble.style.display='block';
+  const yes=document.getElementById('skillsBubbleYes'), no=document.getElementById('skillsBubbleNo');
+  const close=()=>{
+    bubble.style.display='none'; yes.onclick=null; no.onclick=null; document.onkeydown=null;
+    npc.summoned=false; npc.pickTarget();
+  };
+  yes.onclick=()=>{ close(); openSkillsPanel(); };
+  no.onclick=close;
+  document.onkeydown=e=>{ if(e.key==='Escape')close(); if(e.key==='Enter'){close();openSkillsPanel();} };
+}
+function openSkillsPanel(){
+  const ov=document.getElementById('skillsOverlay');
+  const list=document.getElementById('skillsList');
+  ov.style.display='flex';
+  list.scrollTop=0;
+  const close=()=>{
+    ov.style.display='none';
+    document.removeEventListener('keydown',escClose);
+  };
+  const escClose=e=>{ if(e.key==='Escape') close(); };
+  document.getElementById('skillsCloseBtn').onclick=close;
+  ov.onclick=e=>{ if(e.target===ov) close(); };
+  document.addEventListener('keydown',escClose);
+}
+
 function openCLI(repo, btn){
   btn.classList.add('copied');
   setTimeout(()=>btn.classList.remove('copied'), 900);

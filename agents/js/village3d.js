@@ -1114,7 +1114,7 @@
   }
   window._spawnGoldTrail = spawnGoldTrail;
 
-  // Unified character interaction: drag any character, click Jiraiya for diary.
+  // Unified character interaction: drag any character, click Jiraiya/Hinata for archives.
   // Driven by Three.js raycasting so the 3D model is the real hitbox.
   (function setupCharacterInteraction() {
     var wrap   = document.getElementById('game-wrap');
@@ -1187,10 +1187,13 @@
         return;
       }
 
-      // Pure click (no drag) — open diary if Jiraiya, CR if signboard
+      // Pure click (no drag) — open the matching archive or CR signboard
       if (name === 'Jiraiya') {
         var npc = window._jiraiyaNPC;
         if (npc && typeof showDiaryBubble === 'function') showDiaryBubble(npc);
+      } else if (name === 'Hinata') {
+        var hinata = window._npcs && window._npcs.Hinata;
+        if (hinata && typeof showSkillsBubble === 'function') showSkillsBubble(hinata);
       } else if (_crActive && typeof showCRBubble === 'function') {
         showCRBubble(-8.3, 2.5, -8.33);
         _crActive = false;
@@ -1359,4 +1362,3 @@
   }());
 
 }());
-

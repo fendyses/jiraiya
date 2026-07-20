@@ -148,6 +148,7 @@ function fxSpeedLines(G,cx,cy,W,H,t,col,intensity){
   }
 }
 
+
 // ════════════════════════════════════════════════════════
 // AGENT NPC
 // ════════════════════════════════════════════════════════
@@ -550,10 +551,11 @@ class GameScene extends Phaser.Scene {
       else { pet.pickTarget(); }
     });
 
-    // ── Click Jiraiya → speech-bubble ask to read diary ──
+    // ── Click Jiraiya/Hinata → open their archive prompt ──
     this.input.on('gameobjectup',(pointer,go)=>{
       const npc=this.npcs.find(a=>a.sprite===go);
       if(npc&&npc.name==='Jiraiya'&&!npc.wasDragged) showDiaryBubble(npc);
+      if(npc&&npc.name==='Hinata'&&!npc.wasDragged) showSkillsBubble(npc);
     });
 
     this.battleActive=false; this.battleSecs=0; this.fightA=null; this.fightB=null;
@@ -967,4 +969,3 @@ class GameScene extends Phaser.Scene {
     }
   }
 }
-
