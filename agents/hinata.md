@@ -37,8 +37,8 @@ Project logging and development documentation.
 - Changing implementation logic
 
 ## Integration
-- Logs completed actions from Builder and Architect Agents
-- Records Reviewer Agent findings when significant
+- Logs completed actions from Naruto (Code) and Sakura (Architect)
+- Records Sasuke (Reviewer) findings when significant
 - Feeds into JIRAIYA diary and decision log systems
 - Activated by JIRAIYA after meaningful task completion
 

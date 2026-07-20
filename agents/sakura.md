@@ -38,9 +38,9 @@ System planning and architecture design.
 
 ## Integration
 - Consulted by JIRAIYA before major structural changes
-- Produces plans that Builder Agent implements
-- Outputs reviewed by Reviewer Agent when structural
-- Documentor logs architectural decisions after approval
+- Produces plans that Naruto (Code Agent) implements
+- Outputs are reviewed by Sasuke when structural
+- Hinata documents architectural decisions after approval
 
 ---
 *JIRAIYA agent module — shares project context, memory, and identity with core system*

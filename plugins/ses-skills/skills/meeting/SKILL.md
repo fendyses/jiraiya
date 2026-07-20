@@ -1,3 +1,8 @@
+---
+name: meeting
+description: "Run a structured JIRAIYA team meeting using the authoritative agents roster. Use when the user says 'meeting team', 'meeting [agent names]', 'emergency meeting', or '/meeting' to convene JIRAIYA, Sakura, Naruto, Sasuke, and Hinata for role-based input, decisions, actions, and minutes."
+---
+
 # 🗓️ Meeting System — Skill Plugin
 
 ## Skill Name
@@ -5,7 +10,7 @@ Meeting
 
 ## Trigger Words
 - `meeting team` — full meeting, all agents
-- `meeting [agent]` — selective, e.g. `meeting dev security`
+- `meeting [agent]` — selective, e.g. `meeting sakura sasuke`
 - `emergency meeting` — urgent, all agents, marked URGENT
 - `/meeting` — AI asks who should attend
 
@@ -18,9 +23,18 @@ Fires on explicit user command only. Not auto-triggered at session start.
 ## Behavior
 
 ### Step 1 — Determine Attendees
-- If `meeting team` or `emergency meeting` → all agents in roster
+- Read `agents/jiraiya.md` and the selected `agents/*.md` files as the roster source of truth
+- If `meeting team` or `emergency meeting` → JIRAIYA chairs Sakura, Naruto, Sasuke, and Hinata
 - If `meeting [agent list]` → only named agents
 - If `/meeting` → ask: "Siapa perlu hadir?"
+
+| Agent | Meeting perspective |
+|-------|---------------------|
+| JIRAIYA | Chair, coordination, memory, synthesis |
+| Sakura | Architecture and system planning |
+| Naruto | Implementation feasibility and code delivery |
+| Sasuke | Quality, bugs, security, performance, maintainability |
+| Hinata | Documentation, decisions, changelog, delivery record |
 
 ### Step 2 — Open Meeting
 ```
@@ -34,7 +48,7 @@ Fires on explicit user command only. Not auto-triggered at session start.
 If `emergency meeting` → prepend `⚠️ URGENT` to header.
 
 ### Step 3 — Agenda
-- If Abam stated agenda → proceed directly
+- If Fendy stated the agenda → proceed directly
 - If no agenda → ask: "Agenda meeting hari ini?"
 
 ### Step 4 — Floor Each Agent
@@ -102,3 +116,7 @@ Present: [agents]
 
 ## Level History
 - **Lv.1** — Base: full/selective/emergency meetings, 10-agent roster, auto-saved minutes, chair summary with escalations. (Origin: XJIRAIYAX Innovation team meeting protocol, Abam Zue)
+- **Lv.2** — Rebound meetings to the authoritative `/agents` roster: JIRAIYA chairs
+  Sakura, Naruto, Sasuke, and Hinata, with selective attendance based on their actual
+  repository-defined responsibilities. (Origin: Fendy corrected the active agent roster,
+  2026-07-20)

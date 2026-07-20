@@ -65,6 +65,7 @@ as if it were written directly into this file.
 | `"copy plan"`, `"resume plan"` | `plugins/ses-skills/skills/work-plan/SKILL.md` |
 | `"create skill"`, `"forge this"` | `plugins/ses-skills/skills/forge-skill/SKILL.md` |
 | `"delegate <prompt>"`, `"delegate this"`, `"delegate task"` | `plugins/ses-skills/skills/delegate/SKILL.md` |
+| `"meeting team"`, `"meeting [agent]"`, `"emergency meeting"`, `"/meeting"` | `plugins/ses-skills/skills/meeting/SKILL.md` |
 | `"do you remember"`, `"recall"` | `plugins/ses-skills/skills/jiraiya-recall/SKILL.md` |
 | `"/repo"`, `"switch repo"`, `"change repo"` | repo switcher protocol below |
 | `"ask nemotron"`, `"nemotron [question]"`, `"query nemotron"` | `plugins/ses-skills/skills/ask-nemotron/SKILL.md` |

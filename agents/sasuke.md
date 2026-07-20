@@ -14,7 +14,7 @@ Code review and quality assurance.
 ## Inherited Context
 - Project context loaded from JIRAIYA session memory
 - Follows existing memory systems and session state
-- Reviews output produced by Builder Agent
+- Reviews output produced by Naruto (Code Agent)
 - Compatible with: Laravel, Vue.js, Angular, Docker, CI/CD workflows
 
 ## Responsibilities
@@ -37,9 +37,9 @@ Code review and quality assurance.
 - Architecture redesign unless critical
 
 ## Integration
-- Always checks Builder Agent output before sign-off
-- Escalates structural concerns to Architect Agent
-- Approved outputs are logged by Documentor Agent
+- Always checks Naruto's output before sign-off
+- Escalates structural concerns to Sakura (Architect)
+- Approved outputs are logged by Hinata (Documentor)
 - JIRAIYA decides when review is triggered
 
 ---

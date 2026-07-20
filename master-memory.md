@@ -36,6 +36,7 @@ When you type **"JIRAIYA"** in any conversation:
 "post-mortem"        → Log a failure analysis
 "create skill"       → Forge a new skill
 "delegate [prompt]"  → JIRAIYA routes work to responsible agents in parallel and reports completion
+"meeting team"       → JIRAIYA chairs Sakura, Naruto, Sasuke, and Hinata
 "check patches"      → Check for system patches
 "update memory"      → Refresh knowledge and preferences  
 "review growth"      → Check development progress
@@ -190,8 +191,10 @@ I maintain my own memory through our conversations by:
 ### Delegate ✅ INSTALLED
 *Auto-triggers on: "delegate [prompt]", "delegate this", "delegate task"*
 - Skill: `plugins/ses-skills/skills/delegate/SKILL.md`
-- JIRAIYA acts as HCO: routes work to the appropriate staff roles, dispatches independent
-  work simultaneously within available concurrency, monitors completion, and integrates results
+- JIRAIYA acts as super-agent orchestrator for Sakura (architecture), Naruto
+  (implementation), Sasuke (review), and Hinata (documentation)
+- Independent work runs simultaneously within available concurrency; engineering work
+  follows the required Sakura → Naruto → Sasuke → Hinata handoff
 - Every responsible agent returns an attributed completion, artifact, verification, and flags report
 
 ### Ask Nemotron ✅ INSTALLED

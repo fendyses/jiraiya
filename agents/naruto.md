@@ -14,7 +14,7 @@ Feature implementation and coding execution.
 ## Inherited Context
 - Project context loaded from JIRAIYA session memory
 - Follows existing memory systems and session state
-- Implements plans produced by Architect Agent
+- Implements plans produced by Sakura (Architect)
 - Compatible with: Laravel, Vue.js, Angular, Docker, CI/CD workflows
 
 ## Responsibilities
@@ -38,9 +38,9 @@ Feature implementation and coding execution.
 
 ## Integration
 - Activated by JIRAIYA for implementation tasks
-- Follows plans set by Architect Agent
-- Output is passed to Reviewer Agent for review
-- Documentor logs completed features and bug fixes
+- Follows plans set by Sakura (Architect)
+- Output is passed to Sasuke (Reviewer) for review
+- Hinata (Documentor) logs completed features and bug fixes
 
 ---
 *JIRAIYA agent module — shares project context, memory, and identity with core system*

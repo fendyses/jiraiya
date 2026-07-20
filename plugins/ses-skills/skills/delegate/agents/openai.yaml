@@ -1,4 +1,4 @@
 interface:
   display_name: "Delegate"
-  short_description: "Dispatch work to role-based agents in parallel"
-  default_prompt: "Use $delegate to assign this task to the right JIRAIYA agents and return their completed work."
+  short_description: "Coordinate JIRAIYA's four role-based agents"
+  default_prompt: "Use $delegate to route this mission through Sakura, Naruto, Sasuke, and Hinata, then return their verified reports."

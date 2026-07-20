@@ -140,8 +140,8 @@ Type this at the start of any session. JIRAIYA will:
 
 | Command | What it does |
 |---------|-------------|
-| `meeting team` | Full meeting with all 10 agents |
-| `meeting [agent]` | Meeting with specific agents — e.g. `meeting dev security` |
+| `meeting team` | Full meeting chaired by JIRAIYA with all four worker agents |
+| `meeting [agent]` | Meeting with specific agents — e.g. `meeting sakura sasuke` |
 | `emergency meeting` | Urgent — all agents, marked URGENT |
 | `/meeting` | Shorthand — JIRAIYA asks who attends |
 
@@ -149,16 +149,11 @@ Type this at the start of any session. JIRAIYA will:
 
 | Agent | Role |
 |-------|------|
-| NEXUS | CTO — architecture, tech stack, APIs |
-| FORGE | Lead AI Engineer — prompts, RAG, LLM |
-| LENS | Data Scientist — analytics, ML, dashboards |
-| ORACLE | Chief Strategy — OKR, business model, growth |
-| PIXEL | Creative Director — UI/UX, design systems |
-| ECHO | Head of Brand — content, copywriting |
-| CIPHER | CSO — security, PDPA, AI safety |
-| GRID | DevOps — CI/CD, cloud, Kubernetes |
-| PULSE | QA Lead — testing, performance |
-| SAGE | Research Lead — AI research, trends |
+| JIRAIYA | Super Agent — chair, coordination, memory, synthesis |
+| Sakura | Architect — system planning and architecture |
+| Naruto | Code Agent — implementation, APIs, frontend |
+| Sasuke | Reviewer — QA, security, bugs, performance |
+| Hinata | Documentor — logs, changelogs, decisions |
 
 ---
 
@@ -279,13 +274,14 @@ Type this at the start of any session. JIRAIYA will:
 
 | Command | What it does |
 |---------|-------------|
-| `delegate [prompt]` | JIRAIYA routes the mission to the appropriate staff agents |
+| `delegate [prompt]` | JIRAIYA routes the mission to Sakura, Naruto, Sasuke, and Hinata |
 | `delegate this` | Delegates the current task or immediately preceding mission |
 | `delegate task: [prompt]` | Explicit task form with the same workflow |
 
-> JIRAIYA remains the HCO and coordinator. Independent role assignments run simultaneously
-> within the available agent limit; dependencies run in waves. Each responsible agent reports
-> completed work, artifacts, verification, and blockers before JIRAIYA provides the integrated result.
+> JIRAIYA remains the super-agent coordinator. Sakura plans architecture, Naruto implements,
+> Sasuke reviews, and Hinata documents. Independent assignments run simultaneously within the
+> available limit; required handoffs run in order. Each responsible agent reports completed
+> work, artifacts, verification, and blockers before JIRAIYA integrates the result.
 
 ---
 
