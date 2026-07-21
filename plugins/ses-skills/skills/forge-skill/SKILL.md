@@ -102,7 +102,11 @@ Draft ready -- approve to forge?
    - Protocol steps (step-by-step execution)
    - Mandatory rules
    - Level History (starting at Lv.1)
-3. Verify file was created successfully
+3. Create the native pointer so the skill is invocable as `/[skill-name]`:
+   `.claude/skills/[skill-name]/SKILL.md` — frontmatter (`name` + the same `description`)
+   plus one instruction: read `plugins/[plugin-name]/skills/[skill-name]/SKILL.md` in full
+   and follow every step. The pointer must never duplicate the protocol.
+4. Verify both files were created successfully
 
 **For LEVEL-UP:**
 1. Read existing `SKILL.md`

@@ -44,7 +44,23 @@ When you type **"JIRAIYA"** in any conversation:
 "update credit [amount]" → Update `Used` in `main/credit-tracker.md`, append to History table, confirm update
 "/repo"                → List registered repositories and switch active working context (Repo Switcher skill)
 "add repo [name] [path]" → Add a new repo entry to `main/repos.md`
+"/recall"              → Recall all JIRAIYA memory about the repo currently in use (Recall skill)
+"/<skill-name>"        → Explicit skill invocation — runs that skill's protocol in full
 ```
+
+## ⚡ Slash Invocation Rule
+
+Every skill in `plugins/ses-skills/skills/` has a matching native pointer at
+`.claude/skills/<name>/SKILL.md`, so it can be invoked as **`/<skill-name>`**.
+
+- The pointer holds no protocol — it sends you to `plugins/ses-skills/skills/<name>/SKILL.md`,
+  which is authoritative. Read that file in full and follow every step
+- `/<skill-name> [args]` → the rest of the line is the skill's argument
+- Natural-language triggers still work as before
+- **Never use `!` as a skill prefix** — in Claude Code `!` is the bash-mode prefix and the
+  message would be routed to the shell instead of to JIRAIYA
+- New skills forged by `/forge-skill` must create **both** files: the protocol in
+  `plugins/ses-skills/skills/<name>/` and the pointer in `.claude/skills/<name>/`
 
 ## 🔥 Essential Components (Always Load)
 
@@ -210,6 +226,13 @@ I maintain my own memory through our conversations by:
 - Data: `main/repos.md` (repo registry + active repo)
 - Session: updates `main/current-session.md` on switch
 - Commands: "/repo" (list + select), "add repo [name] [path]" (register new)
+
+### Recall (Repo Memory) ✅ INSTALLED
+*Auto-triggers on: "!recall", "recall repo", "recall this repo", "what do you remember about this repo"*
+- Skill: `plugins/ses-skills/skills/recall/SKILL.md`
+- Resolves active repo from `main/repos.md` (arg → Active Repo → cwd), then sweeps the memory core
+- Sources: `Repo-instruction/`, `main/current-session.md`, `todo.md`, `reminders.md`, `decisions.md`, `post-mortems.md`, `daily-diary/`, `CR/`, `plans/`
+- Read-only — never writes memory
 
 ### Patch System ✅ INSTALLED
 - Location: `patches/` (patch files + applied.md tracking)

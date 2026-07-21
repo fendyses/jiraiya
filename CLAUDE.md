@@ -38,23 +38,35 @@ At the start of every new session, before responding to the first message:
 
 ## Installed Skills (Auto-Trigger)
 
-Skills live in `plugins/ses-skills/skills/`. Each SKILL.md file defines its own trigger conditions. Key auto-triggers:
+Skills live in `plugins/ses-skills/skills/`. Each SKILL.md file defines its own trigger conditions.
+
+### Slash Invocation (`/`)
+
+**Every skill is also a native Claude Code skill, invocable as `/<skill-name>`.**
+`.claude/skills/<name>/SKILL.md` is a thin pointer whose only job is to send you to the
+authoritative protocol at `plugins/ses-skills/skills/<name>/SKILL.md`. When a pointer
+skill loads, read that protocol in full and follow every step — never summarise it.
+
+- `/<skill-name> [args]` → run that skill, passing the rest of the line as its argument
+- Do **not** use `!` as a skill prefix — in Claude Code `!` is the bash-mode prefix
+- Natural-language triggers below still work exactly as before
 
 | Trigger | Skill |
 |---------|-------|
 | Session start | `session-briefing/SKILL.md` |
-| `"save diary"`, `"write diary"`, `"document session"` | `save-diary/SKILL.md` |
-| `"commit"`, `"push"`, `"save changes"` | `auto-commit/SKILL.md` |
-| `"remind me"`, `"check reminders"`, `"don't forget"` | `check-reminders/SKILL.md` |
-| `"log decision"`, `"why did we choose"` | `log-decision/SKILL.md` |
-| `"post-mortem"`, `"what went wrong"` | `post-mortem/SKILL.md` |
-| `"new project"`, `"load project"`, `"list projects"` | `manage-project/SKILL.md` |
-| `"save library"`, `"load library"` | `library/SKILL.md` |
-| `"copy plan"`, `"resume plan"` | `work-plan/SKILL.md` |
-| `"create skill"`, `"forge this"` | `forge-skill/SKILL.md` |
-| `"do you remember"`, `"recall"` | `echo-recall/SKILL.md` |
+| `/save-diary`, `"save diary"`, `"write diary"`, `"document session"` | `save-diary/SKILL.md` |
+| `/auto-commit`, `"commit"`, `"push"`, `"save changes"` | `auto-commit/SKILL.md` |
+| `/check-reminders`, `"remind me"`, `"don't forget"` | `check-reminders/SKILL.md` |
+| `/log-decision`, `"log decision"`, `"why did we choose"` | `log-decision/SKILL.md` |
+| `/post-mortem`, `"post-mortem"`, `"what went wrong"` | `post-mortem/SKILL.md` |
+| `/manage-project`, `"new project"`, `"load project"`, `"list projects"` | `manage-project/SKILL.md` |
+| `/library`, `"save library"`, `"load library"` | `library/SKILL.md` |
+| `/work-plan`, `"copy plan"`, `"resume plan"` | `work-plan/SKILL.md` |
+| `/forge-skill`, `"create skill"`, `"forge this"` | `forge-skill/SKILL.md` |
+| `/jiraiya-recall`, `"JIRAIYA"`, `"do you remember"`, `"recall"` | `jiraiya-recall/SKILL.md` |
+| `/recall`, `"recall repo"`, `"what do you remember about this repo"` | `recall/SKILL.md` |
 | `/repo`, `"switch repo"`, `"change repo"` | `repo-switcher/SKILL.md` |
-| `"ask nemotron"`, `"nemotron [question]"`, `"query nemotron"` | `ask-nemotron/SKILL.md` |
+| `/ask-nemotron`, `"ask nemotron"`, `"nemotron [question]"` | `ask-nemotron/SKILL.md` |
 
 When a trigger matches, read and follow the full protocol in that SKILL.md file.
 

@@ -59,12 +59,26 @@ foreach (glob($REPO . '/plugins/ses-skills/skills/*/SKILL.md') ?: [] as $skillFi
         $stepMatches[1] ?? []
     ), 0, 5);
 
+    // Slash invocation: Claude Code dispatches on the folder name via .claude/skills/<dir>.
+    $slug = basename(dirname($skillFile));
+    $slash = '/' . $slug;
+    $hasNativePointer = is_file($REPO . '/.claude/skills/' . $slug . '/SKILL.md');
+
+    // The slash command is shown on its own, so drop it from the spoken-trigger list.
+    $triggers = array_values(array_filter(
+        $triggers,
+        fn($trigger) => strcasecmp(ltrim($trigger, '/!'), $slug) !== 0
+    ));
+
     $skills[] = [
         'name' => $name,
+        'slash' => $slash,
+        'native' => $hasNativePointer,
         'description' => $simpleDescription ?: 'Runs the documented JIRAIYA skill protocol.',
-        'usage' => $triggers
-            ? 'Type “' . implode('”, “', array_slice($triggers, 0, 5)) . '”.'
-            : 'Activates automatically when your request matches this workflow.',
+        'usage' => ($hasNativePointer ? 'Type “' . $slash . '”' : 'No slash command registered')
+            . ($triggers
+                ? ', or say “' . implode('”, “', array_slice($triggers, 0, 4)) . '”.'
+                : '; otherwise it activates automatically when your request matches this workflow.'),
         'process' => $steps
             ? implode(' → ', $steps)
             : 'Loads its SKILL.md instructions, follows the protocol, and reports the result.',
@@ -194,15 +208,30 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
       </div>
       <button id="skillsCloseBtn">Close ✕</button>
     </div>
+    <div id="skillsSearchBar">
+      <span class="skills-search-icon">⌕</span>
+      <input id="skillsSearchInput" type="text" autocomplete="off" spellcheck="false"
+             placeholder="Search skills — name, trigger, or what it does…">
+      <button id="skillsSearchClear" type="button" title="Clear">✕</button>
+      <span id="skillsSearchCount"></span>
+    </div>
     <div id="skillsList">
       <?php foreach ($skills as $skill): ?>
-        <article class="skill-item">
-          <div class="skill-name"><?= htmlspecialchars($skill['name']) ?></div>
+        <article class="skill-item" data-search="<?= htmlspecialchars(mb_strtolower(
+              $skill['name'].' '.$skill['slash'].' '.$skill['description'].' '.$skill['usage'].' '.$skill['process']
+            )) ?>">
+          <div class="skill-name">
+            <?= htmlspecialchars($skill['name']) ?>
+            <?php if ($skill['native']): ?>
+              <code class="skill-slash"><?= htmlspecialchars($skill['slash']) ?></code>
+            <?php endif; ?>
+          </div>
           <div class="skill-description"><?= htmlspecialchars($skill['description']) ?></div>
           <div class="skill-detail"><strong>How to use</strong><?= htmlspecialchars($skill['usage']) ?></div>
           <div class="skill-detail"><strong>How it works</strong><?= htmlspecialchars($skill['process']) ?></div>
         </article>
       <?php endforeach; ?>
+      <div id="skillsEmpty">No skill matches that search.</div>
     </div>
   </div>
 </div>

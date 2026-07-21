@@ -52,6 +52,12 @@ Skills live in `plugins/ses-skills/skills/`. Each `SKILL.md` defines its own pro
 When a trigger phrase below appears, read the matching `SKILL.md` in full and follow it
 as if it were written directly into this file.
 
+**Slash invocation:** every skill also exists as a native pointer at
+`.claude/skills/<name>/SKILL.md` and can be invoked as `/<skill-name> [args]`. The pointer
+holds no protocol — it sends you to `plugins/ses-skills/skills/<name>/SKILL.md`, which is
+authoritative; read that in full and follow every step. Do not use `!` as a skill prefix —
+in Claude Code `!` is the bash-mode prefix.
+
 | Trigger | Skill file |
 |---------|-----------|
 | Session start | `plugins/ses-skills/skills/session-briefing/SKILL.md` |

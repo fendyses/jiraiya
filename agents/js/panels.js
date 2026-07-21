@@ -203,16 +203,58 @@ function showSkillsBubble(npc){
   no.onclick=close;
   document.onkeydown=e=>{ if(e.key==='Escape')close(); if(e.key==='Enter'){close();openSkillsPanel();} };
 }
+function escapeHtml(s){
+  return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+// Re-render `el` with every occurrence of any term wrapped in <mark>.
+function highlight(el, terms){
+  const raw=el.dataset.raw!==undefined?el.dataset.raw:(el.dataset.raw=el.textContent);
+  if(!terms.length){ el.textContent=raw; return; }
+  const pattern=terms.map(t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
+  el.innerHTML=escapeHtml(raw).replace(new RegExp('('+pattern+')','gi'),'<mark>$1</mark>');
+}
+function filterSkills(){
+  const input=document.getElementById('skillsSearchInput');
+  const items=document.querySelectorAll('#skillsList .skill-item');
+  const terms=input.value.toLowerCase().split(/\s+/).filter(Boolean);
+  let shown=0;
+  items.forEach(item=>{
+    const hay=item.dataset.search||'';
+    const hit=terms.every(t=>hay.includes(t));
+    item.style.display=hit?'':'none';
+    if(hit){
+      shown++;
+      highlight(item.querySelector('.skill-name'), terms);
+      highlight(item.querySelector('.skill-description'), terms);
+    }
+  });
+  document.getElementById('skillsEmpty').style.display=shown?'none':'block';
+  document.getElementById('skillsSearchClear').style.display=terms.length?'block':'none';
+  document.getElementById('skillsSearchCount').textContent=
+    terms.length?shown+'/'+items.length:'';
+}
 function openSkillsPanel(){
   const ov=document.getElementById('skillsOverlay');
   const list=document.getElementById('skillsList');
+  const input=document.getElementById('skillsSearchInput');
   ov.style.display='flex';
   list.scrollTop=0;
+  input.value=''; filterSkills();
+  requestAnimationFrame(()=>input.focus());
   const close=()=>{
     ov.style.display='none';
     document.removeEventListener('keydown',escClose);
   };
-  const escClose=e=>{ if(e.key==='Escape') close(); };
+  // Escape clears an active search first, then closes on a second press.
+  const escClose=e=>{
+    if(e.key!=='Escape') return;
+    if(input.value){ input.value=''; filterSkills(); input.focus(); return; }
+    close();
+  };
+  input.oninput=filterSkills;
+  document.getElementById('skillsSearchClear').onclick=()=>{
+    input.value=''; filterSkills(); input.focus();
+  };
   document.getElementById('skillsCloseBtn').onclick=close;
   ov.onclick=e=>{ if(e.target===ov) close(); };
   document.addEventListener('keydown',escClose);

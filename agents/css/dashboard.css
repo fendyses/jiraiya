@@ -145,15 +145,26 @@
     .skills-title span{font-family:'Share Tech Mono',monospace;font-size:11px;color:#b8a9e3;border:1px solid rgba(184,169,227,.25);border-radius:10px;padding:2px 7px;margin-left:6px;vertical-align:middle}
     #skillsCloseBtn{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;color:#d9d0f4;background:rgba(184,169,227,.08);border:1px solid rgba(184,169,227,.28);border-radius:5px;padding:5px 11px;cursor:pointer;transition:all .15s}
     #skillsCloseBtn:hover{background:rgba(184,169,227,.18);color:#fff}
+    #skillsSearchBar{position:relative;display:flex;align-items:center;gap:8px;padding:11px 20px;border-bottom:1px solid rgba(184,169,227,.14);background:rgba(184,169,227,.028)}
+    .skills-search-icon{font-size:15px;color:#8f7dcc;line-height:1;flex:none}
+    #skillsSearchInput{flex:1;min-width:0;font-family:'Rajdhani',sans-serif;font-size:15px;color:#f3efff;background:rgba(255,255,255,.03);border:1px solid rgba(184,169,227,.2);border-radius:6px;padding:6px 10px;outline:none;transition:border-color .15s,background .15s}
+    #skillsSearchInput::placeholder{color:rgba(255,255,255,.32)}
+    #skillsSearchInput:focus{border-color:rgba(184,169,227,.5);background:rgba(255,255,255,.055)}
+    #skillsSearchClear{display:none;flex:none;font-size:11px;color:#b8a9e3;background:rgba(184,169,227,.08);border:1px solid rgba(184,169,227,.25);border-radius:5px;padding:4px 8px;cursor:pointer;transition:all .15s}
+    #skillsSearchClear:hover{background:rgba(184,169,227,.18);color:#fff}
+    #skillsSearchCount{flex:none;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:#8f7dcc;min-width:52px;text-align:right}
+    #skillsEmpty{display:none;grid-column:1/-1;padding:28px 8px;text-align:center;font-family:'Rajdhani',sans-serif;font-size:15px;color:rgba(255,255,255,.4)}
+    .skill-item mark{background:rgba(184,169,227,.26);color:#fff;border-radius:2px;padding:0 1px}
     #skillsList{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:10px;padding:16px}
     #skillsList::-webkit-scrollbar{width:6px}
     #skillsList::-webkit-scrollbar-thumb{background:rgba(184,169,227,.3);border-radius:3px}
     .skill-item{min-width:0;border:1px solid rgba(184,169,227,.14);border-radius:8px;background:rgba(255,255,255,.025);padding:12px 13px}
-    .skill-name{font-family:'Share Tech Mono',monospace;font-size:13px;color:#c9bff0;margin-bottom:5px}
+    .skill-name{font-family:'Share Tech Mono',monospace;font-size:13px;color:#c9bff0;margin-bottom:5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .skill-slash{font-family:'Share Tech Mono',monospace;font-size:11px;line-height:1;color:#d8ccff;background:rgba(135,99,255,.16);border:1px solid rgba(157,120,255,.42);border-radius:4px;padding:3px 7px;letter-spacing:.02em}
     .skill-description{font-family:'Rajdhani',sans-serif;font-size:14px;line-height:1.35;color:rgba(255,255,255,.78);margin-bottom:9px}
     .skill-detail{font-family:'Share Tech Mono',monospace;font-size:10px;line-height:1.45;color:rgba(255,255,255,.48);margin-top:5px}
     .skill-detail strong{display:block;color:#8f7dcc;font-weight:400;text-transform:uppercase;letter-spacing:.7px;margin-bottom:1px}
-    @media(max-width:700px){#skillsPanel{height:min(92vh,760px)}#skillsHeader{padding:14px}#skillsList{grid-template-columns:1fr;padding:12px}.skills-title{font-size:20px}}
+    @media(max-width:700px){#skillsPanel{height:min(92vh,760px)}#skillsHeader{padding:14px}#skillsSearchBar{padding:10px 12px}#skillsSearchCount{display:none}#skillsList{grid-template-columns:1fr;padding:12px}.skills-title{font-size:20px}}
     /* ── CR Book Overlay — same parchment look as diary ── */
     #crBookOverlay{display:none;position:fixed;inset:0;z-index:1001;background:rgba(2,2,8,.8);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);align-items:center;justify-content:center;animation:ovFade .18s ease;padding:20px}
     #crBook{width:min(96vw,980px);height:min(88vh,640px);display:flex;border-radius:10px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06),inset 0 0 0 1px rgba(255,255,255,.03)}

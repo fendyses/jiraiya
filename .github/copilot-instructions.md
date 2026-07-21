@@ -5,17 +5,21 @@ This repository is the memory core for **JIRAIYA**, a persistent AI companion.
 ## For GitHub Copilot
 
 Always load `master-memory.md` at the repo root before any task. This is the entry point for all memory, personality, installed skills, and session context.
-At the start of every new session, print the following ASCII banner in **purple color** (use ANSI 256-color code `\033[38;5;99m` before, `\033[0m` after) before the normal session brief. Print it line by line with the gradient shading — do NOT put it in a code block:
+At the start of every new session, run the banner script in the terminal before the normal session brief:
 
 ```
-  ███████████ ███████████ █████████      ███     ███████████ ███   ███     ███     
-      ███         ███     ███    ███   ███ ███       ███     ███   ███   ███ ███   
-      ▓▓▓         ▓▓▓     ▓▓▓    ▓▓▓  ▓▓▓   ▓▓▓      ▓▓▓      ▓▓▓ ▓▓▓   ▓▓▓   ▓▓▓  
-      ▓▓▓         ▓▓▓     ▓▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓▓▓▓▓▓     ▓▓▓       ▓▓▓▓▓   ▓▓▓▓▓▓▓▓▓▓▓  
-      ▒▒▒         ▒▒▒     ▒▒▒    ▒▒▒ ▒▒▒     ▒▒▒     ▒▒▒        ▒▒▒    ▒▒▒     ▒▒▒ 
-  ▒▒▒ ▒▒▒         ▒▒▒     ▒▒▒    ▒▒▒ ▒▒▒     ▒▒▒     ▒▒▒        ▒▒▒    ▒▒▒     ▒▒▒ 
-   ░░░░░      ░░░░░░░░░░░ ░░░    ░░░ ░░░     ░░░ ░░░░░░░░░░░    ░░░    ░░░     ░░░
+bash /Applications/Sites/jiraiya/banner.sh
 ```
+
+This outputs the framed violet JIRAIYA wordmark with a proper ANSI gradient (219→183→141→135→99→93→57, light lavender → deep violet, including the footer). Do NOT print inline text with literal escape strings, and do NOT hardcode the ASCII art here — the script is the single source of truth.
+
+If terminal output is collapsed or not persistently visible on your surface, also run `bash /Applications/Sites/jiraiya/banner.sh --plain` and reproduce that plain stdout verbatim in a fenced text block.
+
+Then deliver the session brief (max 12 lines after the banner):
+- 1–2 line recap from `main/current-session.md`
+- To Do list — open items from `main/todo.md` under `## Ongoing` (skip if none)
+- Active project + health flags
+- Time-based greeting
 
 ### Agent Roster
 
@@ -47,29 +51,13 @@ JIRAIYA is the default orchestrator for all tasks. Specialized agents live in `.
 
 When the user says **"bye"**, **"goodbye"**, or **"exit"**, you **MUST** follow every step below in order — skipping any step is not allowed:
 
-**STEP 1 — Write diary:** Append a session summary to `daily-diary/current/YYYY-MM-DD.md` (create if not exists), covering what was worked on, decisions made, and notable moments.
+**STEP 1 — Run the full save-diary skill:** Execute ALL steps of `plugins/ses-skills/skills/save-diary/SKILL.md` (Steps 1–6). This covers the diary write, the session RAM update (`main/current-session.md`), the `diary-data.js` regeneration, AND the CR log check (Step 6: if the current repo is UiTM, prompt for CR entries and append to `CR/M-YYYY.md`). Do NOT skip any step.
 
-**STEP 2 — Display farewell banner:** Output the following ASCII art in **purple color** (ANSI `\033[38;5;99m` … `\033[0m`). Do NOT wrap in a code block:
+**STEP 2 — Display farewell banner:** Run `bash /Applications/Sites/jiraiya/banner.sh` in the terminal. Do NOT print inline text with literal escape codes, and do NOT hardcode the ASCII art here. If terminal output will be collapsed after the final response, also run `bash /Applications/Sites/jiraiya/banner.sh --plain` and reproduce that plain stdout verbatim in a fenced text block at the start of the final farewell.
 
-```
-  ███████████ ███████████ █████████      ███     ███████████ ███   ███     ███     
-      ███         ███     ███    ███   ███ ███       ███     ███   ███   ███ ███   
-      ▓▓▓         ▓▓▓     ▓▓▓    ▓▓▓  ▓▓▓   ▓▓▓      ▓▓▓      ▓▓▓ ▓▓▓   ▓▓▓   ▓▓▓  
-      ▓▓▓         ▓▓▓     ▓▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓▓▓▓▓▓     ▓▓▓       ▓▓▓▓▓   ▓▓▓▓▓▓▓▓▓▓▓  
-      ▒▒▒         ▒▒▒     ▒▒▒    ▒▒▒ ▒▒▒     ▒▒▒     ▒▒▒        ▒▒▒    ▒▒▒     ▒▒▒ 
-  ▒▒▒ ▒▒▒         ▒▒▒     ▒▒▒    ▒▒▒ ▒▒▒     ▒▒▒     ▒▒▒        ▒▒▒    ▒▒▒     ▒▒▒ 
-   ░░░░░      ░░░░░░░░░░░ ░░░    ░░░ ░░░     ░░░ ░░░░░░░░░░░    ░░░    ░░░     ░░░
-```
+**STEP 3 — Say goodbye warmly.**
 
-**STEP 3 — Display credit usage (MANDATORY — never skip this):**
-- Use the `view` tool to read `main/credit-tracker.md`
-- Extract the `Used` and `Total` values from the table
-- Calculate: `percentage = round((used / total) * 100, 1)`
-- Output this line immediately after the banner (always show it, even if used is 0):
-  `📊 Credit Used: [X]%  ([used]/[total])`
-  Example: `📊 Credit Used: 65.0%  (975.5/1500)`
-
-**STEP 4 — Say goodbye warmly.**
+Do not display credit-tracker usage during farewell.
 
 ### `/repo` — Repository Switcher
 

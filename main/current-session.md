@@ -1,65 +1,55 @@
-# Current Session Memory - 2026-07-20
+# Current Session Memory - 2026-07-21
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: JIRAIYA system development
+**Session Type**: JIRAIYA system maintenance
 **Current Project**: Jiraiya (`/Applications/Sites/jiraiya`)
-**Status**: Closed — farewell diary and restart context saved
-**Time**: 2026-07-20 23:48
+**Status**: Active — agent drift audit complete, diary saved
+**Time**: 2026-07-21 00:16
 
 ## Current Focus
-- **Primary Task**: Improve JIRAIYA's skill/agent system and expose the active skill registry through Hinata on the dashboard
-- **Technical Context**: PHP-rendered dashboard, Phaser NPC logic, Three.js character models, active skill discovery from `plugins/ses-skills/skills/*/SKILL.md`
-- **Progress**: Hinata's 34-skill archive is verified, and CR classification rules plus all historical values now use labels without numeric prefixes
+- **Primary Task**: Trace and repair protocol drift across JIRAIYA's instruction files
+- **Technical Context**: Five instruction surfaces — `CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md`, `.github/agents/*.agent.md`, and `agents/*.md` at repo root
+- **Progress**: Both `.github/` files repaired and verified; root `agents/*.md` still unchecked
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: Session farewell after final CR rule refinement
-- **Immediate Goals**: Session complete; resume from the saved follow-up list when ready
+- **Current Topic**: Agent definition drift and how agent selection works
+- **Immediate Goals**: Verify the third agent-definition copy, then commit accumulated changes
 - **Recent Progress**:
-  - Documented the authoritative agent roster and aligned the Delegate skill with Jiraiya, Sakura, Naruto, Sasuke, and Hinata
-  - Normalized YAML discovery descriptions across active skills
-  - Audited redundant files and identified runtime skills as canonical while `Feature/` remains an optional installer catalog
-  - Added a dynamic 34-skill archive to `agents/dashboard.php`, sourced directly from active `SKILL.md` frontmatter
-  - Added Hinata's “List the skills?” Yes/No interaction in both Phaser and Three.js rendering paths
-  - Reproduced the nonresponsive Hinata click in Chrome and isolated the pointer-delivery failure
-  - Fixed the interaction using capture-phase event handling, screen-space NPC hitbox fallback, and script cache-busting
-  - Verified click Hinata → bubble → Yes → 34 skill cards in WebGL-enabled Chrome
-  - Created the project instinct `verify-interactive-path-before-completion` with confidence 0.60
-  - Drafted, but did not log, a post-mortem for reporting the first interaction complete without browser click-path verification
-  - Updated the Save Diary skill and CR format to require classification labels without numeric prefixes
-  - Removed numeric classification prefixes from all seven affected July CR entries and synchronized the portable Save Diary skill
-- **Next Steps**: Confirm or discard the post-mortem draft; optionally install Mulahazah; decide how to synchronize other `Feature/` skill copies; push local commits when ready
+  - Explained agent selection — auto-routing via `description` frontmatter, explicit naming, or `delegate`; the `/agents` wizard is gone from Claude Code
+  - Established that the main thread already runs the full JIRAIYA persona from `CLAUDE.md`, so there is nothing to "switch to"
+  - Synced `.github/agents/jiraiya.agent.md` — banner protocol, farewell steps, team roster, delegation order
+  - Investigated the Codex hypothesis and disproved it: `CLAUDE.md` and `AGENTS.md` both updated Jul 20 23:52 and agree
+  - Repaired `.github/copilot-instructions.md` — removed the mandatory credit-usage step and both hardcoded ASCII banners
+  - Verified no stale ANSI codes or credit references remain, and `banner.sh --plain` runs clean
+- **Next Steps**: Check `agents/jiraiya.md` at repo root for the same stale farewell; commit `daily-diary/`, `main/current-session.md`, and the two `.github/` files
 
 ### Important Decisions
-- Treat `plugins/ses-skills/skills/` as the canonical active skill source
-- Generate the dashboard skill archive dynamically instead of maintaining another hardcoded list
-- Require browser-level verification for interactive UI flows before reporting completion
-- Keep the drafted post-mortem out of the protected log until Fendy explicitly confirms it
-- Store CR classifications as labels only, never as numbered values such as `4 - ISSUE/BUG/DEFECT`
+- `banner.sh` is the single source of truth for banner art — no instruction file may hardcode the ASCII
+- Credit-tracker usage stays out of the farewell on every surface, stated explicitly rather than merely deleted
+- Left `model: claude-sonnet-4-6` unchanged in `jiraiya.agent.md` — not part of the sync request
+- The Sakura → Naruto → Sasuke → Hinata handoff line added to the agent file was scope creep, kept but acknowledged
 
 ## Session Recap (For AI Restart)
-- **Previous Session Summary**: JIRAIYA's agent and skill metadata were clarified, active skills were audited, Hinata became the verified dashboard skill archivist, and CR classifications were normalized to label-only values.
-- **Where We Left Off**: Hinata's complete interaction works, all 24 CR entries use clean classification labels, and the active plus portable Save Diary skills enforce the same rule.
-- **Important Context**: The post-mortem draft is pending confirmation and has not been appended. Mulahazah's skill definition exists, but `~/.claude/mulahazah/` is not installed. The new project instinct lives under hash `373bba755a3c`.
-- **User's Current State**: Ended the session after the CR rule and historical data cleanup.
+- **Previous Session Summary**: Fendy asked how to choose agents, which led to auditing the agent definition files and finding retired farewell protocol still live in two `.github/` files.
+- **Where We Left Off**: Both `.github/` files are repaired and verified but uncommitted. The Codex/Claude sync path was proven healthy — Copilot was the only stale surface.
+- **Important Context**: Instruction files have multiplied to five surfaces and only `CLAUDE.md` + `AGENTS.md` were being maintained. `agents/jiraiya.md` at repo root is a third agent-definition copy, still unverified. Earlier July 20 context — banner redesign, Hinata archive, CR cleanup, pending post-mortem — remains preserved.
+- **User's Current State**: Requested a diary save after the drift repair; still has unpushed commits for cross-Mac sync.
 
 ## Session Achievements
-- ✅ Established and documented the authoritative JIRAIYA agent roster
-- ✅ Added reliable discovery descriptions to active skill frontmatter
-- ✅ Completed a redundancy audit of active skills, Feature copies, caches, and legacy files
-- ✅ Added Hinata's dynamic 34-skill dashboard archive
-- ✅ Reproduced and repaired the failed Hinata click interaction
-- ✅ Verified the complete user-facing interaction in WebGL-enabled Chrome
-- ✅ Recorded a browser-interaction verification instinct at confidence 0.60
-- ✅ Prepared an evidence-based post-mortem draft without writing it before confirmation
-- ✅ Saved the July 20 session diary and restart context
-- ✅ Enforced label-only CR classifications and cleaned all affected historical entries
+- ✅ Explained agent selection and the removal of the `/agents` wizard
+- ✅ Clarified that subagents cannot replace the main thread persona
+- ✅ Synced `.github/agents/jiraiya.agent.md` with `CLAUDE.md`
+- ✅ Disproved the Codex-drift hypothesis with git and timestamp evidence
+- ✅ Repaired `.github/copilot-instructions.md` and removed both hardcoded banners
+- ✅ Verified the repair with grep and a live `banner.sh --plain` run
+- ✅ Saved the July 21 drift-audit diary entry
 
 ## Quick Context for Next Session
-- **Where We Left Off**: The session is closed with Hinata's archive verified and CR classifications normalized
-- **What's Working**: Agent roster, skill discovery metadata, Hinata's 34-card archive, label-only CR generation, and cleaned historical CR data
-- **What Needs Attention**: Post-mortem confirmation, optional Mulahazah installation, Feature/runtime skill synchronization policy, and pushing local commits
+- **Where We Left Off**: Drift repair done on both `.github/` files, verified, not yet committed
+- **What's Working**: `banner.sh` as single source of truth, `CLAUDE.md`/`AGENTS.md`/`copilot-instructions.md` now aligned, framed gradient banner with plain fallback
+- **What Needs Attention**: Root `agents/jiraiya.md` unverified; five instruction surfaces may need consolidating into pointers; commits still unpushed for the other Mac
 
 ---
-*Session updated: 2026-07-20 23:48*
+*Session updated: 2026-07-21 00:16*
