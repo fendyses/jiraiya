@@ -7,7 +7,7 @@
 
 **Repo**: MyAlumniCard (`/Applications/Sites/myalumni-angular`)
 **Detected**: 2026-07-21 by Fendy, ~3 months after onset. Analysed same day.
-**Status**: Root cause established. **Not fixed — still occurring.**
+**Status** (as of 2026-07-22): Historical damage **repaired** — Fendy backfilled on 21 Jul; verified 16,788 records at/after 17 Apr now carry `tarikh_create`, all genuine Firestore `Timestamp`s, zero strings. **Root cause still live** — the `myatp` token is unchanged and zero records were stamped on 22 Jul, so the gap reopens daily. Mitigation `stampTarikhCreate` written, not yet deployed.
 
 ### What happened
 The hardcoded JWT in `register.component.ts:175` expired Mon 20 Apr 2026 11:27 MYT. Registration broke, and the token was replaced the same afternoon (commit `aa01c8b`, deployed 14:54 MYT) — a ~3.5-hour outage, handled quickly. The replacement token belonged to a different application: `alumnai` → `myatp`, scope `/alumnai` → `/alumnai/semak`. UiTM's upstream still authorised it and registration worked, but upstream only stamps `tarikh_create` for requests arriving as the `alumnai` app. **15,819 records created since 17 April 2026 have no `tarikh_create` — a 100.0% failure rate**, 14,466 of them completed registrations.

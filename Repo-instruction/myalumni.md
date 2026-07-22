@@ -25,10 +25,25 @@ A `myatp` token authorises fine but upstream stops stamping `tarikh_create`.
 See: post-mortem `2026-04-20 → 2026-07-21`, decision `2026-07-21`.
 
 ## Known open issue
-`tarikh_create` has not been stamped on any record created since 17 Apr 2026 —
-15,819 records and counting. Cause is the `myatp` token above. **Unfixed.**
-Blocked on Integrasi issuing an `alumnai` register token. Backfill source is
-Firestore `createTime` (exact to the second). Report: `~/Desktop/tarikh_create-incident-report.pdf`.
+Upstream stopped stamping `tarikh_create` on 17 Apr 2026. Cause is the `myatp` token above.
+
+- **Backfill: done 21 Jul 2026 by Fendy.** 16,788 records at/after 17 Apr now carry the
+  field, all genuine Firestore `Timestamp`s, zero strings (verified 22 Jul).
+- **Root cause: still live.** Zero records stamped on 22 Jul against ~24/day expected —
+  the gap reopens every day. Blocked on Integrasi issuing an `alumnai` register token.
+- **Mitigation**: `stampTarikhCreate` in `functions/src/index.ts` fills the field from
+  the document's own `createTime` when upstream doesn't. Written 22 Jul, **not yet deployed**.
+  It only writes when the field is absent, so it self-disables once upstream recovers.
+- The ~16,472 gaps before Apr 2026 are a separate ~6% background issue, cause never
+  established, deliberately left alone.
+
+Report: `~/Desktop/tarikh_create-incident-report.pdf`
+
+## Querying Firestore
+Read-only counts via `gcloud auth print-access-token` + the Firestore REST
+`:runAggregationQuery` endpoint on project `alumniuitmapp`. Note `createTime` is not a
+queryable field — filter on `tarikh_create` with a `timestampValue` range instead, and
+compare against a `stringValue` range to detect type contamination.
 
 ## Notes for future work
 - `tarikh_create` is written entirely by UiTM upstream — the app never writes or reads it,
