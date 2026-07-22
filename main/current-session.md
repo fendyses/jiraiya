@@ -1,55 +1,56 @@
-# Current Session Memory - 2026-07-21
+# Current Session Memory - 2026-07-22
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: JIRAIYA system maintenance
-**Current Project**: Jiraiya (`/Applications/Sites/jiraiya`)
-**Status**: Active — agent drift audit complete, diary saved
-**Time**: 2026-07-21 00:16
+**Session Type**: Memory repair / recall gap
+**Current Project**: MyAlumniCard (`/Applications/Sites/myalumni-angular`)
+**Status**: Active — 21 July investigation reconstructed into memory
+**Time**: 2026-07-22
 
 ## Current Focus
-- **Primary Task**: Trace and repair protocol drift across JIRAIYA's instruction files
-- **Technical Context**: Five instruction surfaces — `CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md`, `.github/agents/*.agent.md`, and `agents/*.md` at repo root
-- **Progress**: Both `.github/` files repaired and verified; root `agents/*.md` still unchecked
+- **Primary Task**: Get the 21 July `tarikh_create` investigation into the memory core so `/recall` can surface it
+- **Technical Context**: The original session (transcript `03d67819`, 21 Jul 09:21–10:15) ended without any memory-writing skill running — only `artifact-design` was invoked, for the PDF
+- **Progress**: Diary, decision, post-mortem, reminders, todo and repo instruction all written; `/recall` output switched to English
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: Agent definition drift and how agent selection works
-- **Immediate Goals**: Verify the third agent-definition copy, then commit accumulated changes
+- **Current Topic**: Why `/recall` found nothing for MyAlumniCard, and closing that gap
+- **Immediate Goals**: Verify `/recall MyAlumniCard` now returns the incident
 - **Recent Progress**:
-  - Explained agent selection — auto-routing via `description` frontmatter, explicit naming, or `delegate`; the `/agents` wizard is gone from Claude Code
-  - Established that the main thread already runs the full JIRAIYA persona from `CLAUDE.md`, so there is nothing to "switch to"
-  - Synced `.github/agents/jiraiya.agent.md` — banner protocol, farewell steps, team roster, delegation order
-  - Investigated the Codex hypothesis and disproved it: `CLAUDE.md` and `AGENTS.md` both updated Jul 20 23:52 and agree
-  - Repaired `.github/copilot-instructions.md` — removed the mandatory credit-usage step and both hardcoded ASCII banners
-  - Verified no stale ANSI codes or credit references remain, and `banner.sh --plain` runs clean
-- **Next Steps**: Check `agents/jiraiya.md` at repo root for the same stale farewell; commit `daily-diary/`, `main/current-session.md`, and the two `.github/` files
+  - Changed `/recall` skill output to English (Lv.2); Malay triggers still accepted as input
+  - Traced the missing memory to the save never running, not to a recall failure
+  - Recovered the full findings from the session transcript
+  - Switched the active repo pointer from Jiraiya to MyAlumniCard (stale since 2026-07-13)
+  - Wrote the 21 Jul diary entry, marked as reconstructed
+  - Logged the token-identity decision and the first entry in `main/post-mortems.md`
+  - Opened two reminders and two todo items for the token fix and backfill
+  - Created `Repo-instruction/myalumni.md`
+- **Next Steps**: Decide whether a CR entry is warranted (investigation only, nothing deployed); chase Integrasi for the `alumnai` register token
 
 ### Important Decisions
-- `banner.sh` is the single source of truth for banner art — no instruction file may hardcode the ASCII
-- Credit-tracker usage stays out of the farewell on every surface, stated explicitly rather than merely deleted
-- Left `model: claude-sonnet-4-6` unchanged in `jiraiya.agent.md` — not part of the sync request
-- The Sakura → Naruto → Sasuke → Hinata handoff line added to the agent file was scope creep, kept but acknowledged
+- Token replacements in MyAlumniCard must match `user`/`app`/`scope` claims, not merely authorise
+- The 21 Jul diary entry is explicitly labelled as reconstructed from transcript, so it is never mistaken for a live save
+- The `myatp` → no-stamp link stays marked as inference pending Integrasi confirmation
+- No CR logged yet — the session was read-only investigation with no change deployed
 
 ## Session Recap (For AI Restart)
-- **Previous Session Summary**: Fendy asked how to choose agents, which led to auditing the agent definition files and finding retired farewell protocol still live in two `.github/` files.
-- **Where We Left Off**: Both `.github/` files are repaired and verified but uncommitted. The Codex/Claude sync path was proven healthy — Copilot was the only stale surface.
-- **Important Context**: Instruction files have multiplied to five surfaces and only `CLAUDE.md` + `AGENTS.md` were being maintained. `agents/jiraiya.md` at repo root is a third agent-definition copy, still unverified. Earlier July 20 context — banner redesign, Hinata archive, CR cleanup, pending post-mortem — remains preserved.
-- **User's Current State**: Requested a diary save after the drift repair; still has unpushed commits for cross-Mac sync.
+- **Previous Session Summary**: `/recall` reported no memory for MyAlumniCard. Fendy was certain he had saved the previous day's work. Investigation showed the work was real but no memory-writing skill ever ran.
+- **Where We Left Off**: Memory core now carries the incident. The production bug itself is untouched.
+- **Important Context**: `tarikh_create` is still not being stamped. 15,819 records affected as of 21 Jul and growing every day. Root cause is the `myatp` token in `register.component.ts:175`. Report PDF at `~/Desktop/tarikh_create-incident-report.pdf`.
+- **User's Current State**: Learning which skills feed `/recall`; wanted the gap fixed rather than re-investigated.
 
 ## Session Achievements
-- ✅ Explained agent selection and the removal of the `/agents` wizard
-- ✅ Clarified that subagents cannot replace the main thread persona
-- ✅ Synced `.github/agents/jiraiya.agent.md` with `CLAUDE.md`
-- ✅ Disproved the Codex-drift hypothesis with git and timestamp evidence
-- ✅ Repaired `.github/copilot-instructions.md` and removed both hardcoded banners
-- ✅ Verified the repair with grep and a live `banner.sh --plain` run
-- ✅ Saved the July 21 drift-audit diary entry
+- ✅ Diagnosed the recall gap as a missing save, with transcript evidence
+- ✅ Recovered the full 21 Jul findings without re-running the investigation
+- ✅ Switched `/recall` to English output and logged it as Lv.2
+- ✅ Corrected the stale active-repo pointer
+- ✅ Wrote diary, decision, post-mortem, reminders, todo and repo instruction
+- ✅ Opened `main/post-mortems.md` with its first real entry
 
 ## Quick Context for Next Session
-- **Where We Left Off**: Drift repair done on both `.github/` files, verified, not yet committed
-- **What's Working**: `banner.sh` as single source of truth, `CLAUDE.md`/`AGENTS.md`/`copilot-instructions.md` now aligned, framed gradient banner with plain fallback
-- **What Needs Attention**: Root `agents/jiraiya.md` unverified; five instruction surfaces may need consolidating into pointers; commits still unpushed for the other Mac
+- **Where We Left Off**: MyAlumniCard memory is populated; the `tarikh_create` bug is still live in production
+- **What's Working**: `/recall MyAlumniCard` now returns the incident, decisions, post-mortem and open items
+- **What Needs Attention**: The `alumnai` token request to Integrasi is the blocker for everything else; backfill waits on it. Memory saves depend on a skill actually being invoked at session end — `session-farewell` or `save-diary` is the habit to keep.
 
 ---
-*Session updated: 2026-07-21 00:16*
+*Session updated: 2026-07-22*

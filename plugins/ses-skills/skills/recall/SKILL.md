@@ -13,11 +13,16 @@ Recall (Repo Memory Recall)
 - `"recall repo"` / `"recall this repo"` / `"recall project"`
 - `"apa kau ingat pasal repo ni"`
 - `"what do you remember about this repo"`
+- `"recall"` / `"ingat semula"` / `"do you remember"` (generic deep recall)
 
 ## Ownership Boundary
-- **jiraiya-recall** owns generic deep workspace recall ("JIRAIYA", "recall")
-- **/recall** is repo-scoped: it answers *"what do I remember about the app repo currently in use"*
+- **/recall** owns all on-demand recall — repo-scoped by default, answering
+  *"what do I remember about the app repo currently in use"*. When the trigger is
+  generic (`"recall"`, `"ingat semula"`), resolve the repo from the active
+  pointer and run the same sweep.
 - **session-briefing** owns the automatic startup brief — do not duplicate it
+- **master-memory.md** owns the `"JIRAIYA"` Instant Restoration Protocol
+- **check-reminders** owns reminder-specific operations
 - **repo-switcher** owns changing the active repo; this skill only reads it
 
 ## Activation Condition
@@ -33,7 +38,7 @@ Determine name + path in this order (first match wins):
 3. Fall back to the current working directory, matched against the registry table.
 
 If the resolved path is not in the registry, say so plainly and offer:
-`"Repo ni belum register — nak aku 'add repo [name] [path]'?"`
+`"This repo isn't registered yet — want me to 'add repo [name] [path]'?"`
 
 If the path does not exist on disk, flag it (repo may have moved).
 
@@ -64,39 +69,45 @@ opening every file, then read only the files that hit.
 === /recall — [Repo Name] ===
 📁 [/absolute/path]  ·  [registered ✅ | unregistered ⚠️ | path missing ❌]
 
-Apa ini: [1-line what the repo is, from instructions/diary]
+What it is: [1-line what the repo is, from instructions/diary]
 
-Sesi terakhir: [date] — [what was done]
+Last session: [date] — [what was done]
 
-Keputusan penting:
+Key decisions:
 - [decision + date]
 
 Open items:
 - [todo / reminder]
 
-Jangan ulang: [post-mortem lesson, if any]
+Don't repeat: [post-mortem lesson, if any]
 
-Arah seterusnya: [suggested continuation]
+Next step: [suggested continuation]
 ```
 
 Rules:
+- **Always reply in English** — the whole `/recall` output, including prompts and
+  follow-up questions. Malay trigger phrases are accepted as input, but the
+  briefing itself is always English.
 - **Skip empty sections silently** — never print a header with "none".
 - Cap the whole output at ~15 lines; depth on request (`/recall full`).
 - Always show absolute paths so they are clickable.
 - Newest information first within each section.
 - Quote memory as-is — do not invent context that is not in the files.
-- If nothing at all is found: say plainly `"Takde memory pasal repo ni lagi."` and
+- If nothing at all is found: say plainly `"No memory about this repo yet."` and
   suggest saving a diary/decision entry after this session.
 
 ### Step 4 — Offer Next Move
 If continuation is unclear, ask one short question:
-`"Nak sambung [option A] atau [option B]?"`
+`"Continue with [option A] or [option B]?"`
 
 ## Companion Skills
 - `repo-switcher` → owns `main/repos.md` and the active repo pointer
-- `jiraiya-recall` → generic deep workspace recall
 - `session-briefing` → startup brief
 - `save-diary` → writes the memory this skill reads back
 
 ## Level History
+- **Lv.3** — Absorbed JIRAIYA Recall: merged the `jiraiya-recall` skill into this one. That skill read only `current-session.md` + `reminders.md` — a strict subset of this sweep — while competing for the same `"recall"` trigger. Generic recall phrases now route here; the `"JIRAIYA"` Instant Restoration Protocol stays owned by `master-memory.md`. (Origin: Fendy's skill-redundancy audit, 2026-07-22)
+- **Lv.2** — English output: all briefing labels, prompts and follow-up questions
+  are English; Malay trigger phrases still accepted as input. (Origin: Fendy asked
+  for all `/recall` replies in English, 2026-07-22)
 - **Lv.1** — Base: active-repo resolution from `main/repos.md` (arg → active → cwd), memory-core sweep across registry, repo instructions, session RAM, todo, reminders, decisions, post-mortems, diary, CR and plans, compact repo-scoped briefing with skip-empty rules. (Origin: Fendy requested `/recall` for the repo currently in use, 2026-07-21)

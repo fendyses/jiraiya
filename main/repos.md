@@ -18,9 +18,9 @@
 | 11 | HEPWeb | /Applications/Sites/hepweb |
 
 ## Active Repo
-- **Name**: Jiraiya
-- **Path**: /Applications/Sites/jiraiya
-- **Switched**: 2026-07-13 (path correction — repos had moved from ServBay to Sites)
+- **Name**: MyAlumniCard
+- **Path**: /Applications/Sites/myalumni-angular
+- **Switched**: 2026-07-22 (pointer was stale on Jiraiya since 2026-07-13 while work happened here)
 
 ---
 *Add new repos by appending a row to the table above.*

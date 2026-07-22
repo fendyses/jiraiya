@@ -114,7 +114,7 @@ When scanning for consistency (Principle 3), auto-detect stack from file extensi
 Scan is silent — only adjusts output if inconsistency is found.
 
 ## Companion Skills
-- Auto-Worker-System → all code edits dispatched by auto-worker follow these principles
+- Orchestration-System → all code edits dispatched by orchestration (incl. Autonomous Mode) follow these principles
 - Security-Audit-System → security fixes follow code-sharp during remediation
 
 ## Level History

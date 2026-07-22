@@ -1,6 +1,6 @@
 ---
 name: orchestration
-description: "Design and coordinate complex multi-step, multi-domain, multi-file, or multi-source workflows by selecting an execution pattern, building a minimal plan, delegating when useful, synthesizing evidence, and verifying the result. Use for complete audits, roadmaps, strategies, task decomposition, multi-source comparisons, end-to-end plans, or work requiring workflow selection and integrated reasoning beyond direct task execution."
+description: "Design and coordinate complex multi-step, multi-domain, multi-file, or multi-source workflows by selecting an execution pattern, building a minimal plan, delegating when useful, synthesizing evidence, and verifying the result. Use for complete audits, roadmaps, strategies, task decomposition, multi-source comparisons, end-to-end plans, or work requiring workflow selection and integrated reasoning beyond direct task execution. Also covers autonomous execution of broad goals stated without a method — 'set up [X]', 'clean up [X]', 'fix everything', 'handle [X] for me', 'research [X] and recommend' — via Autonomous Mode. Do not use for a single clear action, explicit step-by-step instructions, or inspection-only work."
 ---
 
 # 🎯 Orchestration System — Skill Plugin
@@ -18,10 +18,15 @@ Orchestrate
 - `"research + summarize + cadangkan"`
 - `"buat execution plan end-to-end"`
 - Any task with 3+ steps, multiple components, or multiple sources
+- **Autonomous Mode triggers** — a goal stated without a method, implying 2+ hidden steps:
+  `"set up [X]"` / `"clean up [X]"` / `"fix everything in [project]"` /
+  `"handle [X] for me"` / `"research [X] and recommend"`
 
 ## Suppression
 - `"single pass"` — skip orchestration, respond directly
 - Simple tasks with one clear answer — do not orchestrate unnecessarily
+- User gives explicit step-by-step instructions — follow them directly, do not decompose
+- Inspection-only requests — read and report, do not start executing
 
 ## Activation Condition
 Fires when the task is too complex for a single-pass response — multi-step, multi-domain, multi-file, or open-ended exploration.
@@ -141,6 +146,54 @@ Before finishing:
 4. Evaluate tradeoffs
 5. Give recommendation + rationale + risks
 
+## Autonomous Mode
+
+Engaged when the user states a **goal without a method** (see Autonomous Mode
+triggers). The 8-step loop above still applies, with these overrides:
+
+**Override 1 — Silent by default.** Core Principle 5 (visible progress) is
+inverted here: work through the decomposition without progress narration, then
+deliver one synthesis report. The user asked for an outcome, not a commentary.
+
+**Override 2 — Self-resolve routine blockers.** Do not stop for things you can
+settle from the codebase:
+
+| Situation | Action |
+|-----------|--------|
+| File does not exist | Find the alternative, proceed with what exists |
+| Pattern unclear | Check sibling files for the established example |
+| Choice between two approaches | Pick the one consistent with the existing codebase |
+| Minor resolvable issue | Resolve it, note it in the final report |
+| Needs a user decision | Escalate — see Override 3 |
+
+**Override 3 — Minimum escalation.** Escalate only when the decision is a
+trade-off the user must know about, the action is irreversible, ambiguity cannot
+be inferred from context, or resolving it would exceed the stated scope.
+
+```
+Perlu keputusan:
+[Issue] — [option A] vs [option B]
+Cadangan: [A/B] — sebab: [brief reason]
+```
+
+**Override 4 — Synthesis report ≤ 8 lines.**
+
+```
+Selesai.
+
+Berjaya:
+- [Task A] — [result]
+- [Task B] — [result]
+
+Nota:
+- [autonomous decisions made]
+- [files changed]
+```
+
+Guardrails from the main protocol still bind — destructive or irreversible
+actions require explicit confirmation even in Autonomous Mode, and scope stays
+tight to what was asked.
+
 ## Output Pattern
 
 When this skill is active, output follows this structure:
@@ -171,3 +224,4 @@ When this skill is active, output follows this structure:
 - **Lv.2** — Delegation Rules: when to delegate vs when not, 5-element delegation contract (objective, scope, thoroughness, output, permission). Verification contract: correctness, coverage, consistency, risk, readability. (Origin: Complex multi-file tasks, April 2026)
 - **Lv.3** — Mini Templates + Guardrails: 3 ready-to-use templates (complex audit, multi-file engineering, research+recommendation), trigger-to-pattern table, anti-fabrication guardrails, standard 6-item output pattern. (Origin: Production audit patterns, April 2026)
 - **Lv.4** — Discovery Metadata: added formal trigger-aware YAML frontmatter for reliable skill discovery. (Origin: Fendy requested metadata normalization across all skills, 2026-07-20)
+- **Lv.5** — Absorbed Auto-Worker: merged the `auto-worker` skill in as **Autonomous Mode**. The two skills shared the same decompose → dispatch → synthesize structure; auto-worker's distinct contribution was autonomous silent execution, which is now a mode override rather than a competing skill. Carried over: silent-by-default operation, the self-resolution table, the minimum-escalation format, and the ≤ 8-line synthesis report. (Origin: Fendy's skill-redundancy audit, 2026-07-22)

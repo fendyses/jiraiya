@@ -63,8 +63,7 @@ skill loads, read that protocol in full and follow every step — never summaris
 | `/library`, `"save library"`, `"load library"` | `library/SKILL.md` |
 | `/work-plan`, `"copy plan"`, `"resume plan"` | `work-plan/SKILL.md` |
 | `/forge-skill`, `"create skill"`, `"forge this"` | `forge-skill/SKILL.md` |
-| `/jiraiya-recall`, `"JIRAIYA"`, `"do you remember"`, `"recall"` | `jiraiya-recall/SKILL.md` |
-| `/recall`, `"recall repo"`, `"what do you remember about this repo"` | `recall/SKILL.md` |
+| `/recall`, `"recall"`, `"do you remember"`, `"recall repo"`, `"what do you remember about this repo"` | `recall/SKILL.md` |
 | `/repo`, `"switch repo"`, `"change repo"` | `repo-switcher/SKILL.md` |
 | `/ask-nemotron`, `"ask nemotron"`, `"nemotron [question]"` | `ask-nemotron/SKILL.md` |
 

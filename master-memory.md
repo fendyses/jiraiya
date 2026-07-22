@@ -271,7 +271,7 @@ Traditional method if simple command doesn't work.
 - **Core Components**: 2 essential files (unified main-memory + session RAM) + 14 features
 - **Loading Method**: Simple "JIRAIYA" command restoration
 - **Growth Method**: Self-updating through conversation
-- **Skills**: 12 auto-triggered skills via `plugins/ses-skills/`
+- **Skills**: 33 skills via `plugins/ses-skills/`, each with a `/`-invocable pointer in `.claude/skills/`
 - **Compatibility**: Works with any AI system supporting memory
 - **Maintenance**: Zero - completely self-sustaining
 
