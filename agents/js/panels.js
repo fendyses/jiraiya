@@ -425,8 +425,16 @@ const SAKURA_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><g
 // ════════════════════════════════════════════════════════
 // TODO — date-grouped task list (todo.php)
 // ════════════════════════════════════════════════════════
-let _todoData={ongoing:[],completed:[]};
+let _todoData={ongoing:[],completed:[],repos:[],active:'global'};
 let _todoView='ongoing';
+function todoSyncRepoSelect(){
+  const sel=document.getElementById('todoRepo'); if(!sel) return;
+  const repos=_todoData.repos||[], active=_todoData.active||'global';
+  const keep=sel.value;
+  sel.innerHTML='';
+  repos.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=(r==='global'?'⦿ global':r); sel.appendChild(o); });
+  sel.value=(keep && repos.includes(keep))?keep:(repos.includes(active)?active:(repos[0]||'global'));
+}
 async function todoApi(params){
   let url='todo.php',opt={cache:'no-store'};
   if(params.action==='list'){ url+='?action=list'; }
@@ -470,47 +478,50 @@ function todoRender(){
     if(!items.length){ list.innerHTML='<div class="todo-empty">✓ Nothing ongoing — add a task below</div>'; return; }
     todoGroup(items,'date').forEach(([d,arr])=>{
       const h=document.createElement('div'); h.className='todo-date'; h.textContent=todoDateLabel(d); list.appendChild(h);
-      arr.forEach(({it,idx})=>list.appendChild(todoRow(it.text,idx,false)));
+      arr.forEach(({it})=>list.appendChild(todoRow(it,false)));
     });
   } else {
     const items=_todoData.completed||[];
     if(!items.length){ list.innerHTML='<div class="todo-empty">No completed tasks yet</div>'; return; }
     todoGroup(items,'done').forEach(([d,arr])=>{
       const h=document.createElement('div'); h.className='todo-date'; h.textContent=todoDateLabel(d); list.appendChild(h);
-      arr.forEach(({it,idx})=>list.appendChild(todoRow(it.text,idx,true)));
+      arr.forEach(({it})=>list.appendChild(todoRow(it,true)));
     });
   }
 }
-function todoRow(text,i,done){
+function todoRow(it,done){
+  const repo=it.repo||'global', i=it.ri, text=it.text;
   const row=document.createElement('div'); row.className='todo-item'+(done?' is-done':'');
+  const tag=document.createElement('span'); tag.className='todo-repo'; tag.textContent=(repo==='global'?'⦿':repo); tag.title=repo; row.appendChild(tag);
   const t=document.createElement('div'); t.className='todo-txt'; t.textContent=text;
-  if(!done){ t.title='Click to edit'; t.onclick=()=>todoEdit(row,i,text); }
+  if(!done){ t.title='Click to edit'; t.onclick=()=>todoEdit(row,repo,i,text); }
   row.appendChild(t);
   const mk=(cls,sym,title,fn)=>{ const e=document.createElement('div'); e.className='todo-ico '+cls; e.textContent=sym; e.title=title; e.onclick=fn; return e; };
   if(!done){
-    row.appendChild(mk('done','✓','Mark done',()=>todoDo({action:'complete',i})));
-    row.appendChild(mk('del','🗑','Delete',()=>{ if(confirm('Delete this task?')) todoDo({action:'delete',i}); }));
+    row.appendChild(mk('done','✓','Mark done',()=>todoDo({action:'complete',repo,i})));
+    row.appendChild(mk('del','🗑','Delete',()=>{ if(confirm('Delete this task?')) todoDo({action:'delete',repo,i}); }));
   } else {
-    row.appendChild(mk('restore','↺','Move back to ongoing',()=>todoDo({action:'restore',i})));
-    row.appendChild(mk('del','🗑','Remove',()=>{ if(confirm('Remove this completed task?')) todoDo({action:'deldone',i}); }));
+    row.appendChild(mk('restore','↺','Move back to ongoing',()=>todoDo({action:'restore',repo,i})));
+    row.appendChild(mk('del','🗑','Remove',()=>{ if(confirm('Remove this completed task?')) todoDo({action:'deldone',repo,i}); }));
   }
   return row;
 }
-function todoEdit(row,i,text){
+function todoEdit(row,repo,i,text){
   const inp=document.createElement('input'); inp.className='todo-edit'; inp.value=text; inp.maxLength=300;
   row.replaceChild(inp,row.querySelector('.todo-txt')); inp.focus(); inp.setSelectionRange(text.length,text.length);
   let saved=false;
-  const save=()=>{ if(saved)return; saved=true; const v=inp.value.trim(); if(v&&v!==text) todoDo({action:'update',i,text:v}); else todoRender(); };
+  const save=()=>{ if(saved)return; saved=true; const v=inp.value.trim(); if(v&&v!==text) todoDo({action:'update',repo,i,text:v}); else todoRender(); };
   inp.onkeydown=e=>{ if(e.key==='Enter'){e.preventDefault();save();} else if(e.key==='Escape'){saved=true;todoRender();} };
   inp.onblur=save;
 }
-async function todoDo(params){ try{ _todoData=await todoApi(params); todoRender(); }catch(e){ console.error(e); } }
+async function todoDo(params){ try{ _todoData=await todoApi(params); todoSyncRepoSelect(); todoRender(); }catch(e){ console.error(e); } }
 function todoEsc(e){ if(e.key==='Escape') closeTodo(); }
 async function openTodo(){
   const ov=document.getElementById('todoOverlay'); ov.classList.add('open');
   ov.onclick=e=>{ if(e.target===ov) closeTodo(); };
   document.addEventListener('keydown',todoEsc);
-  try{ _todoData=await todoApi({action:'list'}); }catch(e){ _todoData={ongoing:[],completed:[]}; }
+  try{ _todoData=await todoApi({action:'list'}); }catch(e){ _todoData={ongoing:[],completed:[],repos:[],active:'global'}; }
+  todoSyncRepoSelect();
   todoTab('ongoing');
   const inp=document.getElementById('todoInput'); if(inp) inp.focus();
 }
@@ -520,8 +531,9 @@ function closeTodo(){
 }
 async function addTodo(){
   const inp=document.getElementById('todoInput'); const v=inp.value.trim(); if(!v) return;
+  const sel=document.getElementById('todoRepo'); const repo=sel?sel.value:'';
   inp.value=''; if(_todoView!=='ongoing') _todoView='ongoing';
-  await todoDo({action:'add',text:v});
+  await todoDo(repo?{action:'add',text:v,repo}:{action:'add',text:v});
   todoTab('ongoing'); inp.focus();
 }
 (function(){ const inp=document.getElementById('todoInput');

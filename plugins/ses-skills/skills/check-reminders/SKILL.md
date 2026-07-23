@@ -8,6 +8,18 @@ description: "Auto-triggers at session start to review open reminders. Also trig
 # Check Reminders -- Persistent Follow-Up Skill
 *Nothing gets lost between sessions.*
 
+## Per-Repo Routing (2026-07-23)
+Repo reminders now live in the **active repo's folder**. Resolve the active repo from
+`main/repos.md` → `## Active Repo` (or the current working directory), take its path
+**basename** as the slug, and route:
+- **Repo-scoped reminder** → `projects/<slug>/reminders.md` (create with a
+  `# <Repo> — Reminders` header + `## Open` / `## Completed` if missing).
+- **Global reminder** (not tied to one app) → `main/reminders.md`.
+
+On session start, read the active repo's `projects/<slug>/reminders.md` **and**
+`main/reminders.md`. Everywhere below that says `main/reminders.md` for a repo-scoped
+item, use the per-repo file instead. See `projects/REPO-MEMORY-PROTOCOL.md`.
+
 ## Activation
 
 When this skill activates, silently read `main/reminders.md`.

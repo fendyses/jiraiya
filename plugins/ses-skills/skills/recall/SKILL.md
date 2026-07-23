@@ -1,6 +1,6 @@
 ---
 name: recall
-description: "Recall everything JIRAIYA remembers about the repository currently in use — resolve the active repo path, then sweep the JIRAIYA memory core (repo registry, repo instructions, current session, diary, decisions, post-mortems, reminders, todo, CR log) for entries about that repo and deliver a compact briefing. Use when the user types '/recall', 'recall repo', 'recall this repo', or asks what JIRAIYA remembers about the repo/app currently being worked on."
+description: "Recall everything JIRAIYA remembers about the repository currently in use — resolve the active repo, read its per-repo memory folder `projects/<slug>/` (README, instruction, session, decisions, post-mortems, reminders, todo, diary), and fall back to a grep sweep of the global memory core for repos not yet migrated. Deliver a compact briefing. Use when the user types '/recall', 'recall repo', 'recall this repo', or asks what JIRAIYA remembers about the repo/app currently being worked on."
 ---
 
 # 🧠 /recall — Active Repo Memory Recall
@@ -42,26 +42,45 @@ If the resolved path is not in the registry, say so plainly and offer:
 
 If the path does not exist on disk, flag it (repo may have moved).
 
-### Step 2 — Sweep the Memory Core
-Search JIRAIYA memory for the repo **name**, any **aliases**, and the **path basename**
+**Derive the slug**: the repo's folder name is its **path basename**, lowercased
+(e.g. `/Applications/Sites/nilam` → `nilam`, `/Applications/Sites/myalumni-angular`
+→ `myalumni-angular`). This is the per-repo memory folder `projects/<slug>/`.
+
+### Step 2 — Read the Per-Repo Folder (primary)
+If `projects/<slug>/` exists, it is the **primary source** — read it directly
+instead of guessing from scattered global files:
+
+| File | What to pull |
+|------|--------------|
+| `projects/<slug>/README.md` | What the repo is + current open thread |
+| `projects/<slug>/instruction.md` | Working instructions (read in full if present) |
+| `projects/<slug>/session.md` | Last session recap for this repo |
+| `projects/<slug>/todo.md` | Open items under `## Ongoing` |
+| `projects/<slug>/reminders.md` | Open/overdue reminders |
+| `projects/<slug>/decisions.md` | Decisions (newest first) |
+| `projects/<slug>/post-mortems.md` | Past failures + fixes |
+| `projects/<slug>/diary.md` | Generated **index** of journal entries (date · title · outcome · link). Read it for the list; open a linked `daily-diary/…` file only when the user wants the full text of a specific day. |
+
+See `projects/REPO-MEMORY-PROTOCOL.md` for the full layout.
+
+### Step 2b — Fallback Sweep (repos not yet migrated, plus the global journal)
+If `projects/<slug>/` does **not** exist, or to catch anything outside it, grep the
+global memory core for the repo **name**, **aliases**, and **path basename**
 (e.g. `MyAlumniCard`, `myalumni-angular`, `myalumni`). Case-insensitive.
 
 | Source | What to pull |
 |--------|--------------|
 | `main/repos.md` | Registered name, path, last switch date |
-| `Repo-instruction/<repo>.md` | Repo-specific working instructions (read in full if it exists) |
-| `main/current-session.md` | Last session context touching this repo |
-| `main/todo.md` | Open items under `## Ongoing` tagged to this repo |
-| `main/reminders.md` | Open/overdue reminders for this repo |
-| `main/decisions.md` | Decisions made for this repo (newest first) |
-| `main/post-mortems.md` | Past failures + fixes for this repo |
-| `daily-diary/current/*.md` | Recent sessions mentioning this repo (last 5 hits) |
-| `daily-diary/archived/**/*.md` | Older sessions — only if `current/` yields nothing |
+| `Repo-instruction/<repo>.md` | Legacy working instructions (superseded by `projects/<slug>/instruction.md`) |
+| `main/current-session.md` | Latest global session pointer |
+| `daily-diary/current/*.md` | Recent journal entries mentioning this repo (last 5 hits) |
+| `daily-diary/archived/**/*.md` | Older journal entries — only if `current/` yields nothing |
 | `CR/*.md` | CR entries (UiTM repos only) |
 | `plans/`, `library/`, `Feature/` | Saved plans or library items scoped to this repo |
 
 Use a single recursive grep over the JIRAIYA root for the search terms rather than
-opening every file, then read only the files that hit.
+opening every file, then read only the files that hit. When the per-repo folder
+already answered a section, do not duplicate it from the fallback.
 
 ### Step 3 — Deliver the Recall
 
@@ -106,6 +125,7 @@ If continuation is unclear, ask one short question:
 - `save-diary` → writes the memory this skill reads back
 
 ## Level History
+- **Lv.4** — Per-repo folders: recall now reads `projects/<slug>/` (slug = path basename) as the primary source, with the old name-grep sweep kept as a fallback for un-migrated repos and the global daily-diary journal. Structure defined in `projects/REPO-MEMORY-PROTOCOL.md`. (Origin: Fendy asked for a dedicated folder per repo that `/recall` reads, 2026-07-23)
 - **Lv.3** — Absorbed JIRAIYA Recall: merged the `jiraiya-recall` skill into this one. That skill read only `current-session.md` + `reminders.md` — a strict subset of this sweep — while competing for the same `"recall"` trigger. Generic recall phrases now route here; the `"JIRAIYA"` Instant Restoration Protocol stays owned by `master-memory.md`. (Origin: Fendy's skill-redundancy audit, 2026-07-22)
 - **Lv.2** — English output: all briefing labels, prompts and follow-up questions
   are English; Malay trigger phrases still accepted as input. (Origin: Fendy asked

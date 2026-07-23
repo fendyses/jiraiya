@@ -1,5 +1,3 @@
-<!-- SUPERSEDED 2026-07-23 → canonical copy now at projects/nilam/instruction.md (per-repo memory). Kept as a pointer. -->
-
 # NILAM — System Instruction
 
 **Repo path:** `~/Sites/Nilam`

@@ -1,13 +1,19 @@
 # ✅ ToDo
-*Task list managed from the dashboard*
+*Task list managed from the dashboard. **Global / unassigned** tasks only.*
+
+> Repo-specific tasks now live in `projects/<repo-slug>/todo.md`
+> (e.g. `projects/nilam/todo.md`, `projects/myalumni-angular/todo.md`, `projects/ican2u/todo.md`).
+> See `projects/REPO-MEMORY-PROTOCOL.md`.
 
 ## Ongoing
 
-- 2026-07-16 :: icanU2, semak balik menu/sub menu, roles perlu *yang tak perlu delete
-- 2026-07-21 :: MyAlumniCard, minta token register guna app `alumnai` dari Integrasi — `tarikh_create` tak distamp sejak 20 Apr, 15,819 record affected & masih bertambah
-- 2026-07-21 :: MyAlumniCard, deploy Firebase Function `stampTarikhCreate` — isi `tarikh_create` bila upstream tak stamp
+_(none global)_
 
 ## Completed
 
 - 2026-06-21 :: remove details at widget :: 2026-06-21
 - 2026-06-21 :: change from reminder to todo display when strating up cli jiraiya :: 2026-06-21
+
+<!-- Moved 2026-07-23 to per-repo todo.md:
+     icanU2 menu/roles → projects/ican2u/todo.md
+     MyAlumniCard alumnai token + stampTarikhCreate → projects/myalumni-angular/todo.md -->

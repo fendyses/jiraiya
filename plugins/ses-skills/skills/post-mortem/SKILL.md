@@ -5,6 +5,18 @@ description: "Capture established failures with context, root cause, lessons, an
 
 # 🔥 Post-Mortem — Skill Plugin
 
+## Per-Repo Routing (2026-07-23)
+Post-mortems now live in the **active repo's folder**. Resolve the active repo from
+`main/repos.md` → `## Active Repo` (or the current working directory), take its path
+**basename** as the slug, and route:
+- **Repo-scoped failure** → append to `projects/<slug>/post-mortems.md` (create with a
+  `# <Repo> — Post-Mortems` header if missing).
+- **Non-repo failure** (process, infra, JIRAIYA itself) → keep in `main/post-mortems.md`.
+
+Everywhere below that says `main/post-mortems.md` for a repo-scoped entry, use the
+per-repo file instead. The "Domain Reference Behavior" check should read the active
+repo's `projects/<slug>/post-mortems.md` too. See `projects/REPO-MEMORY-PROTOCOL.md`.
+
 ## Skill Name
 Post-Mortem System
 

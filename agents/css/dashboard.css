@@ -254,3 +254,15 @@
     .mon-net-rate{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:19px;color:#fff;line-height:1.05;display:flex;align-items:center;gap:6px}
     .mon-net-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
     .mon-arrow{font-size:16px;line-height:1}
+
+/* ── Per-repo todo tags + add-target selector (Option A, 2026-07-23) ── */
+.ck-repo{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;color:#D4A017;opacity:.75;margin-right:4px;vertical-align:baseline}
+.todo-repo{flex:0 0 auto;font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+  color:#D4A017;background:rgba(212,160,23,.12);border:1px solid rgba(212,160,23,.28);
+  border-radius:4px;padding:1px 5px;margin-right:6px;max-width:120px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+#todoRepo{flex:0 0 auto;max-width:140px;background:rgba(255,255,255,.06);color:#e8e8ea;
+  border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:0 8px;font-size:12px;
+  height:36px;outline:none;cursor:pointer}
+#todoRepo:focus{border-color:rgba(212,160,23,.55)}

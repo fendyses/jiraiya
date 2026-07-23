@@ -9,6 +9,18 @@ description: "Auto-triggers when a non-obvious decision is made during conversat
 # Log Decision -- Append-Only Decision Tracking Skill
 *Every important "why" captured, every trade-off remembered.*
 
+## Per-Repo Routing (2026-07-23)
+Repo decisions now live in the **active repo's folder**. Resolve the active repo
+from `main/repos.md` → `## Active Repo` (or the current working directory), take its
+path **basename** as the slug, and route:
+- **Repo-scoped decision** → append to `projects/<slug>/decisions.md` (create with a
+  `# <Repo> — Decision Log` header if missing).
+- **Company / JIRAIYA-level decision** (SES Creative, roadmap, skill architecture — not
+  about one app) → keep in `main/decisions.md`.
+
+Everywhere below that says `main/decisions.md` for a repo-scoped entry, use the
+per-repo file instead. See `projects/REPO-MEMORY-PROTOCOL.md`.
+
 ## Activation
 
 When this skill activates, silently read `main/decisions.md`.

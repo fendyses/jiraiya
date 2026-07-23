@@ -8,6 +8,23 @@ description: "MUST use when user says 'save diary', 'write diary', 'diary entry'
 # Save Diary — Session Documentation Skill
 *The pen touches paper. Today's story takes shape.*
 
+## Per-Repo Routing (2026-07-23)
+Sessions are now recorded per repo. Resolve the active repo from `main/repos.md` →
+`## Active Repo` (or the current working directory), take its path **basename** as the
+slug, and in addition to the global steps below:
+- **Diary (Step 3)** — append the entry to the global `daily-diary/current/YYYY-MM-DD.md`
+  journal (the single source of truth). Do **not** copy it into repo folders. After the
+  regenerate step, `projects/<slug>/diary.md` is refreshed automatically as a generated
+  **index** (date · title · outcome · link).
+- **Session RAM (Step 4)** — overwrite `projects/<slug>/session.md` with this session's
+  recap (per `main/session-format.md`). Also refresh `main/current-session.md` as a short
+  **global "latest session" pointer** naming the repo + slug and linking to
+  `projects/<slug>/session.md`.
+- **CR check (Step 6)** — unchanged (UiTM repos).
+
+The global daily-diary journal + `diary-data.js` tooling stay intact. See
+`projects/REPO-MEMORY-PROTOCOL.md`.
+
 ## Activation
 
 When this skill activates, output:
@@ -66,10 +83,11 @@ When this skill activates, output:
 - [ ] This step is required even if no code was written — always reflect the actual end-of-session state so the next session brief is accurate
 - [ ] Confirm diary entry saved with timestamp
 
-### Step 5: Regenerate Dashboard Diary Snapshot (MANDATORY — never skip)
+### Step 5: Regenerate Generated Diary Views (MANDATORY — never skip)
 - [ ] Run `python3 daily-diary/regenerate-diary-data.py` from the repo root
 - [ ] This rebuilds `daily-diary/diary-data.js` from every `current/*.md` + `archived/*/*.md` file
 - [ ] Required because `agents/dashboard.html`'s in-game diary book reads only this generated snapshot, never the `.md` files directly — skipping this step leaves the book showing stale/wrong content (including old timestamps) even after the `.md` file is fixed
+- [ ] Also run `python3 daily-diary/regenerate-repo-diaries.py` — this rebuilds every `projects/<slug>/diary.md` **index** (date · title · outcome · link) from the journal. The per-repo diary is a generated index, never a hand-edited copy, so `/recall` always sees a fresh, drift-free view.
 
 ### Step 6: CR Log — UiTM Repos Only
 
@@ -122,7 +140,7 @@ When this skill activates, output:
 4. **Archive first** — run monthly archive check before every write
 5. **Evidence-based** — document actual session content, not generic summaries
 6. **Follow existing protocol** — use `daily-diary/daily-diary-protocol.md` for entry structure
-7. **Always regenerate `diary-data.js` after writing or editing any diary `.md` file** — run `python3 daily-diary/regenerate-diary-data.py`. This applies to new entries, corrections, and archival moves alike.
+7. **Always regenerate the diary views after writing or editing any diary `.md` file** — run both `python3 daily-diary/regenerate-diary-data.py` (dashboard book) and `python3 daily-diary/regenerate-repo-diaries.py` (per-repo `projects/<slug>/diary.md` indexes). This applies to new entries, corrections, and archival moves alike.
 8. **Always update `main/current-session.md` after every diary write (Step 4 above).** This is the only persistent cross-session RAM — if it is stale, the next session brief will be wrong. Never finish a diary write without also writing a fresh current-session snapshot.
 
 ## Edge Cases

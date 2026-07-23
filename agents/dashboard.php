@@ -20,11 +20,17 @@ if ($sess = @file_get_contents($REPO . '/main/current-session.md')) {
     }
     if (preg_match('/\*\*Status\*\*:\s*(.+)/', $sess, $m)) $projStatus = trim($m[1]);
 }
+// Ongoing todos aggregated across every repo (projects/*/todo.md) + global (main/todo.md).
 $todoOngoing = [];
-if ($td = @file_get_contents($REPO . '/main/todo.md')) {
-    if (preg_match('/##\s*Ongoing(.*?)(?:##\s*Completed|$)/s', $td, $m) &&
-        preg_match_all('/^\s*-\s+\d{4}-\d{2}-\d{2}\s*::\s*(.+?)\s*$/m', $m[1], $items)) {
-        $todoOngoing = array_map('trim', $items[1]);
+$todoFiles = glob($REPO . '/projects/*/todo.md') ?: [];
+$todoFiles[] = $REPO . '/main/todo.md';
+foreach ($todoFiles as $tf) {
+    $slug = (strpos($tf, '/projects/') !== false) ? basename(dirname($tf)) : 'global';
+    if ($td = @file_get_contents($tf)) {
+        if (preg_match('/##\s*Ongoing(.*?)(?:##\s*Completed|$)/s', $td, $m) &&
+            preg_match_all('/^\s*-\s+\d{4}-\d{2}-\d{2}\s*::\s*(.+?)\s*$/m', $m[1], $items)) {
+            foreach ($items[1] as $it) $todoOngoing[] = ['text' => trim($it), 'repo' => $slug];
+        }
     }
 }
 
@@ -176,6 +182,7 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
     </div>
     <div id="todoList" class="todo-list"></div>
     <div class="todo-add">
+      <select id="todoRepo" title="Which repo to add this task to"></select>
       <input id="todoInput" type="text" maxlength="300" placeholder="Add a task…" autocomplete="off">
       <button id="todoAddBtn" class="cf-btn cf-ok" onclick="addTodo()">Add</button>
     </div>
@@ -307,7 +314,7 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
         <?php endif; ?>
         <div class="ck-rem-head">ONGOING TODO<span class="ck-badge<?= $todoOngoing ? '' : ' zero' ?>"><?= count($todoOngoing) ?></span></div>
         <?php if ($todoOngoing): foreach (array_slice($todoOngoing, 0, 4) as $r): ?>
-          <div class="ck-rem">› <?= $ck_md($r) ?></div>
+          <div class="ck-rem">› <span class="ck-repo"><?= $ck_md($r['repo']) ?></span> <?= $ck_md($r['text']) ?></div>
         <?php endforeach; else: ?>
           <div class="ck-none">✓ all clear</div>
         <?php endif; ?>

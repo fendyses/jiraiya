@@ -22,8 +22,9 @@ Session Briefing
 Fires automatically at the start of every new conversation session, before processing the user's first message.
 
 ## Behavior
-1. Read `main/current-session.md` — extract last session recap (1–2 lines)
-2. Read `main/todo.md` — list open items under `## Ongoing` (skip section if none)
+0. Resolve the active repo from `main/repos.md` → `## Active Repo` (or cwd); slug = path basename. If `projects/<slug>/` exists, prefer it for steps 1–2 (see `projects/REPO-MEMORY-PROTOCOL.md`).
+1. Read `projects/<slug>/session.md` (repo recap) — else `main/current-session.md` — extract last session recap (1–2 lines)
+2. Read `projects/<slug>/todo.md` then `main/todo.md` — list open items under `## Ongoing` (skip section if none)
 3. Read project list — identify active project + 🔴/🟡 health flags (if LRU System installed)
 4. Check current time — determine time period (if Time-based-Aware System installed)
 5. Read `JIRAIYA-hub/data/inbox.json` — surface queued tasks if present; ask user which to tackle first (Lv.4)

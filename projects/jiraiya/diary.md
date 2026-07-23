@@ -1,0 +1,36 @@
+# Jiraiya — Repo Diary Index
+*Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
+
+- **2026-07-21** — [JIRAIYA Farewell and Banner Refinement; Session Farewell; Agent Definition Drift Audit; MyAlumniCard: Why 15,819 Alumni Records Lost `tarikh_create`](../../daily-diary/current/2026-07-21.md)
+  - Outcome: Removed the automatic credit-usage line, introduced a polished violet JIRAIYA banner, and confirmed the current macOS setup is sufficient for use on another Mac
+- **2026-07-20** — [Skills, Agents, and Hinata's Archive; CR Classification Labels Normalized](../../daily-diary/current/2026-07-20.md)
+- **2026-07-16** — [Codex Icon on the Dashboard Repo Panel; CEO@Faculty Export Text Colour](../../daily-diary/current/2026-07-16.md)
+  - Outcome: Complete — icon added, backend URL-scheme handler built and verified end-to-end
+- **2026-07-15** — [Installed Codex CLI, Wired It to the JIRAIYA Memory Core](../../daily-diary/current/2026-07-15.md)
+  - Outcome: Done — Codex installed globally, `AGENTS.md` created at both global (`~/.codex/`) and repo level, `main/repos.md` registry paths corrected for all 6 repos
+- **2026-07-10** — [Dashboard: Diary Book Font + Fixed Real Layout Bug in Date List; ican2u: Pentadbir Sistem User/Role Management + Permohonan Status Tool + Editing-Lock Fix](../../daily-diary/current/2026-07-10.md)
+  - Outcome: Done — root cause found and fixed via a headless-browser repro (not guesswork); font swapped to a legible serif; same latent bug preemptively fixed in the CR Records book
+- **2026-07-03** — [(session)](../../daily-diary/current/2026-07-03.md)
+- **2026-07-02** — [(session)](../../daily-diary/current/2026-07-02.md)
+- **2026-06-25** — [(session)](../../daily-diary/archived/2026-06/2026-06-25.md)
+- **2026-06-23** — [Windmill Logo Swap & Two 3D Overlay Bugs; MyStudent: Medical-Form Token & Login-Loop Fixes](../../daily-diary/archived/2026-06/2026-06-23.md)
+  - Outcome: All three shipped. Logo replaced, name now rides the character onto the wheelbarrow, and the CR bubble pins onto the logo correctly on Retina.
+- **2026-06-22** — [Black-Screen Fix & The "New Worlds" Roadmap; Farewell Protocol Fix; Quick Check-In; Dashboard CR System & Sharingan Windmill; MyStudent Vue Session Start](../../daily-diary/archived/2026-06/2026-06-22.md)
+  - Outcome: Black screen fixed (Fendy committed it). Landed a clear roadmap for new worlds (MP4-first hybrid) and logged it to `todo.md`. No big build tonight — mostly thinking it through properly.
+- **2026-06-21** — [Dashboard Visual Effects & The Two-Loop Smoke Bug; Login Gate, Live System Gadgets & Dashboard Refactor; Startup Brief → ToDo, Widget Cleanup & Night Lamp Posts; Repo Panel, .env Registry, Console Cleanup, Perf & Lite Mode](../../daily-diary/archived/2026-06/2026-06-21.md)
+  - Outcome: Wind sway, grass/flowers, chimney smoke, water caustics, and battle FX all working; discovered a duplicate `setAnimationLoop` that had been silently killing an entire effects loop
+- **2026-06-20** — [3D Three.js Village Background for the Dashboard; 3D Mini-Characters Polish & Interaction Fixes; 3D Dashboard Visual Polish: River, House, Shadows & Timer; Dashboard Buildings 1.3× Scale & Signboard Rename; Session RAM Fix & Claude CLI Theme Discovery; Skills Registered to plugins/ses-skills/skills/](../../daily-diary/archived/2026-06/2026-06-20.md)
+  - Outcome: Working 3D village scene, iterated over many rounds to match a painted reference; characters now collide with buildings/trees
+- **2026-06-19** — [Dashboard Terminal & Claude Logo Upgrades](../../daily-diary/archived/2026-06/2026-06-19.md)
+  - Outcome: Both changes shipped and working
+- **2026-06-16** — [Session: Dashboard — Drag-and-Drop for Characters & Pets](../../daily-diary/archived/2026-06/2026-06-16.md)
+- **2026-06-15** — [Session: NILAM — PDF Re-upload & MEU Approval Auto-tick](../../daily-diary/archived/2026-06/2026-06-15.md)
+- **2026-06-14** — [Session: Harvest Moon Agent Dashboard; Session: Dashboard FX — Auras, Battles, Clouds & Summon Event; Session: Dashboard App Dock Shortcuts](../../daily-diary/archived/2026-06/2026-06-14.md)
+- **2026-06-12** — [NILAM: LPU Status Re-routing Feature](../../daily-diary/archived/2026-06/2026-06-12.md)
+- **2026-06-10** — [(session)](../../daily-diary/archived/2026-06/2026-06-10.md)
+- **2026-05-22** — [(session)](../../daily-diary/archived/2026-05/2026-05-22.md)
+- **2026-05-21** — [(session)](../../daily-diary/archived/2026-05/2026-05-21.md)
+- **2026-05-19** — [(session)](../../daily-diary/archived/2026-05/2026-05-19.md)
+- **2026-04-08** — [Setup Skills & Virtual Company](../../daily-diary/archived/2026-04/2026-04-08.md)
+- **2026-04-02** — [Sync new skills from pwa_eworks to XJIRAIYAX; Update skill plugin README without using an index file](../../daily-diary/archived/2026-04/2026-04-02.md)
+- **2026-03-30** — [March 30, 2026 - Setup Wizard Session; March 30, 2026 - Full Feature Installation; March 30, 2026 - Memory Consolidation Activated](../../daily-diary/archived/2026-03/2026-03-30.md)
