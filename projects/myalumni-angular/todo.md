@@ -3,9 +3,8 @@
 
 ## Ongoing
 
-- 2026-07-21 :: Minta token register guna app `alumnai` dari Integrasi — `tarikh_create` tak distamp sejak 20 Apr, 15,819 record affected & masih bertambah
-- 2026-07-21 :: Deploy Firebase Function `stampTarikhCreate` — isi `tarikh_create` bila upstream tak stamp
+- 2026-07-21 :: Minta token register guna app `alumnai` dari Integrasi — root cause upstream masih guna `myatp`; kini di-mitigasi oleh `stampTarikhCreate`, tapi token betul kekal fix ideal (downgraded dari urgent)
 
 ## Completed
 
-_(none yet)_
+- 2026-07-22 :: Deploy Firebase Function `stampTarikhCreate` — isi `tarikh_create` guna `createTime` bila upstream tak stamp. DONE, CR logged `CR/7-2026.md` (22-07-2026).
