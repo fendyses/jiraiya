@@ -3,7 +3,7 @@
 
 ## Open
 
-- **Request `alumnai`-issued register token from Integrasi** (opened 2026-07-21; downgraded from urgent 2026-07-23): The register flow runs on a `myatp` token since 20 Apr 2026, so UiTM stops stamping `tarikh_create`. The daily gap is now **mitigated** by the deployed `stampTarikhCreate` function (22 Jul) — so this is no longer urgent, but the `alumnai` token remains the proper root-cause fix. Ask Integrasi for a register-flow token issued to the **`alumnai`** app (matching `attendance.component.ts:102`) and confirm that stamping is gated on app identity. See post-mortem 2026-04-20 → 2026-07-21.
+- **Follow up with Integrasi on the upstream `tarikh_create` root cause** (opened 2026-07-21; downgraded from urgent 2026-07-23): Fendy already reported it to Integrasi, but **they didn't know the cause either** — so there's no upstream fix owner yet. The daily gap is now **mitigated** by the deployed `stampTarikhCreate` function (22 Jul, verified 23 Jul), so this is no longer urgent. Proper cure remains an `alumnai`-issued register token (matching `attendance.component.ts:102`) + confirming stamping is gated on app identity. Once upstream stamps again, the function self-disables. See decision 2026-07-22 and post-mortem 2026-04-20 → 2026-07-21.
 
 ## Completed
 
