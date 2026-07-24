@@ -1,6 +1,8 @@
 # Nilam — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-07-24** — [NILAM: "Pending LPU Approval" fix applied + report](../../daily-diary/current/2026-07-24.md)
+  - Outcome: Source code fixed and lint-clean (uncommitted on `development`). Backfill handed off as SQL (DB access is read-only). PDF report generated.
 - **2026-07-23** — [NILAM: "Pending LPU Approval" status bug investigation](../../daily-diary/current/2026-07-23.md)
   - Outcome: Root cause found and confirmed against live DB. Fix proposed but NOT yet applied.
 - **2026-07-15** — [Installed Codex CLI, Wired It to the JIRAIYA Memory Core](../../daily-diary/current/2026-07-15.md)

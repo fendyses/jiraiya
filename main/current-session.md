@@ -6,13 +6,13 @@
 
 ## Latest session
 - **Repo:** Nilam (`projects/nilam/`)
-- **Date:** 2026-07-23
-- **Summary:** Root-caused the "Pending LPU Approval" status bug (96 notify-only apps mislabelled; regression from commit `427649b`). Fix + backfill designed, not applied. Also restructured JIRAIYA memory into per-repo folders under `projects/`.
+- **Date:** 2026-07-24
+- **Summary:** Applied the "Pending LPU Approval" source fix in `LpuApprovalController::meeting()` (per-app status 13/12; hardened `$approvedByLpu`), lint-clean but uncommitted on `development`. Live mislabelled count re-verified = 88 (was 96), all under LPU meeting #29. Backfill handed off as SQL (DB access is read-only). Generated a PDF report in the repo root.
 - **Full recap:** `projects/nilam/session.md`
 
 ## Recent per-repo sessions
-- Nilam → `projects/nilam/session.md` (2026-07-23)
+- Nilam → `projects/nilam/session.md` (2026-07-24)
 - MyAlumniCard → `projects/myalumni-angular/session.md` (2026-07-22)
 
 ---
-*Updated: 2026-07-23*
+*Updated: 2026-07-24 09:21*
