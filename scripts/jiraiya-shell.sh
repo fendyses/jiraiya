@@ -48,6 +48,30 @@ function claude() {
 }
 # ─────────────────────────────────────────────────────────────────────────────
 
+# ─── Codex wrapper — shows JIRAIYA banner on start and after exit ───────────
+function codex() {
+  # Non-interactive/automation subcommands: pass through untouched — the
+  # banner would corrupt stdio protocols (IDE integrations, scripted exec).
+  case "$1" in
+    mcp-server|app-server|exec-server|mcp)
+      command codex "$@"
+      return $?
+      ;;
+  esac
+
+  # Show banner immediately at terminal level (before Codex loads)
+  bash /Applications/Sites/jiraiya/banner.sh
+  printf '\e[38;5;183m  JIRAIYA is loading... stand by.\e[0m\n\n'
+
+  # Run the real codex binary
+  command codex "$@"
+
+  # Show banner again after exit
+  bash /Applications/Sites/jiraiya/banner.sh
+  printf '\e[38;5;135m  Session closed. See you soon, Fendy!\e[0m\n\n'
+}
+# ─────────────────────────────────────────────────────────────────────────────
+
 # ─── Copilot wrapper — shows JIRAIYA banner after exit ───────────────────────
 function copilot() {
   # Auto-detect the copilot CLI binary across different VS Code install paths

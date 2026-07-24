@@ -156,7 +156,11 @@ source ~/.zshrc
 
 Gives you:
 - `ses` — prints JIRAIYA banner with agent list
+- `claude` — wraps the Claude Code CLI: shows the JIRAIYA banner before it loads and again after exit
+- `codex` — wraps the Codex CLI the same way; automation subcommands (`mcp-server`, `app-server`, `exec-server`, `mcp`) pass straight through with no banner, since their stdout is a machine protocol
 - `copilot` — wraps the Copilot CLI with banner on exit
+
+The banner (`banner.sh`) holds on screen for ~4 seconds after printing so it doesn't flash by before the CLI takes over. This is a machine-local step — repeat it on every new machine after cloning the repo (see the note under Step 6 above).
 
 ---
 

@@ -51,7 +51,7 @@ jiraiya/
 ├── scripts/                      # Shell scripts for agent installation
 │   ├── install-agents.sh         # Install agents into other repos
 │   ├── install-all-herd.sh       # Batch install for all Herd sites
-│   └── jiraiya-shell.sh          # Shell banner + copilot wrapper
+│   └── jiraiya-shell.sh          # Shell banner + claude/codex/copilot wrappers
 └── library/                      # Reusable knowledge entries
 ```
 
@@ -153,7 +153,11 @@ source /Applications/Sites/jiraiya/scripts/jiraiya-shell.sh
 
 Gives you:
 - `ses` — prints the JIRAIYA banner with agent list
+- `claude` — wraps the Claude Code CLI: shows the JIRAIYA banner before it loads and again after exit
+- `codex` — wraps the Codex CLI the same way; automation subcommands (`mcp-server`, `app-server`, `exec-server`, `mcp`) pass straight through with no banner, since their stdout is a machine protocol
 - `copilot` — wraps the Copilot CLI with banner on exit
+
+The banner itself (`banner.sh`) holds on screen for ~4 seconds after printing (skipped in `--plain` mode) so it doesn't flash by before the CLI takes over. This applies to all wrappers above since they all call the same script.
 
 ---
 

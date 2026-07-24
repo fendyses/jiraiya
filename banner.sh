@@ -35,3 +35,10 @@ for color, text in rows:
 
 sys.stdout.buffer.flush()
 EOF
+
+# Hold the banner on screen for a beat before Claude moves on to the brief.
+# Skipped in --plain mode (used for the farewell fallback text block, not live terminal display).
+case " $* " in
+  *" --plain "*) ;;
+  *) sleep 4 ;;
+esac
