@@ -7,7 +7,7 @@
 ## Latest session
 - **Repo:** ForexPulse (`projects/forexpulse/`)
 - **Date:** 2026-07-27
-- **Summary:** Expanded ForexPulse with persistent analysis workflows, Technical/News & Events/Combined modes, offline and calendar freshness UX, then built, signed, and installed version 1.0.0+2 on Fendy’s USB-connected iPhone. First launch awaits one-time developer-profile trust.
+- **Summary:** Upgraded Smart Analysis and PDF visuals, repaired fresh OHLC chart requests, synchronized pair-detail prices, and replaced daily-only Markets refresh with eight quota-aware live quotes plus derived cross rates. The verified signed build is installed on Fendy’s iPhone.
 - **Full recap:** `projects/forexpulse/session.md`
 
 ## Recent per-repo sessions
@@ -16,4 +16,4 @@
 - MyAlumniCard → `projects/myalumni-angular/session.md` (2026-07-22)
 
 ---
-*Updated: 2026-07-27 12:32*
+*Updated: 2026-07-27 16:22*
