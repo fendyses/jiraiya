@@ -5,14 +5,15 @@
 > See `projects/REPO-MEMORY-PROTOCOL.md`.
 
 ## Latest session
-- **Repo:** Nilam (`projects/nilam/`)
-- **Date:** 2026-07-24
-- **Summary:** Applied the "Pending LPU Approval" source fix in `LpuApprovalController::meeting()` (per-app status 13/12; hardened `$approvedByLpu`), lint-clean but uncommitted on `development`. Live mislabelled count re-verified = 88 (was 96), all under LPU meeting #29. Backfill handed off as SQL (DB access is read-only). Generated a PDF report in the repo root.
-- **Full recap:** `projects/nilam/session.md`
+- **Repo:** ForexPulse (`projects/forexpulse/`)
+- **Date:** 2026-07-27
+- **Summary:** Expanded ForexPulse with persistent analysis workflows, Technical/News & Events/Combined modes, offline and calendar freshness UX, then built, signed, and installed version 1.0.0+2 on Fendy’s USB-connected iPhone. First launch awaits one-time developer-profile trust.
+- **Full recap:** `projects/forexpulse/session.md`
 
 ## Recent per-repo sessions
-- Nilam → `projects/nilam/session.md` (2026-07-24)
+- ForexPulse → `projects/forexpulse/session.md` (2026-07-27)
+- Nilam → `projects/nilam/session.md` (2026-07-27)
 - MyAlumniCard → `projects/myalumni-angular/session.md` (2026-07-22)
 
 ---
-*Updated: 2026-07-24 09:21*
+*Updated: 2026-07-27 12:32*
