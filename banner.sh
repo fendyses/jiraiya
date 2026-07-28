@@ -14,10 +14,16 @@ wordmark = [
 ]
 
 width = 66
+# Center the wordmark as ONE rigid block: the six art rows are not all the
+# same length (the top of the "A" is 1 col narrower), so centering each line
+# on its own would shear the block and notch the right border. Instead compute
+# a single left indent from the widest row and pad every row to that origin.
+art_w = max(len(w) for w in wordmark)
+indent = (width - art_w) // 2
 rows = [(219, "╭" + "─" * width + "╮")]
 rows.append((219, "│" + " " * width + "│"))
 rows.extend(
-    (color, "│" + text.center(width) + "│")
+    (color, "│" + (" " * indent + text).ljust(width) + "│")
     for color, text in zip([219, 183, 141, 135, 99, 93], wordmark)
 )
 rows.extend([
