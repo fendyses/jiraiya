@@ -6,6 +6,8 @@ metadata:
 ---
 
 - **Name**: Fendy (Saiful Effendy)
+- **Preferred address**: Fendy
+- **Git identities**: `Saiful Effendy` and `fendyses` refer to Fendy
 - **Email**: saifuleffendy@uitm.edu.my
 - **Role**: Developer / creator of the JIRAIYA AI companion system
 - **AI history**: Built AI MemoryCore for GitHub Copilot; transitioning to also use Claude Code CLI
