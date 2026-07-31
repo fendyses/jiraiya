@@ -1,8 +1,8 @@
 # Jiraiya — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
-- **2026-07-31** — [NILAM LPU Draft Page 404 Investigation](../../daily-diary/current/2026-07-31.md)
-  - Outcome: Root cause confirmed, three affected controller joins corrected locally, and the fix left staged but uncommitted for Fendy to test
+- **2026-07-31** — [NILAM Department-Code Source Correction; NILAM LPU Draft Page 404 Investigation](../../daily-diary/current/2026-07-31.md)
+  - Outcome: The earlier LPU query workaround was reverted; live Digital Campus ingestion now reads `kodjabatan`, and Fendy manually committed the reviewed fix
 - **2026-07-21** — [JIRAIYA Farewell and Banner Refinement; Session Farewell; Agent Definition Drift Audit; MyAlumniCard: Why 15,819 Alumni Records Lost `tarikh_create`](../../daily-diary/current/2026-07-21.md)
   - Outcome: Removed the automatic credit-usage line, introduced a polished violet JIRAIYA banner, and confirmed the current macOS setup is sufficient for use on another Mac
 - **2026-07-20** — [Skills, Agents, and Hinata's Archive; CR Classification Labels Normalized](../../daily-diary/current/2026-07-20.md)

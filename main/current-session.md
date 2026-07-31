@@ -7,7 +7,7 @@
 ## Latest session
 - **Repo:** Nilam (`projects/nilam/`)
 - **Date:** 2026-07-31
-- **Summary:** Diagnosed application 6854’s LPU draft-page 404 as an incompatible department join, corrected the create/print/edit-letter queries locally, verified the required production dependencies read-only, and left the fix staged but uncommitted for browser testing.
+- **Summary:** Confirmed Nilam was reading the department name from Digital Campus `bk_jab_sekarang` instead of the code in `kodjabatan`; reverted the earlier LPU join workaround, committed the scoped source fix, and left historical database repair pending.
 - **Full recap:** `projects/nilam/session.md`
 
 ## Recent per-repo sessions
@@ -16,4 +16,4 @@
 - MyAlumniCard → `projects/myalumni-angular/session.md` (2026-07-22)
 
 ---
-*Updated: 2026-07-31 12:23*
+*Updated: 2026-07-31 15:28*

@@ -1,8 +1,8 @@
 # Nilam — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
-- **2026-07-31** — [NILAM LPU Draft Page 404 Investigation](../../daily-diary/current/2026-07-31.md)
-  - Outcome: Root cause confirmed, three affected controller joins corrected locally, and the fix left staged but uncommitted for Fendy to test
+- **2026-07-31** — [NILAM Department-Code Source Correction; NILAM LPU Draft Page 404 Investigation](../../daily-diary/current/2026-07-31.md)
+  - Outcome: The earlier LPU query workaround was reverted; live Digital Campus ingestion now reads `kodjabatan`, and Fendy manually committed the reviewed fix
 - **2026-07-28** — [NILAM: JUU Approval Letter download for admin (Manage Legal Documents)](../../daily-diary/current/2026-07-28.md)
   - Outcome: Done and verified on `development` (uncommitted). 3 files added, no existing shared views modified. Not committed — user remembered they hadn't pulled git yet.
 - **2026-07-27** — [NILAM Application 8329 Workflow Investigation; ForexPulse Smart Analysis and iPhone Deployment; ForexPulse Live Rates, Charts, and Visual Analysis](../../daily-diary/current/2026-07-27.md)
