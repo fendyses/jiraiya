@@ -1,51 +1,53 @@
-# Current Session Memory - 2026-07-27
+# Current Session Memory - 2026-07-31
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Investigation / production data verification
+**Session Type**: Investigation and bug fix
 **Current Project**: Nilam
 **Repo Path**: `/Applications/Sites/nilam`
-**Status**: Wrapping up
-**Time**: 10:26 MYT
+**Status**: Awaiting user testing
+**Time**: 12:23 MYT
 
 ## Current Focus
-- **Primary Task**: Investigate application 8329 and determine its document location and workflow stage.
-- **Technical Context**: Laravel application using prefixed `tbl_*` tables; live database access is read-only.
-- **Progress**: Root cause and remediation identified; no production data or source code changed.
+- **Primary Task**: Resolve HTTP 404 on `/lpuapprovals/create?id=6854`.
+- **Technical Context**: Laravel resource route reaches `LpuApprovalController::create()`; the application exists but was removed by an incompatible department join.
+- **Progress**: Three controller joins corrected locally and verified; change is staged but not committed or pushed.
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: Stale MEU current-state fields after an amendment/re-vetting cycle.
-- **Immediate Goals**: Clear the obsolete MEU meeting and letter with a write-enabled account, then assign a new meeting through the MEU Secretariat menu.
+- **Current Topic**: LPU preliminary-email page department resolution.
+- **Immediate Goals**: Let Fendy test application 6854 through the correct lowercase-L route before committing.
 - **Recent Progress**:
-  - Identified application 8329 and mapped its document download/storage routes.
-  - Confirmed current statuses: application 10 (`submit-for-meu-approval`) and document 6 (`document-for-meu-approval`).
-  - Confirmed `meu_meeting_id = 148` and `meu_letter` are from MEU Bil. 03/2026, not the July resubmission.
-  - Traced the amendment cycle beginning 19 June 2026 and the July resubmission on 21 July 2026.
-  - Identified the first reverter as Megat Muhammad Al-Qusyairi bin Hassan (staff 357876).
-- **Next Steps**: Execute the targeted update, verify the row, and let MEU Secretariat assign the new meeting at `/meuapprovals`.
+  - Confirmed application 6854 is active, status 12, and assigned to LPU meeting 29.
+  - Confirmed user 71 belongs to department 29, Fakulti Sains Kesihatan; `users.department_code` stores the name instead of canonical code `A0644`.
+  - Proved the existing inner join returned zero rows and triggered `findOrFail()` → 404.
+  - Updated create, print, and edit-letter queries to join `ketua_ptj` through `applications.department_id → departments.code`.
+  - PHP lint and diff checks passed; production read-only verification resolves the dean, partner, meeting, and letterhead.
+  - Generated and saved the infographic incident report in JIRAIYA.
+- **Next Steps**: Test the page and related LPU paths, then commit/push only after Fendy confirms.
 
 ### Important Decisions
-- Use a targeted database correction because the current menu has no safe MEU-cycle reset action.
-- Clear `meu_meeting_id` and `meu_letter`; keep `meu_drafted_letter = 0`.
-- Preserve historical status logs as the audit trail.
+- Use the application’s department as the source of document identity rather than the creator’s mutable directory field.
+- Correct all three instances of the faulty join so create, print, and edit-letter stay consistent.
+- Do not commit or push until Fendy completes local testing.
 
 ## Session Recap (For AI Restart)
-- **Previous Session Summary**: Application 8329 was resubmitted for MEU approval on 21 July after a June/July amendment cycle, but it still carries February meeting 148 and its March MEU letter.
-- **Where We Left Off**: Fendy has the SQL needed to clear the stale fields. After the update, MEU Secretariat should assign a new meeting through the normal queue.
-- **Important Context**: The queue requires `meu_meeting_id IS NULL`; stale meeting 148 is why the application is absent. Live DB access used during investigation was read-only.
-- **User's Current State**: Confirmed the diagnosis and requested the session be documented.
+- **Previous Session Summary**: Application 6854’s LPU draft page returned 404 because `ketua_ptj.kod_jabatan` was joined to a textual `users.department_code`.
+- **Where We Left Off**: The controller fix is staged locally for testing. Nothing was committed or pushed.
+- **Important Context**: Test with `/lpuapprovals/create?id=6854` using lowercase `l`; `/Ipuapprovals/` with capital `I` is not a registered route.
+- **User's Current State**: Ready to test before authorizing Git history changes.
 
 ## Session Achievements
-- ✅ Verified application 8329's identity, documents, storage routes, and workflow status.
-- ✅ Proved that meeting 148 and the stored MEU letter belong to the February/March approval cycle.
-- ✅ Reconstructed the amendment and resubmission timeline with exact timestamps.
-- ✅ Supplied safe SQL and the correct MEU/LPU Secretariat and applicant download routes.
+- ✅ Identified and proved the exact 404 root cause.
+- ✅ Verified the current department and Ketua PTJ mapping for application 6854.
+- ✅ Corrected all three affected LPU controller joins.
+- ✅ Passed PHP syntax and whitespace validation.
+- ✅ Produced and preserved a two-page incident infographic.
 
 ## Quick Context for Next Session
-- **Where We Left Off**: Awaiting execution of the application-8329 MEU-field reset by a write-enabled user.
-- **What's Working**: The July application/document status is correct and the audit logs are intact.
-- **What Needs Attention**: Prevent amendment return paths from retaining old MEU/LPU current-state fields.
+- **Where We Left Off**: Awaiting Fendy’s local browser test.
+- **What's Working**: Corrected production query resolves application 6854, department `A0644`, dean, partner, meeting, and letterhead.
+- **What Needs Attention**: Commit and push only after successful testing; unrelated working-tree changes must remain separate.
 
 ---
-*Session updated: 2026-07-27 10:26*
+*Session updated: 2026-07-31 12:23*
