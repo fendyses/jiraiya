@@ -1,0 +1,33 @@
+{
+  "name": "ses-skills",
+  "version": "1.0.0",
+  "description": "JIRAIYA persistent-memory workflows and operating skills for Fendy.",
+  "author": {
+    "name": "Ses"
+  },
+  "keywords": [
+    "jiraiya",
+    "memory",
+    "productivity",
+    "workflow"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "JIRAIYA Skills",
+    "shortDescription": "Persistent memory and workflow skills for JIRAIYA.",
+    "longDescription": "Codex-compatible JIRAIYA skills for session continuity, recall, reminders, project management, delegation, diary capture, and structured development workflows.",
+    "developerName": "Ses",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Recall what we last worked on.",
+      "Show my open reminders and tasks.",
+      "Save this session to the JIRAIYA diary."
+    ],
+    "brandColor": "#7C3AED"
+  }
+}
