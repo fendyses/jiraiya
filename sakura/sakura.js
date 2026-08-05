@@ -4,6 +4,12 @@ const readline = require('readline');
 const fs       = require('fs');
 const path     = require('path');
 const os       = require('os');
+const { execFileSync } = require('child_process');
+
+// ── JIRAIYA repo switcher ────────────────────────────────
+// Shared with the Claude and Codex CLIs so a switch means the same thing in all
+// three. Protocol: jiraiya/plugins/ses-skills/skills/repo-switcher/SKILL.md
+const REPO_SWITCH = '/Applications/Sites/jiraiya/bin/repo-switch.sh';
 
 // ── API Keys ─────────────────────────────────────────────
 // Loads from /Applications/Sites/jiraiya/sakura/.env
@@ -598,6 +604,8 @@ function printBanner(items) {
   line(`    ${CLR.cmd}load <path>${CLR.reset}     — load file/folder`);
   line(`    ${CLR.cmd}list${CLR.reset}            — show loaded context`);
   line(`    ${CLR.cmd}clear${CLR.reset}           — clear chat history`);
+  line(`    ${CLR.cmd}/repo-switcher${CLR.reset}  — list repos and switch (alias: ${CLR.cmd}/repo${CLR.reset})`);
+  line(`    ${CLR.cmd}/repo <n|name>${CLR.reset}  — switch straight to a repo`);
   line(`    ${CLR.cmd}exit${CLR.reset}            — quit`);
   line();
   line(`  ${CLR.dim}Sakura can also read/write/list files on this computer directly —${CLR.reset}`);
@@ -873,6 +881,40 @@ const oneShot = queryParts.join(' ').trim();
         rl.prompt(); return;
       }
       console.log(`\n  ✓ Loaded ${loaded} file(s) into context.\n`);
+      rl.prompt(); return;
+    }
+
+    // ── /repo-switcher — shared JIRAIYA repo switcher ───────
+    // Slash form always matches; the bare words only match on their own, so a
+    // sentence like "repo structure explain" still goes to the model.
+    const slashRepo = /^\/(?:repo|repo-switcher)(?:\s+(.*))?$/i.exec(trimmed);
+    const bareRepo  = (low === 'repo' || low === 'repos' || low === 'repo-switcher');
+    if (slashRepo || bareRepo) {
+      const target = slashRepo ? (slashRepo[1] || '').trim() : '';
+      if (!fs.existsSync(REPO_SWITCH)) {
+        console.log(`\n  [Sakura] Repo switcher not found: ${REPO_SWITCH}\n`);
+        rl.prompt(); return;
+      }
+      // stdio must be explicit: execFileSync leaks the child's stderr to ours
+      // by default, which would print the error twice.
+      const run = args => execFileSync('bash', [REPO_SWITCH, ...args],
+        { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+      try {
+        console.log(run(target ? ['switch', target] : ['list']));
+        if (target) {
+          // Sakura is Fendy's own process, so unlike Claude and Codex it can
+          // genuinely follow the switch instead of just printing a cd hint.
+          const dest = run(['active', '--path']).trim();
+          if (dest && fs.existsSync(dest)) {
+            process.chdir(dest);
+            if (!isTrustedPath(dest)) (config.trusted_folders ||= []).push(dest);
+            console.log(`  ✓ Sakura working directory → ${dest}\n`);
+          }
+        }
+      } catch (e) {
+        const detail = (e.stderr || e.message || '').toString().trim();
+        console.log(`\n  [Sakura] ${detail || 'Repo switch failed.'}\n`);
+      }
       rl.prompt(); return;
     }
 

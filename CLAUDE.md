@@ -64,7 +64,7 @@ skill loads, read that protocol in full and follow every step — never summaris
 | `/work-plan`, `"copy plan"`, `"resume plan"` | `work-plan/SKILL.md` |
 | `/forge-skill`, `"create skill"`, `"forge this"` | `forge-skill/SKILL.md` |
 | `/recall`, `"recall"`, `"do you remember"`, `"recall repo"`, `"what do you remember about this repo"` | `recall/SKILL.md` |
-| `/repo`, `"switch repo"`, `"change repo"` | `repo-switcher/SKILL.md` |
+| `/repo-switcher`, `/repo`, `"switch repo"`, `"change repo"`, `"list repos"` | `repo-switcher/SKILL.md` |
 | `/ask-nemotron`, `"ask nemotron"`, `"nemotron [question]"` | `ask-nemotron/SKILL.md` |
 
 When a trigger matches, read and follow the full protocol in that SKILL.md file.
@@ -79,9 +79,14 @@ When Fendy says **"bye"**, **"goodbye"**, or **"exit"**, execute every step in o
 
 **STEP 3 — Say goodbye warmly.**
 
-## `/repo` — Repository Switcher
+## `/repo-switcher` — Repository Switcher
 
-When Fendy types `/repo`, `switch repo`, `change repo`, or `list repos`, execute `plugins/ses-skills/skills/repo-switcher/SKILL.md` in full.
+When Fendy types `/repo-switcher`, `/repo`, `switch repo`, `change repo`, or `list repos`, execute `plugins/ses-skills/skills/repo-switcher/SKILL.md` in full.
+
+The repo list comes from the `REPO[]=` lines in `/Applications/Sites/jiraiya/.env` — the
+same registry the agents dashboard renders. All listing and switching goes through
+`bin/repo-switch.sh`, which Codex CLI and Sakura CLI also call, so a switch means the
+same thing in every CLI. Never hand-edit the active pointer.
 
 ## Rules
 

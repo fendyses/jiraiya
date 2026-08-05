@@ -102,6 +102,7 @@ $LANG_DEFS = [
     'ts'      => ['label' => 'TypeScript', 'color' => '#3178C6'],
     'md'      => ['label' => 'Markdown',   'color' => '#D4A017'],
     'js'      => ['label' => 'JavaScript', 'color' => '#F7DF1E'],
+    'flutter' => ['label' => 'Flutter',    'color' => '#02569B'],
 ];
 $repoSys = [];
 if ($envRaw = @file_get_contents($REPO . '/.env')) {
