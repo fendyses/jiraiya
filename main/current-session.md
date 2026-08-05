@@ -5,15 +5,16 @@
 > See `projects/REPO-MEMORY-PROTOCOL.md`.
 
 ## Latest session
-- **Repo:** ForexPulse (`projects/forexpulse/`)
-- **Date:** 2026-07-27
-- **Summary:** Upgraded Smart Analysis and PDF visuals, repaired fresh OHLC chart requests, synchronized pair-detail prices, and replaced daily-only Markets refresh with eight quota-aware live quotes plus derived cross rates. The verified signed build is installed on Fendy’s iPhone.
-- **Full recap:** `projects/forexpulse/session.md`
+- **Repo:** MyStudent (`projects/mystudentvue/`)
+- **Date:** 2026-07-31
+- **Summary:** Fixed the medical-form "token expired" popup recurring after renewal — root cause was `refreshToken()`'s 25s poll timing out before the Cloud Function's slower mint finished, not a stale-token bug. Extended the poll, hardened error handling, fixed a styling bug found on recheck. Staged, uncommitted.
+- **Full recap:** `projects/mystudentvue/session.md`
 
 ## Recent per-repo sessions
+- MyStudent → `projects/mystudentvue/session.md` (2026-07-31)
+- Nilam → `projects/nilam/session.md` (2026-07-31)
 - ForexPulse → `projects/forexpulse/session.md` (2026-07-27)
-- Nilam → `projects/nilam/session.md` (2026-07-27)
 - MyAlumniCard → `projects/myalumni-angular/session.md` (2026-07-22)
 
 ---
-*Updated: 2026-07-27 16:22*
+*Updated: 2026-07-31 16:41*

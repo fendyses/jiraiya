@@ -1,6 +1,8 @@
 # Nilam — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-07-31** — [NILAM Department-Code Source Correction; NILAM LPU Draft Page 404 Investigation; MyStudent Medical Form Token-Renewal Fix](../../daily-diary/current/2026-07-31.md)
+  - Outcome: The earlier LPU query workaround was reverted; live Digital Campus ingestion now reads `kodjabatan`, and Fendy manually committed the reviewed fix
 - **2026-07-29** — [NILAM: LPU letter editing + the 9 survivors of the meeting-#29 backfill](../../daily-diary/current/2026-07-29.md)
   - Outcome: 9 preliminary letters reworded to "meluluskan" via direct URL; deliberately **not** re-sent. Discovered these 9 are the only rows in LPU meeting #29 that the 88-row backfill missed. Classification (Notify vs Approval) still undecided. No code changed.
 - **2026-07-28** — [NILAM: JUU Approval Letter download for admin (Manage Legal Documents)](../../daily-diary/current/2026-07-28.md)
