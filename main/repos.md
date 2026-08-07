@@ -16,6 +16,7 @@
 | 9 | Credit Laravel | /Applications/Sites/creditLaravel |
 | 10 | ForexPulse | /Applications/Sites/forexpulse |
 | 11 | HEPWeb | /Applications/Sites/hepweb |
+| 12 | NRHome | /Applications/Sites/nrhome |
 
 ## Active Repo
 - **Name**: MyAlumniCard

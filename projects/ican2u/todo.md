@@ -3,8 +3,7 @@
 
 ## Ongoing
 
-- 2026-07-16 :: Semak balik menu/sub menu — roles perlu, buang yang tak perlu (delete)
 
 ## Completed
 
-_(none yet)_
+- 2026-07-16 :: Semak balik menu/sub menu — roles perlu, buang yang tak perlu (delete) :: 2026-08-03
