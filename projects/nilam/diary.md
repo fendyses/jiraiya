@@ -1,7 +1,7 @@
 # Nilam — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
-- **2026-08-09** — [PUU Monitoring Module: Design, Build, Install](../../daily-diary/current/2026-08-09.md)
+- **2026-08-09** — [PUU Monitoring Module: Design, Build, Install; PUU Individual User Report and Print-Safe Visuals](../../daily-diary/current/2026-08-09.md)
   - Outcome: Module built, installed to `nilamsdev`, verified. Uncommitted.
 - **2026-07-31** — [NILAM Department-Code Source Correction; NILAM LPU Draft Page 404 Investigation; MyStudent Medical Form Token-Renewal Fix](../../daily-diary/archived/2026-07/2026-07-31.md)
   - Outcome: The earlier LPU query workaround was reverted; live Digital Campus ingestion now reads `kodjabatan`, and Fendy manually committed the reviewed fix

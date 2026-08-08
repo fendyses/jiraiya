@@ -7,7 +7,7 @@
 ## Latest session
 - **Repo:** Nilam (`projects/nilam/`)
 - **Date:** 2026-08-09
-- **Summary:** Designed and built the Legal Advisor's Office (PUU) Monitoring Module end to end — two SLA stages (14 working days for LA assignment, 21 for vetter feedback), two-tier RBAC plus a new LA self-performance permission, three dashboards and a periodic reporting engine. Adds only 2 config tables and 2 indexes; every clock is derived from `application_status_logs`. Installed to `nilamsdev` and verified. Uncommitted on `development`.
+- **Summary:** Enhanced PUU Management with clickable individual user reports, a secure UiTM photo proxy, inclusive received-date filtering, and a two-page A4 landscape Save as PDF layout. Screen charts remain interactive ApexCharts; print now uses reliable inline SVG while preserving the original radial, donut and grouped-bar types. Verified and still uncommitted on `development`.
 - **Full recap:** `projects/nilam/session.md`
 
 ## Recent per-repo sessions
@@ -17,4 +17,4 @@
 - MyAlumniCard → `projects/myalumni-angular/session.md` (2026-07-22)
 
 ---
-*Updated: 2026-08-09 00:11*
+*Updated: 2026-08-09 01:15*
