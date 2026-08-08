@@ -1,19 +1,19 @@
 # Jiraiya — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
-- **2026-07-31** — [NILAM Department-Code Source Correction; NILAM LPU Draft Page 404 Investigation; MyStudent Medical Form Token-Renewal Fix](../../daily-diary/current/2026-07-31.md)
+- **2026-07-31** — [NILAM Department-Code Source Correction; NILAM LPU Draft Page 404 Investigation; MyStudent Medical Form Token-Renewal Fix](../../daily-diary/archived/2026-07/2026-07-31.md)
   - Outcome: The earlier LPU query workaround was reverted; live Digital Campus ingestion now reads `kodjabatan`, and Fendy manually committed the reviewed fix
-- **2026-07-21** — [JIRAIYA Farewell and Banner Refinement; Session Farewell; Agent Definition Drift Audit; MyAlumniCard: Why 15,819 Alumni Records Lost `tarikh_create`](../../daily-diary/current/2026-07-21.md)
+- **2026-07-21** — [JIRAIYA Farewell and Banner Refinement; Session Farewell; Agent Definition Drift Audit; MyAlumniCard: Why 15,819 Alumni Records Lost `tarikh_create`](../../daily-diary/archived/2026-07/2026-07-21.md)
   - Outcome: Removed the automatic credit-usage line, introduced a polished violet JIRAIYA banner, and confirmed the current macOS setup is sufficient for use on another Mac
-- **2026-07-20** — [Skills, Agents, and Hinata's Archive; CR Classification Labels Normalized](../../daily-diary/current/2026-07-20.md)
-- **2026-07-16** — [Codex Icon on the Dashboard Repo Panel; CEO@Faculty Export Text Colour](../../daily-diary/current/2026-07-16.md)
+- **2026-07-20** — [Skills, Agents, and Hinata's Archive; CR Classification Labels Normalized](../../daily-diary/archived/2026-07/2026-07-20.md)
+- **2026-07-16** — [Codex Icon on the Dashboard Repo Panel; CEO@Faculty Export Text Colour](../../daily-diary/archived/2026-07/2026-07-16.md)
   - Outcome: Complete — icon added, backend URL-scheme handler built and verified end-to-end
-- **2026-07-15** — [Installed Codex CLI, Wired It to the JIRAIYA Memory Core](../../daily-diary/current/2026-07-15.md)
+- **2026-07-15** — [Installed Codex CLI, Wired It to the JIRAIYA Memory Core](../../daily-diary/archived/2026-07/2026-07-15.md)
   - Outcome: Done — Codex installed globally, `AGENTS.md` created at both global (`~/.codex/`) and repo level, `main/repos.md` registry paths corrected for all 6 repos
-- **2026-07-10** — [Dashboard: Diary Book Font + Fixed Real Layout Bug in Date List; ican2u: Pentadbir Sistem User/Role Management + Permohonan Status Tool + Editing-Lock Fix](../../daily-diary/current/2026-07-10.md)
+- **2026-07-10** — [Dashboard: Diary Book Font + Fixed Real Layout Bug in Date List; ican2u: Pentadbir Sistem User/Role Management + Permohonan Status Tool + Editing-Lock Fix](../../daily-diary/archived/2026-07/2026-07-10.md)
   - Outcome: Done — root cause found and fixed via a headless-browser repro (not guesswork); font swapped to a legible serif; same latent bug preemptively fixed in the CR Records book
-- **2026-07-03** — [(session)](../../daily-diary/current/2026-07-03.md)
-- **2026-07-02** — [(session)](../../daily-diary/current/2026-07-02.md)
+- **2026-07-03** — [(session)](../../daily-diary/archived/2026-07/2026-07-03.md)
+- **2026-07-02** — [(session)](../../daily-diary/archived/2026-07/2026-07-02.md)
 - **2026-06-25** — [(session)](../../daily-diary/archived/2026-06/2026-06-25.md)
 - **2026-06-23** — [Windmill Logo Swap & Two 3D Overlay Bugs; MyStudent: Medical-Form Token & Login-Loop Fixes](../../daily-diary/archived/2026-06/2026-06-23.md)
   - Outcome: All three shipped. Logo replaced, name now rides the character onto the wheelbarrow, and the CR bubble pins onto the logo correctly on Retina.
