@@ -18,9 +18,9 @@
 | 11 | HEPWeb | /Applications/Sites/hepweb |
 
 ## Active Repo
-- **Name**: MyAlumniCard
-- **Path**: /Applications/Sites/myalumni-angular
-- **Switched**: 2026-07-22 (pointer was stale on Jiraiya since 2026-07-13 while work happened here)
+- **Name**: Nilam
+- **Path**: /Applications/Sites/nilam
+- **Switched**: 2026-08-06
 
 ---
 *Add new repos by appending a row to the table above.*
