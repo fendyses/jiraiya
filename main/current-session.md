@@ -5,16 +5,16 @@
 > See `projects/REPO-MEMORY-PROTOCOL.md`.
 
 ## Latest session
-- **Repo:** Nilam (`projects/nilam/`)
-- **Date:** 2026-08-09
-- **Summary:** Enhanced PUU Management with clickable individual user reports, a secure UiTM photo proxy, inclusive received-date filtering, and a two-page A4 landscape Save as PDF layout. Screen charts remain interactive ApexCharts; print now uses reliable inline SVG while preserving the original radial, donut and grouped-bar types. Verified and still uncommitted on `development`.
-- **Full recap:** `projects/nilam/session.md`
+- **Repo:** MyStudent (`projects/mystudentvue/`)
+- **Date:** 2026-08-10
+- **Summary:** Repaired Result Kolej category filtering, separated it from iResidensi information visibility, and clarified all related `/admin` controls. Changes committed and verified with lint/build.
+- **Full recap:** `projects/mystudentvue/session.md`
 
 ## Recent per-repo sessions
-- Nilam → `projects/nilam/session.md` (2026-08-09)
-- MyStudent → `projects/mystudentvue/session.md` (2026-07-31)
+- MyStudent → `projects/mystudentvue/session.md` (2026-08-10)
+- Nilam → `projects/nilam/session.md` (2026-07-31)
 - ForexPulse → `projects/forexpulse/session.md` (2026-07-27)
 - MyAlumniCard → `projects/myalumni-angular/session.md` (2026-07-22)
 
 ---
-*Updated: 2026-08-09 01:15*
+*Updated: 2026-08-10 16:00*
