@@ -1,6 +1,8 @@
 # MyStudent — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-08-12** — [MyStudent: Result Kolej Rayuan Leak Fix](../../daily-diary/current/2026-08-12.md)
+  - Outcome: Root cause found, fixed, committed as `update fix rayuan leak`, and **deployed manually** (~22:55). Fendy had disabled the whole page as a stopgap; it can now be safely re-enabled with `rayuan_flag` off.
 - **2026-08-10** — [Result Kolej Filtering Made Predictable](../../daily-diary/current/2026-08-10.md)
   - Outcome: Result visibility is now deterministic by student category, the iResidensi information panel is independent, and the admin controls clearly explain their effects
 - **2026-07-31** — [NILAM Department-Code Source Correction; NILAM LPU Draft Page 404 Investigation; MyStudent Medical Form Token-Renewal Fix](../../daily-diary/archived/2026-07/2026-07-31.md)

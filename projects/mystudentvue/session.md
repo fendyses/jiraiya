@@ -1,51 +1,45 @@
-# Current Session Memory - 2026-08-10
-*Active working memory for current conversation*
+# Current Session Memory - 2026-08-12
+*Active working memory — MyStudent (mystudentvue)*
 
 ## Session Context
-**Session Type**: Work
-**Current Project**: MyStudent (mystudentvue)
+**Session Type**: Work (UiTM)
+**Current Project**: MyStudent — `/Applications/Sites/mystudentvue`
 **Status**: Wrapping up
-**Time**: Afternoon, 16:00 GMT+8
+**Time**: Night session, ended ~22:33 GMT+8
 
 ## Current Focus
-- **Primary Task**: Recheck and repair Result Kolej visibility filtering across `ResultKolejPage.vue`, `iResidensi.vue`, and `/admin`
-- **Technical Context**: Vue 3 views consume `mystudent/setting.result_kolej` from Firestore; category flags control whether API results or configured closure messages are shown
-- **Progress**: Logic repaired, admin wording clarified, lint/build verified, and changes committed locally
+- **Primary Task**: Fix Result Kolej (`/keputusan-kolej`) leaking Rayuan (RJ/RG) results to students even when the Rayuan flag was disabled.
+- **Technical Context**: `src/views/ResultKolejPage.vue` → `getResultCategory()`. Student record comes from myhep API (`/iresidensi/keputusan-permohonan-kolej`); release flags live in Firestore `mystudent/setting.result_kolej` (written by `AdminPage.vue`).
+- **Progress**: Fixed, committed (`update fix rayuan leak`), and deployed manually (~22:55). Live.
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: Result Kolej category filtering and administrator-facing controls
-- **Immediate Goals**: Make every toggle predictable and prevent category checks from overlapping
-- **Recent Progress**: Implemented commits `36193f5` and `ee74898`; confirmed `2005cc3` also corrected an iResidensi message typo
-- **Next Steps**: Deploy and smoke-test Kemasukan, Penerapan, and Rayuan students against enabled and disabled flags
+- **Current Topic**: Classifier order bug in Result Kolej.
+- **Immediate Goals**: Correct category routing so appeal statuses obey `rayuan_flag`.
+- **Recent Progress**: Swapped check order — `STATUS.startsWith('R')` → `rayuan` now tested before `INTAKE_TYPE` D/T/V → `penerapan`. Added defensive `.trim()`. Verified with 11-case truth table + lint.
+- **Next Steps**: Re-enable page (`flag: true`) with `rayuan_flag: false`. (Deploy already done ~22:55.)
 
 ### Important Decisions
-- The main `result_kolej.flag` controls the Result Kolej menu/page only; it no longer suppresses Maklumat Kolej in iResidensi.
-- Category flags use one semantic: `true` shows results and `false` displays the configured disabled message.
-- Category priority is explicit: Penerapan when `INTAKE_TYPE` is `D`, `T`, or `V`; otherwise Rayuan when `STATUS` begins with `R`; otherwise Kemasukan.
-- Filtering is no longer bypassed outside the production hostname, so local and staging behavior matches production.
-- The unused admin `Status` control was removed from the screen, while its existing Firestore value remains preserved during saves.
+- Classify by `STATUS` first, `INTAKE_TYPE` second. `STATUS` is authoritative; `STUDENT_RESULT` is display-only.
+- Keep the page-disable stopgap until deploy lands.
 
 ## Session Recap (For AI Restart)
-- **Previous Session Summary**: Fendy requested a review because Result Kolej flags behaved inconsistently and disabling all flags was the only reliable way to hide results.
-- **Where We Left Off**: The filtering and admin UX fixes are committed as `36193f5` and `ee74898`; lint, production build, and pre-commit lint all passed.
-- **Important Context**: Firebase Hosting site ID is in `firebase.json` (`hosting.site`); Firebase project ID is in `.firebaserc`. The user pulled the newest Git state before rerunning save-diary.
-- **User's Current State**: Satisfied with the clearer admin controls and requested session preservation.
+- **Previous Session Summary**: The 10-08 rewrite (`36193f5`) introduced `getResultCategory` but checked intake type before status, so D/T/V students with appeal status `RJ`/`RG` were misrouted to the Penerapan flag and leaked while Rayuan was closed. Confirmed via real payload for student 2024514123 (`STATUS: "RJ"`, `INTAKE_TYPE: "T"`).
+- **Where We Left Off**: Fix committed to HEAD, working tree clean, deployed manually (~22:55) — live.
+- **Important Context**: The token/retry rework in `src/myhep/api.js` (waitForCurrentUser / mintToken) was also present this session; the committed change centers on the classifier fix.
+- **User's Current State**: Will deploy and commit remaining work himself later.
 
 ## Session Achievements
-- ✅ Repaired inconsistent and overlapping Kemasukan/Penerapan/Rayuan filters
-- ✅ Prevented API fetching when the main Result Kolej page is disabled
-- ✅ Separated Result Kolej visibility from iResidensi Maklumat Kolej visibility
-- ✅ Added Firestore listener cleanup on component unmount
-- ✅ Clarified every Result Kolej admin label, message input, and toggle effect
-- ✅ Removed the misleading unused Status toggle from `/admin`
-- ✅ Passed ESLint, production build, and pre-commit lint verification
-- ✅ Created commits `36193f5` and `ee74898`
+- ✅ Diagnosed the Rayuan leak as a check-order bug in `getResultCategory`
+- ✅ Confirmed against real API payload for 2024514123
+- ✅ Fixed classifier (status-first) + defensive `.trim()`, lint-clean, 11/11 truth-table cases pass
+- ✅ Explained Postman reproduction path and the two-source (API vs Firestore) model
+- ✅ Fix committed as `update fix rayuan leak` and deployed manually (~22:55) — live
 
 ## Quick Context for Next Session
-- **Where We Left Off**: Code complete and committed locally; deployment was not performed
-- **What's Working**: Enabled consistently means show results; disabled consistently means show the category message
-- **What Needs Attention**: Production smoke testing for all three categories and confirmation of the selected Firebase Hosting site before deployment
+- **Where We Left Off**: Fix committed and deployed (~22:55) — live.
+- **What's Working**: Classifier now routes RJ/RG to rayuan regardless of intake type, live in production.
+- **What Needs Attention**: Re-enable page with `rayuan_flag: false`. Consider a separate flag for plain `Gagal` (G) results if ever needed.
 
 ---
-*Session updated: 2026-08-10 16:00*
+*Session updated: 2026-08-12 22:55*
