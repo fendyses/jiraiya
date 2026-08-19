@@ -1,6 +1,8 @@
 # Nilam — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-08-19** — [Nilam: Approval Letter Missing Jawi/Hijri Images; Nilam: LPU status display — a fix I got wrong twice before getting it right](../../daily-diary/current/2026-08-19.md)
+  - Outcome: Root cause identified (outbound HTTPS fetch failing on production server, **not** an expired certificate), fixed in code by removing the network dependency entirely. Verified across the whole database and **committed by Fendy as `ed52517`** at 10:33.
 - **2026-08-09** — [PUU Monitoring Module: Design, Build, Install; PUU Individual User Report and Print-Safe Visuals](../../daily-diary/current/2026-08-09.md)
   - Outcome: Module built, installed to `nilamsdev`, verified. Uncommitted.
 - **2026-07-31** — [NILAM Department-Code Source Correction; NILAM LPU Draft Page 404 Investigation; MyStudent Medical Form Token-Renewal Fix](../../daily-diary/archived/2026-07/2026-07-31.md)
