@@ -25,5 +25,11 @@ Three Nilam investigations with three different root causes — an application s
 - ✅ Traced the application 4427 rename to a `changeFile()` + repeater namespacing failure; cleared the accused user on data and policy grounds
 - ✅ Delivered 3 PDFs — PIC report (BM), TLS incident report, PUU production install runbook
 
+## Recent per-repo sessions
+- Nilam → `projects/nilam/session.md` (2026-08-20)
+- MyStudent → `projects/mystudentvue/session.md` (2026-08-12)
+- ForexPulse → `projects/forexpulse/session.md` (2026-07-27)
+- MyAlumniCard → `projects/myalumni-angular/session.md` (2026-07-22)
+
 ---
 *Session updated: 2026-08-20 17:33*

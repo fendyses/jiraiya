@@ -3,6 +3,8 @@
 
 - **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/current/2026-08-20.md)
   - Outcome: Two distinct image pipelines identified and mapped end to end. Read-only session; no code changed, working tree clean.
+- **2026-08-19** — [Nilam: Approval Letter Missing Jawi/Hijri Images; Nilam: LPU status display — a fix I got wrong twice before getting it right](../../daily-diary/current/2026-08-19.md)
+  - Outcome: Root cause identified (outbound HTTPS fetch failing on production server, **not** an expired certificate), fixed in code by removing the network dependency entirely. Verified across the whole database and **committed by Fendy as `ed52517`** at 10:33.
 - **2026-08-13** — [PUU Monitoring UX Completion and Operational Clarity](../../daily-diary/current/2026-08-13.md)
 - **2026-08-09** — [PUU Monitoring Module: Design, Build, Install; PUU Individual User Report and Print-Safe Visuals](../../daily-diary/current/2026-08-09.md)
   - Outcome: Module built, installed to `nilamsdev`, verified. Uncommitted.

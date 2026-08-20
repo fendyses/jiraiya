@@ -51,6 +51,12 @@
   - Missing columns `aggmt_renewal_*` / `aggmt_extend_*` — in `$fillable`, absent from the DB
   - `parent_extension_id` on `tbl_extensions` so repeat renewals chain correctly
   - PUU prod install: deploy code **before** seeding permissions
+  - **Carried over from 2026-08-19 (still open):**
+    - `notified-by-lpu` terminal status decision — would need a migration + ~138 apps reassigned
+    - `cdn.uitm.edu.my` certificate expires **2026-08-24**
+    - Server team: run `php -i | grep openssl.cafile` + the `file_get_contents()` test on production (hardening — `LetterImageHelper` already removed the dependency)
+    - Confirm/close the 3 stale LPU-approval reminders in `projects/nilam/reminders.md` (todo.md marks them done 2026-08-03; `fcfc94a` appears to cover them)
+    - Older carry-overs: tune SLA/RAG policy, add moving holidays, review abandoned documents, repair user 71 `department_code` → `A0644`
 
 ---
 *Session updated: 2026-08-20 17:33*
