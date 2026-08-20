@@ -1,66 +1,56 @@
-# Current Session Memory - 2026-08-09
+# Current Session Memory - 2026-08-20
 *Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Full-stack enhancement + PDF/print debugging
-**Current Project**: Nilam
-**Repo Path**: `/Applications/Sites/nilam`
-**Branch**: `development`
-**Status**: PUU module and individual report complete and verified — **uncommitted**
-**Time**: 01:15 MYT
+**Session Type**: Work
+**Current Project**: Nilam (`/Applications/Sites/nilam`) — UiTM
+**Status**: Wrapping up
+**Time**: Evening session, ended 17:33 GMT+8
 
 ## Current Focus
-- **Primary Task**: Enhance PUU Management with individual user reports, secure UiTM profile photos, received-date filtering, and a Save as PDF layout whose charts remain visible.
-- **Technical Context**: Laravel 8 + Blade + Bootstrap 4 + ApexCharts. Screen charts remain interactive ApexCharts; the print pipeline uses deterministic server-rendered inline SVG.
-- **Progress**: Complete and visually verified in a generated two-page A4 landscape PDF. Nothing committed.
+- **Primary Task**: Three Nilam investigations (missing renewal button, missing Jawi date image, silently renamed document) plus shipping the renewal-date display feature
+- **Technical Context**: Laravel 8.83, MariaDB with `tbl_` prefix, dompdf 2.0.8, Spatie permissions. `.env` points at the **production** DB (`antartika.uitm.edu.my/nilams`) — this matters, dev/prod DB confusion cost time twice today
+- **Progress**: Feature committed and merged; two PDF reports delivered to jiraiya; PUU prod requirements mapped but nothing applied
 
 ## Working Memory
 
 ### Active Context
-- **Current Topic**: Individual PUU user report is finished; diary saved at Fendy's request.
-- **Immediate Goals**: Fendy confirms the browser Save as PDF result; commit the broader PUU module when ready.
-- **Recent Progress**:
-  - Made every person in PUU Management link to `/puu_monitoring/user/{id}`.
-  - Built the individual report with profile hero, KPIs, SLA visuals, stage panels and document tables.
-  - Added a signed server-side UiTM photo proxy using `tbl_users.username`; token is held only in ignored `.env`.
-  - Added inclusive Received From / Received To filtering and recalculated all report data for the selected period.
-  - Added an A4 landscape print layout and `<User Name>-PUU_Report` document title for the PDF save dialog.
-  - Replaced unreliable print-time Apex snapshots with permanent inline SVG print graphics.
-  - Preserved the original chart types in PDF: radial compliance, queue-health donut, and grouped stage bars.
-- **Next Steps**: Real-browser confirmation, then commit if requested.
+- **Current Topic**: PUU Monitoring production install requirements
+- **Immediate Goals**: Complete — diary saved
+- **Recent Progress**: Committed `c85e5e3`, merged `origin/development` (2 commits), wrote PUU prod install runbook
+- **Next Steps**: Push the 2 local commits; decide on the open design questions listed below
 
 ### Important Decisions
-- Keep API credentials entirely server-side; expose photos only through a permission-protected signed proxy route.
-- Filter by application received date (`Application.created_at`) inclusively from start through end of each selected day.
-- Validate user eligibility before date filtering so zero-result periods render normally.
-- Use separate renderers for screen and print while preserving the same metrics and chart types.
-- Keep print SVG outside Apex target elements because Apex clears the target during initialization.
-- Do not write a CR entry for this diary save, per Fendy's explicit instruction.
+- Renewal-date display is **display-only** — deliberately no data written and no policy set on whether an unsigned renewal should roll `aggmt_exp_date` forward
+- Staged the feature at **hunk level** to keep the PUU `scopeVisibleTo()` scope out of the commit; PUU module stays uncommitted/untracked by design
+- Merged rather than rebased, to keep the incoming `LetterImageHelper` work intact
+- Did **not** run `puu:install` — it would write to the production DB and expose menu links to routes that aren't deployed
 
 ## Session Recap (For AI Restart)
-- **Previous Session Summary**: Built the PUU Monitoring module end to end, then added management user drill-down reports with secure UiTM profile photos and date filtering.
-- **Where We Left Off**: The individual report and two-page landscape PDF layout are complete. Static print SVG now reliably shows the original radial, donut and grouped-bar charts. Work remains uncommitted on `development`.
-- **Important Context**: Native browser Save as PDF may add Chrome headers/footers unless disabled in the print dialog. The page sets the PDF title to `<User Name>-PUU_Report`, but the browser owns final filename behavior.
-- **User's Current State**: Happy with the report and requested that the session be saved to the diary without writing a CR entry.
+- Application 4427 (`100-PUU(32/6/3390)`, HCSB) drove most of the session. Its renewal button was missing because status was `submit-for-meu-approval` not `executed-document`; Fendy has since restored the name and set it to Approved by LPU with a proper status log. It still needs signatory setup + a real signed document, and its extension term (01/11/2024–31/10/2026) expires in ~2 months.
+- The Jawi date image failure was traced to a **TLS certificate change on 27 July 2026** — `nilams.uitm.edu.my` moved to SSL.com TLS RSA Root CA 2022 while `cdn.uitm.edu.my` stayed on Sectigo/USERTrust. dompdf uses `file_get_contents`, so it validates against PHP's (likely stale, Ubuntu 20.04) CA bundle. Incoming commit `ed52517` added `LetterImageHelper` which sidesteps the network entirely, so the CA fix is now hardening not a blocker.
+- PUU Monitoring menu is invisible **because the DB was switched from dev to prod** — none of the 5 permissions exist there. Nothing has been applied to prod.
 
 ## Session Achievements
-- ✅ Added clickable user drill-down from PUU Management.
-- ✅ Built a complete individual assignment/vetting performance report.
-- ✅ Integrated UiTM user photos without exposing the bearer token.
-- ✅ Added inclusive received-date filtering across every report metric and table.
-- ✅ Produced a structured A4 landscape two-page print layout.
-- ✅ Diagnosed missing charts in the real PDF workflow.
-- ✅ Made print visuals deterministic with server-rendered inline SVG.
-- ✅ Preserved the original radial, donut and grouped-bar chart types in PDF.
-- ✅ Verified routes, reports, tests, invariants, filtered output and final PDF visually.
+- ✅ Diagnosed missing renewal button on 4427 — status gate + `duration` gate + missing verified Activity
+- ✅ Produced BM report for the PIC (DOCX + PDF), delivered to `~/Downloads`
+- ✅ Root-caused the missing Jawi month image to the 27 July 2026 certificate reissue; ruled out 5 competing hypotheses with evidence from the production PDF
+- ✅ Wrote `docs/reports/incidents/NILAM-TLS-CA-Incident-Report-Letter-Images.pdf` (7 pages)
+- ✅ Traced the 4427 rename to a `changeFile()` + jquery-repeater mass-assignment leak; cleared Nurhidayah (196) on both data and policy grounds
+- ✅ Found renewal periods invisible system-wide (22/25 stale) and shipped `extensions` relation + 3 helpers across 13 controllers and 3 views — 0 N+1, non-renewed output unchanged
+- ✅ Hunk-level staging to exclude PUU, commit `c85e5e3`, clean merge of `origin/development`
+- ✅ Audited prod for PUU requirements and wrote `docs/reports/deployments/NILAM-PUU-Monitoring-Production-Install.pdf` (6 pages)
 
 ## Quick Context for Next Session
-- **Where We Left Off**: Feature complete and verified; no commit yet.
-- **What's Working**: Management links, individual user report, photo proxy, date filter, screen ApexCharts and print SVG charts.
+- **Where We Left Off**: Diary save after the PUU prod runbook. Nothing pending mid-task.
+- **What's Working**: Renewal dates now display as Original + Extended on every listing and detail page. Letter images fixed by `LetterImageHelper`.
 - **What Needs Attention**:
-  - Confirm `/puu_monitoring/user/3` through Fendy's own Chrome Save as PDF flow.
-  - Commit all PUU Monitoring changes on `development` when requested.
-  - Earlier items remain: tune SLA/RAG policy, add moving holidays, review abandoned documents, and repair user 71's `department_code` to `A0644`.
+  - 2 local commits unpushed on `development`
+  - `getAttributes()` fix for `storeExtension` — removes the `toArray()` relation landmine *and* the one-day snapshot timezone drift
+  - `ApplicationPolicy::update` dangling `else return true` — grants update rights on every application to Viewer/Librarian/HOD-only accounts
+  - Missing columns `aggmt_renewal_*` / `aggmt_extend_*` — in `$fillable`, absent from the DB
+  - `parent_extension_id` on `tbl_extensions` so repeat renewals chain correctly
+  - PUU prod install: deploy code **before** seeding permissions
 
 ---
-*Session updated: 2026-08-09 01:15*
+*Session updated: 2026-08-20 17:33*

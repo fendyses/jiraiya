@@ -1,0 +1,215 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>NILAM PUU Monitoring - Production Install Runbook</title>
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: "Calibri","Arial",sans-serif; font-size: 10.5pt; color:#000; line-height:1.42; }
+  h1 { font-size: 17pt; color:#1F3864; margin:0 0 4pt 0; }
+  h2 { font-size: 12.5pt; color:#1F3864; margin:16pt 0 6pt 0; border-bottom:0.75pt solid #C9D3E6; padding-bottom:2pt; }
+  h3 { font-size: 10.5pt; color:#2E5496; margin:11pt 0 4pt 0; }
+  p { margin:0 0 8pt 0; text-align:justify; }
+  table { border-collapse:collapse; width:100%; margin:6pt 0 10pt 0; font-size:9.5pt; }
+  th { background:#1F3864; color:#fff; border:1px solid #7F7F7F; padding:5pt 6pt; text-align:left; }
+  td { border:1px solid #7F7F7F; padding:5pt 6pt; vertical-align:top; }
+  .meta td { border:1px solid #BFBFBF; }
+  .meta td.k { background:#EDF1F8; font-weight:bold; width:26%; }
+  ul,ol { margin:0 0 8pt 0; }
+  li { margin-bottom:4pt; text-align:justify; }
+  code,.mono { font-family:"Consolas","Courier New",monospace; font-size:9pt; }
+  pre { font-family:"Consolas","Courier New",monospace; font-size:8.5pt; background:#F4F6FA; border:0.75pt solid #C9D3E6;
+        padding:7pt 9pt; margin:5pt 0 10pt 0; white-space:pre-wrap; line-height:1.35; }
+  .box { border-left:3pt solid #2E5496; background:#F2F5FB; padding:7pt 10pt; margin:8pt 0 10pt 0; }
+  .warn { border-left:3pt solid #B00020; background:#FDF3F4; padding:7pt 10pt; margin:8pt 0 10pt 0; }
+  .no { color:#B00020; font-weight:bold; }
+  .ok { color:#1E7B34; font-weight:bold; }
+  .rule { border:0; border-top:1.5pt solid #1F3864; margin:5pt 0 12pt 0; }
+  .foot { font-size:8.5pt; color:#595959; margin-top:18pt; border-top:0.75pt solid #BFBFBF; padding-top:5pt; }
+  .small { font-size:9pt; color:#595959; }
+</style>
+</head>
+<body>
+
+<h1>PUU Monitoring &mdash; Production Install Runbook</h1>
+<p class="small" style="margin-bottom:2pt;">NILAM (Sistem Pengurusan Dokumen Undang-Undang) &mdash; Universiti Teknologi MARA</p>
+<hr class="rule">
+
+<table class="meta">
+  <tr><td class="k">Document</td><td>What must be added to the production database for the PUU Monitoring module to function</td></tr>
+  <tr><td class="k">Target database</td><td class="mono">antartika.uitm.edu.my / nilams</td></tr>
+  <tr><td class="k">Table prefix</td><td class="mono">tbl_</td></tr>
+  <tr><td class="k">Platform</td><td>MariaDB 10.11</td></tr>
+  <tr><td class="k">Prepared</td><td>20 August 2026</td></tr>
+  <tr><td class="k">Status</td><td>Not yet applied &mdash; production currently has none of the objects below</td></tr>
+</table>
+
+<h2>1. Summary</h2>
+<p>The PUU Monitoring module was developed against the development database. Moving to production requires four things: <b>two configuration tables</b>, <b>two indexes</b> on existing log tables, <b>five permission rows</b> with their role grants, and <b>six configuration rows</b>.</p>
+<div class="box">
+<b>No existing table is altered and no column is added to any existing table.</b> The module adds no domain tables and never writes application data. Both SLA clocks and the entire movement tracker are <i>derived</i> from <span class="mono">tbl_application_status_logs</span>, which NILAM already writes on every status transition. The two new tables hold configuration only.
+</div>
+
+<h2>2. Current State of Production</h2>
+<p>Audited on 20 August 2026 against the live database:</p>
+<table>
+  <tr><th style="width:16%;">Type</th><th style="width:52%;">Object</th><th style="width:32%;">Present?</th></tr>
+  <tr><td>Table</td><td class="mono">tbl_puu_sla_configs</td><td><span class="no">MISSING</span></td></tr>
+  <tr><td>Table</td><td class="mono">tbl_puu_holidays</td><td><span class="no">MISSING</span></td></tr>
+  <tr><td>Index</td><td class="mono">tbl_asl_cycle_idx</td><td><span class="no">MISSING</span></td></tr>
+  <tr><td>Index</td><td class="mono">tbl_adsl_cycle_idx</td><td><span class="no">MISSING</span></td></tr>
+  <tr><td>Permission</td><td class="mono">view_selfmonitorings</td><td><span class="no">MISSING</span></td></tr>
+  <tr><td>Permission</td><td class="mono">view_assignmentmonitorings</td><td><span class="no">MISSING</span></td></tr>
+  <tr><td>Permission</td><td class="mono">view_managementmonitorings</td><td><span class="no">MISSING</span></td></tr>
+  <tr><td>Permission</td><td class="mono">view_puureports</td><td><span class="no">MISSING</span></td></tr>
+  <tr><td>Permission</td><td class="mono">export_puureports</td><td><span class="no">MISSING</span></td></tr>
+  <tr><td>Role</td><td>Admin / Assistant Superadmin / Legal Advisor / Drafter-Vetter</td><td><span class="ok">All four exist</span></td></tr>
+</table>
+<p>Because the four roles already exist, the installer can grant permissions to them without any role being created first.</p>
+
+<h3>Why the sidebar menu is currently invisible</h3>
+<p>The sidebar wraps the whole section in a permission gate (<span class="mono">resources/views/layouts/sidebar.blade.php</span>):</p>
+<pre>@if(Auth::user()-&gt;hasAnyPermission(['view_selfmonitorings', 'view_assignmentmonitorings', 'view_managementmonitorings']))
+{!! Menu::puumonitoring() !!}
+@endif</pre>
+<p>With none of those permissions present, the gate is false and the entire section is hidden &mdash; including the ungated <i>Work Monitoring</i> link inside the macro. <span class="mono">hasAnyPermission()</span> returns <span class="mono">false</span> for a non-existent permission rather than raising an error, which is why the application behaves normally instead of failing.</p>
+
+<h2>3. Objects to Create</h2>
+
+<h3>3.1 Table &mdash; tbl_puu_sla_configs</h3>
+<p>SLA thresholds and RAG bands. Editable by PUU without a deploy, because statutory timelines change. Every day count stored here is a <b>working</b> day; Saturday and Sunday are never counted.</p>
+<pre>CREATE TABLE IF NOT EXISTS `tbl_puu_sla_configs` (
+    `id`         BIGINT(20) UNSIGNED  NOT NULL AUTO_INCREMENT,
+    `key`        VARCHAR(50)          NOT NULL,
+    `value`      SMALLINT(5) UNSIGNED NOT NULL,
+    `label`      VARCHAR(150)         NOT NULL,
+    `updated_by` BIGINT(20) UNSIGNED      NULL DEFAULT NULL,
+    `created_at` TIMESTAMP                NULL DEFAULT NULL,
+    `updated_at` TIMESTAMP                NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `tbl_puu_sla_configs_key_unique` (`key`),
+    KEY `tbl_puu_sla_configs_updated_by_foreign` (`updated_by`),
+    CONSTRAINT `tbl_puu_sla_configs_updated_by_foreign`
+        FOREIGN KEY (`updated_by`) REFERENCES `tbl_users` (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;</pre>
+
+<h3>3.2 Table &mdash; tbl_puu_holidays</h3>
+<p>Non-working days beyond the weekend. Weekends are excluded by rule rather than by row, so this table holds public and state holidays only. <b>While it is empty, festive periods count as working days.</b></p>
+<pre>CREATE TABLE IF NOT EXISTS `tbl_puu_holidays` (
+    `id`           BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `holiday_date` DATE                NOT NULL,
+    `label`        VARCHAR(150)        NOT NULL,
+    `created_at`   TIMESTAMP               NULL DEFAULT NULL,
+    `updated_at`   TIMESTAMP               NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `tbl_puu_holidays_holiday_date_unique` (`holiday_date`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;</pre>
+
+<h3>3.3 Indexes on existing log tables</h3>
+<p>Every dashboard load resolves SLA clocks by walking a document's history, filtered by <span class="mono">(application_id, status, created_at)</span>. These are additive and non-blocking at the current table sizes. <b>Nothing else about these tables is changed.</b></p>
+<pre>CREATE INDEX IF NOT EXISTS `tbl_asl_cycle_idx`
+    ON `tbl_application_status_logs` (`application_id`, `application_status_id`, `created_at`);
+
+CREATE INDEX IF NOT EXISTS `tbl_adsl_cycle_idx`
+    ON `tbl_application_document_status_logs` (`application_id`, `document_status_id`, `created_at`);</pre>
+
+<h2>4. Permissions and Role Grants</h2>
+<p>Five rows in <span class="mono">tbl_permissions</span>, plus the corresponding rows in <span class="mono">tbl_role_has_permissions</span>. Access is gated on the permission, never on a hardcoded role name, so it can be changed later from the Roles screen.</p>
+<table>
+  <tr>
+    <th style="width:34%;">Permission</th>
+    <th style="width:14%;">Admin</th>
+    <th style="width:20%;">Asst. Superadmin</th>
+    <th style="width:16%;">Legal Advisor</th>
+    <th style="width:16%;">Drafter/Vetter</th>
+  </tr>
+  <tr><td class="mono">view_managementmonitorings</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&ndash;</td></tr>
+  <tr><td class="mono">view_assignmentmonitorings</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&ndash;</td></tr>
+  <tr><td class="mono">view_puureports</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+  <tr><td class="mono">export_puureports</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&ndash;</td></tr>
+  <tr><td class="mono">view_selfmonitorings</td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td><td>&#10003;</td></tr>
+</table>
+<p class="small">Administrators receive the assignment self-view because they make assignments in practice &mdash; 4 of the 8 people who have ever assigned a vetter hold Admin rather than Legal Advisor. The Legal Advisor holds it because the 14-working-day assignment SLA is theirs to answer for.</p>
+
+<h2>5. Configuration Rows</h2>
+<p>Six rows seeded into <span class="mono">tbl_puu_sla_configs</span>. All values are <b>working</b> days.</p>
+<table>
+  <tr><th style="width:32%;">Key</th><th style="width:10%;">Value</th><th style="width:58%;">Meaning</th></tr>
+  <tr><td class="mono">assignment_sla_days</td><td>14</td><td>SLA 1 &mdash; maximum working days for the Legal Advisor to assign a Drafter/Vetter</td></tr>
+  <tr><td class="mono">feedback_sla_days</td><td>21</td><td>SLA 2 &mdash; maximum working days for a Drafter/Vetter to return feedback to the PIC</td></tr>
+  <tr><td class="mono">rag_green_max</td><td>9</td><td>Green ceiling &mdash; up to this many working days is on track</td></tr>
+  <tr><td class="mono">rag_watch_at</td><td>15</td><td>Highlight amber documents from this many working days onward</td></tr>
+  <tr><td class="mono">rag_amber_max</td><td>18</td><td>Amber ceiling &mdash; above this many working days turns red</td></tr>
+  <tr><td class="mono">stale_after_working_days</td><td>90</td><td>Working days after which an open cycle counts as abandoned rather than late</td></tr>
+</table>
+
+<h3>Optional &mdash; fixed-date public holidays</h3>
+<p>The <span class="mono">--holidays</span> flag additionally seeds five fixed-date federal holidays for 2025, 2026 and 2027 (15 rows): New Year's Day (01-01), Labour Day (05-01), National Day (08-31), Malaysia Day (09-16) and Christmas Day (12-25).</p>
+<div class="warn">
+<b>The moving holidays are deliberately not seeded.</b> Hari Raya Aidilfitri, Hari Raya Aidiladha, Awal Muharram, Maulidur Rasul, Nuzul Al-Quran, Chinese New Year, Thaipusam, Wesak, Deepavali and the Agong's birthday follow lunar and gazetted calendars that shift every year. They must be added per year from the gazette. A subtly wrong statutory calendar silently corrupts every SLA figure, which is worse than a visibly incomplete one.
+</div>
+
+<h2>6. Install Procedure</h2>
+<p>Order matters &mdash; the schema must exist before the seeder runs.</p>
+<pre># Step 1 - schema (tables + indexes). Every statement is IF NOT EXISTS, safe to re-run.
+mysql -h antartika.uitm.edu.my -u effendy -p nilams &lt; database/sql/puu_monitoring_install.sql
+
+# Step 2 - preview the permission and configuration seeding, writing nothing
+php artisan puu:install --dry-run
+
+# Step 3 - apply
+php artisan puu:install
+
+# Step 3a - optionally include the fixed-date holidays
+php artisan puu:install --holidays</pre>
+
+<h2>7. Verification</h2>
+<pre>SHOW TABLES LIKE 'tbl_puu_%';
+-- expect: tbl_puu_holidays, tbl_puu_sla_configs
+
+SHOW INDEX FROM tbl_application_status_logs          WHERE Key_name = 'tbl_asl_cycle_idx';
+SHOW INDEX FROM tbl_application_document_status_logs WHERE Key_name = 'tbl_adsl_cycle_idx';
+
+SELECT `key`, `value` FROM tbl_puu_sla_configs ORDER BY `key`;
+-- expect 6 rows
+
+SELECT name FROM tbl_permissions
+WHERE name IN ('view_selfmonitorings','view_assignmentmonitorings',
+               'view_managementmonitorings','view_puureports','export_puureports');
+-- expect 5 rows</pre>
+<div class="box">
+Run these rather than assuming success. <span class="mono">PuuSlaConfig</span> carries a <span class="mono">DEFAULTS</span> fallback so the module degrades to sane behaviour on a half-migrated environment instead of throwing &mdash; which means a missing table fails <i>quietly</i>.
+</div>
+
+<h2>8. Sequencing Risk</h2>
+<div class="warn">
+<b>The sidebar menu becomes visible the moment the permissions exist.</b> Every Admin, Assistant Superadmin, Legal Advisor and Drafter/Vetter on production will see PUU Monitoring in their sidebar. If the module's application code has not been deployed yet, those links resolve to routes that do not exist and the users get 404s.
+</div>
+<p><b>Recommended order:</b></p>
+<ol>
+  <li>Deploy the module's application code to production.</li>
+  <li>Apply the schema (Step 1).</li>
+  <li>Run the seeder (Steps 2&ndash;3).</li>
+  <li>Verify (Section 7), then confirm the menu renders for one user of each role.</li>
+</ol>
+
+<h2>9. Rollback</h2>
+<pre>DROP TABLE IF EXISTS `tbl_puu_sla_configs`;
+DROP TABLE IF EXISTS `tbl_puu_holidays`;
+DROP INDEX `tbl_asl_cycle_idx`  ON `tbl_application_status_logs`;
+DROP INDEX `tbl_adsl_cycle_idx` ON `tbl_application_document_status_logs`;</pre>
+<p>Dropping these removes the module's configuration only. <b>No application data is touched, because the module never writes any.</b> To hide the menu without dropping anything, revoke the permissions from the roles &mdash; the sidebar gate then evaluates false again.</p>
+
+<h2>10. Risk Assessment</h2>
+<table>
+  <tr><th style="width:30%;">Item</th><th style="width:70%;">Assessment</th></tr>
+  <tr><td>Change risk</td><td><b>Low.</b> Two new tables, two additive indexes, and reference rows. No existing schema is altered.</td></tr>
+  <tr><td>Data impact</td><td>None. The module reads existing log tables and writes only its own configuration.</td></tr>
+  <tr><td>Downtime</td><td>None expected. Index creation on tables of this size is fast and non-blocking.</td></tr>
+  <tr><td>Reversibility</td><td>Full &mdash; see Section 9.</td></tr>
+  <tr><td>Main hazard</td><td>Seeding permissions before deploying the code, exposing broken menu links to production users.</td></tr>
+</table>
+
+<p class="foot">Prepared from the module source (<span class="mono">database/sql/puu_monitoring_install.sql</span>, <span class="mono">app/Console/Commands/PuuMonitoringInstall.php</span>) and a live audit of the production database on 20 August 2026.</p>
+
+</body>
+</html>

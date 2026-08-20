@@ -1,0 +1,204 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>NILAM Incident Report - Missing Images in Generated Letter PDFs</title>
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: "Calibri","Arial",sans-serif; font-size: 10.5pt; color:#000; line-height:1.42; }
+  h1 { font-size: 17pt; color:#1F3864; margin:0 0 4pt 0; }
+  h2 { font-size: 12.5pt; color:#1F3864; margin:16pt 0 6pt 0; border-bottom:0.75pt solid #C9D3E6; padding-bottom:2pt; }
+  h3 { font-size: 10.5pt; color:#2E5496; margin:11pt 0 4pt 0; }
+  p { margin:0 0 8pt 0; text-align:justify; }
+  table { border-collapse:collapse; width:100%; margin:6pt 0 10pt 0; font-size:9.5pt; }
+  th { background:#1F3864; color:#fff; border:1px solid #7F7F7F; padding:5pt 6pt; text-align:left; }
+  td { border:1px solid #7F7F7F; padding:5pt 6pt; vertical-align:top; }
+  .meta td { border:1px solid #BFBFBF; }
+  .meta td.k { background:#EDF1F8; font-weight:bold; width:26%; }
+  ul,ol { margin:0 0 8pt 0; }
+  li { margin-bottom:4pt; text-align:justify; }
+  code, .mono { font-family:"Consolas","Courier New",monospace; font-size:9pt; }
+  pre { font-family:"Consolas","Courier New",monospace; font-size:8.5pt; background:#F4F6FA; border:0.75pt solid #C9D3E6;
+        padding:7pt 9pt; margin:5pt 0 10pt 0; white-space:pre-wrap; line-height:1.35; }
+  .box { border-left:3pt solid #2E5496; background:#F2F5FB; padding:7pt 10pt; margin:8pt 0 10pt 0; }
+  .warn { border-left:3pt solid #B00020; background:#FDF3F4; padding:7pt 10pt; margin:8pt 0 10pt 0; }
+  .ok { color:#1E7B34; font-weight:bold; }
+  .no { color:#B00020; font-weight:bold; }
+  .rule { border:0; border-top:1.5pt solid #1F3864; margin:5pt 0 12pt 0; }
+  .foot { font-size:8.5pt; color:#595959; margin-top:18pt; border-top:0.75pt solid #BFBFBF; padding-top:5pt; }
+  .small { font-size:9pt; color:#595959; }
+</style>
+</head>
+<body>
+
+<h1>Incident Report: Missing Images in NILAM Generated Letter PDFs</h1>
+<p class="small" style="margin-bottom:2pt;">Universiti Teknologi MARA &mdash; NILAM (Sistem Pengurusan Dokumen Undang-Undang)</p>
+<hr class="rule">
+
+<table class="meta">
+  <tr><td class="k">Report date</td><td>18 August 2026</td></tr>
+  <tr><td class="k">Prepared for</td><td>NILAM production server administrator (root / sudo access required)</td></tr>
+  <tr><td class="k">Affected host</td><td class="mono">nilams.uitm.edu.my</td></tr>
+  <tr><td class="k">Affected function</td><td>PDF generation for MEU and LPU approval letters (and all other generated letters)</td></tr>
+  <tr><td class="k">Symptom first seen</td><td>On or after 27 July 2026 (reported by users as &ldquo;it was working before&rdquo;)</td></tr>
+  <tr><td class="k">Severity</td><td>Medium &mdash; letters are still produced, but are visually incomplete and not fit to be issued</td></tr>
+  <tr><td class="k">Action required</td><td>Update the operating system CA certificate bundle; restart PHP-FPM. No application code or database change needed.</td></tr>
+</table>
+
+<h2>1. Executive Summary</h2>
+<p>NILAM generates approval letters as PDF files on demand. Several images embedded in these letters &mdash; most visibly the <b>Jawi (Arabic-script) Hijri month name</b> in the letter date &mdash; are no longer rendering. In their place, the PDF prints the text <span class="mono">&ldquo;Image not found or type unknown&rdquo;</span>.</p>
+<p>The images are stored on the NILAM server itself and are publicly reachable. The problem is that the PDF rendering library, running <i>on the server</i>, must download those images over HTTPS at the moment a PDF is generated &mdash; and that download now fails <b>TLS certificate verification</b>.</p>
+<div class="box">
+  <b>Most probable cause:</b> the TLS certificate for <span class="mono">nilams.uitm.edu.my</span> was replaced on <b>27 July 2026</b> with one issued by a <b>different certificate authority (SSL.com)</b>. The server&rsquo;s own CA trust store appears to predate that authority&rsquo;s root certificate, so PHP cannot validate the connection to the site&rsquo;s own hostname.
+</div>
+<p>This is an <b>operating-system trust-store issue, not an application defect</b>. The application code that produces these letters has been unchanged since March 2024. Remediation is a routine CA bundle update (Section 6), and it repairs all existing and future letters immediately.</p>
+
+<h2>2. Observed Symptom</h2>
+<p>When a user downloads a letter &mdash; for example via <span class="mono">https://nilams.uitm.edu.my/myapplications/approval/8963</span>, producing <span class="mono">surat_approval_meu.pdf</span> &mdash; the date line renders as:</p>
+<pre>Ruj. Kami: UiTM.100-6/2/3
+Tarikh :  1448H  [Image not found or type unknown]  04
+          :  18 Ogos 2026</pre>
+<p>The bracketed placeholder is where the Jawi month name should appear. A second image lower in the letter (the <i>salam</i> graphic) is missing in the same way. The university letterhead and the UiTM Hijrah slogan graphic still render correctly.</p>
+
+<h2>3. Affected System &amp; How These Letters Are Produced</h2>
+<p>Understanding the failure requires knowing that <b>the finished PDF is never stored on the server</b>. It is rebuilt from scratch on every download:</p>
+<ol>
+  <li><b>Draft</b> &mdash; a staff member composes the letter in a rich-text editor. The resulting HTML is saved into the database column <span class="mono">tbl_applications.meu_letter</span> (or <span class="mono">lpu_letter</span>). That HTML contains <span class="mono">&lt;img&gt;</span> tags holding <i>absolute URLs</i>, not the pictures themselves.</li>
+  <li><b>Download</b> &mdash; when the letter is requested, the PHP library <b>dompdf</b> (v2.0.8, via barryvdh/laravel-dompdf v2.2.0) reads that HTML and must convert each <span class="mono">&lt;img&gt;</span> into actual pixels.</li>
+  <li><b>Fetch</b> &mdash; to do so, <b>the web server issues its own outbound HTTPS request</b> back to <span class="mono">https://nilams.uitm.edu.my/&hellip;</span> to download the image. If that request fails, dompdf substitutes its placeholder text and continues.</li>
+</ol>
+<div class="warn">
+<b>Important for diagnosis:</b> checking the image URL in a web browser does <b>not</b> test the failing path. The browser uses its own certificate trust store and its own network route. The failure occurs in a request made by PHP, on the server, using the operating system&rsquo;s trust store.
+</div>
+
+<h2>4. Evidence Gathered</h2>
+
+<h3>4.1 Which images failed</h3>
+<p>A production-generated PDF (application 8963, reference <span class="mono">100-PUU(32/6/6322)</span>) was analysed. Its stored letter references three images. Each embedded image in the PDF was identified by matching its pixel dimensions against the live assets:</p>
+<table>
+  <tr><th style="width:30%;">Image</th><th style="width:26%;">Source host</th><th style="width:14%;">Size</th><th style="width:30%;">Present in PDF?</th></tr>
+  <tr><td>Letterhead <span class="mono">meu.png</span></td><td>local disk (relative path, no network)</td><td>788 &times; 138</td><td><span class="ok">YES</span></td></tr>
+  <tr><td><span class="mono">hijrah/slogan.png</span></td><td><span class="mono">cdn.uitm.edu.my</span></td><td>314 &times; 50</td><td><span class="ok">YES</span></td></tr>
+  <tr><td><span class="mono">bulan/03.png</span> (Jawi month)</td><td><span class="mono">nilams.uitm.edu.my</span></td><td>189 &times; 55</td><td><span class="no">NO</span></td></tr>
+  <tr><td><span class="mono">salam.png</span></td><td><span class="mono">nilams.uitm.edu.my</span></td><td>1000 &times; 50</td><td><span class="no">NO</span></td></tr>
+</table>
+<p>Remote HTTPS image fetching is therefore <b>working in general</b> &mdash; the <span class="mono">cdn.uitm.edu.my</span> image downloaded successfully. Only images served from <span class="mono">nilams.uitm.edu.my</span> failed.</p>
+
+<h3>4.2 The two hosts use different certificate authorities</h3>
+<p>This is the decisive finding. The successful host and the failing host do not share a certificate chain:</p>
+<table>
+  <tr><th style="width:22%;">&nbsp;</th><th style="width:39%;">nilams.uitm.edu.my (failing)</th><th style="width:39%;">cdn.uitm.edu.my (working)</th></tr>
+  <tr><td class="mono" style="font-weight:bold;">Leaf issued</td><td><b>27 July 2026</b></td><td>28 July 2025</td></tr>
+  <tr><td class="mono" style="font-weight:bold;">Leaf expires</td><td>8 February 2027</td><td>24 August 2026</td></tr>
+  <tr><td class="mono" style="font-weight:bold;">Intermediate</td><td>SSL.com TLS Issuing RSA CA R1</td><td>Sectigo Public Server Authentication CA DV R36</td></tr>
+  <tr><td class="mono" style="font-weight:bold;">Root</td><td><b>SSL.com TLS RSA Root CA 2022</b><br><span class="small">root created 25 August 2022</span></td><td>Sectigo Public Server Authentication Root R46 &rarr; USERTrust RSA Certification Authority<br><span class="small">root in wide distribution since 2010</span></td></tr>
+</table>
+<p>The NILAM certificate was replaced on <b>27 July 2026</b> and moved to <b>SSL.com</b>, whose root certificate dates from August 2022. The CDN host remains on the long-established Sectigo/USERTrust chain, which is present in even very old CA bundles &mdash; which is precisely why that one image still works.</p>
+
+<h3>4.3 Why PHP is affected when browsers are not</h3>
+<p>dompdf fetches remote images using PHP&rsquo;s <span class="mono">file_get_contents()</span> whenever <span class="mono">allow_url_fopen</span> is enabled; cURL is only used as a fallback (see <span class="mono">vendor/dompdf/dompdf/src/Helpers.php</span> line 908). <span class="mono">file_get_contents()</span> validates TLS against the certificate bundle configured for PHP&rsquo;s OpenSSL (<span class="mono">openssl.cafile</span> / the system store) &mdash; a different, and typically much less frequently updated, trust store than the one used by a modern web browser.</p>
+
+<h3>4.4 Server platform</h3>
+<p>The host responds with <span class="mono">Server: Apache/2.4.41 (Ubuntu)</span>, which corresponds to <b>Ubuntu 20.04 LTS (released April 2020)</b>. If the <span class="mono">ca-certificates</span> package on this host has not been updated since installation, its bundle necessarily predates the SSL.com 2022 root and cannot validate the new certificate.</p>
+
+<h3>4.5 Ruled out</h3>
+<table>
+  <tr><th style="width:44%;">Hypothesis</th><th style="width:56%;">Why it is excluded</th></tr>
+  <tr><td>Application code change / regression</td><td>All 1,663 MEU letters stored since 4 March 2024 contain the identical three image URL patterns. No code change occurred.</td></tr>
+  <tr><td>Wrong or corrupted URLs in the database</td><td>All 8,081 image references across every stored letter resolve to only two hosts, both correct: <span class="mono">nilams.uitm.edu.my</span> and <span class="mono">cdn.uitm.edu.my</span>.</td></tr>
+  <tr><td>Image files missing or web server misconfigured</td><td>All image URLs return HTTP 200 with valid PNG content from an external client.</td></tr>
+  <tr><td>Outbound network blocked / remote images disabled in dompdf</td><td>The <span class="mono">cdn.uitm.edu.my</span> image is fetched successfully in the same PDF render.</td></tr>
+  <tr><td>WAF blocking non-browser requests by User-Agent</td><td>Requests with an empty, browser, and PHP-style User-Agent all returned HTTP 200.</td></tr>
+</table>
+
+<h2>5. Root Cause (to be confirmed on the server)</h2>
+<p>The server&rsquo;s CA trust store used by PHP does not contain <b>SSL.com TLS RSA Root CA 2022</b>. Since the 27 July 2026 certificate replacement, PHP cannot validate a TLS connection to <span class="mono">nilams.uitm.edu.my</span>, so every image the letter loads from that hostname fails and is replaced by dompdf&rsquo;s placeholder.</p>
+<p>Please run the following on the production server to confirm before applying the fix. <b>All commands are read-only.</b></p>
+<pre>#!/bin/bash
+# 1. Does PHP's own HTTPS fetch fail for the site's own hostname?
+php -r '$d=@file_get_contents("https://nilams.uitm.edu.my/assets/images/bulan/03.png");
+        echo $d===false ? "FAIL: ".error_get_last()["message"]."\n" : "OK ".strlen($d)." bytes\n";'
+
+# 2. Compare against the host that still works
+php -r '$d=@file_get_contents("https://cdn.uitm.edu.my/hijrah/slogan.png");
+        echo $d===false ? "FAIL: ".error_get_last()["message"]."\n" : "OK ".strlen($d)." bytes\n";'
+
+# 3. Is the SSL.com 2022 root present in the system bundle?  (0 = confirms the diagnosis)
+grep -c "SSL.com TLS RSA Root CA 2022" /etc/ssl/certs/ca-certificates.crt
+
+# 4. Which bundle is PHP actually using, and how old is the package?
+php -r 'print_r(openssl_get_cert_locations());'
+dpkg -l ca-certificates | tail -1</pre>
+<p><b>Expected confirming result:</b> step 1 fails with a message similar to <span class="mono">SSL operation failed &hellip; certificate verify failed</span>, step 2 succeeds, and step 3 returns <span class="mono">0</span>.</p>
+
+<h2>6. Remediation</h2>
+<p>Update the operating system CA bundle and restart the PHP worker processes so they pick up the new store:</p>
+<pre>sudo apt-get update
+sudo apt-get install --reinstall ca-certificates
+sudo update-ca-certificates
+sudo systemctl restart php*-fpm
+sudo systemctl reload apache2</pre>
+<p><b>Note on Ubuntu 20.04:</b> this release reached the end of standard support in April 2025. If <span class="mono">apt-get update</span> reports repository errors, the archive sources may need to be repointed (for example to <span class="mono">old-releases.ubuntu.com</span>) or an ESM subscription enabled, before the CA package will install.</p>
+<p><b>Alternative if the package cannot be updated:</b> download the SSL.com root certificate, install it locally, and rebuild the bundle:</p>
+<pre>sudo curl -o /usr/local/share/ca-certificates/ssl-com-tls-rsa-root-2022.crt \
+     https://ssl.com/repo/certs/SSL.com-TLS-RootCA-RSA-4096-R2.crt
+sudo update-ca-certificates
+sudo systemctl restart php*-fpm</pre>
+<p class="small">Verify the downloaded certificate&rsquo;s fingerprint against SSL.com&rsquo;s published repository before installing it.</p>
+
+<h2>7. Verification After the Fix</h2>
+<ol>
+  <li>Re-run step 1 of Section 5. It must now report <span class="mono">OK &lt;n&gt; bytes</span>.</li>
+  <li>Download a letter that is known to be affected, for example
+      <span class="mono">https://nilams.uitm.edu.my/myapplications/approval/8963</span> (login required).</li>
+  <li>Confirm the Jawi month name appears in the date line and the <i>salam</i> graphic is present, with no
+      <span class="mono">&ldquo;Image not found or type unknown&rdquo;</span> text anywhere in the document.</li>
+</ol>
+<div class="box">
+Because the PDF is regenerated on every download and is never cached or stored on disk, the fix takes effect <b>immediately for all existing letters</b>. No database migration, cache clearing, or content re-entry is required.
+</div>
+
+<h2>8. Risk Assessment</h2>
+<table>
+  <tr><th style="width:34%;">Item</th><th style="width:66%;">Assessment</th></tr>
+  <tr><td>Change risk</td><td><b>Low.</b> Updating <span class="mono">ca-certificates</span> is a routine maintenance operation. It adds trusted roots; it does not alter the site&rsquo;s own certificate or its configuration.</td></tr>
+  <tr><td>Downtime</td><td>Brief &mdash; only the PHP-FPM restart, typically under two seconds.</td></tr>
+  <tr><td>Rollback</td><td>Not expected to be needed. The previous bundle can be restored from the package cache if required.</td></tr>
+  <tr><td>Data impact</td><td>None. No application data is read or modified.</td></tr>
+  <tr><td>If left unfixed</td><td>All approval letters continue to be issued with missing official graphics, including the Jawi Hijri date required on formal correspondence.</td></tr>
+</table>
+
+<h2>9. Recommendations to Prevent Recurrence</h2>
+<ol>
+  <li><b>Remove the network dependency from letter generation.</b> The images are already present on the server&rsquo;s own filesystem, yet the application downloads them over the public internet on every render. Embedding them directly in the letter HTML (as base64 data URIs) would make PDF generation immune to any future certificate, DNS, or network change. This has been tested and confirmed to render correctly in both dompdf and the browser editor. Application-side change; can be scheduled separately.</li>
+  <li><b>Add the CA bundle to the certificate renewal checklist.</b> Whenever the certificate authority for a UiTM host changes, verify that server-to-server HTTPS calls still validate &mdash; not only browser access.</li>
+  <li><b>Plan an operating system upgrade.</b> Ubuntu 20.04 is beyond its standard support window; a stale trust store will continue to cause intermittent, hard-to-diagnose failures of this kind.</li>
+</ol>
+
+<h2>Appendix A &mdash; Technical Reference</h2>
+<table>
+  <tr><th style="width:34%;">Item</th><th style="width:66%;">Value</th></tr>
+  <tr><td>PDF renderer</td><td>dompdf 2.0.8 via barryvdh/laravel-dompdf 2.2.0</td></tr>
+  <tr><td>Remote fetch mechanism</td><td><span class="mono">file_get_contents()</span> &mdash; <span class="mono">vendor/dompdf/dompdf/src/Helpers.php:908</span></td></tr>
+  <tr><td>Placeholder text origin</td><td><span class="mono">vendor/dompdf/dompdf/src/Image/Cache.php</span></td></tr>
+  <tr><td>Letter content storage</td><td><span class="mono">tbl_applications.meu_letter</span> / <span class="mono">tbl_applications.lpu_letter</span> (type <span class="mono">text</span>)</td></tr>
+  <tr><td>PDF storage</td><td>None &mdash; streamed to the browser, never written to disk</td></tr>
+  <tr><td>Image assets on server</td><td><span class="mono">public/assets/images/bulan/01.png</span> &hellip; <span class="mono">12.png</span>, <span class="mono">public/assets/images/salam.png</span></td></tr>
+  <tr><td>Affected letters</td><td>All MEU and LPU approval letters &mdash; approximately 6,656 stored references to <span class="mono">nilams.uitm.edu.my</span> images</td></tr>
+</table>
+
+<h2>Appendix B &mdash; Certificate Chain Observed</h2>
+<pre>$ openssl s_client -connect nilams.uitm.edu.my:443 -servername nilams.uitm.edu.my
+
+ 0 s:CN=*.uitm.edu.my
+   i:C=US, O=SSL Corporation, CN=SSL.com TLS Issuing RSA CA R1
+     notBefore=Jul 27 03:00:51 2026 GMT
+     notAfter =Feb  8 09:46:37 2027 GMT
+ 1 s:C=US, O=SSL Corporation, CN=SSL.com TLS Issuing RSA CA R1
+   i:C=US, O=SSL Corporation, CN=SSL.com TLS RSA Root CA 2022
+ 2 s:C=US, O=SSL Corporation, CN=SSL.com TLS RSA Root CA 2022
+   i:C=US, O=SSL Corporation, CN=SSL.com TLS RSA Root CA 2022   &lt;- root, created Aug 2022</pre>
+
+<p class="foot">Prepared from analysis of a production-generated PDF, the NILAM production database, the application source code, and live TLS inspection of the affected hosts, on 18 August 2026. The root cause in Section 5 is a strongly evidenced hypothesis; the commands provided confirm it definitively before any change is applied.</p>
+
+</body>
+</html>

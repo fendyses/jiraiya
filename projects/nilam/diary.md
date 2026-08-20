@@ -1,6 +1,9 @@
 # Nilam — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/current/2026-08-20.md)
+  - Outcome: Two distinct image pipelines identified and mapped end to end. Read-only session; no code changed, working tree clean.
+- **2026-08-13** — [PUU Monitoring UX Completion and Operational Clarity](../../daily-diary/current/2026-08-13.md)
 - **2026-08-09** — [PUU Monitoring Module: Design, Build, Install; PUU Individual User Report and Print-Safe Visuals](../../daily-diary/current/2026-08-09.md)
   - Outcome: Module built, installed to `nilamsdev`, verified. Uncommitted.
 - **2026-07-31** — [NILAM Department-Code Source Correction; NILAM LPU Draft Page 404 Investigation; MyStudent Medical Form Token-Renewal Fix](../../daily-diary/archived/2026-07/2026-07-31.md)

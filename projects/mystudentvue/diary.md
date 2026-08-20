@@ -1,6 +1,8 @@
 # MyStudent — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/current/2026-08-20.md)
+  - Outcome: Two distinct image pipelines identified and mapped end to end. Read-only session; no code changed, working tree clean.
 - **2026-08-12** — [MyStudent: Result Kolej Rayuan Leak Fix](../../daily-diary/current/2026-08-12.md)
   - Outcome: Root cause found, fixed, committed as `update fix rayuan leak`, and **deployed manually** (~22:55). Fendy had disabled the whole page as a stopgap; it can now be safely re-enabled with `rayuan_flag` off.
 - **2026-08-10** — [Result Kolej Filtering Made Predictable](../../daily-diary/current/2026-08-10.md)
