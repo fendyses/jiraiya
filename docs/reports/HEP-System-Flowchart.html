@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<title>HEP System Flowchart</title>
+<style>
+  :root {
+    --ink:      #1e2433;
+    --ink-2:    #616b80;
+    --ink-3:    #8a94a6;
+    --ground:   #f4f5fa;
+    --card:     #ffffff;
+    --line:     #e4e7f0;
+    --line-2:   #eef0f6;
+    --conn:     #b9c0d0;
+
+    --pelajar:      #2a5cab;  --pelajar-bg:   #e8eef8;
+    --penasihat:    #3f4fa8;  --penasihat-bg: #eaebf7;
+    --penyemak:     #0f8878;  --penyemak-bg:  #e2f2ef;
+    --moderator:    #7b4fa8;  --moderator-bg: #f0eaf7;
+    --pelulus:      #c9720f;  --pelulus-bg:   #fbeedd;
+    --sistem:       #5a6478;  --sistem-bg:    #eceef2;
+
+    --dec-bg:   #fdf8e6;  --dec-br: #efe1b2;  --dec-tx: #9d7b23;
+    --note-bg:  #fdfaef;  --note-br:#e3cf95;
+    --stop-bg:  #fdeeeb;  --stop-br:#f3d2cb;  --stop-tx:#b8402f;  --stop-pill:#fadfd9;
+    --ok-bg:    #eaf6ee;  --ok-br:  #bfe0ca;  --ok-tx:  #16794a;  --ok-pill:#d7edde;
+
+    --sans: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @page { size: 420mm 297mm; margin: 0; }
+
+  html, body { background: var(--ground); }
+  body { font-family: var(--sans); color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .sheet {
+    width: 420mm;
+    height: 297mm;
+    padding: 11mm 12mm 9mm;
+    background: var(--ground);
+    display: flex;
+    flex-direction: column;
+    gap: 6mm;
+    overflow: hidden;
+    break-after: page;
+  }
+  .sheet:last-child { break-after: auto; }
+
+  /* ── Masthead ───────────────────────────────────────── */
+
+  .head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14mm; }
+  .brand { display: flex; align-items: center; gap: 5mm; }
+  .mark {
+    width: 15mm; height: 15mm; border-radius: 3.6mm;
+    background: #1f4f97; color: #fff;
+    font-size: 22px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+  }
+  .head h1 { font-size: 27px; font-weight: 700; letter-spacing: -.2px; line-height: 1.12; }
+  .head .sub { font-size: 11px; color: var(--ink-2); margin-top: 1.6mm; }
+  .meta { text-align: right; font-size: 9.5px; color: var(--ink-2); line-height: 1.75; padding-top: 1mm; white-space: nowrap; }
+  .meta b { color: var(--ink); font-weight: 700; }
+
+  /* ── Lane grid ──────────────────────────────────────── */
+
+  .lanes { flex: 1; display: flex; align-items: stretch; gap: 0; min-height: 0; }
+
+  .lane {
+    flex: 1 1 0; min-width: 0;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 3mm;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .hop { flex: 0 0 7mm; display: flex; align-items: center; justify-content: center; }
+  .hop i { display: block; width: 5mm; height: 1px; background: var(--conn); position: relative; }
+  .hop i::after {
+    content: ""; position: absolute; right: -1px; top: 50%; transform: translateY(-50%);
+    border-top: 3px solid transparent; border-bottom: 3px solid transparent; border-left: 4.5px solid var(--conn);
+  }
+
+  .lane-head { padding: 3mm 3.4mm; display: flex; align-items: center; gap: 2.6mm; color: #fff; }
+  .lane-head .num {
+    width: 6.2mm; height: 6.2mm; border-radius: 50%;
+    background: rgba(255,255,255,.24); border: 1px solid rgba(255,255,255,.55);
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  }
+  .lane-head h2 { font-size: 13px; font-weight: 700; line-height: 1.2; }
+  .lane-head p { font-size: 9px; opacity: .88; margin-top: .5mm; }
+
+  .lane-body { padding: 3mm; display: flex; flex-direction: column; gap: 0; }
+
+  .r-pelajar   .lane-head { background: var(--pelajar); }
+  .r-penasihat .lane-head { background: var(--penasihat); }
+  .r-penyemak  .lane-head { background: var(--penyemak); }
+  .r-moderator .lane-head { background: var(--moderator); }
+  .r-pelulus   .lane-head { background: var(--pelulus); }
+  .r-sistem    .lane-head { background: var(--sistem); }
+
+  /* ── Blocks ─────────────────────────────────────────── */
+
+  .step {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 2mm;
+    padding: 2.4mm 2.6mm 2.6mm;
+  }
+  .step h3 { font-size: 10.5px; font-weight: 700; line-height: 1.25; }
+  .step p  { font-size: 8.6px; color: var(--ink-2); line-height: 1.42; margin-top: 1mm; }
+
+  .tag {
+    display: inline-block;
+    font-size: 6.9px; font-weight: 700; letter-spacing: .5px;
+    padding: .7mm 1.4mm; border-radius: 1mm; margin-bottom: 1.4mm;
+    text-transform: uppercase;
+  }
+  .t-pelajar   { background: var(--pelajar-bg);   color: var(--pelajar); }
+  .t-penasihat { background: var(--penasihat-bg); color: var(--penasihat); }
+  .t-penyemak  { background: var(--penyemak-bg);  color: var(--penyemak); }
+  .t-moderator { background: var(--moderator-bg); color: var(--moderator); }
+  .t-pelulus   { background: var(--pelulus-bg);   color: var(--pelulus); }
+  .t-sistem    { background: var(--sistem-bg);    color: var(--sistem); }
+  .t-stop      { background: var(--stop-pill);    color: var(--stop-tx); }
+  .t-ok        { background: var(--ok-pill);      color: var(--ok-tx); }
+
+  .step.stop { background: var(--stop-bg); border-color: var(--stop-br); }
+  .step.stop h3 { color: var(--stop-tx); }
+  .step.ok   { background: var(--ok-bg);   border-color: var(--ok-br); }
+  .step.ok h3 { color: var(--ok-tx); }
+
+  .decision {
+    background: var(--dec-bg); border: 1px solid var(--dec-br);
+    border-radius: 2mm; padding: 2.2mm 2.6mm 2.6mm; text-align: center;
+  }
+  .decision span {
+    display: block; font-size: 6.9px; font-weight: 700; letter-spacing: .6px;
+    color: var(--dec-tx); text-transform: uppercase; margin-bottom: 1.2mm;
+  }
+  .decision h3 { font-size: 10.5px; font-weight: 700; line-height: 1.25; }
+
+  .split { display: flex; gap: 2mm; align-items: stretch; }
+  .split > .step { flex: 1 1 0; min-width: 0; }
+
+  .note {
+    background: var(--note-bg); border: 1px dashed var(--note-br);
+    border-radius: 2mm; padding: 2.2mm 2.4mm;
+    font-size: 8.3px; color: var(--ink-2); line-height: 1.45;
+  }
+  .note b { color: var(--ink); font-weight: 700; }
+
+  .special {
+    background: var(--moderator-bg); border-left: 1mm solid var(--moderator);
+    border-radius: 0 2mm 2mm 0; padding: 2.2mm 2.6mm;
+    font-size: 8.3px; color: var(--ink-2); line-height: 1.45;
+  }
+  .special b { color: var(--moderator); font-weight: 700; }
+
+  /* vertical connector */
+  .arrow { height: 4.2mm; position: relative; flex: 0 0 auto; }
+  .arrow::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 1.3mm; width: 1px; background: var(--conn); }
+  .arrow::after {
+    content: ""; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+    border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 4px solid var(--conn);
+  }
+
+  /* ── Footer panels ──────────────────────────────────── */
+
+  .panels { display: flex; gap: 4mm; align-items: stretch; flex: 0 0 auto; margin-top: auto; }
+  .panel {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 3mm; padding: 3mm 3.4mm 3.2mm;
+    display: flex; flex-direction: column;
+  }
+  .panel.k { flex: 0 0 78mm; }
+  .panel.b { flex: 1 1 auto; }
+  .panel.s { flex: 0 0 116mm; }
+  .panel h4 {
+    font-size: 9px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 2.4mm;
+  }
+
+  .keys { display: flex; flex-wrap: wrap; gap: 1.4mm 4mm; }
+  .keys div { display: flex; align-items: center; gap: 1.6mm; font-size: 8.6px; color: var(--ink-2); }
+  .dot { width: 2.2mm; height: 2.2mm; border-radius: 50%; flex: 0 0 auto; }
+  .panel .foot { font-size: 7.6px; color: var(--ink-3); line-height: 1.45; margin-top: auto; padding-top: 2.4mm; }
+
+  .panel ul { list-style: none; display: flex; flex-direction: column; gap: 1.5mm; }
+  .panel li { font-size: 8.6px; color: var(--ink-2); line-height: 1.42; padding-left: 3mm; position: relative; }
+  .panel li::before { content: "•"; position: absolute; left: 0; color: var(--ink-3); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 1.6mm; }
+  .chip {
+    border: 1px solid var(--line); border-radius: 1.6mm;
+    padding: 1.4mm 2mm; background: #fbfcfe;
+    display: flex; align-items: baseline; gap: 1.6mm;
+    border-left-width: 1mm; border-left-style: solid;
+  }
+  .chip code { font-size: 8.4px; font-weight: 700; font-family: var(--sans); }
+  .chip span { font-size: 8px; color: var(--ink-2); }
+  .chip.go   { border-left-color: var(--pelajar); }  .chip.go code   { color: var(--pelajar); }
+  .chip.ok   { border-left-color: var(--ok-tx); }    .chip.ok code   { color: var(--ok-tx); }
+  .chip.warn { border-left-color: #b8860b; }         .chip.warn code { color: #96700a; }
+  .chip.stop { border-left-color: var(--stop-tx); }  .chip.stop code { color: var(--stop-tx); }
+  .chip.sys  { border-left-color: var(--sistem); }   .chip.sys code  { color: var(--sistem); }
+
+  .outs { display: flex; gap: 2.4mm; }
+  .out {
+    flex: 1 1 0; border: 1px solid var(--line); border-radius: 2mm;
+    padding: 2.2mm 2.4mm; text-align: center; background: #fbfcfe;
+  }
+  .out b { display: block; font-size: 9.6px; font-weight: 700; }
+  .out span { display: block; font-size: 7.8px; color: var(--ink-2); margin-top: .8mm; line-height: 1.35; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ SHEET A · PROFILING ═══════════════════════ -->
+<section class="sheet">
+  <header class="head">
+    <div class="brand">
+      <div class="mark">A</div>
+      <div>
+        <h1>Modul Profiling — Carta Alir Sistem</h1>
+        <p class="sub">Penyediaan skema semester, penjanaan rekod pelajar, pengisian penglibatan, kiraan merit dan transkrip</p>
+      </div>
+    </div>
+    <div class="meta">
+      <div><b>Sistem:</b> HEPWeb</div>
+      <div><b>Dokumen:</b> Aliran Kerja Operasi</div>
+      <div><b>Disediakan:</b> 24 Ogos 2026</div>
+    </div>
+  </header>
+
+  <div class="lanes">
+
+    <article class="lane r-moderator">
+      <div class="lane-head"><span class="num">1</span><div><h2>Penyediaan Semester</h2><p>Moderator HEP</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-moderator">Moderator HEP</span>
+          <h3>Tetapkan Semester Semasa</h3>
+          <p>Tandakan semester sebagai semasa dan tetapkan tetingkap pengisian dari tarikh mula hingga tarikh tamat profiling.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="decision"><span>Keputusan</span><h3>Skema markah semester sudah wujud?</h3></div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step">
+            <span class="tag t-moderator">Ya</span>
+            <h3>Salin Semester Lepas</h3>
+            <p>Seluruh skema disalin daripada semester sebelumnya.</p>
+          </div>
+          <div class="step">
+            <span class="tag t-moderator">Tidak</span>
+            <h3>Kunci Masuk Baharu</h3>
+            <p>Bina skema penuh secara manual bagi semester ini.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-moderator">Moderator HEP</span>
+          <h3>Jana Profil Semester</h3>
+          <p>Pilih satu kampus atau semua kampus, kemudian lepaskan job penjanaan rekod pelajar.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="note"><b>Enam parameter skema:</b> Seksyen · Kategori · Sub-kategori · Tahap Kategori · Markah · Kategori Seksyen. Setiap satu menyokong salinan daripada semester lepas.</div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-sistem">
+      <div class="lane-head"><span class="num">2</span><div><h2>Penjanaan Rekod</h2><p>Sistem — queue job</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-sistem">Queue Job</span>
+          <h3>JanaSemester</h3>
+          <p>Berjalan di latar belakang dengan satu percubaan sahaja; kegagalan terus dilaporkan tanpa cuba semula.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-sistem">Sistem</span>
+          <h3>Tapis Pelajar Layak</h3>
+          <p>Ambil pelajar berstatus profiling aktif yang belum mempunyai rekod bagi semester semasa.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-sistem">Sistem</span>
+          <h3>Cipta Profil Semester</h3>
+          <p>Rekod dicipta dengan status 1 Belum Isi, dan CGPA semasa disalin sebagai CGPA terdahulu.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="note"><b>Padanan kampus:</b> rekod dipadan mengikut kod kampus pelajar. Pelajar tanpa jabatan sepadan dilangkau tanpa menghentikan proses.</div>
+        <div class="arrow"></div>
+        <div class="note"><b>Boleh dijalankan berulang:</b> pelajar yang sudah mempunyai rekod semester ini tidak akan diduplikasi.</div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-pelajar">
+      <div class="lane-head"><span class="num">3</span><div><h2>Pengisian Profil</h2><p>Pelajar</p></div></div>
+      <div class="lane-body">
+        <div class="decision"><span>Keputusan</span><h3>Tetingkap pengisian terbuka?</h3></div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step stop">
+            <span class="tag t-stop">Tidak</span>
+            <h3>Skrin Disekat</h3>
+            <p>Sebab dipaparkan; butang tambah dan hantar ditutup.</p>
+          </div>
+          <div class="step">
+            <span class="tag t-pelajar">Ya</span>
+            <h3>Borang Dibuka</h3>
+            <p>Boleh tambah, kemaskini dan padam rekod.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-pelajar">Pelajar</span>
+          <h3>Tambah Rekod Penglibatan</h3>
+          <p>Kategori → Sub-kategori → Tahap → Seksyen, dengan nama program, tempat dan jenis kehadiran.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="decision"><span>Keputusan</span><h3>Bukti penglibatan disertakan?</h3></div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step stop">
+            <span class="tag t-stop">Tidak</span>
+            <h3>Rekod Ditolak</h3>
+            <p>Wajib salah satu sebelum boleh disimpan.</p>
+          </div>
+          <div class="step">
+            <span class="tag t-pelajar">Ya</span>
+            <h3>Lampiran / e-Sijil</h3>
+            <p>JPG, PNG atau PDF, atau pautan e-Sijil aktiviti.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-pelajar">Pelajar</span>
+          <h3>Pengisytiharan &amp; Hantar</h3>
+          <p>Sekurang-kurangnya satu rekod diperlukan. Status bertukar ke 2 Dihantar.</p>
+        </div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-moderator">
+      <div class="lane-head"><span class="num">4</span><div><h2>Kiraan Merit</h2><p>Moderator HEP + queue job</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-moderator">Moderator HEP</span>
+          <h3>Jana Kiraan Merit</h3>
+          <p>Pilih semester dan kampus. Hanya rekod yang belum pernah dijana merit akan diproses.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-sistem">Queue Job</span>
+          <h3>Pilih Rekod Terbaik</h3>
+          <p>Pilihan lama direset, kemudian satu rekod berpoint tertinggi dipilih bagi setiap kumpulan markah A dan B.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-sistem">Sistem</span>
+          <h3>Kira GPA dan CGPA</h3>
+          <p>Jumlah = markah kategori × point tahap, dicampur. GPA = Jumlah ÷ 80. CGPA baharu ialah purata CGPA terdahulu dengan GPA semasa.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step ok">
+          <span class="tag t-ok">Selesai</span>
+          <h3>Profil Semester Selesai</h3>
+          <p>Status 3 direkod bersama tarikh jana merit, dan CGPA induk pelajar dikemas kini.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="note"><b>Rekod tidak terpilih</b> kekal tersimpan sebagai bukti penglibatan, tetapi tidak menyumbang sebarang markah kepada GPA semester.</div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-pelajar">
+      <div class="lane-head"><span class="num">5</span><div><h2>Transkrip &amp; Pemantauan</h2><p>Pelajar / Moderator HEP</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-pelajar">Pelajar</span>
+          <h3>Semakan Transkrip</h3>
+          <p>Transkrip Penuh, Mini Transkrip dan Transkrip Aktiviti dijana sebagai PDF untuk setiap semester.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-moderator">Moderator HEP</span>
+          <h3>Dashboard Profiling</h3>
+          <p>Kategori → Tahap → Senarai pelajar. Setiap peringkat boleh dieksport ke PDF.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-moderator">Moderator HEP</span>
+          <h3>Ringkasan &amp; Semakan HEP</h3>
+          <p>Ringkasan mengikut jabatan dan fakulti, senarai pelajar belum isi, dan carian profil pelajar individu.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="special"><b>Pemantauan berterusan:</b> senarai belum isi mengikut jabatan membolehkan susulan dibuat sebelum tetingkap pengisian semester ditutup.</div>
+      </div>
+    </article>
+
+  </div>
+
+  <footer class="panels">
+    <div class="panel k">
+      <h4>Kunci Warna Peranan</h4>
+      <div class="keys">
+        <div><span class="dot" style="background:var(--moderator)"></span>Moderator HEP</div>
+        <div><span class="dot" style="background:var(--sistem)"></span>Sistem / automasi</div>
+        <div><span class="dot" style="background:var(--pelajar)"></span>Pelajar</div>
+      </div>
+      <p class="foot">Anak panah menunjukkan laluan utama. Kotak berpecah menunjukkan hasil alternatif. Kotak merah menandakan laluan tersekat, hijau menandakan penamat berjaya, dan nota bergaris putus menerangkan syarat serta gelung.</p>
+    </div>
+    <div class="panel b">
+      <h4>Kelakuan Merentas Sistem</h4>
+      <ul>
+        <li>Skema markah diikat pada semester — setiap semester baharu boleh menyalin skema semester sebelumnya secara penuh.</li>
+        <li>Tetingkap pengisian dikawal tarikh, dengan tempoh ihsan khusus bagi pelajar semester akhir pengajian.</li>
+        <li>Semester semasa disekat sehingga semester sebelumnya selesai dijana merit.</li>
+        <li>Kiraan merit adalah pukal dan boleh diulang — rekod yang sudah dijana akan dilangkau.</li>
+        <li>Hanya satu rekod terbaik bagi setiap kumpulan markah A dan B menyumbang kepada GPA.</li>
+      </ul>
+    </div>
+    <div class="panel s">
+      <h4>Status Profil Semester</h4>
+      <div class="outs">
+        <div class="out"><b>1 · Belum Isi</b><span>Rekod dijana, menunggu pelajar mengisi</span></div>
+        <div class="out"><b>2 · Dihantar</b><span>Diisytihar pelajar, menunggu kiraan merit</span></div>
+        <div class="out"><b>3 · Selesai</b><span>Merit dijana dan CGPA dikemas kini</span></div>
+      </div>
+      <p class="foot">Disediakan daripada laluan, pengawal dan queue job modul Profiling dalam repositori HEPWeb, cawangan development.</p>
+    </div>
+  </footer>
+</section>
+
+<!-- ═══════════════════════ SHEET B · AKTIVITI ═══════════════════════ -->
+<section class="sheet">
+  <header class="head">
+    <div class="brand">
+      <div class="mark">B</div>
+      <div>
+        <h1>Modul Aktiviti — Carta Alir Sistem</h1>
+        <p class="sub">Permohonan aktiviti, rantaian kelulusan mengikut had tabung, surat kelulusan dan pelaporan pasca-aktiviti</p>
+      </div>
+    </div>
+    <div class="meta">
+      <div><b>Sistem:</b> HEPWeb</div>
+      <div><b>Dokumen:</b> Aliran Kerja Operasi</div>
+      <div><b>Disediakan:</b> 24 Ogos 2026</div>
+    </div>
+  </header>
+
+  <div class="lanes">
+
+    <article class="lane r-pelajar">
+      <div class="lane-head"><span class="num">1</span><div><h2>Penyediaan Permohonan</h2><p>Pemohon</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-pelajar">Pemohon</span>
+          <h3>Permohonan Baharu</h3>
+          <p>Status D — Draf. Boleh dipadam terus selagi belum dihantar.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-pelajar">Pemohon</span>
+          <h3>Lengkapkan Lapan Tab</h3>
+          <p>Aktiviti · Objektif · Impak · Jawatankuasa · Aturcara dan Pengisian · Perbelanjaan · Penjanaan · Pengesahan.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-pelajar">Pemohon</span>
+          <h3>Pilih Tabung &amp; Had Kelulusan</h3>
+          <p>Had kelulusan yang dipilih menetapkan siapa penyemak, moderator dan pelulus bagi permohonan ini.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="decision"><span>Keputusan</span><h3>Kategori permohonan?</h3></div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step">
+            <span class="tag t-pelajar">HEP</span>
+            <h3>Anjuran Persatuan</h3>
+            <p>Ke Penasihat Persatuan — SPAP.</p>
+          </div>
+          <div class="step">
+            <span class="tag t-pelajar">Jabatan</span>
+            <h3>Anjuran Jabatan</h3>
+            <p>Terus ke Penyemak — SPAS.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="note"><b>Pintasan:</b> jika penyemak dan moderator adalah orang yang sama, permohonan melompat terus ke SPAM.</div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-penasihat">
+      <div class="lane-head"><span class="num">2</span><div><h2>Semakan Awal</h2><p>Penasihat Persatuan / Penyemak</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-penasihat">Penasihat Persatuan</span>
+          <h3>Semakan SPAP</h3>
+          <p>Hanya untuk aktiviti kategori HEP. Penasihat menyokong, menolak atau mengembalikan permohonan.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-penyemak">Penyemak</span>
+          <h3>Semakan SPAS</h3>
+          <p>Semakan butiran aktiviti, anggaran kos dan kesesuaian tabung sebelum dimoderasi.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step stop">
+            <span class="tag t-stop">Kembali</span>
+            <h3>SPAK</h3>
+            <p>Pemohon kemaskini dan hantar semula.</p>
+          </div>
+          <div class="step">
+            <span class="tag t-penasihat">Sokong</span>
+            <h3>SPAM</h3>
+            <p>Bergerak ke peringkat moderasi.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="step stop">
+          <span class="tag t-stop">Tolak</span>
+          <h3>SPAG — Tidak Diluluskan</h3>
+          <p>Permohonan ditamatkan pada peringkat ini.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="note"><b>Tukar had tabung:</b> penyemak boleh menukar had kelulusan. Jika had berubah, permohonan dihalakan semula mengikut had baharu.</div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-moderator">
+      <div class="lane-head"><span class="num">3</span><div><h2>Moderasi</h2><p>Moderator</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-moderator">Moderator</span>
+          <h3>Semakan SPAM</h3>
+          <p>Semakan bajet permohonan, jumlah yang wajar diluluskan dan kesesuaian tabung yang dipilih.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="decision"><span>Keputusan</span><h3>Had kelulusan tabung terus ke pelulus?</h3></div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step">
+            <span class="tag t-moderator">Ya</span>
+            <h3>Terus ke Pelulus</h3>
+            <p>Status SPAML.</p>
+          </div>
+          <div class="step">
+            <span class="tag t-moderator">Tidak</span>
+            <h3>SPAT — Pusingan 2</h3>
+            <p>Moderator menyemak sekali lagi.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-moderator">Moderator</span>
+          <h3>Keputusan Moderasi</h3>
+          <p>SPAML untuk teruskan kepada pelulus, SPAG untuk tolak, atau SPAK untuk kembalikan kepada pemohon.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="note"><b>Gelung dalaman:</b> apabila had tabung tidak membenarkan kelulusan terus, permohonan melalui moderator dua kali — SPAM kemudian SPAT — sebelum sampai kepada pelulus.</div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-pelulus">
+      <div class="lane-head"><span class="num">4</span><div><h2>Kelulusan &amp; Surat</h2><p>Pelulus / Penyemak</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-pelulus">Pelulus</span>
+          <h3>Tindakan Pelulus — SPAML</h3>
+          <p>Luluskan berserta jumlah kelulusan tabung, tolak, kembalikan kepada pemohon, atau rujuk semula moderator.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-penyemak">Penyemak</span>
+          <h3>SPASL — Deraf Surat</h3>
+          <p>Permohonan sudah diluluskan tetapi belum selesai. Penyemak menyediakan deraf surat kelulusan.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step ok">
+          <span class="tag t-ok">Lulus</span>
+          <h3>SPAL — Surat Kelulusan</h3>
+          <p>PDF dijana daripada templat jabatan berserta bajet yang diluluskan, kemudian pemohon dimaklumkan.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step">
+            <span class="tag t-penyemak">Pindaan</span>
+            <h3>Surat Pindaan</h3>
+            <p>Butiran dikemas kini; status kekal SPAL.</p>
+          </div>
+          <div class="step stop">
+            <span class="tag t-stop">Batal</span>
+            <h3>SPAB</h3>
+            <p>Surat pembatalan dijana.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="note"><b>SPASL bukan penamat:</b> tanpa langkah deraf surat oleh penyemak, permohonan tidak pernah mencapai status SPAL.</div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-penyemak">
+      <div class="lane-head"><span class="num">5</span><div><h2>Pelaksanaan &amp; Pelaporan</h2><p>Pemohon / Penasihat / Penyemak</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-pelajar">Pemohon</span>
+          <h3>Pelaksanaan Aktiviti</h3>
+          <p>Aturcara harian dan pengisian dijalankan. Kehadiran peserta diimbas melalui QR Code atau dikunci masuk.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-pelajar">Pemohon</span>
+          <h3>LD — Laporan Draf</h3>
+          <p>Tujuh tab: Aktiviti · Hasil · Kemahiran Insaniah · Penilaian · Keberkesanan · Dokumen · Pengesahan.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-penasihat">Penasihat</span>
+          <h3>LSP — Semakan Penasihat</h3>
+          <p>Aktiviti kategori HEP sahaja. Sokong untuk ke penyemak, atau kembalikan sebagai LSK.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-penyemak">Penyemak</span>
+          <h3>LSS — Semakan Penyemak</h3>
+          <p>Terima laporan, atau kembalikan kepada penyedia untuk pembetulan.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step ok">
+          <span class="tag t-ok">Selesai</span>
+          <h3>LS — Laporan Selesai</h3>
+          <p>Kitaran aktiviti ditutup sepenuhnya.</p>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <footer class="panels">
+    <div class="panel k">
+      <h4>Kunci Warna Peranan</h4>
+      <div class="keys">
+        <div><span class="dot" style="background:var(--pelajar)"></span>Pemohon</div>
+        <div><span class="dot" style="background:var(--penasihat)"></span>Penasihat Persatuan</div>
+        <div><span class="dot" style="background:var(--penyemak)"></span>Penyemak</div>
+        <div><span class="dot" style="background:var(--moderator)"></span>Moderator</div>
+        <div><span class="dot" style="background:var(--pelulus)"></span>Pelulus</div>
+      </div>
+      <p class="foot">Kotak merah menandakan laluan tersekat atau dikembalikan, hijau menandakan penamat berjaya, kuning menandakan titik keputusan, dan nota bergaris putus menerangkan gelung serta pengecualian.</p>
+    </div>
+    <div class="panel b">
+      <h4>Kelakuan Merentas Sistem</h4>
+      <ul>
+        <li>Laluan kelulusan tidak tetap — ia ditentukan pada masa penghantaran oleh kategori permohonan dan had kelulusan tabung yang dipilih.</li>
+        <li>Setiap peralihan status direkod dalam catatan status berserta pengguna, tarikh dan ulasan.</li>
+        <li>Notifikasi dihantar kepada pemegang peranan seterusnya pada setiap penghantaran.</li>
+        <li>SPAK mengembalikan permohonan kepada pemohon tanpa menamatkannya; hanya SPAG dan SPAB adalah muktamad.</li>
+        <li>Pelaporan mempunyai set statusnya sendiri dan bermula hanya selepas aktiviti diluluskan.</li>
+      </ul>
+    </div>
+    <div class="panel s">
+      <h4>Kod Status Aktiviti dan Pelaporan</h4>
+      <div class="chips">
+        <div class="chip sys"><code>D</code><span>Draf</span></div>
+        <div class="chip go"><code>SPAP</code><span>Semakan Penasihat</span></div>
+        <div class="chip go"><code>SPAS</code><span>Semakan Penyemak</span></div>
+        <div class="chip go"><code>SPAM</code><span>Semakan Moderator</span></div>
+        <div class="chip go"><code>SPAT</code><span>Moderator pusingan 2</span></div>
+        <div class="chip go"><code>SPAML</code><span>Menunggu Pelulus</span></div>
+        <div class="chip ok"><code>SPASL</code><span>Lulus, menunggu surat</span></div>
+        <div class="chip ok"><code>SPAL</code><span>Lulus, surat dijana</span></div>
+        <div class="chip warn"><code>SPAK</code><span>Dikembalikan</span></div>
+        <div class="chip stop"><code>SPAG</code><span>Tidak diluluskan</span></div>
+        <div class="chip stop"><code>SPAB</code><span>Dibatalkan</span></div>
+        <div class="chip sys"><code>LD</code><span>Laporan draf</span></div>
+        <div class="chip go"><code>LSP</code><span>Laporan — Penasihat</span></div>
+        <div class="chip go"><code>LSS</code><span>Laporan — Penyemak</span></div>
+        <div class="chip warn"><code>LSK</code><span>Laporan dikembalikan</span></div>
+        <div class="chip ok"><code>LS</code><span>Laporan selesai</span></div>
+      </div>
+      <p class="foot">Disediakan daripada laluan, pengawal dan jadual status modul Aktiviti dalam repositori HEPWeb, cawangan development.</p>
+    </div>
+  </footer>
+</section>
+
+<!-- ═══════════════════════ SHEET C · PERSATUAN ═══════════════════════ -->
+<section class="sheet">
+  <header class="head">
+    <div class="brand">
+      <div class="mark">C</div>
+      <div>
+        <h1>Modul Persatuan — Carta Alir Sistem</h1>
+        <p class="sub">Pra-penubuhan, pendaftaran persatuan, rantaian pengesahan tiga peringkat, dan kitaran pembaharuan atau pembubaran</p>
+      </div>
+    </div>
+    <div class="meta">
+      <div><b>Sistem:</b> HEPWeb</div>
+      <div><b>Dokumen:</b> Aliran Kerja Operasi</div>
+      <div><b>Disediakan:</b> 24 Ogos 2026</div>
+    </div>
+  </header>
+
+  <div class="lanes">
+
+    <article class="lane r-pelajar">
+      <div class="lane-head"><span class="num">1</span><div><h2>Pra-Penubuhan</h2><p>Pelajar / Moderator HEP</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-pelajar">Pelajar</span>
+          <h3>Carian &amp; Borang Pra-Daftar</h3>
+          <p>Pelajar menyemak persatuan sedia ada terlebih dahulu, kemudian mengisi borang pra-daftar.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-pelajar">Pelajar</span>
+          <h3>Hantar Pra-Daftar</h3>
+          <p>Permohonan pra-daftar direkod dan menunggu semakan Moderator HEP.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="decision"><span>Keputusan</span><h3>Moderator HEP luluskan pra-daftar?</h3></div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step stop">
+            <span class="tag t-stop">Tidak</span>
+            <h3>Ditolak</h3>
+            <p>Pra-daftar tidak diteruskan.</p>
+          </div>
+          <div class="step">
+            <span class="tag t-pelajar">Ya</span>
+            <h3>Status 3</h3>
+            <p>Sijil pra-daftar dijana.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="note"><b>Titik masuk semula:</b> borang penubuhan turut dibuka untuk status 11 (tidak lengkap) dan 13 (tidak disokong), supaya permohonan yang dikembalikan boleh disambung.</div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-penyemak">
+      <div class="lane-head"><span class="num">2</span><div><h2>Permohonan Penubuhan</h2><p>Setiausaha</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-penyemak">Setiausaha</span>
+          <h3>Maklumat Am &amp; Penasihat</h3>
+          <p>Butiran persatuan didaftarkan, dan penasihat dicari melalui nombor staf.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-penyemak">Setiausaha</span>
+          <h3>AJK &amp; Mesyuarat Penubuhan</h3>
+          <p>AJK dicari melalui nombor pelajar. Mesyuarat penubuhan dan kehadirannya direkod.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-penyemak">Setiausaha</span>
+          <h3>Perlembagaan</h3>
+          <p>Fungsi perlembagaan dan lambang persatuan dimuat naik serta disahkan.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-penyemak">Setiausaha</span>
+          <h3>Pengakuan &amp; Hantar</h3>
+          <p>Status 16 Hantar Lengkap. Permohonan masuk baris semakan Penasihat.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="note"><b>Enam langkah borang:</b> Maklumat Am → Penasihat → AJK → Mesyuarat Penubuhan → Perlembagaan → Pengakuan. Rekod boleh dipadam sebelum dihantar.</div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-penasihat">
+      <div class="lane-head"><span class="num">3</span><div><h2>Rantaian Pengesahan</h2><p>Penasihat / Moderator HEP</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-penasihat">Penasihat</span>
+          <h3>Semakan Kelengkapan</h3>
+          <p>Menyemak maklumat am, penasihat, AJK, mesyuarat penubuhan dan perlembagaan.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step stop">
+            <span class="tag t-stop">Tidak Lengkap</span>
+            <h3>Status 11</h3>
+            <p>Kembali kepada Setiausaha.</p>
+          </div>
+          <div class="step">
+            <span class="tag t-penasihat">Lengkap</span>
+            <h3>Status 10</h3>
+            <p>Ke Moderator HEP.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-moderator">Moderator HEP</span>
+          <h3>Semakan Sokongan</h3>
+          <p>Moderator kampus atau PTJ menilai kesesuaian dan keperluan penubuhan persatuan.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step stop">
+            <span class="tag t-stop">Tidak Sokong</span>
+            <h3>Status 13</h3>
+            <p>Kembali kepada Setiausaha.</p>
+          </div>
+          <div class="step">
+            <span class="tag t-moderator">Sokong</span>
+            <h3>Status 12</h3>
+            <p>Menunggu Ketua PTJ.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="note"><b>Bukan penamat:</b> penolakan pada peringkat Penasihat atau Moderator mengembalikan permohonan kepada Setiausaha untuk dibaiki dan dihantar semula.</div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-pelulus">
+      <div class="lane-head"><span class="num">4</span><div><h2>Kelulusan &amp; Pendaftaran</h2><p>Ketua PTJ / Pengurusan Tertinggi</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-pelulus">Ketua PTJ</span>
+          <h3>Kelulusan Pendaftaran</h3>
+          <p>Keputusan muktamad ke atas permohonan penubuhan persatuan.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step stop">
+            <span class="tag t-stop">Tidak Lulus</span>
+            <h3>Status 15</h3>
+            <p>Pendaftaran ditolak.</p>
+          </div>
+          <div class="step">
+            <span class="tag t-pelulus">Lulus</span>
+            <h3>Status 5</h3>
+            <p>Persatuan berdaftar.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="step ok">
+          <span class="tag t-ok">Aktif</span>
+          <h3>Persatuan Beroperasi</h3>
+          <p>Keahlian dibuka, AJK berfungsi, perancangan aktiviti tahunan dan permohonan aktiviti HEP boleh dimulakan.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="special"><b>Sub-proses selari:</b> lantikan penasihat, keahlian pelajar, pindaan perlembagaan, perancangan aktiviti dan pembaharuan AJK induk — semuanya beroperasi tanpa mengubah status persatuan.</div>
+      </div>
+    </article>
+
+    <div class="hop"><i></i></div>
+
+    <article class="lane r-moderator">
+      <div class="lane-head"><span class="num">5</span><div><h2>Pembaharuan &amp; Pembubaran</h2><p>Setiausaha → Penasihat → Moderator → Pelulus</p></div></div>
+      <div class="lane-body">
+        <div class="step">
+          <span class="tag t-penyemak">Setiausaha</span>
+          <h3>Mohon Pembaharuan</h3>
+          <p>Rekod semasa diarkib. Rantaian: Penasihat (21) → Moderator HEP (22) → Dekan HEP, TREK atau TDHEP.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="split">
+          <div class="step stop">
+            <span class="tag t-stop">Tidak Sokong</span>
+            <h3>Status 23 · 24</h3>
+            <p>Kembali kepada Setiausaha.</p>
+          </div>
+          <div class="step ok">
+            <span class="tag t-ok">Lulus</span>
+            <h3>Kembali Aktif</h3>
+            <p>Tempoh sah laku diperbaharui.</p>
+          </div>
+        </div>
+        <div class="arrow"></div>
+        <div class="step">
+          <span class="tag t-penyemak">Setiausaha</span>
+          <h3>Mohon Pembubaran</h3>
+          <p>Rantaian: Penasihat (11) → Moderator HEP (12) → Ketua PTJ. Penolakan mana-mana peringkat mengekalkan persatuan sebagai aktif.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="step stop">
+          <span class="tag t-stop">Bubar</span>
+          <h3>Status 7 — Tidak Aktif</h3>
+          <p>Persatuan ditutup dan tidak lagi boleh memohon aktiviti atau menerima ahli baharu.</p>
+        </div>
+        <div class="arrow"></div>
+        <div class="note"><b>Luput automatik:</b> persatuan aktif yang melepasi tarikh sah laku ditukar ke status 7 tanpa sebarang permohonan pembubaran.</div>
+      </div>
+    </article>
+
+  </div>
+
+  <footer class="panels">
+    <div class="panel k">
+      <h4>Kunci Warna Peranan</h4>
+      <div class="keys">
+        <div><span class="dot" style="background:var(--pelajar)"></span>Pelajar</div>
+        <div><span class="dot" style="background:var(--penyemak)"></span>Setiausaha</div>
+        <div><span class="dot" style="background:var(--penasihat)"></span>Penasihat</div>
+        <div><span class="dot" style="background:var(--moderator)"></span>Moderator HEP</div>
+        <div><span class="dot" style="background:var(--pelulus)"></span>Ketua PTJ / Pengurusan Tertinggi</div>
+      </div>
+      <p class="foot">Nombor dalam kotak merujuk kepada nilai status persatuan yang direkod dalam pangkalan data pada setiap peringkat.</p>
+    </div>
+    <div class="panel b">
+      <h4>Kelakuan Merentas Sistem</h4>
+      <ul>
+        <li>Rantaian pengesahan yang sama — Penasihat → Moderator HEP → Ketua PTJ — diguna semula untuk pra-daftar, penubuhan, pembaharuan dan pembubaran.</li>
+        <li>Penolakan pada peringkat pertengahan mengembalikan permohonan kepada Setiausaha, bukan menamatkannya. Hanya keputusan peringkat akhir adalah muktamad.</li>
+        <li>Setiap perubahan status direkod dalam log persatuan berserta catatan penyemak.</li>
+        <li>Sub-proses sokongan beroperasi ke atas persatuan aktif tanpa mengubah status persatuan itu sendiri.</li>
+        <li>Permohonan aktiviti kategori HEP hanya boleh dibuat oleh persatuan berstatus aktif.</li>
+      </ul>
+    </div>
+    <div class="panel s">
+      <h4>Status Persatuan</h4>
+      <div class="chips">
+        <div class="chip go"><code>3</code><span>Lulus Pra-Daftar</span></div>
+        <div class="chip go"><code>16</code><span>Hantar Lengkap</span></div>
+        <div class="chip go"><code>10</code><span>Lengkap — Penasihat</span></div>
+        <div class="chip go"><code>12</code><span>Disokong Moderator</span></div>
+        <div class="chip ok"><code>5</code><span>Aktif — berdaftar</span></div>
+        <div class="chip warn"><code>11</code><span>Tidak Lengkap</span></div>
+        <div class="chip warn"><code>13</code><span>Tidak Disokong</span></div>
+        <div class="chip stop"><code>15</code><span>Tidak Lulus</span></div>
+        <div class="chip stop"><code>7</code><span>Tidak Aktif / Bubar</span></div>
+        <div class="chip go"><code>21 · 22</code><span>Peringkat pembaharuan</span></div>
+        <div class="chip warn"><code>23 · 24</code><span>Pembaharuan tidak disokong</span></div>
+      </div>
+      <p class="foot">Disediakan daripada laluan, pengawal dan nilai status modul Persatuan dalam repositori HEPWeb, cawangan development. Beberapa nilai status tiada label bertulis dalam kod dan dinamakan mengikut konteks penggunaannya.</p>
+    </div>
+  </footer>
+</section>
+
+</body>
+</html>

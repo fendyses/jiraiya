@@ -1,0 +1,1018 @@
+<title>Aliran Kerja Sistem HEP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    --bg:        #eef1f5;
+    --surface:   #ffffff;
+    --surface-2: #f7f9fb;
+    --ink:       #131c26;
+    --ink-2:     #4c5a6b;
+    --ink-3:     #7b8898;
+    --rule:      #d5dce4;
+    --rule-soft: #e5eaf0;
+    --accent:    #1f4d8f;
+    --accent-soft:#e4ecf7;
+    --seal:      #9c6f19;
+    --ok:        #17683f;
+    --warn:      #8a5a00;
+    --stop:      #a8271d;
+    --sys:       #5b4a94;
+
+    --paper:     #f9f9f6;
+    --paper-rule:#ded9cd;
+
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --body:    "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --mono:    "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+    --measure: 66ch;
+    --shell:   82rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:        #0f151c;
+      --surface:   #172029;
+      --surface-2: #1b2530;
+      --ink:       #e6ebf1;
+      --ink-2:     #a3b0bf;
+      --ink-3:     #74828f;
+      --rule:      #2a3644;
+      --rule-soft: #222d39;
+      --accent:    #7fa9e8;
+      --accent-soft:#1b2b42;
+      --seal:      #d0a445;
+      --ok:        #57b884;
+      --warn:      #d9a441;
+      --stop:      #e4796d;
+      --sys:       #a394d9;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg:        #0f151c;
+    --surface:   #172029;
+    --surface-2: #1b2530;
+    --ink:       #e6ebf1;
+    --ink-2:     #a3b0bf;
+    --ink-3:     #74828f;
+    --rule:      #2a3644;
+    --rule-soft: #222d39;
+    --accent:    #7fa9e8;
+    --accent-soft:#1b2b42;
+    --seal:      #d0a445;
+    --ok:        #57b884;
+    --warn:      #d9a441;
+    --stop:      #e4796d;
+    --sys:       #a394d9;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell {
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: 0 clamp(1rem, 4vw, 3rem);
+  }
+
+  /* ── Masthead ─────────────────────────────────────────── */
+
+  .masthead {
+    border-bottom: 1px solid var(--rule);
+    background: var(--surface);
+  }
+  .masthead-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2.5rem;
+    padding: clamp(2rem, 5vw, 3.25rem) 0 clamp(1.5rem, 3vw, 2.25rem);
+  }
+  .masthead-text { max-width: 46ch; display: flex; flex-direction: column; gap: .7rem; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .7rem;
+    font-weight: 500;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--seal);
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2rem, 4.6vw, 3.1rem);
+    line-height: 1.02;
+    letter-spacing: -.022em;
+    text-wrap: balance;
+    margin: 0;
+  }
+  .standfirst {
+    color: var(--ink-2);
+    font-size: 1.02rem;
+    margin: 0;
+    max-width: var(--measure);
+  }
+
+  .stamp {
+    flex: 0 0 auto;
+    border: 1.5px solid var(--seal);
+    border-radius: 2px;
+    padding: .7rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+    color: var(--seal);
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+  .stamp b { font-weight: 600; letter-spacing: .06em; }
+
+  /* ── Sticky module nav ────────────────────────────────── */
+
+  .modnav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--bg);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .modnav ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .modnav a {
+    display: flex;
+    align-items: baseline;
+    gap: .55rem;
+    padding: .85rem 1.1rem .8rem 0;
+    margin-right: 1.6rem;
+    color: var(--ink-2);
+    text-decoration: none;
+    font-size: .9rem;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .modnav a:hover, .modnav a:focus-visible {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .modnav .n {
+    font-family: var(--mono);
+    font-size: .7rem;
+    color: var(--ink-3);
+  }
+
+  /* ── Module sections ──────────────────────────────────── */
+
+  main { padding-bottom: 5rem; }
+
+  .module {
+    padding-top: clamp(3rem, 6vw, 4.75rem);
+    scroll-margin-top: 3.6rem;
+  }
+  .module + .module { border-top: 1px solid var(--rule); margin-top: clamp(3rem, 6vw, 4.5rem); }
+
+  .module-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: .85rem;
+    margin-bottom: 2rem;
+  }
+  @media (min-width: 60rem) {
+    .module-head { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 1rem 3.5rem; align-items: start; }
+    .module-head .lede { grid-column: 1; }
+    .module-head .facts { grid-column: 2; grid-row: 1 / span 2; }
+  }
+
+  .module-kicker {
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+  .module-kicker::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+  h2 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.6rem, 3vw, 2.15rem);
+    letter-spacing: -.018em;
+    line-height: 1.1;
+    margin: .35rem 0 0;
+    text-wrap: balance;
+  }
+  .lede { color: var(--ink-2); margin: 0; max-width: var(--measure); }
+
+  .facts {
+    border-left: 2px solid var(--accent);
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+    font-size: .875rem;
+  }
+  .fact { display: flex; gap: .8rem; }
+  .fact dt {
+    flex: 0 0 6.5rem;
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding-top: .18rem;
+  }
+  .fact dd { margin: 0; color: var(--ink-2); }
+  .fact code {
+    font-family: var(--mono);
+    font-size: .8em;
+    color: var(--ink);
+    background: var(--surface-2);
+    border: 1px solid var(--rule-soft);
+    border-radius: 2px;
+    padding: .05em .34em;
+  }
+
+  /* ── Role chain ───────────────────────────────────────── */
+
+  .chain-label {
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 .6rem;
+  }
+  .chain {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .35rem .1rem;
+    margin: 0 0 1.75rem;
+    padding: 0;
+  }
+  .chain li {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .84rem;
+  }
+  .chain .role {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: .28rem .62rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .chain .role.is-start { border-color: var(--accent); color: var(--accent); }
+  .chain .role.is-end   { border-color: var(--ok); color: var(--ok); }
+  .chain li::after {
+    content: "→";
+    color: var(--ink-3);
+    padding: 0 .5rem;
+    font-size: .9rem;
+  }
+  .chain li:last-child::after { content: none; }
+
+  /* ── Diagram panel ────────────────────────────────────── */
+
+  figure.plate {
+    margin: 0 0 2rem;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .plate-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .5rem 1.5rem;
+    padding: .62rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--surface-2);
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .plate-bar .t { color: var(--ink-2); font-weight: 500; }
+  .sheet {
+    background: var(--paper);
+    overflow-x: auto;
+    padding: 1.6rem 1.2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .sheet pre.mermaid {
+    margin: 0;
+    min-width: min-content;
+    display: flex;
+    justify-content: center;
+    background: transparent;
+    /* Mermaid sizes each node by measuring its label in the theme font, but paints
+       the label inside a foreignObject that inherits from this <pre> — whose UA
+       default is monospace. Left alone, every label paints wider than its box and
+       gets clipped. Match the theme font here so measurement and paint agree. */
+    font-family: var(--body);
+  }
+  .sheet svg foreignObject div,
+  .sheet .nodeLabel,
+  .sheet .edgeLabel,
+  .sheet .cluster-label {
+    font-family: var(--body);
+  }
+  figcaption {
+    padding: .8rem 1rem .9rem;
+    font-size: .845rem;
+    color: var(--ink-2);
+    max-width: 88ch;
+  }
+  figcaption b { color: var(--ink); font-weight: 600; }
+
+  /* ── Status legend ────────────────────────────────────── */
+
+  .legend { margin: 0 0 .5rem; }
+  .legend h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: -.005em;
+    margin: 0 0 .2rem;
+  }
+  .legend .note { font-size: .845rem; color: var(--ink-3); margin: 0 0 1rem; max-width: var(--measure); }
+
+  .codes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+    gap: .5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .codes li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    gap: .7rem;
+    padding: .5rem .7rem .55rem .6rem;
+    background: var(--surface);
+    border: 1px solid var(--rule-soft);
+    border-left: 3px solid var(--ink-3);
+    border-radius: 2px;
+    font-size: .85rem;
+  }
+  .codes code {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: .78rem;
+    letter-spacing: .02em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .codes .d { color: var(--ink-2); }
+  .codes li.s-ok    { border-left-color: var(--ok); }
+  .codes li.s-ok code { color: var(--ok); }
+  .codes li.s-stop  { border-left-color: var(--stop); }
+  .codes li.s-stop code { color: var(--stop); }
+  .codes li.s-warn  { border-left-color: var(--warn); }
+  .codes li.s-warn code { color: var(--warn); }
+  .codes li.s-go    { border-left-color: var(--accent); }
+  .codes li.s-go code { color: var(--accent); }
+  .codes li.s-sys   { border-left-color: var(--sys); }
+  .codes li.s-sys code { color: var(--sys); }
+
+  /* ── Colophon ─────────────────────────────────────────── */
+
+  .colophon {
+    border-top: 1px solid var(--rule);
+    margin-top: clamp(3.5rem, 7vw, 5rem);
+    padding: 2.25rem 0 3.5rem;
+    display: grid;
+    gap: 1.5rem 3rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 52rem) { .colophon { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); } }
+  .colophon h3 {
+    font-family: var(--mono);
+    font-size: .7rem;
+    font-weight: 500;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 .55rem;
+  }
+  .colophon p { margin: 0 0 .7rem; font-size: .875rem; color: var(--ink-2); max-width: var(--measure); }
+  .srclist { list-style: none; margin: 0; padding: 0; display: grid; gap: .3rem; }
+  .srclist li { font-family: var(--mono); font-size: .78rem; color: var(--ink-2); }
+  .srclist b { color: var(--ink); font-weight: 500; }
+
+  a:focus-visible, .modnav a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  }
+  html { scroll-behavior: smooth; }
+</style>
+
+<header class="masthead">
+  <div class="shell masthead-inner">
+    <div class="masthead-text">
+      <p class="eyebrow">Sistem HEP UiTM · Dokumentasi Dalaman</p>
+      <h1>Aliran Kerja Sistem HEP</h1>
+      <p class="standfirst">Carta alir bagi tiga modul teras — Profiling, Aktiviti dan Persatuan — dibina daripada laluan, pengawal dan kod status sebenar dalam repositori <code style="font-family:var(--mono);font-size:.9em">hepweb</code>.</p>
+    </div>
+    <div class="stamp">
+      <span><b>Cawangan</b> development</span>
+      <span><b>Rangka</b> Laravel 10</span>
+      <span><b>Modul</b> 3</span>
+    </div>
+  </div>
+</header>
+
+<nav class="modnav" aria-label="Modul">
+  <div class="shell">
+    <ol>
+      <li><a href="#profiling"><span class="n">A</span> Profiling</a></li>
+      <li><a href="#aktiviti"><span class="n">B</span> Aktiviti</a></li>
+      <li><a href="#persatuan"><span class="n">C</span> Persatuan</a></li>
+    </ol>
+  </div>
+</nav>
+
+<main class="shell">
+
+  <!-- ══════════════ MODUL A · PROFILING ══════════════ -->
+  <section class="module" id="profiling">
+    <div class="module-head">
+      <div class="lede-wrap">
+        <p class="module-kicker">Modul A · routes/profiling.php</p>
+        <h2>Profiling Pelajar</h2>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Pelakon</dt><dd>Moderator HEP, Pelajar, dua queue job</dd></div>
+        <div class="fact"><dt>Kitaran</dt><dd>Satu pusingan penuh setiap semester akademik</dd></div>
+        <div class="fact"><dt>Jadual inti</dt><dd><code>tbl_profiling</code>, <code>ProfilingSemester</code>, <code>ProfilingSemesterdetail</code></dd></div>
+        <div class="fact"><dt>Hasil</dt><dd>GPA &amp; CGPA profiling, transkrip PDF</dd></div>
+      </dl>
+      <p class="lede">Modul ini mengira merit penglibatan pelajar di luar bilik kuliah. Moderator HEP menyediakan skema markah semester, sistem menjana rekod bagi setiap pelajar layak, pelajar mengisi bukti penglibatan dalam tetingkap masa yang ditetapkan, dan satu queue job mengira merit secara pukal pada penghujung semester.</p>
+    </div>
+
+    <p class="chain-label">Rantaian pelakon</p>
+    <ul class="chain">
+      <li><span class="role is-start">Moderator HEP</span></li>
+      <li><span class="role">Queue: JanaSemester</span></li>
+      <li><span class="role">Pelajar</span></li>
+      <li><span class="role">Queue: JanaKiraanMerit</span></li>
+      <li><span class="role is-end">Transkrip</span></li>
+    </ul>
+
+    <figure class="plate">
+      <div class="plate-bar"><span class="t">Carta Alir A — Profiling</span><span>Penyediaan → Pengisian → Kiraan Merit → Transkrip</span></div>
+      <div class="sheet">
+<pre class="mermaid">
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'IBM Plex Sans, system-ui, sans-serif','fontSize':'13px','primaryColor':'#ffffff','primaryTextColor':'#131c26','primaryBorderColor':'#93a4b8','lineColor':'#6b7c91','textColor':'#131c26','nodeTextColor':'#131c26','titleColor':'#131c26','background':'#f9f9f6','clusterBkg':'#f1f2ee','clusterBorder':'#cfcabb','edgeLabelBackground':'#f9f9f6'}}}%%
+flowchart TD
+
+  subgraph SETUP["PENYEDIAAN SEMESTER · Moderator HEP"]
+    direction TB
+    S1["Tetapkan semester semasa&lt;br/&gt;is_current = true&lt;br/&gt;tetingkap profiling_datestart → profiling_dateend"]
+    S2{"Skema markah&lt;br/&gt;semester sudah wujud?"}
+    S3["Salin Semester Lepas&lt;br/&gt;copylastsem / copy"]
+    S4["Kunci masuk baharu&lt;br/&gt;Seksyen · Kategori · Sub-kategori&lt;br/&gt;Tahap Kategori · Markah · Kategori Seksyen"]
+    S5["Jana Profil Semester&lt;br/&gt;pilih satu kampus atau semua"]
+    S1 --&gt; S2
+    S2 --&gt;|"Ya — guna semula"| S3 --&gt; S5
+    S2 --&gt;|"Tidak"| S4 --&gt; S5
+  end
+
+  subgraph JOB1["QUEUE JOB · JanaSemester"]
+    direction TB
+    J1["Tapis pelajar Profiling&lt;br/&gt;profilingstatus_id = 1&lt;br/&gt;dan belum ada rekod semester ini"]
+    J2["Cipta ProfilingSemester&lt;br/&gt;stat = 1 Belum Isi&lt;br/&gt;previouscgpa = CGPA semasa"]
+    J1 --&gt; J2
+  end
+
+  S5 --&gt;|"dispatch"| J1
+
+  subgraph ISI["PENGISIAN · Pelajar"]
+    direction TB
+    P0{"Rekod Profiling&lt;br/&gt;pelajar wujud?"}
+    P0X["Skrin Tidak Layak"]
+    P1{"Tetingkap pengisian terbuka?&lt;br/&gt;tarikh semester · tempoh ihsan semester akhir&lt;br/&gt;· semester sebelum sudah selesai"}
+    P1X["Papar sebab disekat&lt;br/&gt;butang tambah ditutup"]
+    P2["Tambah rekod penglibatan"]
+    P3["Kategori → Sub-kategori → Tahap → Seksyen"]
+    P4["Nama program · Tempat&lt;br/&gt;Jenis kehadiran · Catatan"]
+    P5{"Bukti disertakan?"}
+    P5X["Ditolak — wajib salah satu"]
+    P6["Lampiran JPG PNG PDF&lt;br/&gt;ATAU pautan e-Sijil aktiviti"]
+    P7{"Tambah rekod lagi?"}
+    P8["Pengisytiharan&lt;br/&gt;agreement = true"]
+    P9{"Sekurang-kurangnya&lt;br/&gt;satu rekod?"}
+    P10["HANTAR&lt;br/&gt;stat = 2 Dihantar · datesubmit"]
+    P0 --&gt;|"Tidak"| P0X
+    P0 --&gt;|"Ya"| P1
+    P1 --&gt;|"Tidak"| P1X
+    P1 --&gt;|"Ya"| P2 --&gt; P3 --&gt; P4 --&gt; P5
+    P5 --&gt;|"Tidak"| P5X --&gt; P4
+    P5 --&gt;|"Ya"| P6 --&gt; P7
+    P7 --&gt;|"Ya · atau kemaskini / padam"| P2
+    P7 --&gt;|"Tidak"| P8 --&gt; P9
+    P9 --&gt;|"Tidak"| P2
+    P9 --&gt;|"Ya"| P10
+  end
+
+  J2 --&gt; P0
+
+  subgraph MERIT["KIRAAN MERIT · Moderator HEP + Queue Job JanaKiraanMerit"]
+    direction TB
+    M1["Jana Kiraan Merit&lt;br/&gt;pilih semester + kampus"]
+    M2["Reset is_chosen bagi semua rekod semester"]
+    M3["Kumpul rekod ikut markgroup A dan B"]
+    M4["Pilih point tertinggi setiap kumpulan&lt;br/&gt;is_chosen = true"]
+    M5["Jumlah = Σ markah kategori × point tahap"]
+    M6["GPA = Jumlah ÷ 80"]
+    M7["CGPA baharu = purata previouscgpa dan GPA&lt;br/&gt;atau GPA sahaja jika tiada previouscgpa"]
+    M8["stat = 3 Selesai · datejanamerit&lt;br/&gt;kemas kini Profiling.cgpa"]
+    M1 --&gt; M2 --&gt; M3 --&gt; M4 --&gt; M5 --&gt; M6 --&gt; M7 --&gt; M8
+  end
+
+  P10 --&gt; M1
+
+  subgraph OUT["OUTPUT"]
+    direction TB
+    O1["Pelajar · Semakan Transkrip&lt;br/&gt;Transkrip Penuh · Mini Transkrip&lt;br/&gt;Transkrip Aktiviti — PDF"]
+    O2["Moderator HEP · Dashboard dan Semakan HEP&lt;br/&gt;Kategori → Tahap → Senarai Pelajar&lt;br/&gt;Ringkasan Jabatan · Fakulti · Belum Isi — PDF"]
+  end
+
+  M8 --&gt; O1
+  M8 --&gt; O2
+
+  classDef go   fill:#e7eefa,stroke:#1f4d8f,color:#16335c;
+  classDef ok   fill:#e2f2e8,stroke:#17683f,color:#0e4429;
+  classDef stop fill:#fbe7e5,stroke:#a8271d,color:#761a13;
+  classDef warn fill:#fbf0da,stroke:#8a5a00,color:#5f3e00;
+  classDef sys  fill:#efecf8,stroke:#5b4a94,color:#3b2f66;
+  class J1,J2,M2,M3,M4,M5,M6,M7 sys;
+  class P10,M8 ok;
+  class P0X,P1X,P5X stop;
+  class S5,M1 go;
+  class O1,O2 warn;
+</pre>
+      </div>
+      <figcaption><b>Dua halangan menentukan sama ada pelajar boleh mengisi:</b> tetingkap tarikh semester (dengan tempoh ihsan untuk semester akhir) dan prasyarat bahawa semester sebelumnya telah selesai. Kiraan merit hanya mengambil <b>satu rekod terbaik bagi setiap markgroup A dan B</b> — rekod lain kekal tersimpan tetapi <code style="font-family:var(--mono)">is_chosen = false</code> dan tidak menyumbang markah.</figcaption>
+    </figure>
+
+    <div class="legend">
+      <h3>Status profil semester</h3>
+      <p class="note">Nilai <code style="font-family:var(--mono);font-size:.85em">profilingsemesterstat_id</code> pada <code style="font-family:var(--mono);font-size:.85em">tbl_profiling_semester</code>.</p>
+      <ul class="codes">
+        <li class="s-go"><code>1</code><span class="d">Belum Isi — dijana oleh <i>JanaSemester</i></span></li>
+        <li class="s-warn"><code>2</code><span class="d">Dihantar oleh pelajar, menunggu kiraan merit</span></li>
+        <li class="s-ok"><code>3</code><span class="d">Selesai — merit dijana, CGPA dikemas kini</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════ MODUL B · AKTIVITI ══════════════ -->
+  <section class="module" id="aktiviti">
+    <div class="module-head">
+      <div class="lede-wrap">
+        <p class="module-kicker">Modul B · routes/aktiviti.php</p>
+        <h2>Permohonan &amp; Pelaporan Aktiviti</h2>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Pelakon</dt><dd>Pemohon, Penasihat Persatuan, Penyemak, Moderator, Pelulus</dd></div>
+        <div class="fact"><dt>Pemacu</dt><dd>Had Kelulusan Tabung menentukan siapa menyemak dan meluluskan</dd></div>
+        <div class="fact"><dt>Jadual inti</dt><dd><code>tbl_aktiviti</code>, <code>tbl_aktiviti_statusaktiviti</code>, <code>tbl_tabung_hadkelulusan</code></dd></div>
+        <div class="fact"><dt>Hasil</dt><dd>Surat kelulusan PDF, kemudian laporan pasca-aktiviti</dd></div>
+      </dl>
+      <p class="lede">Modul terbesar dan paling bercabang. Laluan kelulusan tidak tetap — ia dipilih pada masa penghantaran berdasarkan <b>kategori permohonan</b> (anjuran persatuan berbanding jabatan) dan <b>had kelulusan tabung</b> yang dipilih. Selepas aktiviti selesai, satu kitaran pelaporan yang berasingan bermula dengan set statusnya sendiri.</p>
+    </div>
+
+    <p class="chain-label">Rantaian kelulusan penuh</p>
+    <ul class="chain">
+      <li><span class="role is-start">Pemohon</span></li>
+      <li><span class="role">Penasihat Persatuan</span></li>
+      <li><span class="role">Penyemak</span></li>
+      <li><span class="role">Moderator</span></li>
+      <li><span class="role">Pelulus</span></li>
+      <li><span class="role is-end">Penyemak — deraf surat</span></li>
+    </ul>
+
+    <figure class="plate">
+      <div class="plate-bar"><span class="t">Carta Alir B — Aktiviti</span><span>Draf → Rantaian kelulusan → Surat → Pelaksanaan → Laporan</span></div>
+      <div class="sheet">
+<pre class="mermaid">
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'IBM Plex Sans, system-ui, sans-serif','fontSize':'13px','primaryColor':'#ffffff','primaryTextColor':'#131c26','primaryBorderColor':'#93a4b8','lineColor':'#6b7c91','textColor':'#131c26','nodeTextColor':'#131c26','titleColor':'#131c26','background':'#f9f9f6','clusterBkg':'#f1f2ee','clusterBorder':'#cfcabb','edgeLabelBackground':'#f9f9f6'}}}%%
+flowchart TD
+
+  subgraph DRAF["PENYEDIAAN · Pemohon"]
+    direction TB
+    A1["Permohonan baharu&lt;br/&gt;status D — Draf"]
+    A2["Lapan tab borang&lt;br/&gt;Aktiviti · Objektif · Impak · Jawatankuasa&lt;br/&gt;Aturcara + Pengisian · Perbelanjaan&lt;br/&gt;Penjanaan · Pengesahan"]
+    A3["Tab Pengesahan&lt;br/&gt;pilih Tabung + Had Kelulusan"]
+    A1 --&gt; A2 --&gt; A3
+  end
+
+  R0{"Kategori permohonan?"}
+  R1{"Penyemak dan Moderator&lt;br/&gt;orang yang sama?"}
+  A3 --&gt;|"Hantar"| R0
+  R0 --&gt;|"HEP — anjuran persatuan"| SPAP
+  R0 --&gt;|"Jabatan atau PTJ"| R1
+  R1 --&gt;|"Ya"| SPAM
+  R1 --&gt;|"Tidak"| SPAS
+
+  SPAP["SPAP&lt;br/&gt;Semakan Penasihat Persatuan"]
+  SPAS["SPAS&lt;br/&gt;Semakan Penyemak"]
+  SPAM["SPAM&lt;br/&gt;Semakan Moderator"]
+  SPAT["SPAT&lt;br/&gt;Semakan Moderator — pusingan kedua"]
+  SPAML["SPAML&lt;br/&gt;Menunggu tindakan Pelulus"]
+  SPASL["SPASL&lt;br/&gt;Diluluskan — menunggu deraf surat"]
+  SPAL["SPAL · LULUS&lt;br/&gt;surat kelulusan PDF dijana"]
+  SPAG["SPAG&lt;br/&gt;Tidak Diluluskan"]
+  SPAK["SPAK&lt;br/&gt;Dikembalikan kepada Pemohon"]
+  SPAB["SPAB&lt;br/&gt;Dibatalkan"]
+
+  SPAP --&gt;|"Sokong"| R1
+  SPAP --&gt;|"Tolak"| SPAG
+  SPAP --&gt;|"Perlu pindaan"| SPAK
+
+  SPAS --&gt;|"Sokong"| SPAM
+  SPAS --&gt;|"Tolak"| SPAG
+  SPAS --&gt;|"Perlu pindaan"| SPAK
+
+  R2{"Had kelulusan tabung&lt;br/&gt;directpelulus?"}
+  SPAM --&gt;|"Sokong"| R2
+  R2 --&gt;|"1 — terus ke Pelulus"| SPAML
+  R2 --&gt;|"0 — perlu pusingan kedua"| SPAT
+  SPAT --&gt;|"Sokong"| SPAML
+  SPAM --&gt;|"Tolak"| SPAG
+  SPAM --&gt;|"Perlu pindaan"| SPAK
+  SPAT --&gt;|"Tolak"| SPAG
+  SPAT --&gt;|"Perlu pindaan"| SPAK
+
+  SPAML --&gt;|"Lulus + rekod jumlah kelulusan tabung"| SPASL
+  SPAML --&gt;|"Tolak"| SPAG
+  SPAML --&gt;|"Perlu pindaan"| SPAK
+  SPAML --&gt;|"Rujuk semula Moderator"| SPAM
+
+  SPASL --&gt;|"Penyemak jana surat&lt;br/&gt;templat jabatan + bajet lulus"| SPAL
+  SPAK --&gt;|"Pemohon kemaskini dan hantar semula"| R0
+
+  DELQ{"Pemohon tekan Padam"}
+  DEL["Rekod dipadam terus"]
+  A1 --&gt; DELQ
+  DELQ --&gt;|"Status masih D"| DEL
+  DELQ --&gt;|"Sudah dihantar"| SPAB
+
+  subgraph SELEPAS["SELEPAS LULUS · Penyemak"]
+    direction TB
+    PD1["Pindaan — kemaskini butiran&lt;br/&gt;dan jana surat pindaan kelulusan"]
+    PD2["Pembatalan — jana surat pembatalan"]
+  end
+  SPAL --&gt; PD1
+  SPAL --&gt; PD2
+  PD1 --&gt;|"status kekal SPAL"| SPAL
+  PD2 --&gt; SPAB
+
+  subgraph LAKSANA["PELAKSANAAN"]
+    direction TB
+    E1["Aturcara harian + Pengisian&lt;br/&gt;pegawai dan peranan"]
+    E2["Kehadiran peserta&lt;br/&gt;imbas QR Code atau kunci masuk"]
+    E1 --&gt; E2
+  end
+  SPAL --&gt; E1
+
+  subgraph LAPOR["PELAPORAN"]
+    direction TB
+    L1["LD — Laporan Draf&lt;br/&gt;tujuh tab: Aktiviti · Hasil · Kemahiran Insaniah&lt;br/&gt;Penilaian · Keberkesanan · Dokumen · Pengesahan"]
+    L2{"Kategori permohonan?"}
+    LSP["LSP — Semakan Penasihat"]
+    LSS["LSS — Semakan Penyemak"]
+    LSK["LSK — Dikembalikan kepada Penyedia"]
+    LS["LS — Laporan Selesai"]
+    L1 --&gt;|"Hantar"| L2
+    L2 --&gt;|"HEP"| LSP
+    L2 --&gt;|"Jabatan"| LSS
+    LSP --&gt;|"Sokong"| LSS
+    LSP --&gt;|"Kembali"| LSK
+    LSS --&gt;|"Terima"| LS
+    LSS --&gt;|"Kembali"| LSK
+    LSK --&gt;|"Kemaskini dan hantar semula"| L1
+  end
+  E2 --&gt; L1
+
+  classDef go   fill:#e7eefa,stroke:#1f4d8f,color:#16335c;
+  classDef ok   fill:#e2f2e8,stroke:#17683f,color:#0e4429;
+  classDef stop fill:#fbe7e5,stroke:#a8271d,color:#761a13;
+  classDef warn fill:#fbf0da,stroke:#8a5a00,color:#5f3e00;
+  classDef draf fill:#eceff2,stroke:#6f7d8d,color:#36414d;
+  class SPAP,SPAS,SPAM,SPAT,SPAML,LSP,LSS go;
+  class SPAL,SPASL,LS ok;
+  class SPAG,SPAB,DEL,PD2 stop;
+  class SPAK,LSK warn;
+  class A1,L1 draf;
+</pre>
+      </div>
+      <figcaption><b>Dua suis mengubah bentuk rantaian ini.</b> Pertama, kategori permohonan: aktiviti anjuran persatuan bermula di Penasihat Persatuan, aktiviti jabatan terus ke Penyemak. Kedua, <code style="font-family:var(--mono)">directpelulus</code> pada had kelulusan tabung — apabila 0, permohonan melalui Moderator dua kali (<code style="font-family:var(--mono)">SPAM</code> kemudian <code style="font-family:var(--mono)">SPAT</code>) sebelum sampai kepada Pelulus. Perhatikan bahawa <code style="font-family:var(--mono)">SPASL</code> bukan penamat: Penyemak masih perlu menjana surat sebelum status menjadi <code style="font-family:var(--mono)">SPAL</code>.</figcaption>
+    </figure>
+
+    <div class="legend">
+      <h3>Kod status aktiviti</h3>
+      <p class="note">Lajur <code style="font-family:var(--mono);font-size:.85em">code</code> pada <code style="font-family:var(--mono);font-size:.85em">tbl_aktiviti_statusaktiviti</code>.</p>
+      <ul class="codes">
+        <li><code>D</code><span class="d">Draf — belum dihantar</span></li>
+        <li class="s-go"><code>SPAP</code><span class="d">Semakan Penasihat Persatuan</span></li>
+        <li class="s-go"><code>SPAS</code><span class="d">Semakan Penyemak</span></li>
+        <li class="s-go"><code>SPAM</code><span class="d">Semakan Moderator</span></li>
+        <li class="s-go"><code>SPAT</code><span class="d">Semakan Moderator — pusingan kedua</span></li>
+        <li class="s-go"><code>SPAML</code><span class="d">Menunggu tindakan Pelulus</span></li>
+        <li class="s-ok"><code>SPASL</code><span class="d">Diluluskan — menunggu deraf surat Penyemak</span></li>
+        <li class="s-ok"><code>SPAL</code><span class="d">Lulus — surat kelulusan telah dijana</span></li>
+        <li class="s-warn"><code>SPAK</code><span class="d">Dikembalikan kepada pemohon untuk pindaan</span></li>
+        <li class="s-stop"><code>SPAG</code><span class="d">Tidak diluluskan</span></li>
+        <li class="s-stop"><code>SPAB</code><span class="d">Dibatalkan</span></li>
+        <li class="s-warn"><code>SPAMLK</code><span class="d">Laluan pelulus luar — kini dinyahaktifkan</span></li>
+      </ul>
+    </div>
+
+    <div class="legend" style="margin-top:1.5rem">
+      <h3>Kod status pelaporan</h3>
+      <p class="note">Lajur <code style="font-family:var(--mono);font-size:.85em">code</code> pada <code style="font-family:var(--mono);font-size:.85em">tbl_aktiviti_pelaporan_status</code>.</p>
+      <ul class="codes">
+        <li><code>LD</code><span class="d">Laporan Draf — dicipta bersama permohonan</span></li>
+        <li class="s-go"><code>LSP</code><span class="d">Semakan Penasihat — aktiviti HEP sahaja</span></li>
+        <li class="s-go"><code>LSS</code><span class="d">Semakan Penyemak</span></li>
+        <li class="s-warn"><code>LSK</code><span class="d">Dikembalikan kepada penyedia laporan</span></li>
+        <li class="s-ok"><code>LS</code><span class="d">Laporan selesai dan diterima</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══════════════ MODUL C · PERSATUAN ══════════════ -->
+  <section class="module" id="persatuan">
+    <div class="module-head">
+      <div class="lede-wrap">
+        <p class="module-kicker">Modul C · routes/persatuan.php</p>
+        <h2>Kitaran Hayat Persatuan</h2>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Pelakon</dt><dd>Pelajar, Setiausaha, Penasihat, Moderator HEP, Ketua PTJ / Pengurusan Tertinggi</dd></div>
+        <div class="fact"><dt>Corak</dt><dd>Rantaian tiga peringkat yang sama diguna semula bagi setiap proses</dd></div>
+        <div class="fact"><dt>Jadual inti</dt><dd><code>tbl_persatuan</code>, <code>statuspersatuan_id</code>, <code>statuspermohonan_id</code></dd></div>
+        <div class="fact"><dt>Hasil</dt><dd>Persatuan berdaftar aktif dengan tempoh sah laku</dd></div>
+      </dl>
+      <p class="lede">Persatuan bergerak melalui satu kitaran hayat: pra-daftar, penubuhan, aktif, kemudian sama ada pembaharuan tahunan atau pembubaran. Setiap proses menggunakan rantaian pengesahan tiga peringkat yang sama — Penasihat, Moderator HEP, Ketua PTJ — dan setiap peringkat boleh menghantar permohonan kembali kepada Setiausaha.</p>
+    </div>
+
+    <p class="chain-label">Rantaian pengesahan yang berulang</p>
+    <ul class="chain">
+      <li><span class="role is-start">Setiausaha / Pemohon</span></li>
+      <li><span class="role">Penasihat</span></li>
+      <li><span class="role">Moderator HEP</span></li>
+      <li><span class="role is-end">Ketua PTJ / Pengurusan Tertinggi</span></li>
+    </ul>
+
+    <figure class="plate">
+      <div class="plate-bar"><span class="t">Carta Alir C.1 — Kitaran Hayat Persatuan</span><span>Pra-daftar → Penubuhan → Aktif → Pembaharuan / Pembubaran</span></div>
+      <div class="sheet">
+<pre class="mermaid">
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'IBM Plex Sans, system-ui, sans-serif','fontSize':'13px','primaryColor':'#ffffff','primaryTextColor':'#131c26','primaryBorderColor':'#93a4b8','lineColor':'#6b7c91','textColor':'#131c26','nodeTextColor':'#131c26','titleColor':'#131c26','background':'#f9f9f6','clusterBkg':'#f1f2ee','clusterBorder':'#cfcabb','edgeLabelBackground':'#f9f9f6'}}}%%
+flowchart TD
+
+  subgraph PRA["PRA-PENUBUHAN"]
+    direction TB
+    X1["Pelajar · Carian dan Borang Pra-Daftar"]
+    X2["Hantar — status 1 atau 2&lt;br/&gt;Permohonan Pra-Daftar"]
+    X3{"Moderator HEP&lt;br/&gt;semak pra-daftar"}
+    X4["Lulus Pra-Daftar — status 3&lt;br/&gt;Sijil Pra-Daftar dijana"]
+    X5["Permohonan ditolak"]
+    X1 --&gt; X2 --&gt; X3
+    X3 --&gt;|"Lulus"| X4
+    X3 --&gt;|"Tolak"| X5
+  end
+
+  subgraph TUBUH["PERMOHONAN PENUBUHAN · Setiausaha"]
+    direction TB
+    Y1["Enam langkah borang&lt;br/&gt;Maklumat Am → Penasihat → AJK →&lt;br/&gt;Mesyuarat Penubuhan → Perlembagaan&lt;br/&gt;fungsi dan lambang → Pengakuan"]
+    Y2["Hantar — status 16 Hantar Lengkap"]
+    Y1 --&gt; Y2
+  end
+  X4 --&gt; Y1
+
+  Z1{"Penasihat semak"}
+  Z2{"Moderator HEP semak"}
+  Z3{"Ketua PTJ semak"}
+  ZR["Dikembalikan kepada Setiausaha"]
+  ZTL["Tidak Lulus Pendaftaran — status 15"]
+  AKTIF["PERSATUAN AKTIF&lt;br/&gt;statuspersatuan 5 · statuspermohonan 8"]
+
+  Y2 --&gt; Z1
+  Z1 --&gt;|"Lengkap — status 10"| Z2
+  Z1 --&gt;|"Tidak Lengkap — status 11"| ZR
+  Z2 --&gt;|"Sokong — status 12"| Z3
+  Z2 --&gt;|"Tidak Sokong — status 13"| ZR
+  Z3 --&gt;|"Lulus"| AKTIF
+  Z3 --&gt;|"Tidak Lulus"| ZTL
+  ZR --&gt;|"Kemaskini dan hantar semula"| Y1
+
+  EXP{"Tarikh sah laku&lt;br/&gt;dilepasi?"}
+  TIDAKAKTIF["Tidak Aktif — status 7"]
+  AKTIF --&gt; EXP
+  EXP --&gt;|"Ya, tiada pembaharuan"| TIDAKAKTIF
+
+  subgraph BARU["PEMBAHARUAN TAHUNAN"]
+    direction TB
+    B1["Setiausaha mohon pembaharuan&lt;br/&gt;rekod semasa diarkib&lt;br/&gt;statuspermohonan 20"]
+    B2{"Penasihat"}
+    B3{"Moderator HEP"}
+    B4{"Dekan HEP · TREK · TDHEP"}
+    BR["Dikembalikan kepada Setiausaha"]
+    B1 --&gt; B2
+    B2 --&gt;|"Sokong — 21"| B3
+    B2 --&gt;|"Tidak Sokong — 23"| BR
+    B3 --&gt;|"Sokong — 22"| B4
+    B3 --&gt;|"Tidak Sokong — 24"| BR
+    BR --&gt; B1
+  end
+  AKTIF --&gt; B1
+  B4 --&gt;|"Lulus — statuspermohonan 8"| AKTIF
+  B4 --&gt;|"Tidak Lulus"| ZTL
+
+  subgraph BUBAR["PEMBUBARAN"]
+    direction TB
+    C1["Setiausaha mohon bubar + pengakuan&lt;br/&gt;statuspermohonan 10"]
+    C2{"Penasihat"}
+    C3{"Moderator HEP"}
+    C4{"Ketua PTJ"}
+    CR["Permohonan ditolak&lt;br/&gt;persatuan kekal aktif"]
+    C1 --&gt; C2
+    C2 --&gt;|"Sokong — 11"| C3
+    C2 --&gt;|"Tidak Sokong — 13"| CR
+    C3 --&gt;|"Sokong — 12"| C4
+    C3 --&gt;|"Tidak Sokong — 14"| CR
+  end
+  AKTIF --&gt; C1
+  BUBARDONE["BUBAR&lt;br/&gt;statuspersatuan 7 · statuspermohonan 16"]
+  C4 --&gt;|"Lulus"| BUBARDONE
+  C4 --&gt;|"Tolak"| CR
+
+  KEMAS["Kemaskini Maklumat Persatuan&lt;br/&gt;Setiausaha — tanpa rantaian kelulusan"]
+  AKTIF --&gt; KEMAS --&gt; AKTIF
+
+  classDef go   fill:#e7eefa,stroke:#1f4d8f,color:#16335c;
+  classDef ok   fill:#e2f2e8,stroke:#17683f,color:#0e4429;
+  classDef stop fill:#fbe7e5,stroke:#a8271d,color:#761a13;
+  classDef warn fill:#fbf0da,stroke:#8a5a00,color:#5f3e00;
+  class Z1,Z2,Z3,B2,B3,B4,C2,C3,C4,X3 go;
+  class AKTIF,X4 ok;
+  class ZTL,X5,BUBARDONE,TIDAKAKTIF stop;
+  class ZR,BR,CR warn;
+</pre>
+      </div>
+      <figcaption><b>Satu bentuk, empat kegunaan.</b> Pra-daftar, penubuhan, pembaharuan dan pembubaran semuanya menggunakan rantaian Penasihat → Moderator HEP → Ketua PTJ yang sama; yang berbeza hanya set nombor status yang direkodkan pada setiap peringkat. Perhatikan bahawa penolakan pada mana-mana peringkat pembaharuan atau penubuhan menghantar permohonan kembali kepada Setiausaha, bukan menamatkannya — hanya keputusan peringkat akhir yang muktamad.</figcaption>
+    </figure>
+
+    <figure class="plate">
+      <div class="plate-bar"><span class="t">Carta Alir C.2 — Sub-proses sokongan</span><span>Berjalan selari dengan kitaran hayat utama</span></div>
+      <div class="sheet">
+<pre class="mermaid">
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'IBM Plex Sans, system-ui, sans-serif','fontSize':'13px','primaryColor':'#ffffff','primaryTextColor':'#131c26','primaryBorderColor':'#93a4b8','lineColor':'#6b7c91','textColor':'#131c26','nodeTextColor':'#131c26','titleColor':'#131c26','background':'#f9f9f6','clusterBkg':'#f1f2ee','clusterBorder':'#cfcabb','edgeLabelBackground':'#f9f9f6'}}}%%
+flowchart LR
+
+  subgraph PN["LANTIKAN PENASIHAT"]
+    direction LR
+    N1["Mohon lantikan&lt;br/&gt;carian staf → kepakaran →&lt;br/&gt;maklumat persatuan → pengakuan&lt;br/&gt;statuspenasihat 5"]
+    N2{"Ketua PTJ"}
+    N3{"Moderator HEP — 4"}
+    N4{"TNC — 3"}
+    N5["Lulus · Surat Lantikan dijana"]
+    N6["Tarik diri → Tidak Aktif — 8"]
+    N1 --&gt; N2 --&gt; N3 --&gt; N4 --&gt; N5 --&gt; N6
+  end
+
+  subgraph KE["KEAHLIAN"]
+    direction LR
+    K1["Pelajar daftar keahlian&lt;br/&gt;persatuan mesti Aktif — status 5&lt;br/&gt;statuskeahlian 1 Mohon"]
+    K2{"Setiausaha semak"}
+    K3["Diterima — statuskeahlian 2"]
+    K4["Ahli sah / tamat — 3 dan 5"]
+    K1 --&gt; K2 --&gt; K3 --&gt; K4
+  end
+
+  subgraph PL["PINDAAN PERLEMBAGAAN"]
+    direction LR
+    Q1["Setiausaha mohon pinda&lt;br/&gt;fungsi dan lambang"]
+    Q2{"Moderator HEP semak"}
+    Q3["Pengurusan Tertinggi lulus"]
+    Q1 --&gt; Q2 --&gt; Q3
+  end
+
+  subgraph PA["PERANCANGAN AKTIVITI"]
+    direction LR
+    W1["Pengerusi daftar perancangan tahunan"]
+    W2{"Penasihat semak"}
+    W3{"Moderator HEP semak"}
+    W1 --&gt; W2 --&gt; W3
+  end
+
+  subgraph AJ["AJK INDUK DAN MESYUARAT"]
+    direction LR
+    G1["Setiausaha: AJK sedia ada&lt;br/&gt;atau tambah AJK baharu"]
+    G2{"Moderator HEP semak"}
+    G3["Mesyuarat dan kehadiran&lt;br/&gt;direkod oleh Setiausaha"]
+    G1 --&gt; G2
+  end
+
+  classDef go   fill:#e7eefa,stroke:#1f4d8f,color:#16335c;
+  classDef ok   fill:#e2f2e8,stroke:#17683f,color:#0e4429;
+  classDef stop fill:#fbe7e5,stroke:#a8271d,color:#761a13;
+  class N2,N3,N4,K2,Q2,W2,W3,G2 go;
+  class N5,K3,K4,Q3 ok;
+  class N6 stop;
+</pre>
+      </div>
+      <figcaption>Sub-proses ini beroperasi ke atas persatuan yang sudah aktif dan tidak mengubah <code style="font-family:var(--mono)">statuspersatuan_id</code>. Lantikan penasihat mempunyai rantaian tiga peringkatnya sendiri dengan nombor status yang menurun — <b>5 permohonan → 4 Moderator → 3 TNC</b> — dan setiap penyemak memilih status seterusnya daripada senarai juntai, jadi urutan sebenar boleh berbeza mengikut konfigurasi.</figcaption>
+    </figure>
+
+    <div class="legend">
+      <h3>Status persatuan</h3>
+      <p class="note">Nilai <code style="font-family:var(--mono);font-size:.85em">statuspersatuan_id</code> pada <code style="font-family:var(--mono);font-size:.85em">tbl_persatuan</code>, seperti yang dirujuk dalam pengawal.</p>
+      <ul class="codes">
+        <li><code>1 · 2</code><span class="d">Permohonan pra-daftar dihantar</span></li>
+        <li class="s-go"><code>3</code><span class="d">Lulus Pra-Daftar — boleh mula penubuhan</span></li>
+        <li class="s-go"><code>16</code><span class="d">Hantar Lengkap — menunggu Penasihat</span></li>
+        <li class="s-go"><code>10</code><span class="d">Lengkap — disahkan Penasihat, menunggu Moderator</span></li>
+        <li class="s-go"><code>12</code><span class="d">Disokong Moderator — menunggu Ketua PTJ</span></li>
+        <li class="s-ok"><code>5</code><span class="d">Aktif — persatuan berdaftar</span></li>
+        <li class="s-warn"><code>11</code><span class="d">Tidak Lengkap — dikembalikan oleh Penasihat</span></li>
+        <li class="s-warn"><code>13</code><span class="d">Tidak Disokong — dikembalikan oleh Moderator</span></li>
+        <li class="s-stop"><code>15</code><span class="d">Tidak Lulus Pendaftaran</span></li>
+        <li class="s-stop"><code>7</code><span class="d">Tidak Aktif — luput atau telah dibubarkan</span></li>
+        <li class="s-go"><code>21 · 22</code><span class="d">Peringkat pembaharuan — Moderator, kemudian Dekan</span></li>
+        <li class="s-warn"><code>23 · 24</code><span class="d">Pembaharuan tidak disokong</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="colophon">
+    <div>
+      <h3>Cara carta ini dibina</h3>
+      <p>Setiap peralihan status di atas dibaca terus daripada fail laluan, pengawal dan queue job dalam cawangan <code style="font-family:var(--mono);font-size:.85em">development</code> — bukan daripada dokumentasi. Di mana pengawal membenarkan penyemak memilih status seterusnya daripada senarai juntai, carta menunjukkan pilihan yang dibenarkan oleh kod, dan ini dinyatakan dalam kapsyen.</p>
+      <p>Nama status persatuan berpandukan komen sedia ada dalam kod. Beberapa nombor status persatuan tidak mempunyai label bertulis dalam repositori dan dinamakan berdasarkan konteks penggunaannya.</p>
+    </div>
+    <div>
+      <h3>Sumber rujukan</h3>
+      <ul class="srclist">
+        <li><b>routes/</b> profiling.php · aktiviti.php · persatuan.php</li>
+        <li><b>Profiling/</b> MaklumatprofilController · ProfilsemesterController · KiraanmeritController · SemakanController</li>
+        <li><b>Jobs/Profiling/</b> JanaSemester · JanaKiraanMerit</li>
+        <li><b>Aktiviti/</b> PermohonanAktivitiController · TindakanController · PenyemakController · LaporanPemohonController · LaporanSemakanController</li>
+        <li><b>Persatuan/</b> PersatuanController · PermohonanController · PembaharuanController · PembubaranController · PenasihatController · KeahlianSetiausahaController</li>
+        <li><b>app/Providers/</b> MenuServiceProvider.php</li>
+      </ul>
+    </div>
+  </div>
+
+</main>

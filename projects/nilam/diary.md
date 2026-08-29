@@ -1,6 +1,8 @@
 # Nilam — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-08-29** — [Restricted Letter Maintenance and Legal Documents Table Redesign](../../daily-diary/current/2026-08-29.md)
+  - Outcome: Shipped and pushed two focused improvements: authorized letter-content preview/editing and a compact five-column applications table
 - **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/current/2026-08-20.md)
   - Outcome: Two distinct image pipelines identified and mapped end to end. Read-only session; no code changed, working tree clean.
 - **2026-08-19** — [Nilam: Approval Letter Missing Jawi/Hijri Images; Nilam: LPU status display — a fix I got wrong twice before getting it right](../../daily-diary/current/2026-08-19.md)
