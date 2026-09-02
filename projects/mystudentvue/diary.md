@@ -1,11 +1,11 @@
 # MyStudent — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
-- **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/current/2026-08-20.md)
+- **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/archived/2026-08/2026-08-20.md)
   - Outcome: Two distinct image pipelines identified and mapped end to end. Read-only session; no code changed, working tree clean.
-- **2026-08-12** — [MyStudent: Result Kolej Rayuan Leak Fix](../../daily-diary/current/2026-08-12.md)
+- **2026-08-12** — [MyStudent: Result Kolej Rayuan Leak Fix](../../daily-diary/archived/2026-08/2026-08-12.md)
   - Outcome: Root cause found, fixed, committed as `update fix rayuan leak`, and **deployed manually** (~22:55). Fendy had disabled the whole page as a stopgap; it can now be safely re-enabled with `rayuan_flag` off.
-- **2026-08-10** — [Result Kolej Filtering Made Predictable](../../daily-diary/current/2026-08-10.md)
+- **2026-08-10** — [Result Kolej Filtering Made Predictable](../../daily-diary/archived/2026-08/2026-08-10.md)
   - Outcome: Result visibility is now deterministic by student category, the iResidensi information panel is independent, and the admin controls clearly explain their effects
 - **2026-07-31** — [NILAM Department-Code Source Correction; NILAM LPU Draft Page 404 Investigation; MyStudent Medical Form Token-Renewal Fix](../../daily-diary/archived/2026-07/2026-07-31.md)
   - Outcome: The earlier LPU query workaround was reverted; live Digital Campus ingestion now reads `kodjabatan`, and Fendy manually committed the reviewed fix

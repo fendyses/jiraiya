@@ -1,35 +1,42 @@
-# Current Session Memory - 2026-08-29
+# Current Session Memory - 2026-09-02
 *Global pointer to the latest session — full recap lives in the repo snapshot*
 
 ## Session Context
 **Session Type**: Work
 **Current Project**: **Nilam** (slug: `nilam`) — `/Applications/Sites/nilam` — UiTM
-**Status**: Wrapping up
-**Time**: Afternoon session, 14:09 GMT+8
+**Status**: Complete, awaiting testing and deploy
+**Time**: Morning session, ended 11:33 GMT+8
 
 ## Latest Session
 ➡️ **Full recap: [`projects/nilam/session.md`](../projects/nilam/session.md)**
-➡️ Diary entry: `daily-diary/current/2026-08-29.md` (Afternoon - 2:09 PM)
+➡️ Diary entry: `daily-diary/current/2026-09-02.md` (Morning - 11:33 AM)
 
 ## One-Line Summary
-Shipped restricted MEU/LPU letter-content maintenance for two named staff and redesigned Manage Legal Documents into a compact, readable five-column table.
+A MinIO SSL certificate question turned into a nine-bug hunt through the application
+draft flow — a save-as-draft deadlock, two fatal null crashes, partner indexing
+mismatches, and a production-only undefined function — all committed and merged clean.
 
 ## Session Recap (For AI Restart)
-- **Where We Left Off**: Commits `9f66af0` and `0c6898c` are pushed to `origin/development`; no requested feature work remains mid-flight.
-- **Important Context**: Saiful Effendy and Zamzunita are authorized by stable staff usernames `199254` and `201498`, because their database IDs differ between dev and production. Local `.env` currently points to the dev database.
-- **What Needs Attention**: The separate PUU monitoring/config/mail work remains dirty and intentionally uncommitted; preserve it during future focused changes.
+- **Where We Left Off**: Two commits merged with 5 remote commits (`8e876f5`). Nothing
+  pushed, nothing tested. No task mid-flight.
+- **Important Context**: `.env` points at the **production** database and the mysql
+  connection uses a **`tbl_` prefix** — tables are `tbl_applications` etc. Local `.env`
+  has no `MINIO_*` keys and a stale `APP_URL` (`nilams.es`); production is
+  `nilams.uitm.edu.my`. Never stage `config/services.php`.
+- **What Needs Attention**: The original MinIO TLS question is still unanswered — needs
+  a deploy then `/minio-check`. Three untested paths. `/minio-check` and the `/info`
+  phpinfo route both want removing afterwards.
 
 ## Session Achievements
-- ✅ Added safe MEU/LPU letter preview and editing from application details
-- ✅ Enforced cross-environment named-staff access without workflow side effects
-- ✅ Redesigned the legal-documents table with grouped content, compact labels, and readable responsive behavior
-- ✅ Verified 24 unit tests and pushed both commits
+- ✅ Fixed the draft save deadlock plus 8 related bugs across draft, partner, upload paths
+- ✅ Added read-only `/minio-check` TLS diagnostic covering MinIO and letter-image hosts
+- ✅ Merged 5 remote commits with no conflicts; verified every change survived
 
 ## Recent per-repo sessions
-- Nilam → `projects/nilam/session.md` (2026-08-29)
+- Nilam → `projects/nilam/session.md` (2026-09-02)
 - MyStudent → `projects/mystudentvue/session.md` (2026-08-12)
 - ForexPulse → `projects/forexpulse/session.md` (2026-07-27)
 - MyAlumniCard → `projects/myalumni-angular/session.md` (2026-07-22)
 
 ---
-*Session updated: 2026-08-29 14:09*
+*Session updated: 2026-09-02 11:33*

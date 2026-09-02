@@ -1,14 +1,16 @@
 # Nilam — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
-- **2026-08-29** — [Restricted Letter Maintenance and Legal Documents Table Redesign](../../daily-diary/current/2026-08-29.md)
+- **2026-09-02** — [MinIO TLS Diagnostic and the Draft Save Deadlock](../../daily-diary/current/2026-09-02.md)
+  - Outcome: Two commits merged cleanly with five incoming remote commits; a read-only `/minio-check` diagnostic added; nine bugs fixed across the draft, partner, and upload paths
+- **2026-08-29** — [Restricted Letter Maintenance and Legal Documents Table Redesign](../../daily-diary/archived/2026-08/2026-08-29.md)
   - Outcome: Shipped and pushed two focused improvements: authorized letter-content preview/editing and a compact five-column applications table
-- **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/current/2026-08-20.md)
+- **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/archived/2026-08/2026-08-20.md)
   - Outcome: Two distinct image pipelines identified and mapped end to end. Read-only session; no code changed, working tree clean.
-- **2026-08-19** — [Nilam: Approval Letter Missing Jawi/Hijri Images; Nilam: LPU status display — a fix I got wrong twice before getting it right](../../daily-diary/current/2026-08-19.md)
+- **2026-08-19** — [Nilam: Approval Letter Missing Jawi/Hijri Images; Nilam: LPU status display — a fix I got wrong twice before getting it right](../../daily-diary/archived/2026-08/2026-08-19.md)
   - Outcome: Root cause identified (outbound HTTPS fetch failing on production server, **not** an expired certificate), fixed in code by removing the network dependency entirely. Verified across the whole database and **committed by Fendy as `ed52517`** at 10:33.
-- **2026-08-13** — [PUU Monitoring UX Completion and Operational Clarity](../../daily-diary/current/2026-08-13.md)
-- **2026-08-09** — [PUU Monitoring Module: Design, Build, Install; PUU Individual User Report and Print-Safe Visuals](../../daily-diary/current/2026-08-09.md)
+- **2026-08-13** — [PUU Monitoring UX Completion and Operational Clarity](../../daily-diary/archived/2026-08/2026-08-13.md)
+- **2026-08-09** — [PUU Monitoring Module: Design, Build, Install; PUU Individual User Report and Print-Safe Visuals](../../daily-diary/archived/2026-08/2026-08-09.md)
   - Outcome: Module built, installed to `nilamsdev`, verified. Uncommitted.
 - **2026-07-31** — [NILAM Department-Code Source Correction; NILAM LPU Draft Page 404 Investigation; MyStudent Medical Form Token-Renewal Fix](../../daily-diary/archived/2026-07/2026-07-31.md)
   - Outcome: The earlier LPU query workaround was reverted; live Digital Campus ingestion now reads `kodjabatan`, and Fendy manually committed the reviewed fix
