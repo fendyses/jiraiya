@@ -301,10 +301,10 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
 </header>
 
 <main class="dashboard-shell max-w-screen-xl mx-auto p-4 flex flex-col gap-3">
-  <section class="project-overview glass" aria-label="Current project overview">
+  <section class="project-overview glass" aria-label="Last session project overview">
     <div class="project-overview-main">
-      <div class="overview-label">CURRENT PROJECT</div>
-      <h2 class="ck-proj"><span class="ck-dot" aria-hidden="true"></span><?= $projName ? $ck_md($projName) : 'No active project' ?></h2>
+      <div class="overview-label">LAST SESSION PROJECT</div>
+      <h2 class="ck-proj"><span class="ck-dot" aria-hidden="true"></span><?= $projName ? $ck_md($projName) : 'No saved project' ?></h2>
       <?php if ($projDesc): ?><div class="ck-desc"><?= $ck_md($projDesc) ?></div><?php endif; ?>
     </div>
     <?php if ($projStatus): ?>
