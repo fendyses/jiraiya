@@ -374,33 +374,7 @@
     }
   }
 
-  // ── LEAFY GROVE + ATMOSPHERE ── shared geometry keeps the scene lightweight.
-  var blossomCrowns = [];
-  var blossomGeo = new THREE.IcosahedronGeometry(1, 1);
-  var blossomMats = [0x388A36, 0x63AD43, 0x246B32].map(function(color) {
-    return new THREE.MeshStandardMaterial({ color: color, roughness: 0.95 });
-  });
-  var barkMat = new THREE.MeshStandardMaterial({ color: 0x65423C, roughness: 1 });
-  [[-10, -2, 1], [11, -5, 0.85]].forEach(function(p) {
-    var tree = new THREE.Group();
-    tree.position.set(p[0], 0, p[1]); tree.scale.setScalar(p[2]);
-    var trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.3, 3.4, 7), barkMat);
-    trunk.position.y = 1.7; trunk.rotation.z = 0.12; trunk.castShadow = true;
-    tree.add(trunk);
-    [-1, 1].forEach(function(side) {
-      var branch = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.16, 1.8, 6), barkMat);
-      branch.position.set(side * 0.5, 2.7, 0); branch.rotation.z = -side * 0.65;
-      branch.castShadow = true; tree.add(branch);
-    });
-    var crown = new THREE.Group(); crown.position.y = 3.25;
-    [[0,0.5,0,1.3],[-1,0,0,1.1],[1,0.2,0.1,1.2],[0,0,-0.9,1],[-0.5,0,0.9,0.9],[0.8,-0.2,0.8,0.85]].forEach(function(c,i) {
-      var b = new THREE.Mesh(blossomGeo, blossomMats[i % blossomMats.length]);
-      b.position.set(c[0],c[1],c[2]); b.scale.set(c[3],c[3]*0.7,c[3]);
-      b.castShadow = true; b.receiveShadow = true; crown.add(b);
-    });
-    tree.add(crown); blossomCrowns.push(crown); scene.add(tree);
-  });
-
+  // ── ATMOSPHERE ── shared geometry keeps the scene lightweight.
   var petalCount = 64;
   var petalMat = new THREE.MeshStandardMaterial({ color: 0x83B94B, emissive: 0x203D12,
     emissiveIntensity: 0.12, side: THREE.DoubleSide, roughness: 0.8 });
@@ -445,7 +419,6 @@
       petalPose.updateMatrix(); petals.setMatrixAt(i, petalPose.matrix);
     }
     petals.instanceMatrix.needsUpdate = true;
-    blossomCrowns.forEach(function(c,i) { c.rotation.z = Math.sin(time*0.8+i)*0.025; });
     moteMat.opacity = 0.25 + nightAmount * 0.55;
     for (var j = 0; j < 48; j++) {
       var seed = petalSeeds[j];
