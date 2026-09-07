@@ -300,19 +300,30 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
   <div class="cdeco bl"></div><div class="cdeco br"></div>
 </header>
 
-<div class="max-w-screen-xl mx-auto p-4 flex flex-col gap-3">
+<main class="dashboard-shell max-w-screen-xl mx-auto p-4 flex flex-col gap-3">
+  <section class="project-overview glass" aria-label="Current project overview">
+    <div class="project-overview-main">
+      <div class="overview-label">CURRENT PROJECT</div>
+      <h2 class="ck-proj"><span class="ck-dot" aria-hidden="true"></span><?= $projName ? $ck_md($projName) : 'No active project' ?></h2>
+      <?php if ($projDesc): ?><div class="ck-desc"><?= $ck_md($projDesc) ?></div><?php endif; ?>
+    </div>
+    <?php if ($projStatus): ?>
+      <div class="project-overview-status">
+        <div class="overview-label">SESSION STATUS</div>
+        <div class="ck-status"><?= $ck_md($projStatus) ?></div>
+      </div>
+    <?php endif; ?>
+    <button class="overview-todo" type="button" onclick="openTodo()">
+      <span id="overviewTodoCount" class="ck-badge<?= $todoOngoing ? '' : ' zero' ?>"><?= count($todoOngoing) ?></span>
+      <span>Open tasks</span><span aria-hidden="true">↗</span>
+    </button>
+  </section>
   <div class="stage-row flex gap-3 items-start">
-    <aside id="repoPanel" class="glass p-3 relative flex flex-col" style="width:236px;flex-shrink:0">
+    <aside id="repoPanel" class="glass p-3 relative flex flex-col">
       <div class="cdeco tl"></div><div class="cdeco br"></div>
 
-      <!-- JIRAIYA cockpit (server-rendered from the memory files) -->
+      <!-- Task preview (server-rendered from the memory files) -->
       <div class="cockpit">
-        <div class="mono text-yellow-700 text-xs tracking-[2px] uppercase mb-1">// JIRAIYA</div>
-        <?php if ($projName): ?>
-          <div class="ck-proj"><span class="ck-dot"></span><?= $ck_md($projName) ?></div>
-          <?php if ($projDesc): ?><div class="ck-desc"><?= $ck_md($projDesc) ?></div><?php endif; ?>
-          <?php if ($projStatus): ?><div class="ck-status"><?= $ck_md($projStatus) ?></div><?php endif; ?>
-        <?php endif; ?>
         <div class="ck-rem-head">ONGOING TODO<span class="ck-badge<?= $todoOngoing ? '' : ' zero' ?>"><?= count($todoOngoing) ?></span></div>
         <?php if ($todoOngoing): foreach (array_slice($todoOngoing, 0, 4) as $r): ?>
           <div class="ck-rem">› <span class="ck-repo"><?= $ck_md($r['repo']) ?></span> <?= $ck_md($r['text']) ?></div>
@@ -368,7 +379,7 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
     </div>
   </div>
   <div id="cardGrid" class="grid gap-3 monitors-grid" style="grid-template-columns:1fr 1fr 1fr 1.7fr"></div>
-</div>
+</main>
 
 <div id="app-dock">
   <button class="app-sc" onclick="openTodo()">
