@@ -20,12 +20,13 @@
   composer.addPass(new THREE.RenderPass(null, null));   // scene/camera filled in after they're created
 
   // Bloom — only the very brightest surfaces (cloud tops, sky zenith) get a halo
-  var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(W, H), 0.18, 0.45, 0.92);
+  var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(W, H), 0.32, 0.55, 0.88);
   composer.addPass(bloomPass);
 
   // FXAA — smooth edges beyond hardware anti-aliasing
   var fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
-  fxaaPass.material.uniforms['resolution'].value.set(1 / W, 1 / H);
+  var renderRatio = renderer.getPixelRatio();
+  fxaaPass.material.uniforms['resolution'].value.set(1 / (W * renderRatio), 1 / (H * renderRatio));
   composer.addPass(fxaaPass);
 
   // Vignette — subtle corner darkening for cinematic framing
@@ -129,12 +130,13 @@
     { h: 6.5,  top: 0x2d4a86, bot: 0xE8915A, fog: 0xE0A070, sun: 0xFFA050, si: 1.05, amb: 0.42, hemi: 0.30, elev: 8,   night: 0.25 },
     { h: 9.0,  top: 0x1565C0, bot: 0x8ECFF5, fog: 0x8ECFF5, sun: 0xFFF3D2, si: 1.55, amb: 0.50, hemi: 0.35, elev: 42,  night: 0.00 },
     { h: 13.0, top: 0x1366c8, bot: 0x9ED8F8, fog: 0x9ED8F8, sun: 0xFFFFFA, si: 1.65, amb: 0.55, hemi: 0.38, elev: 66,  night: 0.00 },
-    { h: 16.5, top: 0x1565C0, bot: 0x8ECFF5, fog: 0x8ECFF5, sun: 0xFFEFC8, si: 1.40, amb: 0.50, hemi: 0.34, elev: 28,  night: 0.00 },
+    { h: 16.5, top: 0x326CB3, bot: 0xBFDCE8, fog: 0xB7D3E8, sun: 0xFFD29A, si: 1.65, amb: 0.40, hemi: 0.42, elev: 28,  night: 0.00 },
     { h: 18.2, top: 0x3a3f80, bot: 0xF0884A, fog: 0xE88a55, sun: 0xFF7330, si: 0.95, amb: 0.40, hemi: 0.28, elev: 5,   night: 0.30 },
     { h: 19.6, top: 0x141033, bot: 0x2a2450, fog: 0x2a2450, sun: 0x4a3a70, si: 0.18, amb: 0.26, hemi: 0.16, elev: -5,  night: 0.85 },
     { h: 24.0, top: 0x060814, bot: 0x0c1430, fog: 0x0c1430, sun: 0x2a3a66, si: 0.06, amb: 0.20, hemi: 0.12, elev: -20, night: 1.00 }
   ];
   var _dnA = new THREE.Color(), _dnB = new THREE.Color();
+  var nightAmount = 0;
   function _dnLerp(out, a, b, t) { _dnA.setHex(a); _dnB.setHex(b); out.copy(_dnA).lerp(_dnB, t); }
   function updateDayNight() {
     var now = new Date();
@@ -153,6 +155,7 @@
     _amb.intensity  = L(a.amb, b.amb);
     _hemi.intensity = L(a.hemi, b.hemi);
     var night = L(a.night, b.night);
+    nightAmount = night;
     for (var w = 0; w < _warmLights.length; w++) _warmLights[w].intensity = night * 1.6;
     // Lamp posts: bright amber glow after dusk, fully off by day.
     for (var lp = 0; lp < _lampLights.length; lp++) _lampLights[lp].intensity = night * 2.4;
@@ -223,8 +226,8 @@
       sp.position.set(b[0], b[1], b[2]);
       g.add(sp);
     });
-    g.position.set(cd[0], cd[1], cd[2]);
-    g.scale.setScalar(cd[3]);
+    g.position.set(cd[0], cd[1] + 0.6, cd[2]);
+    g.scale.setScalar(cd[3] * 0.7);
     scene.add(g);
     clouds3d.push({ g: g, spd: cd[4] });
   });
@@ -369,6 +372,100 @@
       p.s.quaternion.copy(camera.quaternion);   // keep facing the camera each frame
       p.s.material.opacity = Math.sin(f * Math.PI) * 0.6;   // fade in then out over its life
     }
+  }
+
+  // ── BLOSSOM GROVE + ATMOSPHERE ── shared geometry keeps the scene lightweight.
+  var blossomCrowns = [];
+  var blossomGeo = new THREE.IcosahedronGeometry(1, 1);
+  var blossomMats = [0xEFA5C5, 0xF7C4D8, 0xDB82AE].map(function(color) {
+    return new THREE.MeshStandardMaterial({ color: color, roughness: 0.95 });
+  });
+  var barkMat = new THREE.MeshStandardMaterial({ color: 0x65423C, roughness: 1 });
+  [[-10, -2, 1], [11, -5, 0.85]].forEach(function(p) {
+    var tree = new THREE.Group();
+    tree.position.set(p[0], 0, p[1]); tree.scale.setScalar(p[2]);
+    var trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.3, 3.4, 7), barkMat);
+    trunk.position.y = 1.7; trunk.rotation.z = 0.12; trunk.castShadow = true;
+    tree.add(trunk);
+    [-1, 1].forEach(function(side) {
+      var branch = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.16, 1.8, 6), barkMat);
+      branch.position.set(side * 0.5, 2.7, 0); branch.rotation.z = -side * 0.65;
+      branch.castShadow = true; tree.add(branch);
+    });
+    var crown = new THREE.Group(); crown.position.y = 3.25;
+    [[0,0.5,0,1.3],[-1,0,0,1.1],[1,0.2,0.1,1.2],[0,0,-0.9,1],[-0.5,0,0.9,0.9],[0.8,-0.2,0.8,0.85]].forEach(function(c,i) {
+      var b = new THREE.Mesh(blossomGeo, blossomMats[i % blossomMats.length]);
+      b.position.set(c[0],c[1],c[2]); b.scale.set(c[3],c[3]*0.7,c[3]);
+      b.castShadow = true; b.receiveShadow = true; crown.add(b);
+    });
+    tree.add(crown); blossomCrowns.push(crown); scene.add(tree);
+  });
+
+  var petalCount = 64;
+  var petalMat = new THREE.MeshStandardMaterial({ color: 0xFFC2DE, emissive: 0x6B233D,
+    emissiveIntensity: 0.12, side: THREE.DoubleSide, roughness: 0.8 });
+  var petals = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.10, 0.18), petalMat, petalCount);
+  petals.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  petals.frustumCulled = false;
+  scene.add(petals);
+  var petalPose = new THREE.Object3D();
+  var petalSeeds = [];
+  for (var pi = 0; pi < petalCount; pi++) {
+    petalSeeds.push({ x: Math.random()*30-15, y: Math.random()*7, z: Math.random()*24-16,
+      speed: 0.2+Math.random()*0.25, phase: Math.random()*Math.PI*2 });
+  }
+  var motePositions = new Float32Array(48 * 3);
+  var moteGeo = new THREE.BufferGeometry();
+  moteGeo.setAttribute('position', new THREE.BufferAttribute(motePositions, 3));
+  var moteMat = new THREE.PointsMaterial({ color: 0xFFE5A0, size: 0.14, map: smokeTex,
+    transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending, depthWrite: false });
+  var motes = new THREE.Points(moteGeo, moteMat); motes.frustumCulled = false; scene.add(motes);
+  var chakraRings = {};
+  var hoveredCharacter = null;
+  var ringGeo = new THREE.RingGeometry(0.62, 0.67, 48);
+  var arcGeo = new THREE.RingGeometry(0.8, 0.83, 48, 1, 0, Math.PI * 1.4);
+  function addChakraRing(name) {
+    var color = (typeof ADEF !== 'undefined' && ADEF[name]) ? ADEF[name].glow : '#d4a017';
+    var mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.25,
+      side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false });
+    var group = new THREE.Group();
+    var ring = new THREE.Mesh(ringGeo, mat), arc = new THREE.Mesh(arcGeo, mat);
+    ring.rotation.x = arc.rotation.x = -Math.PI/2;
+    group.add(ring); group.add(arc); group.visible = false; scene.add(group);
+    chakraRings[name] = { group: group, mat: mat, arc: arc };
+  }
+  function updateAtmosphere(dt, time) {
+    for (var i = 0; i < petalCount; i++) {
+      var p = petalSeeds[i];
+      p.x += dt * 0.48; p.y -= dt * p.speed;
+      if (p.x > 15) p.x = -15;
+      if (p.y < 0.1) p.y = 7;
+      petalPose.position.set(p.x + Math.sin(time*0.6+p.phase)*0.5, p.y, p.z);
+      petalPose.rotation.set(time*p.speed, p.phase+time*0.6, Math.sin(time+p.phase));
+      petalPose.updateMatrix(); petals.setMatrixAt(i, petalPose.matrix);
+    }
+    petals.instanceMatrix.needsUpdate = true;
+    blossomCrowns.forEach(function(c,i) { c.rotation.z = Math.sin(time*0.8+i)*0.025; });
+    moteMat.opacity = 0.25 + nightAmount * 0.55;
+    for (var j = 0; j < 48; j++) {
+      var seed = petalSeeds[j];
+      motePositions[j*3] = seed.x + Math.sin(time*0.3+seed.phase);
+      motePositions[j*3+1] = 0.4 + (j%7)*0.25 + Math.sin(time+seed.phase)*0.2;
+      motePositions[j*3+2] = seed.z;
+    }
+    moteGeo.attributes.position.needsUpdate = true;
+    Object.keys(chakraRings).forEach(function(name) {
+      var r = chakraRings[name], model = char3d[name];
+      var state = window._NPC_STATE && window._NPC_STATE[name];
+      r.group.visible = !!(model && state && model.position.y > -50);
+      if (!r.group.visible) return;
+      var active = state.state === 'fighting' || hoveredCharacter === name;
+      r.group.position.set(model.position.x, 0.06, model.position.z);
+      r.group.rotation.y = time * (active ? 0.9 : 0.2);
+      r.group.scale.setScalar(active ? 1.1 + Math.sin(time*4)*0.06 : 0.8);
+      r.mat.opacity = active ? 0.75 : 0.16;
+      r.arc.visible = active;
+    });
   }
 
   // ── START RENDER LOOP IMMEDIATELY (sky + ground always visible) ──
@@ -1063,6 +1160,7 @@
       m.position.set(0, -99, 0);
       scene.add(m);
       char3d[name] = m;
+      addChakraRing(name);
 
       // ── Animation mixer ──
       var mixer = new THREE.AnimationMixer(m);
@@ -1175,6 +1273,10 @@
     }, true);
 
     wrap.addEventListener('pointermove', function(e) {
+      if (!e.buttons) {
+        hoveredCharacter = pickCharacter(e);
+        wrap.style.cursor = hoveredCharacter ? 'grab' : '';
+      }
       if (!_active || !e.buttons) return;
       var dx = e.clientX - _downX, dy = e.clientY - _downY;
       if (!_isDrag && dx * dx + dy * dy > 36) _isDrag = true;   // 6px threshold
@@ -1194,6 +1296,11 @@
         wrap.style.cursor = 'grabbing';
       }
     }, true);
+
+    wrap.addEventListener('pointerleave', function() {
+      hoveredCharacter = null;
+      if (!_isDrag) wrap.style.cursor = '';
+    });
 
     wrap.addEventListener('pointerup', function(e) {
       var name = _active;
@@ -1227,7 +1334,7 @@
   // Replace the initial render loop with one that also syncs character positions
   (function patchLoop() {
     var liveLoop = function() {
-      var dt = clock.getDelta();
+      var dt = Math.min(clock.getDelta(), 0.05);
 
       updateDayNight();   // sky/sun/fog/lights follow the real local clock
 
@@ -1369,6 +1476,7 @@
         }
       }
 
+      updateAtmosphere(dt, tNow);
       composer.render();
     };
     // Run the village only when the tab is visible AND Lite mode is off — otherwise
