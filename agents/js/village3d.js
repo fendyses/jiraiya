@@ -374,10 +374,10 @@
     }
   }
 
-  // ── BLOSSOM GROVE + ATMOSPHERE ── shared geometry keeps the scene lightweight.
+  // ── LEAFY GROVE + ATMOSPHERE ── shared geometry keeps the scene lightweight.
   var blossomCrowns = [];
   var blossomGeo = new THREE.IcosahedronGeometry(1, 1);
-  var blossomMats = [0xEFA5C5, 0xF7C4D8, 0xDB82AE].map(function(color) {
+  var blossomMats = [0x388A36, 0x63AD43, 0x246B32].map(function(color) {
     return new THREE.MeshStandardMaterial({ color: color, roughness: 0.95 });
   });
   var barkMat = new THREE.MeshStandardMaterial({ color: 0x65423C, roughness: 1 });
@@ -402,7 +402,7 @@
   });
 
   var petalCount = 64;
-  var petalMat = new THREE.MeshStandardMaterial({ color: 0xFFC2DE, emissive: 0x6B233D,
+  var petalMat = new THREE.MeshStandardMaterial({ color: 0x83B94B, emissive: 0x203D12,
     emissiveIntensity: 0.12, side: THREE.DoubleSide, roughness: 0.8 });
   var petals = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.10, 0.18), petalMat, petalCount);
   petals.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
