@@ -457,6 +457,8 @@ function todoBadge(){
   if(b){ if(n){b.textContent=n;b.style.display='';}else{b.style.display='none';} }
   const hc=document.getElementById('todoHeadCount');
   if(hc) hc.textContent=n?('· '+n+' ongoing'):'· all clear';
+  const overview=document.getElementById('overviewTodoCount');
+  if(overview){ overview.textContent=n; overview.classList.toggle('zero',n===0); }
 }
 function todoTab(which){
   _todoView=which;
