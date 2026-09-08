@@ -1,6 +1,8 @@
 # MyStudent — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-09-03** — [MyStudent: Tracing Who Actually Sees Their Exam Result](../../daily-diary/current/2026-09-03.md)
+  - Outcome: Four commits pushed (`96d23da`, `297f2ec`, `0ac0521` merge, `e2df94d`); Firebase upgraded 9.6.9 → 9.23.0; two Firestore composite indexes built and live; one new collection proposed, built, then deliberately reverted on cost grounds
 - **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/archived/2026-08/2026-08-20.md)
   - Outcome: Two distinct image pipelines identified and mapped end to end. Read-only session; no code changed, working tree clean.
 - **2026-08-12** — [MyStudent: Result Kolej Rayuan Leak Fix](../../daily-diary/archived/2026-08/2026-08-12.md)

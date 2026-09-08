@@ -1,73 +1,54 @@
 # Nilam — Session Memory
-*Last updated: 2026-09-02*
+*Last updated: 2026-09-08*
 
 ## Session Context
 **Session Type**: Work
 **Current Project**: Nilam (slug: `nilam`) — `/Applications/Sites/nilam` — UiTM
-**Status**: Complete, awaiting testing and deploy
-**Time**: Morning session, 10:36–11:33 GMT+8
+**Status**: Complete, staged and awaiting review/deploy
+**Time**: Morning session, through 10:49 GMT+8
 
 ## Current Focus
-Began as a MinIO TLS diagnosis, became a bug hunt through the application draft flow.
-All work committed and merged with origin/development. Nothing pushed. Nothing tested.
+Built and refined the returned-to-PIC missing-attachment recovery workflow for Main and Supporting Documents.
 
 ## Working Memory
 
 ### Active Context
-- Branch `development`, 3 ahead of origin (2 fixes + 1 merge commit), 0 behind.
-- `config/services.php` remains modified and deliberately unstaged — never stage it.
-- Local `.env` points at the PRODUCTION database (`antartika.uitm.edu.my`), and the
-  mysql connection uses a **`tbl_` table prefix** (`config/database.php:57`).
-  Tables are `tbl_applications`, `tbl_supporting_documents`.
-- Local `.env` has no `MINIO_*` keys, so MinIO paths are inert locally.
-  `APP_URL` is the stale `https://nilams.es`; production is `nilams.uitm.edu.my`.
+- Recovery is available only for returned applications and only to the application owner or assigned PIC.
+- A missing main attachment gates the recovery area. Supporting-only gaps do not show it.
+- Existing local or confirmed MinIO files cannot be replaced; storage-check failures are treated as unknown and blocked.
+- Main files accept `.doc`/`.docx`; supporting files accept `.doc`, `.docx`, `.pdf`, `.jpg`, `.jpeg`; each file is limited to 100 MB.
+- PUU monitoring changes remain unstaged and must stay separate.
 
 ### Recent Progress
-- Added read-only `/minio-check` (commit `eb09e52`): MinIO health GET, S3-client
-  HEAD probe, and outbound letter-image probes reporting cert issuer and expiry.
-- Fixed the draft save deadlock and 8 related bugs (commit `3f4be2f`).
-- Merged 5 incoming commits from origin/development with no conflicts (`8e876f5`).
+- Added repeatable Main and Supporting recovery forms with original-style Document, Name, and Document Type fields.
+- Added client-side Add/Delete row behavior and server-side batch validation with atomic preflight checks.
+- Added required markers to Main fields only; Supporting Documents remain optional.
+- Restored original document-type dropdown lists while disabling types that already have files.
+- Removed the blank Main Document default from create/edit forms and selected the first valid type.
+- Seeded development application 3553 with Zamzunita as vetter and Saiful Effendy as PIC; removed its four attachment records while preserving its returned-to-PIC vetting record.
 
 ### Important Decisions
-- **Draft requires name + category.** Category stays required because
-  `edit.blade.php` had it disabled; later resolved by unlocking that field while
-  the application is still a draft, so `store()` now allows name-only drafts.
-- **MinIO is a best-effort backup, not a gate.** All 12 `putFileAs` calls write
-  locally first inside try/catch. An outage now logs a warning instead of
-  aborting the submission.
-- **Partner lookup takes the first entry present**, not a fixed index — because
-  `deletePartner` now truly removes rows, which makes index gaps possible.
+- Recovery sections are controlled by missing Main Documents because a supporting document is optional.
+- Supporting uploads remain a separate optional batch, so PIC can skip them and still restore required Main Documents.
+- Document types remain application-type-specific; the recovery form does not substitute Drafting types for Vetting types.
 
 ## Session Recap (For AI Restart)
-Nine bugs fixed across the draft, partner, and upload paths in `MyApplicationController`,
-`ApplicationController`, and the myapplications create/edit views. Two commits merged
-cleanly with five remote commits. None of it has been executed — no test suite exists
-beyond stock Laravel examples.
-The original question is still open: whether the SSL.com TLS RSA Root CA 2022 fix landed
-on the Nilam VM's CA bundle. Confirming it needs a deploy then a visit to
-`https://nilams.uitm.edu.my/minio-check`, or a real supporting-document upload.
+The Nilam attachment-recovery feature is implemented and staged. It mirrors the original upload UI, validates missing-only files, preserves existing attachments, and has 20 passing feature tests. Application 3553 in `nilamsdev` is a returned-to-PIC test fixture with no active original attachment records and one preserved vetting record.
 
 ## Session Achievements
-- ✅ Root-caused the draft deadlock: validation ran before the `btnDraft` branch, and
-  `#btnPartner` was only enabled by `select2:select`, which never fires on redisplay
-- ✅ Closed the validation gap Fendy spotted — `update()` had no `areas` rule and
-  hardcoded `activities` to nullable, previously masked by `store()`
-- ✅ Fixed 2 fatal null `reference_no` crashes and a main-document gate that made
-  drafts permanently unsavable
-- ✅ Traced partner indexing end to end; aligned the 0-based fallback serialiser with
-  the 1-based modal path and made `deletePartner` actually remove rows
-- ✅ Reordered all 12 `putFileAs` calls to local-first with best-effort MinIO
-- ✅ Found `File($path)` called as an undefined function — a production-only fatal
-- ✅ Extended `/minio-check` with letter-image host probes derived from production data
-  (`nilams.uitm.edu.my` 6764 refs, `cdn.uitm.edu.my` 3479 refs)
-- ✅ Merged 5 remote commits with no conflicts; verified all changes survived
+- ✅ Added guarded missing Main/Supporting attachment recovery.
+- ✅ Added repeatable upload rows and original-style dropdowns.
+- ✅ Added missing-main gate and optional Supporting behavior.
+- ✅ Added required-field indicators for Main fields only.
+- ✅ Removed blank Main Document defaults from create/edit forms.
+- ✅ Verified 20 tests and the browser row-interaction checks.
+- ✅ Staged attachment-recovery changes while leaving PUU monitoring unstaged.
+- ✅ Prepared development application 3553 for end-to-end testing.
 
-## Open Items
-- Deploy and confirm TLS via `/minio-check`; the `cainfo` line names the bundle to patch
-- Walk 3 untested paths: draft create/resume/submit, partner add/delete, file upload
-- Remove `/minio-check` and close the `/info` phpinfo route once TLS is confirmed
-- `ApplicationController::store` has no partners rule even on submit — unresolved
-- Files uploaded during the outage have no MinIO backup; reconciliation command not written
+## Quick Context for Next Session
+- **Where We Left Off**: Review/deploy the staged Nilam attachment-recovery changes.
+- **What's Working**: Recovery UI, validation, storage protection, dropdown behavior, and test fixture.
+- **What Needs Attention**: Deployment and final live-environment verification.
 
 ---
-*Session updated: 2026-09-02 11:33*
+*Session updated: 2026-09-08 10:49*
