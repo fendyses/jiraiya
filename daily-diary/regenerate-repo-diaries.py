@@ -28,6 +28,7 @@ REPOS = {
     "hepweb":           ("HEPWeb",       ["hepweb"]),
     "jiraiya":          ("Jiraiya",      ["jiraiya"]),
     "kadprihatin-siswa": ("Kad Prihatin", ["kadprihatin", "kad prihatin"]),
+    "nrhome":           ("NRHome",       ["nrhome", "nr home"]),
 }
 # Add a repo here (or via a distinctive alias) when a real, unambiguous mention exists:
 #   "credit": ("Credit", ["/applications/sites/credit", "credit repo", "creditlaravel"]),
