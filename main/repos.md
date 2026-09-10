@@ -19,9 +19,9 @@
 | 12 | NRHome | /Applications/Sites/nrhome |
 
 ## Active Repo
-- **Name**: Kad Prihatin
-- **Path**: /Applications/Sites/kadprihatin-siswa
-- **Switched**: 2026-09-02
+- **Name**: NRHome
+- **Path**: /Applications/Sites/nrhome
+- **Switched**: 2026-09-10
 
 ---
 *Add new repos by appending a row to the table above.*

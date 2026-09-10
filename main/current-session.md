@@ -1,57 +1,52 @@
-# Current Session Memory - 2026-09-09
-*Global pointer to the latest session — full recap lives in the repo snapshot*
-
-> Note: this file previously contained unresolved git conflict markers
-> (`<<<<<<< Updated upstream` / `>>>>>>> Stashed changes`) from an unfinished
-> stash pop, mixing the 2026-09-08 and 2026-09-09 morning entries. Resolved
-> on 2026-09-09 17:00 by replacing it with the current session snapshot.
+# Current Session Memory - 2026-09-10
+*Active working memory for current conversation*
 
 ## Session Context
-**Session Type**: Work / Debug / UI overhaul
-**Current Project**: **NRHome** (slug: `nrhome`) — `/Applications/Sites/nrhome` — UiTM
-**Status**: 11 commits pushed to `origin/main` (`a7183f1`). Working tree clean.
-**Time**: Afternoon session, ended 17:00 GMT+8
+**Session Type**: Work
+**Current Project**: MyAlumniCard (`/Applications/Sites/myalumni-angular`) — UiTM; earlier NRHome (`/Applications/Sites/nrhome`) — UiTM
+**Status**: Wrapping up
+**Time**: Afternoon session, diary written 15:45 GMT+8
 
-## Latest Session
-➡️ **Full recap: [`projects/nrhome/session.md`](../projects/nrhome/session.md)**
-➡️ Diary entry: `daily-diary/current/2026-09-09.md` (Afternoon - 5:00 PM)
+## Current Focus
+- **Primary Task**: Added the Ukuran Jubah section to the convocation attendance form; earlier fixed a stretched login logo in NRHome.
+- **Technical Context**: Angular 18, reactive `FormGroup`, Angular Material + Bootstrap grid, Firestore via `updateConvoNoFile` writing `graduates/{alumni_id}`. NRHome is Quasar 1 / Vue 2 SCSS.
+- **Progress**: Both complete and committed by Fendy (`44b0d95`; `bd621c9`, `820e11e`). 13/13 focused tests pass, builds clean.
 
-## One-Line Summary
-A Quasar 2 upgrade was fully built, verified, then called off — and the detour
-surfaced four real production bugs instead, including a type mismatch that had
-made saving any house impossible and a form field whose data has never once
-reached the database.
+## Working Memory
+### Active Context
+- **Current Topic**: Saving the session diary after finishing the Ukuran Jubah feature.
+- **Immediate Goals**: Diary entry, session snapshot, CR log for both UiTM repos.
+- **Recent Progress**: Derived fields renamed to `ukuran_graduan_tinggi` / `ukuran_graduan_berat` and verified in a captured payload.
+- **Next Steps**: Someone should look at the section rendered, and watch the first live submit land in Firestore.
+
+### Important Decisions
+- Store the size lowercase (`s`, `2xl`) under `ukuran_jubah`; graduates pick a size only, never enter measurements.
+- Derive height/weight from the chart via a `valueChanges` subscription, not from the row-click handler, so dropdown / row click / stored-record load all behave the same.
+- Clear `ukuran_jubah` (not just its validator) when switching to "Tidak hadir", so non-attending graduates are not counted in the gown order.
+- Do not perform a real attendance submit — it writes a live record for a real graduate and needs a login that cannot be entered.
+- Verify at the bundle/test level when the browser tooling cannot reach this machine's dev server.
 
 ## Session Recap (For AI Restart)
-- **Where We Left Off**: Everything committed and pushed. `origin/main` and local
-  `main` both at `a7183f1`; CI/CD triggered. `quasar build` passes with zero
-  warnings.
-- **Important Context**: The correct API is **`api.uitm.edu.my`** — the `.env`
-  value pointing at `digitalcampus` is STALE and returns 403 because that host
-  still demands the service token removed in August. The API's CORS allowlist
-  contains the production origin ONLY, which is why `devServer.proxy` exists in
-  `quasar.conf.js`. Local dev requires `npm ci --ignore-scripts` (electron@9 has
-  no Apple Silicon build) and `NODE_OPTIONS=--openssl-legacy-provider`.
-- **What Needs Attention**: (1) Production test record **id 625** still needs
-  deleting. (2) The gateway ticket needs sending to whoever owns
-  `nrent-turbo-gateway` — three defects there block the remaining filter work.
-  (3) Confirm CI deployed `a7183f1` and the pin fix is live.
+- **Previous Session Summary**: Late-night 10 Sep session fixed the NRHome save/role/listing bugs and redesigned the login screen.
+- **Where We Left Off**: Ukuran Jubah shipped in MyAlumniCard; both repos committed and clean.
+- **Important Context**: The Chrome driven by the browser tools is **not on this machine** — its `localhost:8080` is a different server (proved with a probe file). Do not trust rendered output from it as evidence about local code.
+- **User's Current State**: Moving between repos quickly; prefers short, concrete field-naming instructions and commits work himself as it lands.
 
 ## Session Achievements
-- ✅ Fixed the 422 (`is_available` typed as string) that broke every house save and update
-- ✅ Fixed the map pin, broken on 54% of houses — logic existed in two separate copies
-- ✅ Proved `zone`/`zone_campus` are silently discarded: 0 of 184 live records populated
-- ✅ Full UI/UX pass — glass design system across shell, login, both house forms, filters
-- ✅ Photo upload moved into the add-house form (was a two-screen flow)
-- ✅ Made local development possible on Apple Silicon + Node 24
-- ✅ Published gateway defect ticket backed by production evidence
-- ✅ Quasar 2 upgrade built and verified, then reverted on request (branch preserved)
+- ✅ Fixed the NRHome login logo squashing on phones (breakpoint overrode `height` while leaving `width: 100%`).
+- ✅ Diagnosed that the browser tooling reaches a different host, using a served probe file.
+- ✅ Located `/attendance` in MyAlumniCard, not NRHome.
+- ✅ Built the Ukuran Jubah section: dropdown + reference chart, placement proved by brace-matching.
+- ✅ Reworked its presentation using the app's own theme tokens; added a summary card and clickable rows.
+- ✅ Saved `ukuran_jubah` lowercase plus derived `ukuran_graduan_tinggi` / `ukuran_graduan_berat`.
+- ✅ Found and fixed the stale-size leak when switching Ya → Tidak.
+- ✅ Wrote `attendance-ukuran-jubah.spec.ts` — 13/13 pass, no network calls, no records written.
+- ✅ Corrected an earlier wrong claim: Firestore is schemaless, no backend column needed.
 
-## Recent per-repo sessions
-- NRHome → `projects/nrhome/session.md` (2026-09-09)
-- Nilam → `projects/nilam/session.md` (2026-09-09)
-- MyStudent → `projects/mystudentvue/session.md` (2026-08-12)
-- ForexPulse → `projects/forexpulse/session.md` (2026-07-27)
+## Quick Context for Next Session
+- **Where We Left Off**: Diary save for the Ukuran Jubah session.
+- **What's Working**: Feature builds clean, tests pass, payload verified as `ukuran_jubah: "s"` with both derived ranges.
+- **What Needs Attention**: (1) Nobody has seen the section rendered — tablet-width column split especially. (2) No real end-to-end submit yet. (3) The same stale-value leak still affects `oku`, `father_alumni`, `mother_alumni` and the parent detail fields. (4) `attendChanged()` only fires on a user click, so records loaded with `attend: 'false'` keep old values until the radio is toggled.
 
 ---
-*Session updated: 2026-09-09 17:00*
+*Session updated: 2026-09-10 15:45*
