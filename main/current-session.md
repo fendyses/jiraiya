@@ -2,27 +2,33 @@
 *Global pointer to the latest session — full recap lives in the repo folder*
 
 ## Session Context
-**Session Type**: Repository synchronization and memory reconciliation
-**Current Project**: Nilam (slug: `nilam`)
-**Repo**: `/Applications/Sites/nilam` (UiTM)
-**Status**: Remote synchronized; diary and CR records reconciled
-**Time**: Updated 08:34 GMT+8
+**Session Type**: Work — debugging, diagnosis, and UI restructure
+**Current Project**: MyAlumniCard (slug: `myalumni-angular`)
+**Repo**: `/Applications/Sites/myalumni-angular` (UiTM)
+**Status**: Complete — all work committed, tree clean, production build passing
+**Time**: Updated 16:22 GMT+8
 
 ## Latest Session
-Full recap: **`projects/nilam/session.md`**
+Full recap: **`projects/myalumni-angular/session.md`**
 
-Pulled three September 8 commits from `origin/development` through a clean fast-forward,
-bringing the branch to `5f9a7f2` with no push. The missing-attachment recovery workflow
-was already verified with 20 tests and is documented in the September 8 diary. Review
-of the actual commit diff also found risk/compliance display changes and PUU Monitoring
-route registrations in the final commit. All six NILAM local modifications remain
-unstaged and intact. A concurrent JIRAIYA memory update caused autostash conflicts during
-the diary save; those records were reconciled without discarding either version.
+Restored `ng serve`, which was failing because `jspdf`, `html2canvas`, and
+`@ng-select/ng-select` sat in `package.json` and the lockfile but never landed in
+`node_modules` — their three `Module not found` errors were hidden under roughly a
+hundred downstream `NG8001` template errors. Diagnosed the broken production benefit
+images as split-horizon DNS plus Chrome Private Network Access rather than an app bug:
+`cdn.uitm.edu.my` resolves to `10.0.21.69` on the UiTM network but `202.58.84.29`
+publicly, so only on-campus viewers of the public production origin are affected.
+Rebuilt the `/admin` Hot Seat Count table — three duplicated table blocks collapsed
+into one loop, the hardcoded DATC venue removed from the data path, per-venue subtotals
+and column alignment added. Two self-inflicted defects were caught by Fendy in the
+browser: unstyled subtotal badges from SCSS nesting scope, and a production CSS budget
+failure missed by verifying with a development build.
 
 ## Quick Context for Next Session
-- **Where We Left Off**: `development` matches origin; pulled changes await deployment review.
-- **What's Working**: Returned-to-PIC attachment recovery, guarded file checks, repeatable upload UI, and test fixture 3553.
-- **What Needs Attention**: Review the mixed scope in `5f9a7f2`; commit the Final Draft fix separately; exclude `config/services.php`.
+- **Where We Left Off**: `1ec7d93`, `7fff3b5`, `8e4f3bd` committed; tree clean.
+- **What's Working**: `ng serve`, production build with no warnings, the rebuilt Hot Seat table.
+- **What Needs Attention**: Confirm benefit banner hostnames and decide proxy vs Firebase Storage; confirm whether hot seat splitting should apply to all venues or DATC only; bearer tokens still ship in the public bundle.
+- **Note**: `main/repos.md` → Active Repo still says NRHome while this session's work was entirely MyAlumniCard.
 
 ---
-*Session updated: 2026-09-14 08:34*
+*Session updated: 2026-09-14 16:22*

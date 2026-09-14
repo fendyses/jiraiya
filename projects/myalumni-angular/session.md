@@ -1,57 +1,59 @@
-# Current Session Memory - 2026-09-11
+# Current Session Memory - 2026-09-14
 *Active working memory for MyAlumniCard*
 
 ## Session Context
 **Session Type**: Work
 **Current Project**: MyAlumniCard (`/Applications/Sites/myalumni-angular`) — UiTM
-**Status**: Wrapping up
-**Time**: Afternoon session, diary written 12:32 GMT+8
+**Status**: Complete — all work committed, tree clean
+**Time**: Afternoon session, diary written 16:22 GMT+8
 
 ## Current Focus
-- **Primary Task**: Fix the registration Verify request that appeared as a production CORS failure and still failed on localhost.
-- **Technical Context**: Angular 18, Axios, Angular service worker, Chrome Local Network Access, Angular CLI development proxy, FastAPI/Granian endpoint at `fastapi.uitm.edu.my`.
-- **Progress**: Frontend transport and authentication fixes are committed by Fendy; production build and live proxy/API probes pass.
+- **Primary Task**: Restore `ng serve`, diagnose broken production benefit images, restructure the `/admin` Hot Seat Count table.
+- **Technical Context**: Angular 18, Node v24.18.1, Firebase Hosting + Cloud Functions (v1, Node 20), Firestore, Chrome Private Network Access, nginx CDN at UiTM.
+- **Progress**: All three done. Table rebuild shipped in `7fff3b5`; budget fix in `8e4f3bd`.
 
 ## Working Memory
+
 ### Active Context
-- **Current Topic**: Registration API connectivity and authentication.
-- **Immediate Goals**: Restart `ng serve`, verify a real IC lookup locally, then deploy and verify production.
+- **Current Topic**: `/admin` Hot Seat Count table, and the unresolved CDN image question.
+- **Immediate Goals**: Confirm benefit banner hostnames; verify the rebuilt table against live data.
 - **Recent Progress**:
-  - Confirmed public frontend `199.36.158.100` calling private API `10.0.37.50` triggers Chrome Local Network Access behavior.
-  - Confirmed normal preflight succeeds but private-network preflight returns `400 Disallowed CORS private-network`.
-  - Added `ngsw-bypass=true` so the production service worker does not own the `/semak` request.
-  - Added `proxy.conf.json` and environment-specific API URLs so localhost uses `/alumnai-api/alumnai/semak` on the Angular origin.
-  - Verified the local proxy reached FastAPI; the response changed from CORS failure to a genuine 401.
-  - Identified the 401 body as an invalid JWT signature and replaced the old `myatp` token with the existing accepted `alumnai` token.
-  - Verified the `alumnai` token returns HTTP 200 from `/alumnai/semak` for harmless placeholder data.
-- **Next Steps**: Run the real local Verify flow after restarting `ng serve`; then deploy and test production, watching for any recurring gateway 504.
+  - `ng serve` was broken because `jspdf`, `html2canvas`, and `@ng-select/ng-select` were in `package.json` and the lockfile but missing from `node_modules` (left by `13b721d` and `bdd8dca`). `npm install` fixed it.
+  - Diagnosed the broken production images as split-horizon DNS + Chrome PNA, **not** an app bug. `cdn.uitm.edu.my` → `10.0.21.69` internally, `202.58.84.29` publicly. Off-campus users are unaffected.
+  - Confirmed the nginx `/media/` preflight returns a bare `204` with no `Access-Control-Allow-Private-Network` and no `Access-Control-Allow-Origin`.
+  - Rebuilt the Hot Seat table: three duplicated `<table>` blocks → one loop over `venue.columns`; `splitLargeLocations()` → `buildHotSeatVenues()`; typed `HotSeatRow` / `HotSeatVenue`; totals via `reduce`.
+  - Added per-venue subtotal row, full-height column divider, mobile-stacked border, and `table-layout: fixed` column alignment.
+  - Fixed `.hs-badge` being nested inside `.hs-table` (subtotal badges rendered unstyled), added figure captions and the `number` pipe.
+  - Raised the `anyComponentStyle` budget from 4kB/4kB to 6kB/8kB after the production build failed.
 
 ### Important Decisions
-- Use a same-origin Angular CLI proxy for development rather than asking Chrome to access the private UiTM address directly.
-- Keep the production endpoint direct but mark it with Angular's `ngsw-bypass` query parameter.
-- Reuse the repo's accepted `alumnai` token to restore service now; move credentials server-side as a future security improvement.
-- Treat backend 504 monitoring separately from browser CORS and authentication.
+- Do **not** treat the broken images as a production outage — the failure is specific to viewing the public production origin from inside the UiTM network.
+- Prefer a same-origin proxy (Hosting rewrite → Cloud Function) over asking UiTM infra to fix the nginx `/media/` preflight, since it needs no coordination. Not implemented pending hostname confirmation.
+- Make hot seat column splitting row-count based for all venues rather than hardcoding DATC — this is what allowed the three duplicated tables to collapse into one.
+- Raise the CSS budget rather than delete the new subtotal row; the file was already at 98.4% of the old ceiling.
 
 ## Session Recap (For AI Restart)
-- **Previous Session Summary**: The 10 Sep session completed and verified the Ukuran Jubah feature for convocation attendance.
-- **Where We Left Off**: Registration verification transport and token fixes are committed as `1060f85` and `c127164`; production build passes and the accepted token was validated against FastAPI.
-- **Important Context**: A private-network OPTIONS request still receives 400 from FastAPI. Local development avoids it through the Angular proxy; production uses `ngsw-bypass`, but backend CORS/gateway hardening remains desirable.
-- **User's Current State**: Fendy tested each stage directly in Chrome and commits changes quickly as they land.
+- **Previous Session Summary**: 11 Sep fixed the registration Verify flow (Angular proxy for localhost, `ngsw-bypass` for production, `alumnai` token).
+- **Where We Left Off**: All work committed (`1ec7d93`, `7fff3b5`, `8e4f3bd`), working tree clean, production build passes with no warnings.
+- **Important Context**: The CDN image issue is diagnosed but unfixed by choice. The proxy design is ready to implement if wanted. The Chrome extension was never connected this session, so nothing was verified visually by JIRAIYA — Fendy checked every change in the browser himself.
+- **User's Current State**: Fendy tests against live data on `localhost:4200` and commits quickly as changes land.
 
 ## Session Achievements
-- ✅ Distinguished the initial HTTP 504 from the service-worker CORS/preflight symptoms.
-- ✅ Proved the frontend and API occupy public and private network address spaces respectively.
-- ✅ Added and built the Angular service-worker bypass.
-- ✅ Added and exercised the localhost same-origin proxy end to end.
-- ✅ Converted the browser failure from CORS to an observable backend 401.
-- ✅ Retrieved the exact invalid-signature response and verified the replacement `alumnai` token with HTTP 200.
-- ✅ Completed production builds after the final environment, proxy, and token changes.
-- ✅ Fendy committed the changes in `1060f85` and `c127164`.
+- ✅ Restored `ng serve` by installing three dependencies missing from `node_modules`.
+- ✅ Identified that ~100 `NG8001` template errors were downstream noise from three unresolved imports.
+- ✅ Proved split-horizon DNS on `cdn.uitm.edu.my` using the local resolver, DNS-over-HTTPS, and an external fetch.
+- ✅ Established that off-campus alumni see the benefit images correctly.
+- ✅ Confirmed the nginx `/media/` preflight is missing both PNA and CORS headers.
+- ✅ Collapsed three duplicated table blocks into one template loop.
+- ✅ Removed the hardcoded venue name from the data path; replaced with named constants.
+- ✅ Added per-venue subtotals, column alignment, full-height divider, and mobile-correct stacking.
+- ✅ Fixed the unstyled subtotal badges caused by SCSS nesting scope.
+- ✅ Restored a passing production build and gave the CSS budget real headroom.
 
 ## Quick Context for Next Session
-- **Where We Left Off**: Ready for a real lookup after restarting `ng serve`.
-- **What's Working**: Local proxy routing, production service-worker bypass, accepted `alumnai` token, and production compilation.
-- **What Needs Attention**: Real user lookup confirmation, deployed production verification, recurring 504 investigation, and eventual removal of bearer credentials from the public Angular bundle.
+- **Where We Left Off**: Hot Seat table shipped; CDN image fix designed but not built.
+- **What's Working**: `ng serve`, production build with no warnings, the rebuilt Hot Seat table.
+- **What Needs Attention**: Benefit banner hostnames; whether all-venue splitting is wanted or DATC-only; bearer tokens still shipping in the public bundle; `main/repos.md` still points at NRHome.
 
 ---
-*Session updated: 2026-09-11 12:32*
+*Session updated: 2026-09-14 16:22*
