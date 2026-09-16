@@ -1,34 +1,29 @@
-# Current Session Memory - 2026-09-14
+# Current Session Memory - 2026-09-17
 *Global pointer to the latest session — full recap lives in the repo folder*
 
 ## Session Context
-**Session Type**: Work — debugging, diagnosis, and UI restructure
-**Current Project**: MyAlumniCard (slug: `myalumni-angular`)
-**Repo**: `/Applications/Sites/myalumni-angular` (UiTM)
-**Status**: Complete — all work committed, tree clean, production build passing
-**Time**: Updated 16:22 GMT+8
+**Session Type**: Work — support investigation and guided data repair
+**Current Project**: Nilam (slug: `nilam`)
+**Repo**: `/Applications/Sites/nilam` (UiTM)
+**Status**: Resolved; one SQL residual handed off; no code changed
+**Time**: Updated 00:29 GMT+8
 
 ## Latest Session
-Full recap: **`projects/myalumni-angular/session.md`**
+Full recap: **`projects/nilam/session.md`**
 
-Restored `ng serve`, which was failing because `jspdf`, `html2canvas`, and
-`@ng-select/ng-select` sat in `package.json` and the lockfile but never landed in
-`node_modules` — their three `Module not found` errors were hidden under roughly a
-hundred downstream `NG8001` template errors. Diagnosed the broken production benefit
-images as split-horizon DNS plus Chrome Private Network Access rather than an app bug:
-`cdn.uitm.edu.my` resolves to `10.0.21.69` on the UiTM network but `202.58.84.29`
-publicly, so only on-campus viewers of the public production origin are affected.
-Rebuilt the `/admin` Hot Seat Count table — three duplicated table blocks collapsed
-into one loop, the hardcoded DATC venue removed from the data path, per-venue subtotals
-and column alignment added. Two self-inflicted defects were caught by Fendy in the
-browser: unstyled subtotal badges from SCSS nesting scope, and a production CSS budget
-failure missed by verifying with a development build.
+Confirmed application 8898 can be re-routed from LPU Notification to LPU Approval via
+the existing Edit-page modal (Admin/Assistant Superadmin only). Diagnosed an admin's
+"rename SEDA to MGTC" that had actually overwritten shared partner row 3995 and relabelled
+six SEDA agreements. Fendy repaired it through the UI in the corrected order (rename back
+to SEDA, create MGTC as new partner 6541, move MoU 9328 via the listing's Edit Partner
+button); verified correct in the live DB. Application 9328's derived reference number is
+still `100-PUU(32/5/3995)` and needs a one-row SQL update by a write-capable user.
 
 ## Quick Context for Next Session
-- **Where We Left Off**: `1ec7d93`, `7fff3b5`, `8e4f3bd` committed; tree clean.
-- **What's Working**: `ng serve`, production build with no warnings, the rebuilt Hot Seat table.
-- **What Needs Attention**: Confirm benefit banner hostnames and decide proxy vs Firebase Storage; confirm whether hot seat splitting should apply to all venues or DATC only; bearer tokens still ship in the public bundle.
-- **Note**: `main/repos.md` → Active Repo still says NRHome while this session's work was entirely MyAlumniCard.
+- **Where We Left Off**: Partner data correct; 9328 `reference_no` SQL outstanding.
+- **What's Working**: LPU re-route feature live; SEDA (3995) and MGTC (6541) both clean.
+- **What Needs Attention**: 9328 SQL; possible code fix so the Manage Partners modal regenerates `reference_no`; the large uncommitted `development` tree.
+- **Note**: `main/repos.md` → Active Repo still says NRHome; this session was Nilam.
 
 ---
-*Session updated: 2026-09-14 16:22*
+*Session updated: 2026-09-17 00:29*

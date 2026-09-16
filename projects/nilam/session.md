@@ -1,68 +1,52 @@
 # Nilam — Session Memory
-*Last updated: 2026-09-14*
+*Last updated: 2026-09-17*
 
 ## Session Context
-**Session Type**: Repository synchronization and memory reconciliation
+**Session Type**: Support investigation + guided data repair (no code changes)
 **Current Project**: Nilam (slug: `nilam`) — `/Applications/Sites/nilam` — UiTM
-**Status**: Remote synchronized; diary and CR records reconciled; local Final Draft fix remains uncommitted
-**Time**: Reconciliation completed at 08:34 GMT+8
+**Status**: Both support questions resolved; one SQL residual handed off
+**Time**: Verified and closed at 00:29 GMT+8
 
 ## Current Focus
-Confirmed that the September 8 missing-attachment recovery work was committed upstream,
-pulled its three commits safely, and reconciled the diary and CR records with the full
-Git diff. A concurrent JIRAIYA memory pull created autostash conflicts; the session files
-were rebuilt with both the upstream implementation facts and the later pull status.
+Two admin/JUU support requests. (1) Whether application 8898 can be re-routed from
+"Submitted for LPU Notification" to "Submitted for LPU Approval" via Manage Legal
+Documents — yes, via the existing re-route modal. (2) An admin renamed partner 3995
+(SEDA) to MGTC via the show-page pencil, relabelling six SEDA agreements. Repaired by
+Fendy through the UI in three steps; verified correct in the live DB.
 
 ## Working Memory
 
 ### Active Context
-- Branch `development` is at `5f9a7f2` and matches `origin/development` (`0` ahead, `0` behind).
-- Pulled September 8 commits:
-  - `553f585` — initial missing-attachment recovery feature
-  - `7068a7a` — recovery rules, dynamic UI, and expanded tests
-  - `5f9a7f2` — final recovery UI changes plus risk/compliance display and PUU Monitoring routes
-- Six files remain modified and unstaged:
-  - `app/Application.php`
-  - `app/Http/Controllers/ApiController.php`
-  - `app/Http/Controllers/MeuApprovalController.php`
-  - `resources/views/applications/show.blade.php`
-  - `resources/views/ptjapplications/show.blade.php`
-  - `config/services.php` — older unrelated change; never stage with the Final Draft work
-- The September 8 implementation session verified 20 feature tests and prepared development application 3553 as a returned-to-PIC fixture.
-
-### Pulled Feature
-- Recovery is available only for returned applications and only to the application creator or assigned PIC.
-- A missing main attachment gates the recovery area; supporting-only gaps do not open it.
-- Existing local or confirmed MinIO files cannot be replaced; storage-check failures are treated as unknown and blocked.
-- Main files accept `.doc`/`.docx`; supporting files accept `.doc`, `.docx`, `.pdf`, `.jpg`, `.jpeg`; each file is limited to 100 MB.
-- Repeatable Main and Supporting forms support batch validation, row locking, dynamic add/remove controls, and application-type-specific document choices.
+- Branch `development` still at `5f9a7f2`; large uncommitted tree (PUU monitoring, MailTest, final-assessment migration, `assign()` duplicate-vetter guard). Untouched this session.
+- DB user in `.env` (`effendy@antartika`) is **read-only** — all repairs go through app menus or are handed off as SQL.
+- Application 8898: status 12, `lpu_approval=0`, no meeting, no letter — clean for re-route. Re-route needs Admin/Assistant Superadmin (modal gated by `view_lpuapprovals`). Plain Save without the modal leaves the flag at 0.
+- Partner 3995 = SEDA (restored 16 Sep 16:17). Partner 6541 = MGTC, Corporate Body (created 17 Sep 00:21). Apps 5241, 5255, 7107, 7772, 8376, 8499 → 3995. App 9328 → 6541.
+- **Residual**: `applications.reference_no` for 9328 is still `100-PUU(32/5/3995)`; should be `100-PUU(32/6/6541)`. Field read-only in UI; needs write-capable DB user.
 
 ### Important Decisions
-- Checked incoming filenames before pulling and used a fast-forward because there was no overlap with local work.
-- Per Fendy's instruction, performed no push and did not commit or stash the NILAM dirty working tree.
-- Kept the recovered September 8 diary as the authoritative implementation record and added a September 9 synchronization entry.
-- Added separate CR coverage for the two extra scopes bundled into `5f9a7f2`.
+- Fix order for the partner swap: rename 3995 → SEDA **first**, then create MGTC, then move 9328. Original order failed on the case-insensitive `unique:partners,name` rule.
+- Did not reuse legacy partner 2185 ("Malaysian Green Technology Corporation", no contact details); created a fresh MGTC record instead.
+- Per-application partner swap done via the Manage Legal Documents **listing** green Edit Partner button (pivot-only), never the show-page pencil (global row edit).
 
 ## Session Recap (For AI Restart)
-The local `development` branch is synchronized at `5f9a7f2`. The missing-attachment
-recovery feature is committed and was previously verified with 20 passing tests; app
-3553 remains the development test fixture. Git review found that the final commit also
-contains My Application risk/compliance display changes and PUU Monitoring routes,
-despite the previous intent to keep PUU work separate. The five-file Final Draft fix
-remains uncommitted alongside the unrelated `config/services.php` change.
+No code changed. 8898 re-route confirmed possible through the existing 12 June feature.
+SEDA/MGTC partner mix-up fully repaired via UI and verified. One SQL statement
+outstanding for 9328's reference number. Root cause of the mix-up is a UX ambiguity:
+the show-page pencil edits the shared partner row, while the listing's Edit Partner
+button edits the per-application link — both look like "edit partner".
 
 ## Session Achievements
-- ✅ Located the September 8 work in the remote Git history
-- ✅ Fast-forwarded three commits with no conflicts and no push
-- ✅ Preserved all six existing NILAM local modifications
-- ✅ Restored and indexed the September 8 implementation diary
-- ✅ Reconciled CR coverage with the full committed scope
-- ✅ Resolved the later JIRAIYA autostash conflict without discarding either session record
+- ✅ Verified 8898 is in a clean state and walked through the re-route modal, its permissions, and the plain-Save pitfall
+- ✅ Diagnosed the SEDA→MGTC rename to partner row 3995 and enumerated all seven affected applications
+- ✅ Recovered SEDA contact details from `application_partner` pivot rows
+- ✅ Produced ordered UI-only repair steps; adjusted order after the unique-name collision
+- ✅ Verified the repair in the live DB: 6 apps → SEDA (3995), 1 app → MGTC (6541), pivots intact
+- ✅ Explained how `reference_no` is derived (two controller lines) and supplied a guarded SQL for 9328
 
 ## Quick Context for Next Session
-- **Where We Left Off**: `development` synchronized; pulled changes ready for deployment review
-- **What's Working**: Missing-attachment recovery was verified with 20 tests in the implementation session
-- **What Needs Attention**: Review mixed scope in `5f9a7f2`; commit Final Draft fix separately; exclude `config/services.php`; resolve `DOC_LABEL_FIX_DATE`
+- **Where We Left Off**: Partner data correct; 9328 reference number SQL handed to Fendy for a write-capable user
+- **What's Working**: LPU re-route modal (`83a085a`) is live on dev and master
+- **What Needs Attention**: (a) run the 9328 SQL; (b) consider making `addPartner` regenerate `reference_no` and relabelling the show-page pencil; (c) the big uncommitted tree on `development`; (d) 8898 has duplicate "Submitted for LPU Notification" log rows — harmless
 
 ---
-*Session updated: 2026-09-14 08:34*
+*Session updated: 2026-09-17 00:29*
