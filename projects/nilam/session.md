@@ -2,51 +2,45 @@
 *Last updated: 2026-09-17*
 
 ## Session Context
-**Session Type**: Support investigation + guided data repair (no code changes)
+**Session Type**: Support investigation → module review and rebuild → data-fix handoffs
 **Current Project**: Nilam (slug: `nilam`) — `/Applications/Sites/nilam` — UiTM
-**Status**: Both support questions resolved; one SQL residual handed off
-**Time**: Verified and closed at 00:29 GMT+8
+**Status**: PUU Monitoring work complete on `development` but unstaged by request; LPU re-route fix staged; two production SQL handoffs pending
+**Time**: 10–17 Sep session, closed 14:36 GMT+8 on 17 Sep
 
 ## Current Focus
-Two admin/JUU support requests. (1) Whether application 8898 can be re-routed from
-"Submitted for LPU Notification" to "Submitted for LPU Approval" via Manage Legal
-Documents — yes, via the existing re-route modal. (2) An admin renamed partner 3995
-(SEDA) to MGTC via the show-page pencil, relabelling six SEDA agreements. Repaired by
-Fendy through the UI in three steps; verified correct in the live DB.
+PUU Monitoring module: performance fix (calendar prefix sum), management dashboard rebuilt (no ApexCharts), document-movement track redesigned, re-assign-vetter panel, review findings implemented, production install SQL prepared. Plus two production support cases: 9044/8522 MEU letter flag, and 8615 LPU re-route from Pending LPU Approval.
 
 ## Working Memory
 
 ### Active Context
-- Branch `development` still at `5f9a7f2`; large uncommitted tree (PUU monitoring, MailTest, final-assessment migration, `assign()` duplicate-vetter guard). Untouched this session.
-- DB user in `.env` (`effendy@antartika`) is **read-only** — all repairs go through app menus or are handed off as SQL.
-- Application 8898: status 12, `lpu_approval=0`, no meeting, no letter — clean for re-route. Re-route needs Admin/Assistant Superadmin (modal gated by `view_lpuapprovals`). Plain Save without the modal leaves the flag at 0.
-- Partner 3995 = SEDA (restored 16 Sep 16:17). Partner 6541 = MGTC, Corporate Body (created 17 Sep 00:21). Apps 5241, 5255, 7107, 7772, 8376, 8499 → 3995. App 9328 → 6541.
-- **Residual**: `applications.reference_no` for 9328 is still `100-PUU(32/5/3995)`; should be `100-PUU(32/6/6541)`. Field read-only in UI; needs write-capable DB user.
+- **Staged**: only `ApplicationController::update()` LPU-flag hunks + `applications/edit.blade.php` (re-route modal from status 13). Not committed.
+- **Unstaged/untracked**: everything PUU (`PuuMonitoringController`, `Services/Puu/*`, `puumonitorings/*` views, `WorkingDayCalendar` prefix sum, `SlaCalculator` first-assignment guard, routes, `assign()` note/guard in `ApplicationController`, `applications/create.blade.php` confirm).
+- **Local `.env` is pointed at PRODUCTION** (`antartika`/`nilams`); `effendy` is SELECT-only there. Switch back to `nilamsdev` before dev tests. Use `DB_HOST=… DB_DATABASE=nilamsdev … php artisan …` overrides if needed.
+- Dev doc 3492 was accidentally re-assigned via a browser preview and restored (Dr. Mohd Hairy, return-for-amendment); zero "Re-assigned" notes remain in dev.
+- View-model cache: built and **reverted** on request (design: key = scope + version + date; bump on status log / assignment / holiday / SLA-config writes; delete old version's keys on bump).
+
+### Production facts (checked 11–17 Sep)
+- 9044 (Signatory Setup) and 8522 (Approved by LPU): `meu_drafted_letter=1` with letter present; fix is `SET meu_drafted_letter=0` — safe, nothing downstream reads it; needs DBA account.
+- 8615: Pending LPU Approval (13), `lpu_approval=1`, LPU meeting #30, no notice sent, MEU released. Wants Notification-only: after deploy use the re-route modal; before deploy, SQL (`lpu_approval=0`, status 12, log row).
+- `puu:verify` on prod: slugs OK, invariants OK on 2,988 in-flight docs, 0 vetters missing assignment logs (no backfill), 3 tables + 5 permissions missing → `database/sql/puu_monitoring_install.sql` (updated with PIC thresholds + fixed holidays, dev-tested).
+- Prod office-wide hydration 4.3 s (dev 1 s) — needs cache or query-side date filter before go-live.
 
 ### Important Decisions
-- Fix order for the partner swap: rename 3995 → SEDA **first**, then create MGTC, then move 9328. Original order failed on the case-insensitive `unique:partners,name` rule.
-- Did not reuse legacy partner 2185 ("Malaysian Green Technology Corporation", no contact details); created a fresh MGTC record instead.
-- Per-application partner swap done via the Manage Legal Documents **listing** green Edit Partner button (pivot-only), never the show-page pencil (global row edit).
+- Stage 1 breaches at 15 wd (14 is within cap), Stage 2 at 22 — user-confirmed.
+- All monitoring pages default to "this year"; All time carried explicitly as `period=all`.
+- Reminder throttle: a document already reminded twice in 5 minutes is skipped; skips listed in a warning flash.
+- Health threshold unified at ≥ 90 % (rings and badges).
+- Stage 2 "On Track" tile not added (user: not required).
+- Management dashboard row 2 in workflow order (Stage 1 queue → Stage 2 bands → PIC → missing), tiles Stage 1 → Stage 2 → paused → data quality.
+- `resolveAssignment()` uses the FIRST assignment after the latest arrival, so re-assignments never move Stage 1 timing.
 
 ## Session Recap (For AI Restart)
-No code changed. 8898 re-route confirmed possible through the existing 12 June feature.
-SEDA/MGTC partner mix-up fully repaired via UI and verified. One SQL statement
-outstanding for 9328's reference number. Root cause of the mix-up is a UX ambiguity:
-the show-page pencil edits the shared partner row, while the listing's Edit Partner
-button edits the per-application link — both look like "edit partner".
-
-## Session Achievements
-- ✅ Verified 8898 is in a clean state and walked through the re-route modal, its permissions, and the plain-Save pitfall
-- ✅ Diagnosed the SEDA→MGTC rename to partner row 3995 and enumerated all seven affected applications
-- ✅ Recovered SEDA contact details from `application_partner` pivot rows
-- ✅ Produced ordered UI-only repair steps; adjusted order after the unique-name collision
-- ✅ Verified the repair in the live DB: 6 apps → SEDA (3995), 1 app → MGTC (6541), pivots intact
-- ✅ Explained how `reference_no` is derived (two controller lines) and supplied a guarded SQL for 9328
+The MEU letter for 9044 is hidden only by `meu_drafted_letter=1` because `MeuApprovalController::store()` (since d199f6bd) advances status at draft time and the Approve click became optional. PUU Monitoring got a full review; 12 accepted findings implemented; dashboards 4× faster via a prefix-sum working-day calendar; management page rebuilt from a mock-up; re-assign panel with modal; two of my own bugs (form spanning two `<td>`s; global preloader on intercepted submits) found and fixed. Two LPU re-route defects fixed for 8615 and staged alone.
 
 ## Quick Context for Next Session
-- **Where We Left Off**: Partner data correct; 9328 reference number SQL handed to Fendy for a write-capable user
-- **What's Working**: LPU re-route modal (`83a085a`) is live on dev and master
-- **What Needs Attention**: (a) run the 9328 SQL; (b) consider making `addPartner` regenerate `reference_no` and relabelling the show-page pencil; (c) the big uncommitted tree on `development`; (d) 8898 has duplicate "Submitted for LPU Notification" log rows — harmless
+- **Where We Left Off**: LPU fix staged; PUU tree unstaged; SQL handoffs for 9044/8522 and 8615 with the DBA; install SQL ready for prod.
+- **What's Working**: all monitoring pages render 200 on dev; `puu:verify` invariants pass on prod data.
+- **What Needs Attention**: (a) commit the staged LPU fix; (b) decide when to stage/push PUU; (c) `.env` back to dev; (d) prod install SQL + moving holidays; (e) speed for 2,988 docs; (f) proper `array_filter()` fix in `ApplicationController::update()`.
 
 ---
-*Session updated: 2026-09-17 00:29*
+*Session updated: 2026-09-17 14:36*

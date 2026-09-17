@@ -1,7 +1,7 @@
 # Jiraiya — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
-- **2026-09-17** — [Nilam: LPU Re-route Check and the SEDA Partner That Became MGTC; MyAlumniCard: Null Father Alumni ID on /attendance, Borang Jubah Notice](../../daily-diary/current/2026-09-17.md)
+- **2026-09-17** — [Nilam: LPU Re-route Check and the SEDA Partner That Became MGTC; MyAlumniCard: Null Father Alumni ID on /attendance, Borang Jubah Notice; Nilam: PUU Monitoring Redesign Week, the MEU Letter That Was Never Released, and Two LPU Flag Bugs](../../daily-diary/current/2026-09-17.md)
   - Outcome: 8898 confirmed safe to re-route through the existing modal. Partner data fully repaired by Fendy through the UI, verified against the live DB. One residual: reference number on application 9328 still needs a SQL update by a write-capable DB user. No code changed.
 - **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/archived/2026-08/2026-08-20.md)
   - Outcome: Two distinct image pipelines identified and mapped end to end. Read-only session; no code changed, working tree clean.
