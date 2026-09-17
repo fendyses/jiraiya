@@ -2,28 +2,27 @@
 *Global pointer to the latest session — full recap lives in the repo folder*
 
 ## Session Context
-**Session Type**: Work — support investigation and guided data repair
-**Current Project**: Nilam (slug: `nilam`)
-**Repo**: `/Applications/Sites/nilam` (UiTM)
-**Status**: Resolved; one SQL residual handed off; no code changed
-**Time**: Updated 00:29 GMT+8
+**Session Type**: Work — support investigation + small UI change
+**Current Project**: MyAlumniCard (slug: `myalumni-angular`)
+**Repo**: `/Applications/Sites/myalumni-angular` (UiTM)
+**Status**: Notice committed (`0c67ed5`); null father_alumni_id investigation waiting on inputs
+**Time**: Updated 09:18 GMT+8
 
 ## Latest Session
-Full recap: **`projects/nilam/session.md`**
+Full recap: **`projects/myalumni-angular/session.md`**
 
-Confirmed application 8898 can be re-routed from LPU Notification to LPU Approval via
-the existing Edit-page modal (Admin/Assistant Superadmin only). Diagnosed an admin's
-"rename SEDA to MGTC" that had actually overwritten shared partner row 3995 and relabelled
-six SEDA agreements. Fendy repaired it through the UI in the corrected order (rename back
-to SEDA, create MGTC as new partner 6541, move MoU 9328 via the listing's Edit Partner
-button); verified correct in the live DB. Application 9328's derived reference number is
-still `100-PUU(32/5/3995)` and needs a one-row SQL update by a write-capable user.
+Traced why graduate 1335627 saved `father_alumni_id = null` on `/attendance`: the Semak
+button calls integrasi's `semakV2` (URL + hardcoded token identified) and patches
+`alumni_id` from the response with no null guard and no required validator. Impersonating
+the father only proves his Firestore profile, not the semakV2 lookup. Need the father's nokp
+and the graduate's email to reproduce. Also added a boxed "Borang Jubah akan dijana setiap
+2 jam" notice under the convocation action buttons; Fendy committed it.
 
 ## Quick Context for Next Session
-- **Where We Left Off**: Partner data correct; 9328 `reference_no` SQL outstanding.
-- **What's Working**: LPU re-route feature live; SEDA (3995) and MGTC (6541) both clean.
-- **What Needs Attention**: 9328 SQL; possible code fix so the Manage Partners modal regenerates `reference_no`; the large uncommitted `development` tree.
-- **Note**: `main/repos.md` → Active Repo still says NRHome; this session was Nilam.
+- **Where We Left Off**: Awaiting father nokp + graduate email to curl semakV2.
+- **What's Working**: Convocation notice in code, dev build green.
+- **What Needs Attention**: Confirm semakV2 null; add frontend guard/validators; `gcloud auth login`; tokens in bundle.
+- **Note**: `main/repos.md` → Active Repo still says NRHome; this session was MyAlumniCard. Earlier today (00:29) was a Nilam session — see `projects/nilam/session.md`.
 
 ---
-*Session updated: 2026-09-17 00:29*
+*Session updated: 2026-09-17 09:18*

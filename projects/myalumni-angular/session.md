@@ -1,59 +1,54 @@
-# Current Session Memory - 2026-09-14
+# Current Session Memory - 2026-09-17
 *Active working memory for MyAlumniCard*
 
 ## Session Context
-**Session Type**: Work
+**Session Type**: Work — support investigation + small UI change
 **Current Project**: MyAlumniCard (`/Applications/Sites/myalumni-angular`) — UiTM
-**Status**: Complete — all work committed, tree clean
-**Time**: Afternoon session, diary written 16:22 GMT+8
+**Status**: UI change committed; null-ID investigation paused waiting on two inputs from Fendy
+**Time**: Morning session, diary written 09:18 GMT+8
 
 ## Current Focus
-- **Primary Task**: Restore `ng serve`, diagnose broken production benefit images, restructure the `/admin` Hot Seat Count table.
-- **Technical Context**: Angular 18, Node v24.18.1, Firebase Hosting + Cloud Functions (v1, Node 20), Firestore, Chrome Private Network Access, nginx CDN at UiTM.
-- **Progress**: All three done. Table rebuild shipped in `7fff3b5`; budget fix in `8e4f3bd`.
+- **Primary Task**: Explain why graduate 1335627 saved `father_alumni_id = null` after adding father (alumni 1298578) on `/attendance`; add a Borang Jubah timing notice on `/convocation`.
+- **Technical Context**: Angular 18, Firestore `graduates/<alumni_id>`; `/attendance` Semak button calls `GET https://api.uitm.edu.my/alumni/semakV2?nokp=<IC>&email=<graduate email>` with a hardcoded integrasi bearer token (staff 261852, exp 2027-09-26) in `src/app/attendance/attendance.component.ts`.
+- **Progress**: Notice shipped (`0c67ed5`). Investigation has a clear code-path explanation but no live reproduction yet.
 
 ## Working Memory
 
 ### Active Context
-- **Current Topic**: `/admin` Hot Seat Count table, and the unresolved CDN image question.
-- **Immediate Goals**: Confirm benefit banner hostnames; verify the rebuilt table against live data.
+- **Current Topic**: semakV2 returning `alumni_id: null` and the frontend saving it unguarded.
+- **Immediate Goals**: Run the exact semakV2 request with the real father nokp + graduate email; confirm the raw response.
 - **Recent Progress**:
-  - `ng serve` was broken because `jspdf`, `html2canvas`, and `@ng-select/ng-select` were in `package.json` and the lockfile but missing from `node_modules` (left by `13b721d` and `bdd8dca`). `npm install` fixed it.
-  - Diagnosed the broken production images as split-horizon DNS + Chrome PNA, **not** an app bug. `cdn.uitm.edu.my` → `10.0.21.69` internally, `202.58.84.29` publicly. Off-campus users are unaffected.
-  - Confirmed the nginx `/media/` preflight returns a bare `204` with no `Access-Control-Allow-Private-Network` and no `Access-Control-Allow-Origin`.
-  - Rebuilt the Hot Seat table: three duplicated `<table>` blocks → one loop over `venue.columns`; `splitLargeLocations()` → `buildHotSeatVenues()`; typed `HotSeatRow` / `HotSeatVenue`; totals via `reduce`.
-  - Added per-venue subtotal row, full-height column divider, mobile-stacked border, and `table-layout: fixed` column alignment.
-  - Fixed `.hs-badge` being nested inside `.hs-table` (subtotal badges rendered unstyled), added figure captions and the `number` pipe.
-  - Raised the `anyComponentStyle` budget from 4kB/4kB to 6kB/8kB after the production build failed.
+  - Traced `check()` → `patchValue({ father_alumni_id: response.data.alumni_id })` with no null guard and no `Validators.required` on `father_alumni_id` / `mother_alumni_id`.
+  - Null (not empty string) in Firestore implies the `alumni:'y', registered:'y'` branch ran with a null id from integrasi.
+  - Impersonating the father only shows his Firestore profile; it does not exercise semakV2.
+  - `fastapi.uitm.edu.my/alumnai/semak/id/1298578` confirms the father exists but returns no nokp/email.
+  - Firestore REST read blocked: gcloud token needs `gcloud auth login`; Firebase CLI has no document get.
+  - Added boxed `bg-light-primary` info card under the convocation action buttons: "Borang Jubah akan dijana setiap 2 jam selepas graduan membuat pengesahan kehadiran." Shown when `convocation.pengesahan_kehadiran` is true. Dev build passes.
+- **Next Steps**: Get father nokp + graduate email from Fendy → curl semakV2 → decide integrasi fix vs frontend guard → optionally repair `graduates/1335627`.
 
 ### Important Decisions
-- Do **not** treat the broken images as a production outage — the failure is specific to viewing the public production origin from inside the UiTM network.
-- Prefer a same-origin proxy (Hosting rewrite → Cloud Function) over asking UiTM infra to fix the nginx `/media/` preflight, since it needs no coordination. Not implemented pending hostname confirmation.
-- Make hot seat column splitting row-count based for all venues rather than hardcoding DATC — this is what allowed the three duplicated tables to collapse into one.
-- Raise the CSS budget rather than delete the new subtotal row; the file was already at 98.4% of the old ceiling.
+- Do not add the frontend guard/validators yet; confirm the API behaviour first so the fix targets the real cause.
+- Notice styled as a mat-card (same pattern as attendance notices) rather than plain text, per Fendy's request.
+- Diary saves go through the JIRAIYA protocol; the stray `DIARY.md` created in the alumni repo was removed.
 
 ## Session Recap (For AI Restart)
-- **Previous Session Summary**: 11 Sep fixed the registration Verify flow (Angular proxy for localhost, `ngsw-bypass` for production, `alumnai` token).
-- **Where We Left Off**: All work committed (`1ec7d93`, `7fff3b5`, `8e4f3bd`), working tree clean, production build passes with no warnings.
-- **Important Context**: The CDN image issue is diagnosed but unfixed by choice. The proxy design is ready to implement if wanted. The Chrome extension was never connected this session, so nothing was verified visually by JIRAIYA — Fendy checked every change in the browser himself.
-- **User's Current State**: Fendy tests against live data on `localhost:4200` and commits quickly as changes land.
+- **Previous Session Summary**: 14 Sep restored `ng serve`, diagnosed split-horizon CDN images, rebuilt the admin Hot Seat table, raised CSS budget.
+- **Where We Left Off**: Notice committed by Fendy (`0c67ed5`). Null father_alumni_id explained in code; waiting for the father's IC and the graduate's email to reproduce via semakV2.
+- **Important Context**: semakV2 token ≠ fastapi token; both hardcoded in the public bundle. `father_alumni_id` has no validator, so a null from the API is saved silently.
+- **User's Current State**: Fendy is handling a support case for graduate 1335627 and tested by impersonating the father.
 
 ## Session Achievements
-- ✅ Restored `ng serve` by installing three dependencies missing from `node_modules`.
-- ✅ Identified that ~100 `NG8001` template errors were downstream noise from three unresolved imports.
-- ✅ Proved split-horizon DNS on `cdn.uitm.edu.my` using the local resolver, DNS-over-HTTPS, and an external fetch.
-- ✅ Established that off-campus alumni see the benefit images correctly.
-- ✅ Confirmed the nginx `/media/` preflight is missing both PNA and CORS headers.
-- ✅ Collapsed three duplicated table blocks into one template loop.
-- ✅ Removed the hardcoded venue name from the data path; replaced with named constants.
-- ✅ Added per-venue subtotals, column alignment, full-height divider, and mobile-correct stacking.
-- ✅ Fixed the unstyled subtotal badges caused by SCSS nesting scope.
-- ✅ Restored a passing production build and gave the CSS budget real headroom.
+- ✅ Located the exact API URL and bearer token used by the `/attendance` Semak button and decoded the token's issuer/expiry.
+- ✅ Identified the unguarded `patchValue` + missing validator as the path that lets a null alumni_id reach Firestore.
+- ✅ Clarified that impersonation does not test the integrasi lookup.
+- ✅ Confirmed alumni 1298578 exists via fastapi.
+- ✅ Shipped the Borang Jubah notice as a boxed info card (`0c67ed5`), dev build green.
+- ✅ Diary saved via the JIRAIYA protocol after correction.
 
 ## Quick Context for Next Session
-- **Where We Left Off**: Hot Seat table shipped; CDN image fix designed but not built.
-- **What's Working**: `ng serve`, production build with no warnings, the rebuilt Hot Seat table.
-- **What Needs Attention**: Benefit banner hostnames; whether all-venue splitting is wanted or DATC-only; bearer tokens still shipping in the public bundle; `main/repos.md` still points at NRHome.
+- **Where We Left Off**: Awaiting father nokp + graduate email to run semakV2.
+- **What's Working**: Convocation notice live in code; build passes; tree clean apart from `.firebase` cache.
+- **What Needs Attention**: semakV2 null-id confirmation; frontend guard + validators; `gcloud auth login`; bearer tokens in bundle; `main/repos.md` still says NRHome.
 
 ---
-*Session updated: 2026-09-14 16:22*
+*Session updated: 2026-09-17 09:18*
