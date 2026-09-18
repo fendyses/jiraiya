@@ -1,46 +1,85 @@
 # Nilam — Session Memory
-*Last updated: 2026-09-17*
+*Last updated: 2026-09-18*
 
 ## Session Context
-**Session Type**: Support investigation → module review and rebuild → data-fix handoffs
+**Session Type**: Support investigation → feature build → commit and push
 **Current Project**: Nilam (slug: `nilam`) — `/Applications/Sites/nilam` — UiTM
-**Status**: PUU Monitoring work complete on `development` but unstaged by request; LPU re-route fix staged; two production SQL handoffs pending
-**Time**: 10–17 Sep session, closed 14:36 GMT+8 on 17 Sep
+**Status**: Two commits pushed to `origin/development`; working tree clean except the deliberate `config/services.php` local swap
+**Time**: 2026-09-18, closed 16:40 GMT+8
 
 ## Current Focus
-PUU Monitoring module: performance fix (calendar prefix sum), management dashboard rebuilt (no ApexCharts), document-movement track redesigned, re-assign-vetter panel, review findings implemented, production install SQL prepared. Plus two production support cases: 9044/8522 MEU letter flag, and 8615 LPU re-route from Pending LPU Approval.
+Application 9431 support case: why the missing-attachment recovery panel did not appear
+for the PIC on production, and building the button that returns an application to the
+vetter once the attachments are restored. Also cleared the uncommitted LPU relabel fix
+that had been sitting in the tree since 17 Sep.
 
 ## Working Memory
 
 ### Active Context
-- **Staged**: only `ApplicationController::update()` LPU-flag hunks + `applications/edit.blade.php` (re-route modal from status 13). Not committed.
-- **Unstaged/untracked**: everything PUU (`PuuMonitoringController`, `Services/Puu/*`, `puumonitorings/*` views, `WorkingDayCalendar` prefix sum, `SlaCalculator` first-assignment guard, routes, `assign()` note/guard in `ApplicationController`, `applications/create.blade.php` confirm).
-- **Local `.env` is pointed at PRODUCTION** (`antartika`/`nilams`); `effendy` is SELECT-only there. Switch back to `nilamsdev` before dev tests. Use `DB_HOST=… DB_DATABASE=nilamsdev … php artisan …` overrides if needed.
-- Dev doc 3492 was accidentally re-assigned via a browser preview and restored (Dr. Mohd Hairy, return-for-amendment); zero "Re-assigned" notes remain in dev.
-- View-model cache: built and **reverted** on request (design: key = scope + version + date; bump on status log / assignment / holiday / SLA-config writes; delete old version's keys on bump).
+- **Committed and pushed** (`6da771ab..95772987` → `origin/development`):
+  - `6ddc1db` — LPU "Final Draft" mislabel fix (`Application.php`, `ApiController.php`,
+    `MeuApprovalController.php`, `applications/show.blade.php`, `ptjapplications/show.blade.php`)
+  - `9577298` — PIC return-to-vetter button (`MyApplicationController.php`, `routes/web.php`,
+    `myapplications/show.blade.php`, new `_return-to-vetter.blade.php`, new `ReturnToVetterTest.php`)
+- **Left uncommitted on purpose**: `config/services.php` — dev Google OAuth creds swapped in
+  locally. Fendy confirmed again this session: never stage it.
+- **Local `.env` is still pointed at PRODUCTION** (`antartika`/`nilams`, `effendy` is SELECT-only).
+  Only SELECTs were run this session. Switch back to `nilamsdev` before dev testing.
+- `development` is not what production runs — the recovery feature reached prod via `master`
+  (merge `e6a8bd2e`). Both new commits still need merge to `master` + deploy.
 
-### Production facts (checked 11–17 Sep)
-- 9044 (Signatory Setup) and 8522 (Approved by LPU): `meu_drafted_letter=1` with letter present; fix is `SET meu_drafted_letter=0` — safe, nothing downstream reads it; needs DBA account.
-- 8615: Pending LPU Approval (13), `lpu_approval=1`, LPU meeting #30, no notice sent, MEU released. Wants Notification-only: after deploy use the re-route modal; before deploy, SQL (`lpu_approval=0`, status 12, log row).
-- `puu:verify` on prod: slugs OK, invariants OK on 2,988 in-flight docs, 0 vetters missing assignment logs (no backfill), 3 tables + 5 permissions missing → `database/sql/puu_monitoring_install.sql` (updated with PIC thresholds + fixed holidays, dev-tested).
-- Prod office-wide hydration 4.3 s (dev 1 s) — needs cache or query-side date filter before go-live.
+### Application 9431 facts (checked on production, 18 Sep)
+- Status 6 `return-for-amendment`, document status `assigned-draft`, app type 2.
+- created_by 51 (NORSHAHNADZ), PIC 730 (DR. MOHAMAD FAIZAL) via `application_user`, `uitmpic_id` empty.
+- assigned_to 44 (NOR AZILA BINTI MAHARAM). Returned 2026-09-09 by user 180, note empty.
+- Two documents: 12131 type 1 `draft-moamou` "DRAF MoU" (`c4ccb27d-….docx`), 12130 type 11
+  `supporting-document` "SSM" (`a81f674d-….pdf`). **Zero vetting documents** — that is why no
+  return control rendered.
+- `canRecoverAttachments()` returns **true for both** users; rendering `show()` as each gives
+  identical output. The PIC gate was never the problem.
 
 ### Important Decisions
-- Stage 1 breaches at 15 wd (14 is within cap), Stage 2 at 22 — user-confirmed.
-- All monitoring pages default to "this year"; All time carried explicitly as `period=all`.
-- Reminder throttle: a document already reminded twice in 5 minutes is skipped; skips listed in a warning flash.
-- Health threshold unified at ≥ 90 % (rings and badges).
-- Stage 2 "On Track" tile not added (user: not required).
-- Management dashboard row 2 in workflow order (Stage 1 queue → Stage 2 bands → PIC → missing), tiles Stage 1 → Stage 2 → paused → data quality.
-- `resolveAssignment()` uses the FIRST assignment after the latest arrival, so re-assignments never move Stage 1 timing.
+- The recovery panel's production invisibility is environment-driven: `availability()` checks
+  local `storage/uploads` first and only falls back to MinIO when `APP_ENV=production`. Locally
+  everything reads *missing* so the panel always opens; on production a file present in MinIO
+  reads *present* and the panel correctly closes.
+- Did **not** fix the `'unknown'` availability hole (MinIO throwing → `slots()` returns `[]` →
+  panel hidden with no message, because `mainMissing` only flips on `'missing'`). Flagged for
+  Fendy's decision rather than widening scope.
+- `canReturnToVetter()` gated on `vettingDocuments()->doesntExist()` so the new button never
+  competes with the existing "Return for Futher Action" dropdown once a draft exists.
+- Kept the recovery panel's existing threshold: it closes once the **main** document is restored,
+  so the button can appear with a supporting document still absent. Raised with Fendy, left as-is.
+- Two separate commits rather than one — different bugs, different modules, LPU fix stays reviewable.
 
 ## Session Recap (For AI Restart)
-The MEU letter for 9044 is hidden only by `meu_drafted_letter=1` because `MeuApprovalController::store()` (since d199f6bd) advances status at draft time and the Approve click became optional. PUU Monitoring got a full review; 12 accepted findings implemented; dashboards 4× faster via a prefix-sum working-day calendar; management page rebuilt from a mock-up; re-assign panel with modal; two of my own bugs (form spanning two `<td>`s; global preloader on intercepted submits) found and fixed. Two LPU re-route defects fixed for 8615 and staged alone.
+The PIC on 9431 could not see the missing-attachment upload panel on production. It was not a
+permission problem — `canRecoverAttachments()` passes for both the creator and the PIC, proven by
+rendering the page as each. The panel is environment-forked: local always shows it, production
+hides it when the file is retrievable from MinIO. Fendy then asked whether a return button even
+existed, and it did not: the only "Return for Futher Action" control lives inside the
+vetting-documents `@foreach`, and 9431 has zero vetting documents, so the PIC was stranded with no
+way back regardless. Built `returnToVetter()` + `canReturnToVetter()` + a new partial, covered by 8
+tests, and committed it alongside the older LPU relabel fix. Both pushed.
+
+## Session Achievements
+- ✅ Cleared the PIC permission gate with evidence (two live renders, identical output)
+- ✅ Identified the environment fork in `MissingApplicationAttachments::availability()`
+- ✅ Confirmed the recovery feature was already pushed to both `origin/development` and `origin/master`
+- ✅ Found the real gap: no return-to-vetter control exists when there are no vetting documents
+- ✅ Built the button — route, controller method, guard, partial
+- ✅ 8 new tests in `ReturnToVetterTest.php`; existing 20 recovery tests still pass
+- ✅ Committed `6ddc1db` (LPU relabel) and `9577298` (return button) separately
+- ✅ Pushed both to `origin/development`, `config/services.php` kept out
 
 ## Quick Context for Next Session
-- **Where We Left Off**: LPU fix staged; PUU tree unstaged; SQL handoffs for 9044/8522 and 8615 with the DBA; install SQL ready for prod.
-- **What's Working**: all monitoring pages render 200 on dev; `puu:verify` invariants pass on prod data.
-- **What Needs Attention**: (a) commit the staged LPU fix; (b) decide when to stage/push PUU; (c) `.env` back to dev; (d) prod install SQL + moving holidays; (e) speed for 2,988 docs; (f) proper `array_filter()` fix in `ApplicationController::update()`.
+- **Where We Left Off**: Both commits pushed to `development`; awaiting the production download test on 9431.
+- **What's Working**: Return-to-vetter button verified against live 9431 data; all tests green.
+- **What Needs Attention**: (a) click the download icon on 9431 in production to close the
+  upload-panel question; (b) decide on the `'unknown'` availability hole; (c) decide whether the
+  button should wait for every slot, not just the main document; (d) merge to `master` + deploy;
+  (e) `.env` back to dev; (f) still-open 17 Sep items — `array_filter()` in
+  `ApplicationController::update()`, PUU install SQL and speed, DBA handoffs for 9044/8522 and 8615.
 
 ---
-*Session updated: 2026-09-17 14:36*
+*Session updated: 2026-09-18 16:40*
