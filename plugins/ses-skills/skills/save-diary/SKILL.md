@@ -130,6 +130,7 @@ When this skill activates, output:
    Classification labels: Module Improvement, Process Improvement, Screen Improvement, ISSUE/BUG/DEFECT, Reporting
    **Classification output rule:** Write the label only. Never prefix it with a number or `N -` (for example, write `Clasification : ISSUE/BUG/DEFECT`, not `Clasification : 4 - ISSUE/BUG/DEFECT`).
    **Justification language rule:** Write in Bahasa Melayu. IT/technical terms may remain in English (e.g. "upload", "button", "dropdown", "module"). Do not write full English sentences in the Justification field.
+   **Justification length rule:** Keep it short and simple — **2–3 sentences, max ~60 words**. Cover only: (1) the problem or need, (2) what was changed. Written so a non-technical reader understands it. Do NOT include function/class/column names, root-cause code internals, record IDs, test counts, or step-by-step fix details — those belong in the diary, not the CR.
 4. Confirm: *"CR logged to CR/M-YYYY.md."*
 - Reference: `/Applications/Sites/jiraiya/CR/cr-format.md`
 
@@ -161,3 +162,4 @@ When this skill activates, output:
 - **Lv.5** — Step 6 no longer prompts the user. JIRAIYA auto-infers CR entries from session work (diary entry + achievements). If nothing was done, skip silently. Never ask for CR details.
 - **Lv.6** — Step 6 now starts with an explicit repo-type check (UiTM vs Personal) on every diary save. For UiTM repos, a git cross-check always runs regardless of whether work was done in the session — finds the last CR date for this repo in `CR/M-YYYY.md`, then runs `git log --after=[last-CR-date]` to catch any uncaptured commits. Session work is also inferred and merged. Only skips if both sources return nothing. Prevents silent misses when diary is saved before code is written.
 - **Lv.7** — CR classification values now use labels only; numeric prefixes such as `4 - ISSUE/BUG/DEFECT` are forbidden.
+- **Lv.8** — CR Justification length rule: 2–3 sentences, max ~60 words, problem + change only, no code internals/IDs/test counts (Fendy's request 2026-09-24).

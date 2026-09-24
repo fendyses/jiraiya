@@ -26,6 +26,15 @@ Multiple CRs on the same date — repeat the `Permohonan CR:` block, separated b
 - IT/technical terms may stay in English (e.g. "upload", "button", "dropdown", "report", "module")
 - Do not write full English sentences in the Justification field
 
+## Length Rule
+- **Short and simple** — 2–3 sentences, max ~60 words
+- State only: the problem/need → what was changed
+- Must be understandable to a non-technical reader
+- No function/class/column names, code internals, record IDs, test counts, or step-by-step fix details (those go in the diary)
+
+Example (good):
+`4. Justifications : PIC tidak dapat menghantar semula permohonan kepada Vetter apabila tiada draf dimuat naik kerana button tidak dipaparkan. Button baharu Return to Vetter/Drafter ditambah pada skrin butiran My Application untuk membolehkan PIC meneruskan permohonan.`
+
 ## Classification Options
 - Module Improvement
 - Process Improvement
