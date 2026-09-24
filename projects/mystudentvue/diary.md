@@ -1,6 +1,8 @@
 # MyStudent — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-09-24** — [MyStudent: eGL Study-Mode Check + 24h Duplicate-GL Rule](../../daily-diary/current/2026-09-24.md)
+  - Outcome: (1) Answered: the frontend has no study-mode gate for eGL, and the digitalcampus API decides. (2) Duplicate check in `src/views/kesihatan/GlPage.vue` now blocks only within 24h. Change is **not committed** and not tested in a browser.
 - **2026-09-03** — [MyStudent: Tracing Who Actually Sees Their Exam Result](../../daily-diary/current/2026-09-03.md)
   - Outcome: Four commits pushed (`96d23da`, `297f2ec`, `0ac0521` merge, `e2df94d`); Firebase upgraded 9.6.9 → 9.23.0; two Firestore composite indexes built and live; one new collection proposed, built, then deliberately reverted on cost grounds
 - **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/archived/2026-08/2026-08-20.md)
