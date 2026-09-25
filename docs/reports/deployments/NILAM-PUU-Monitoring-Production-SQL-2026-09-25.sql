@@ -69,9 +69,9 @@ VALUES
  'PIC turn - working days with the PIC after which the document counts as overdue',
  NULL, NOW(), NOW())
 ON DUPLICATE KEY UPDATE
-    `value` = VALUES(`value`),
-    `label` = VALUES(`label`),
-    `updated_at` = NOW();
+    -- Only the description is refreshed. Values are edited by PUU in
+    -- Parameter Setup -> PUU Monitoring and must survive a re-run.
+    `label` = VALUES(`label`);
 
 
 -- Step 3 - PIC reminder email history table
