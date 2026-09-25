@@ -1,6 +1,8 @@
 # Nilam — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-09-23** — [MyAlumniCard: Himpunan Mesra Alumni 2026 Banner on Home; Nilam: Editable Partner Contact Details in Manage Partners Modal](../../daily-diary/current/2026-09-23.md)
+  - Outcome: Banner + "Register Now" button added to `src/app/home/home.component.html`; change is staged but **not committed**, and not yet built or viewed in a browser.
 - **2026-09-18** — [Nilam: The PIC Who Could Not Send It Back](../../daily-diary/current/2026-09-18.md)
   - Outcome: The PIC gate was cleared of suspicion with evidence, the real gap was found (there was no return button at all for this shape of application), the button was built with 8 tests, and both it and the uncommitted LPU relabel fix were committed separately and pushed to `origin/development`
 - **2026-09-17** — [Nilam: LPU Re-route Check and the SEDA Partner That Became MGTC; MyAlumniCard: Null Father Alumni ID on /attendance, Borang Jubah Notice; Nilam: PUU Monitoring Redesign Week, the MEU Letter That Was Never Released, and Two LPU Flag Bugs](../../daily-diary/current/2026-09-17.md)
