@@ -1,6 +1,8 @@
 # Jiraiya — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-09-26** — [ForexPulse UI/UX Refinement and iPhone Deployment](../../daily-diary/current/2026-09-26.md)
+  - Outcome: The UI enhancement sprint was completed, committed as `9e0ac1e`, verified with static analysis and 18 passing tests, and installed successfully as ForexPulse `1.0.0 (2)` on `FendySES iP`
 - **2026-09-17** — [Nilam: LPU Re-route Check and the SEDA Partner That Became MGTC; MyAlumniCard: Null Father Alumni ID on /attendance, Borang Jubah Notice; Nilam: PUU Monitoring Redesign Week, the MEU Letter That Was Never Released, and Two LPU Flag Bugs](../../daily-diary/current/2026-09-17.md)
   - Outcome: 8898 confirmed safe to re-route through the existing modal. Partner data fully repaired by Fendy through the UI, verified against the live DB. One residual: reference number on application 9328 still needs a SQL update by a write-capable DB user. No code changed.
 - **2026-08-20** — [Tracing the Student Photo Pipeline in MyStudent; Nilam: Renewal Dates Surfaced, and a Certificate That Broke the Jawi Calendar](../../daily-diary/archived/2026-08/2026-08-20.md)

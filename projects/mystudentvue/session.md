@@ -1,54 +1,46 @@
-# Current Session Memory - 2026-09-03
+# Current Session Memory - 2026-09-24
 *Active working memory for current conversation*
 
 ## Session Context
 **Session Type**: Work
 **Current Project**: MyStudent (`/Applications/Sites/mystudentvue`, slug `mystudentvue`, UiTM)
-**Status**: Wrapping up
-**Time**: Afternoon session, diary saved 12:14
+**Status**: Wrapping up (diary 24-09, CR log caught up 26-09)
+**Time**: Afternoon session, diary saved 16:30
 
 ## Current Focus
-- **Primary Task**: Track whether students can actually view their exam result, and report on it from the admin panel
-- **Technical Context**: Vue 3 SPA + Firestore (project `universiti-tekno-1581783266917`), branch `development`, hosting site restored to `mystudentuitm`
-- **Progress**: Complete and pushed. Four commits today, working tree clean, both Firestore indexes live
+- **Primary Task**: eGL (`/egl`, `src/views/kesihatan/GlPage.vue`): SML eligibility question + allow regenerating the same GL after 24h
+- **Technical Context**: Vue 3 SPA + Firestore, branch `development`. GL eligibility comes from `https://digitalcampus.uitm.edu.my/api/mystudent/generate/gl` (`jumlah kelayakan`); GL history in `pelajar/{id}@student.uitm.edu.my.sejarah_gl`
+- **Progress**: 24h rule committed by Fendy as `4ea23c7` ("update", 2026-09-24). Not browser-tested by Claude
 
 ## Working Memory
 ### Active Context
-- **Current Topic**: Analytics tab on `/admin` reporting on `mystudentlog`
-- **Immediate Goals**: Ship view tracking + a Bahasa Melayu infographic without increasing Firestore spend
-- **Recent Progress**: Title changed to "Analitik Paparan Keputusan Peperiksaan"; Simpan PDF button added via `window.print()`; committed as `e2df94d`
-- **Next Steps**: Decide whether to re-add the `firestore` block to `firebase.json`, and whether to remove the dead iStudent/SSO login tabs
+- **Current Topic**: eGL duplicate-GL rule
+- **Immediate Goals**: Let students regenerate the same GL (same hospital, jenis, negeri, amounts) once the previous one is > 24h old
+- **Recent Progress**: Duplicate check now blocks only if a matching `sejarah_gl` entry's `tarikh_jana` is < 24h old; message adds "GL baharu boleh dijana semula selepas 24 jam."
+- **Next Steps**: Confirm SML eligibility with the digitalcampus API owner or test with one SML + one S student ID (production call — needs Fendy's go-ahead); browser-test the 24h rule; deploy
 
 ### Important Decisions
-- **`view_page` collection rejected on cost.** Built in full, then reverted at Fendy's request — `mystudentlog` already carries enough, and an extra write per view is an extra bill on release day.
-- **`view_exam` + `viewExamReason` ride the existing write.** The `mystudentlog` visit write moved from `ResultPage.vue:467` to the end of `mounted()` so `blocking` is final; the guard was preserved so write volume is unchanged.
-- **Firebase pinned to 9.x (9.23.0).** v10+ deliberately avoided: `enableIndexedDbPersistence` is deprecated there and `signInWithRedirect` changed — both are known-fragile areas in this app.
-- **Summary uses `getCountFromServer`; daily detail is opt-in.** Eight aggregate queries (~150 reads on a 50k range vs 50,000). The daily chart and table sit behind a button that states its own read cost.
-- **Chart colours validated, not chosen.** Green/red for can-view/blocked failed CVD at ΔE 4.1 deutan; replaced with the blue/orange pair (ΔE 24.7) plus grey for no-data.
-- **PDF via `window.print()`**, not jsPDF/html2canvas — those add ~600KB and cannot render `backdrop-filter`.
+- **No study-mode gate for eGL in the frontend.** Eligibility is entirely the API's `jumlah kelayakan`; admins bypass.
+- **Study-mode lists differ across the app.** Borang Perubatan `S,SA,SF,SK` (`KesehatanPage.vue:138`); ASNB `S,SA,SF,SN,SK,SML` (`ProfilePage.vue:154`, `SponsorPage.vue:406`). The medical-form list is NOT the GL rule.
+- **"More than one day" = rolling 24 hours**, not next calendar day (offered to switch).
 
 ## Session Recap (For AI Restart)
-- **Previous Session Summary**: Located login logging in `mystudentlog/{studentid}`, added `view_exam`/`viewExamReason` to the existing `/result` visit write, then built a glassmorphism Bahasa Melayu analytics dashboard on the admin page backed by Firestore aggregate queries.
-- **Where We Left Off**: All work committed and pushed; both composite indexes built and live; working tree clean.
-- **Important Context**: `mystudentlog` stores ONE document per student, so every reported number counts students, not page views. `loggedIn` is the *last login* method and can be months older than the `viewResultAt` beside it.
-- **User's Current State**: Cost-conscious about Firestore reads — this shaped every design decision today. Runs builds and deploys himself.
+- **Previous Session Summary**: Answered SML-vs-eGL (API decides), clarified study-mode lists, relaxed the duplicate-GL block to 24h.
+- **Where We Left Off**: `4ea23c7` committed on `development`; `.firebase/hosting.*.cache` modified (build artefact).
+- **Important Context**: Duplicate check is client-side only; any API-side duplicate block still applies. Entries without a valid `tarikh_jana` no longer block.
+- **User's Current State**: Wants eGL usable for full-time extended (SML) students; expects CR entries logged with every diary save.
 
 ## Session Achievements
-- ✅ Traced login logging to `mystudentlog/{studentid}` (six write sites in `LoginPage.vue`) plus a secondary `pelajar/{email}.loggedAt` write
-- ✅ Built, then cleanly reverted, the `view_page/result/exam_result` collection on cost grounds
-- ✅ Added `view_exam` (`yes`/`no`) and `viewExamReason` (`ok`/`blocking`/`no_record`) to the existing single write
-- ✅ Verified live in Firestore from Fendy's dev deploy
-- ✅ Found the iStudent + UiTM SSO login tabs still rendered at `LoginPage.vue:101-110`
-- ✅ Built the Analytics tab in Bahasa Melayu with validated, colourblind-safe chart colours
-- ✅ Upgraded Firebase 9.6.9 → 9.23.0 (+15KB gzipped); verified every API the app uses still resolves
-- ✅ Converted the summary to eight `getCountFromServer` queries; daily detail made opt-in
-- ✅ Added `firestore.indexes.json`; both composite indexes deployed and live
-- ✅ Retitled to "Analitik Paparan Keputusan Peperiksaan" and added Simpan PDF with a print stylesheet
+- ✅ Traced eGL eligibility to the digitalcampus `generate/gl` API
+- ✅ Mapped all study-mode allow-lists in the app
+- ✅ Implemented 24h duplicate-GL window in `GlPage.vue` (committed as `4ea23c7`)
+- ✅ Diary entry `daily-diary/current/2026-09-24.md`
+- ✅ CR log caught up: 04-09 (3 blocks) and 24-09 (1 block) in `CR/9-2026.md`
 
 ## Quick Context for Next Session
-- **Where We Left Off**: `e2df94d` pushed, working tree clean
-- **What's Working**: Analytics tab generates from aggregates; `view_exam` confirmed writing correctly in dev
-- **What Needs Attention**: `firebase.json` lost its `firestore` block in `297f2ec`; dead iStudent/SSO login tabs; `firebase-debug.log` not gitignored
+- **Where We Left Off**: eGL 24h rule committed, untested in browser
+- **What's Working**: Eligibility/menu unchanged; only duplicate window relaxed
+- **What Needs Attention**: SML eligibility confirmation from the API side; deploy
 
 ---
-*Session updated: 2026-09-03 12:14*
+*Session updated: 2026-09-26 14:29*
