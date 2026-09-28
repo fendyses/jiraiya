@@ -411,6 +411,228 @@ async function openCRBook() {
   if (selected) renderCRContent(selected.content);
 }
 
+// ════════════════════════════════════════════════════════
+// UnITS — answer patterns per category (units.php → /units/<slug>/answer-patterns.md)
+// Opened from the UNITS signboard on the red-roof house.
+// ════════════════════════════════════════════════════════
+let _units = { data: [], slug: null, dirty: false };
+async function unitsApi(params) {
+  let url = 'units.php', opt = { cache: 'no-store' };
+  if (params.action === 'list') url += '?action=list';
+  else { opt.method = 'POST'; opt.body = new URLSearchParams(params); }
+  const r = await fetch(url, opt);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || ('units ' + r.status));
+  return j;
+}
+function unitsMdToHtml(md) {
+  // mdToHtml plus blockquotes — pattern answers are written as "> answer text"
+  // and simple pipe tables (the ticket log).
+  const out = []; let quote = [], plain = [], table = [];
+  const cells = row => row.trim().replace(/^\||\|$/g, '').split('|').map(c => mdToHtml(c.trim()).replace(/^<p>|<\/p>$/g, ''));
+  const flushQuote = () => { if (quote.length) { out.push('<blockquote>' + mdToHtml(quote.join('\n')) + '</blockquote>'); quote = []; } };
+  const flushPlain = () => { if (plain.length) { out.push(mdToHtml(plain.join('\n'))); plain = []; } };
+  const flushTable = () => {
+    if (!table.length) return;
+    const rows = table.filter(r => !/^\s*\|[\s:|-]+\|\s*$/.test(r));
+    out.push('<table class="units-table"><thead><tr>' + cells(rows[0]).map(c => '<th>' + c + '</th>').join('') + '</tr></thead><tbody>'
+      + rows.slice(1).map(r => '<tr>' + cells(r).map(c => '<td>' + c + '</td>').join('') + '</tr>').join('') + '</tbody></table>');
+    table = [];
+  };
+  md.split('\n').forEach(line => {
+    if (/^>\s?/.test(line)) { flushPlain(); flushTable(); quote.push(line.replace(/^>\s?/, '')); }
+    else if (/^\s*\|/.test(line)) { flushPlain(); flushQuote(); table.push(line); }
+    else { flushQuote(); flushTable(); plain.push(line); }
+  });
+  flushQuote(); flushTable(); flushPlain();
+  // single-asterisk italics (mdToHtml only handles **bold**)
+  return out.join('').replace(/(^|[\s>(])\*([^*\n]+?)\*(?=[\s<).,]|$)/g, '$1<em>$2</em>');
+}
+function unitsStatus(msg) { document.getElementById('unitsStatus').textContent = msg || ''; }
+function unitsSetEditing(on) {
+  document.getElementById('unitsBook').classList.toggle('editing', on);
+  _units.dirty = false;
+  if (on) {
+    const cur = _units.data.find(c => c.slug === _units.slug);
+    const ed = document.getElementById('unitsEditor');
+    ed.value = cur ? cur.content : '';
+    ed.focus(); ed.setSelectionRange(0, 0); ed.scrollTop = 0;
+  }
+}
+function unitsRenderList() {
+  const list = document.getElementById('unitsCatList');
+  list.innerHTML = '';
+  document.getElementById('unitsCatCount').textContent = _units.data.length ? '[' + _units.data.length + ']' : '';
+  if (!_units.data.length) {
+    list.innerHTML = '<div class="units-cat-meta" style="padding:8px">No categories yet.</div>';
+  }
+  _units.data.forEach(cat => {
+    const el = document.createElement('div');
+    el.className = 'units-cat' + (cat.slug === _units.slug ? ' active' : '');
+    const auto = cat.automation === 'YES';
+    const patterns = (cat.content.match(/^###\s/gm) || []).length;
+    el.innerHTML = `<span class="units-cat-led ${auto ? 'yes' : ''}"></span>`
+      + `<div class="units-cat-body"><div class="units-cat-name">${_crEsc(cat.title)}</div>`
+      + `<div class="units-cat-meta">${auto ? '<b>AUTO</b>' : 'MANUAL'}${auto && cat.scope ? ' · ' + _crEsc(cat.scope) : ''}${patterns ? ' · ' + patterns + ' pattern' + (patterns === 1 ? '' : 's') : ''}</div></div>`;
+    el.title = 'units/' + cat.slug + '/answer-patterns.md';
+    el.onclick = () => {
+      if (_units.dirty && !unitsDiscardOk()) return;
+      _units.slug = cat.slug;
+      unitsSetEditing(false);
+      unitsRenderList();
+      unitsRenderContent();
+    };
+    list.appendChild(el);
+  });
+}
+// Wrap each "### pattern" section into a card and give every answer a copy button
+function unitsDecorate(root) {
+  let card = null;
+  [...root.children].forEach(node => {
+    if (node.tagName === 'H3') {
+      card = document.createElement('div'); card.className = 'units-card';
+      root.insertBefore(card, node);
+    } else if (node.tagName === 'H2' || node.tagName === 'HR') { card = null; }
+    if (card) card.appendChild(node);
+  });
+  root.querySelectorAll('blockquote').forEach(q => {
+    const b = document.createElement('button');
+    b.className = 'units-copy'; b.type = 'button'; b.textContent = 'COPY';
+    b.onclick = async () => {
+      try { await navigator.clipboard.writeText(q.innerText.replace(/\s*COPY\s*$/, '').trim()); b.textContent = 'COPIED ✓'; }
+      catch (e) { b.textContent = 'FAILED'; }
+      setTimeout(() => { b.textContent = 'COPY'; }, 1400);
+    };
+    q.appendChild(b);
+  });
+}
+function unitsRenderContent() {
+  const cur = _units.data.find(c => c.slug === _units.slug);
+  document.getElementById('unitsBookTitle').textContent = cur ? cur.title : 'Select a category';
+  document.getElementById('unitsBookSlug').textContent = cur ? 'units/' + cur.slug + '/answer-patterns.md' : 'units/';
+  const content = document.getElementById('unitsBookContent');
+  content.innerHTML = cur ? unitsMdToHtml(cur.content) : '';
+  unitsDecorate(content);
+  content.scrollTop = 0;
+  const btn = document.getElementById('unitsAutoBtn');
+  const auto = cur && cur.automation === 'YES';
+  btn.textContent = cur ? 'AUTO: ' + (auto ? 'YES' : 'NO') + (auto && cur.scope ? ' · ' + cur.scope : '') : 'AUTO: –';
+  btn.className = 'ux-btn units-auto ' + (cur ? (auto ? 'yes' : 'no') : '');
+  unitsStatus('');
+}
+// Unsaved edits: the first attempt to leave warns, the second discards.
+function unitsDiscardOk() {
+  if (_units.warned) { _units.warned = false; return true; }
+  _units.warned = true;
+  unitsStatus('Unsaved changes — click again to discard, or Save.');
+  return false;
+}
+async function unitsReload(selectSlug) {
+  _units.data = await unitsApi({ action: 'list' });
+  if (selectSlug) _units.slug = selectSlug;
+  if (!_units.data.some(c => c.slug === _units.slug)) _units.slug = _units.data[0] ? _units.data[0].slug : null;
+  unitsRenderList();
+  unitsRenderContent();
+}
+// Day / Night theme — remembered per browser; until chosen, follows the clock (night 7pm–7am)
+function unitsApplyTheme(theme) {
+  document.getElementById('unitsBookOverlay').dataset.theme = theme;
+  // Button offers the *other* theme
+  document.getElementById('unitsThemeBtn').textContent = theme === 'night' ? '☀ Day' : '☾ Night';
+}
+function unitsInitialTheme() {
+  try { const saved = localStorage.getItem('unitsTheme'); if (saved === 'day' || saved === 'night') return saved; } catch (e) {}
+  const h = new Date().getHours();
+  return (h >= 19 || h < 7) ? 'night' : 'day';
+}
+async function openUnitsBook() {
+  const ov = document.getElementById('unitsBookOverlay');
+  unitsApplyTheme(unitsInitialTheme());
+  document.getElementById('unitsThemeBtn').onclick = () => {
+    const next = ov.dataset.theme === 'night' ? 'day' : 'night';
+    unitsApplyTheme(next);
+    try { localStorage.setItem('unitsTheme', next); } catch (e) {}
+  };
+  ov.style.display = 'flex';
+  unitsSetEditing(false);
+  const close = () => {
+    if (_units.dirty && !unitsDiscardOk()) return;
+    ov.style.display = 'none';
+    document.removeEventListener('keydown', escClose);
+  };
+  const escClose = e => { if (e.key === 'Escape') close(); };
+  document.addEventListener('keydown', escClose);
+  document.getElementById('unitsBookCloseBtn').onclick = close;
+  ov.onclick = e => { if (e.target === ov) close(); };
+
+  const ed = document.getElementById('unitsEditor');
+  ed.oninput = () => { _units.dirty = true; _units.warned = false; };
+  document.getElementById('unitsEditBtn').onclick = () => { if (_units.slug) unitsSetEditing(true); };
+  document.getElementById('unitsAutoBtn').onclick = async () => {
+    const cur = _units.data.find(c => c.slug === _units.slug);
+    if (!cur) return;
+    const value = cur.automation === 'YES' ? 'NO' : 'YES';
+    try {
+      await unitsApi({ action: 'automation', slug: cur.slug, value });
+      await unitsReload(cur.slug);
+      unitsStatus(value === 'YES'
+        ? 'Automation ON — AI may answer ' + cur.title + (cur.scope ? ' (only ' + cur.scope + ')' : '') + '.'
+        : 'Automation OFF — AI will not answer ' + cur.title + '.');
+    } catch (err) { unitsStatus('Update failed: ' + err.message); }
+  };
+  document.getElementById('unitsCancelBtn').onclick = () => {
+    if (_units.dirty && !unitsDiscardOk()) return;
+    unitsSetEditing(false); unitsStatus('');
+  };
+  document.getElementById('unitsSaveBtn').onclick = async () => {
+    unitsStatus('Saving…');
+    try {
+      await unitsApi({ action: 'save', slug: _units.slug, content: ed.value });
+      unitsSetEditing(false);
+      await unitsReload(_units.slug);
+      unitsStatus('Saved ✓');
+    } catch (err) { unitsStatus('Save failed: ' + err.message); }
+  };
+  document.getElementById('unitsAddPatternBtn').onclick = () => {
+    if (!_units.slug) return;
+    const book = document.getElementById('unitsBook');
+    if (!book.classList.contains('editing')) unitsSetEditing(true);
+    // Next free letter after the last "### X." heading
+    const letters = [...ed.value.matchAll(/^###\s+([A-Z])\./gm)].map(m => m[1].charCodeAt(0));
+    const next = String.fromCharCode(letters.length ? Math.max(...letters) + 1 : 65);
+    const tpl = `\n### ${next}. \`pattern-slug\` — short description\n**Signals:** keywords seen in the complaint.\n> Answer text sent to the complainant.\n`;
+    // Insert before the ticket log / trailing sections if present, else append
+    const cut = ed.value.search(/^---\s*\n+##\s+(Ticket Log|Lessons)/m);
+    ed.value = cut >= 0 ? ed.value.slice(0, cut).replace(/\s*$/, '\n') + tpl + '\n' + ed.value.slice(cut) : ed.value.replace(/\s*$/, '\n') + tpl;
+    const at = ed.value.indexOf(`### ${next}. `);
+    ed.focus(); ed.setSelectionRange(at, at + tpl.trim().split('\n')[0].length);
+    ed.scrollTop = Math.max(0, ed.scrollHeight * (at / ed.value.length) - 80);
+    _units.dirty = true;
+  };
+  document.getElementById('unitsNewCatBtn').onclick = () => {
+    const list = document.getElementById('unitsCatList');
+    if (list.querySelector('.units-new-cat')) return;
+    const inp = document.createElement('input');
+    inp.className = 'units-new-cat';
+    inp.placeholder = 'e.g. OPERASI - EMEL GOOGLE ↵';
+    list.prepend(inp); inp.focus();
+    inp.onkeydown = async e => {
+      if (e.key === 'Escape') { e.stopPropagation(); inp.remove(); return; }
+      if (e.key !== 'Enter' || !inp.value.trim()) return;
+      try {
+        const r = await unitsApi({ action: 'create', name: inp.value.trim() });
+        await unitsReload(r.slug);
+        unitsSetEditing(true);
+        unitsStatus('Category created — fill in the template and Save.');
+      } catch (err) { unitsStatus('Create failed: ' + err.message); }
+    };
+  };
+
+  document.getElementById('unitsCatList').innerHTML = '<div class="units-cat-meta" style="padding:8px">Loading…</div>';
+  try { await unitsReload(_units.slug); }
+  catch (err) { unitsStatus('Load failed: ' + err.message); }
+}
+
 const VSCODE_SVG='<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M17 2 7 11l-4-3-2 1 4 4-4 4 2 1 4-3 10 9 5-2V4l-5-2Zm1 5v10l-7-5 7-5Z" fill="#3aa0ff" opacity=".75"/></svg>';
 const CLI_SVG='<img src="assets/pics/claude-logo.svg" width="11" height="11" style="opacity:.8">';
 const CODEX_SVG='<img src="assets/pics/gpt-logo1.png" width="11" height="11" style="opacity:.8">';

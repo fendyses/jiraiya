@@ -2,14 +2,22 @@
   var sz = window.BG3D_SIZE;
   if (!sz || typeof THREE === 'undefined') { console.error('[3DBG] THREE not ready'); return; }
 
+  // W/H = logical game space shared with Phaser (NPC positions, projections).
+  // The drawing buffer is sized separately (RW/RH) to the canvas's real CSS size —
+  // rendering at W/H and letting CSS stretch it up was blurring the whole scene.
   var W = sz.w, H = sz.h;
   var canvas = document.getElementById('bg3d');
-  canvas.width  = W;
-  canvas.height = H;
+  var RW = canvas.clientWidth || W, RH = canvas.clientHeight || H;
 
   var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, logarithmicDepthBuffer: true });
-  renderer.setSize(W, H, false);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(RW, RH, false);
+  // Sharp text on camera-facing signboards: max anisotropy, no ACES tone mapping
+  var MAX_ANISO = renderer.capabilities.getMaxAnisotropy();
+  function crispSignMaterial(tex, opts) {
+    tex.anisotropy = MAX_ANISO;
+    return new THREE.MeshBasicMaterial(Object.assign({ map: tex, toneMapped: false }, opts || {}));
+  }
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;  // compress highlights — no more white blowout
@@ -20,14 +28,26 @@
   composer.addPass(new THREE.RenderPass(null, null));   // scene/camera filled in after they're created
 
   // Bloom — only the very brightest surfaces (cloud tops, sky zenith) get a halo
-  var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(W, H), 0.32, 0.55, 0.88);
+  var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(RW, RH), 0.32, 0.55, 0.88);
   composer.addPass(bloomPass);
 
   // FXAA — smooth edges beyond hardware anti-aliasing
   var fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
   var renderRatio = renderer.getPixelRatio();
-  fxaaPass.material.uniforms['resolution'].value.set(1 / (W * renderRatio), 1 / (H * renderRatio));
+  fxaaPass.material.uniforms['resolution'].value.set(1 / (RW * renderRatio), 1 / (RH * renderRatio));
   composer.addPass(fxaaPass);
+
+  // Keep the drawing buffer matched to the displayed size when the layout changes
+  function resizeRenderer() {
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h || (w === RW && h === RH)) return;
+    RW = w; RH = h;
+    renderer.setSize(RW, RH, false);
+    composer.setSize(RW, RH);
+    fxaaPass.material.uniforms['resolution'].value.set(1 / (RW * renderRatio), 1 / (RH * renderRatio));
+  }
+  if (window.ResizeObserver) new ResizeObserver(resizeRenderer).observe(canvas);
+  else window.addEventListener('resize', resizeRenderer);
 
   // Vignette — subtle corner darkening for cinematic framing
   var vignettePass = new THREE.ShaderPass({
@@ -699,7 +719,7 @@
       undefined, undefined, function() { console.warn('[3DBG] uci.png not found'); });
     var crSign = new THREE.Mesh(
       new THREE.PlaneGeometry(1.26, 1.32),
-      new THREE.MeshBasicMaterial({ map: crTex, transparent: true, side: THREE.FrontSide })
+      crispSignMaterial(crTex, { transparent: true, side: THREE.FrontSide })
     );
     // Centre of full 3-storey tower: y = (3 * BSCALE) / 2 = 1.95
     // Front face: z = cz + 0.5*BSCALE = -9 + 0.65 = -8.35; push out 0.02
@@ -711,15 +731,16 @@
   // 3) Green-roof house with the JIRAIYA sign — pushed back to align with red-roof house
   building(-2.5, -14, 3, 2, 2, { wall: 'wall-wood', roof: 'roof-gable', door: 1, win: 'wall-wood-window-glass', chimney: true, noSideWalls: true, noShadow: true });
   (function () {
-    var cv = document.createElement('canvas'); cv.width = 512; cv.height = 120;
+    var cv = document.createElement('canvas'); cv.width = 1024; cv.height = 240;
     var g2 = cv.getContext('2d');
+    g2.scale(2, 2);   // draw in the original 512×120 units at 2× resolution
     g2.fillStyle = '#EADBB4'; g2.fillRect(0, 0, 512, 120);
     g2.strokeStyle = '#6B4A22'; g2.lineWidth = 12; g2.strokeRect(6, 6, 500, 108);
     g2.fillStyle = '#3A2A14'; g2.font = 'bold 32px "Courier New", monospace';
     g2.textAlign = 'right'; g2.textBaseline = 'bottom';
     g2.fillText('by Fendy SES', 496, 104);
     var tex = new THREE.CanvasTexture(cv);
-    var sign = new THREE.Mesh(new THREE.PlaneGeometry(4.7, 1.1), new THREE.MeshBasicMaterial({ map: tex }));
+    var sign = new THREE.Mesh(new THREE.PlaneGeometry(4.7, 1.1), crispSignMaterial(tex));
     sign.position.set(-2.5, 3.5, -12.5);
     scene.add(sign);
   }());
@@ -727,6 +748,26 @@
   // 4) Red-roof house — squared up to face the camera; noSideWalls kills the edge-on
   //    side panels that showed as a pole (left) and a jutting angled panel (right)
   building(4, -14, 2, 2, 2, { wall: 'wall-wood', roof: 'roof-high-gable', door: 1, win: 'wall-wood-window-glass', chimney: true, noSideWalls: true });
+
+  // UNITS signboard over the red-roof house door — click opens the UnITS answer patterns
+  (function () {
+    var cv = document.createElement('canvas'); cv.width = 1024; cv.height = 320;
+    var g2 = cv.getContext('2d');
+    g2.scale(2, 2);   // draw in 512×160 units at 2× resolution
+    g2.fillStyle = '#6B4A22'; g2.fillRect(0, 0, 512, 160);                 // frame
+    g2.fillStyle = '#EADBB4'; g2.fillRect(14, 14, 484, 132);               // board
+    g2.strokeStyle = 'rgba(107,74,34,.35)'; g2.lineWidth = 3;              // wood grain
+    for (var gy = 44; gy < 146; gy += 30) { g2.beginPath(); g2.moveTo(20, gy); g2.lineTo(492, gy); g2.stroke(); }
+    g2.fillStyle = '#A8321F'; g2.font = 'bold 92px "Courier New", monospace';
+    g2.textAlign = 'center'; g2.textBaseline = 'middle';
+    g2.fillText('UNITS', 256, 84);
+    var tex = new THREE.CanvasTexture(cv);
+    var unitsSign = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 0.56), crispSignMaterial(tex));
+    // Front face: z = -14 + 1*BSCALE = -12.7; push out so it sits proud of the wall
+    unitsSign.position.set(4, 1.45, -12.6);
+    scene.add(unitsSign);
+    window._unitsSignboard = unitsSign;
+  }());
 
   // 5) Green-roof mill house (right) + camera-facing water wheel + flowing stream
   building(9.5, -9, 2, 2, 2, { wall: 'wall-wood', roof: 'roof-gable', door: 0, win: 'wall-wood-window-glass', chimney: true });
@@ -1194,6 +1235,7 @@
     var _active = null;   // name of NPC being interacted with
     var _downX = 0, _downY = 0, _isDrag = false;
     var _crActive = false;  // true when pointerdown hit the CR signboard
+    var _unitsActive = false;  // true when pointerdown hit the UNITS signboard
 
     function pickCharacter(e) {
       var rect = wrap.getBoundingClientRect();
@@ -1237,6 +1279,8 @@
       if (!_active && window._crSignboard) {
         _crActive = _rc.intersectObject(window._crSignboard, false).length > 0;
       }
+      _unitsActive = !_active && !_crActive && window._unitsSignboard &&
+        _rc.intersectObject(window._unitsSignboard, false).length > 0;
       if (_active && window._npcs && window._npcs[_active]) {
         var npc = window._npcs[_active];
         npc.wasDragged = false;
@@ -1248,7 +1292,9 @@
     wrap.addEventListener('pointermove', function(e) {
       if (!e.buttons) {
         hoveredCharacter = pickCharacter(e);
-        wrap.style.cursor = hoveredCharacter ? 'grab' : '';
+        var onSign = !hoveredCharacter && window._unitsSignboard &&
+          _rc.intersectObject(window._unitsSignboard, false).length > 0;
+        wrap.style.cursor = hoveredCharacter ? 'grab' : (onSign ? 'pointer' : '');
       }
       if (!_active || !e.buttons) return;
       var dx = e.clientX - _downX, dy = e.clientY - _downY;
@@ -1300,6 +1346,9 @@
       } else if (_crActive && typeof showCRBubble === 'function') {
         showCRBubble(-8.3, 2.5, -8.33);
         _crActive = false;
+      } else if (_unitsActive && typeof openUnitsBook === 'function') {
+        _unitsActive = false;
+        openUnitsBook();
       }
     }, true);
   }());

@@ -262,6 +262,45 @@ if ($envRaw = @file_get_contents($REPO . '/.env')) {
   </div>
 </div>
 
+<div id="unitsBookOverlay">
+  <div id="unitsBook">
+    <span class="ux-corner tl"></span><span class="ux-corner tr"></span>
+    <span class="ux-corner bl"></span><span class="ux-corner br"></span>
+    <aside id="unitsSide">
+      <div class="ux-brand">
+        <div class="ux-brand-mark">U</div>
+        <div>
+          <div class="ux-brand-title">UNITS</div>
+          <div class="ux-brand-sub">ANSWER MATRIX · UiTM</div>
+        </div>
+      </div>
+      <div class="ux-side-label">// CATEGORIES <span id="unitsCatCount"></span></div>
+      <div id="unitsCatList"></div>
+      <button id="unitsNewCatBtn" class="ux-btn ux-btn-ghost" type="button">＋ New category</button>
+    </aside>
+    <section id="unitsMain">
+      <div id="unitsBookHeader">
+        <div class="ux-head-text">
+          <div id="unitsBookTitle" class="ux-head-title">Select a category</div>
+          <div id="unitsBookSlug" class="ux-head-path">units/</div>
+        </div>
+        <div class="units-actions">
+          <button id="unitsAutoBtn" class="ux-btn units-auto" type="button" title="Automation Answer — may AI answer tickets in this category?">AUTO: –</button>
+          <button id="unitsAddPatternBtn" class="ux-btn" type="button">＋ Pattern</button>
+          <button id="unitsEditBtn" class="ux-btn" type="button">✎ Edit</button>
+          <button id="unitsSaveBtn" class="ux-btn ux-btn-primary" type="button">Save</button>
+          <button id="unitsCancelBtn" class="ux-btn" type="button">Cancel</button>
+          <button id="unitsThemeBtn" class="ux-btn" type="button" title="Switch Day / Night theme">☾ Night</button>
+          <button id="unitsBookCloseBtn" class="ux-btn ux-btn-icon" type="button" title="Close">✕</button>
+        </div>
+      </div>
+      <div id="unitsBookContent"></div>
+      <textarea id="unitsEditor" spellcheck="false"></textarea>
+      <div id="unitsStatus"></div>
+    </section>
+  </div>
+</div>
+
 <div id="diaryBookOverlay">
   <div id="diaryBook">
     <div id="bookLeftPage" class="book-page">
