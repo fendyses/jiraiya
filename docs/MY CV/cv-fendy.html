@@ -9,7 +9,8 @@
 :root{
   --bg:#ffffff; --bg2:#f8fafc; --panel:#ffffff; --panel2:#fbfcfe; --line:#e2e8f0; --line2:#cbd5e1;
   --tx:#0f172a; --mut:#475569; --dim:#94a3b8;
-  --cy:#0891b2; --vi:#7c3aed; --gr:#059669; --pk:#db2777; --am:#d97706; --bl:#2563eb;
+  --cy:#1d6fd8; --vi:#7048e8; --gr:#0f9d6e; --pk:#e0336f; --am:#f08c00; --bl:#0c9fb8;
+  --ink:#1f3f66; --ink2:#2f5d8a;
 }
 @page{size:A4;margin:0}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -25,8 +26,8 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
   linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/8mm 8mm;opacity:.7;
   -webkit-mask-image:radial-gradient(ellipse at 85% 0%,#000 0%,transparent 60%);mask-image:radial-gradient(ellipse at 85% 0%,#000 0%,transparent 60%)}
 .page::after{content:"";position:absolute;inset:0;pointer-events:none;background:
-  radial-gradient(circle at 100% 0%,#0891b212,transparent 45%),
-  radial-gradient(circle at 0% 100%,#7c3aed0d,transparent 45%)}
+  radial-gradient(circle at 100% 0%,#1d6fd812,transparent 45%),
+  radial-gradient(circle at 0% 100%,#7048e80d,transparent 45%)}
 .page>*{position:relative;z-index:1}
 .i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
@@ -37,7 +38,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
 .tab .file{background:var(--bg2);border:1px solid var(--line);border-bottom-color:var(--cy);padding:.8mm 3mm;border-radius:1.5mm 1.5mm 0 0;color:var(--tx)}
 .tab .file b{color:var(--cy);font-weight:500}
 .tab .sp{flex:1}
-.tab .fa{color:var(--vi);border:1px solid #7c3aed55;padding:.5mm 2mm;border-radius:1mm}
+.tab .fa{color:var(--vi);border:1px solid #7048e855;padding:.5mm 2mm;border-radius:1mm}
 .status{position:absolute;left:12mm;right:12mm;bottom:5mm;height:6mm;border-top:1px solid var(--line2);display:flex;align-items:center;gap:5mm;font-family:'JetBrains Mono';font-size:6.6pt;color:var(--mut);z-index:2}
 .status::before{content:"";position:absolute;left:0;top:-1px;width:30mm;height:.6mm;background:linear-gradient(90deg,var(--cy),var(--vi))}
 .status .sp{flex:1}
@@ -60,16 +61,16 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
 .prompt span{color:var(--mut)}
 .cursor{display:inline-block;width:2mm;height:3.4mm;background:var(--cy);vertical-align:-.6mm;margin-left:1mm}
 .ts{display:inline-block;font-family:'Space Grotesk';font-weight:700;font-size:10pt;color:var(--bg);background:linear-gradient(90deg,var(--cy),var(--vi));padding:.3mm 2.2mm;border-radius:1.2mm;margin-bottom:2mm}
-.name{font-family:'Space Grotesk';font-weight:700;font-size:31pt;line-height:1;letter-spacing:-.8pt}
-.name .grad{color:var(--tx)}.name .grad b{color:var(--cy);font-weight:700}
+.name{font-family:'Space Grotesk';font-weight:700;font-size:29pt;line-height:1;letter-spacing:-.8pt;white-space:nowrap}
+.name .grad{color:var(--tx)}.name .grad i{font-style:normal;color:var(--mut);font-weight:600}.name .grad b{color:var(--cy);font-weight:700}
 .name2{font-family:'Space Grotesk';font-size:15pt;font-weight:500;color:var(--mut);margin-top:1mm}
 .role{margin-top:4mm;font-family:'Space Grotesk';font-size:12pt;font-weight:600;color:var(--cy);display:flex;align-items:center;gap:2mm}
 .role::before{content:"";width:6mm;height:.6mm;background:var(--cy)}
 .purpose{margin-top:4mm;display:flex;flex-wrap:wrap;gap:1.6mm}
 .purpose .chip{font-size:7pt}
 .photo{position:relative;height:92mm}
-.photo .ring{position:absolute;left:4mm;top:6mm;width:62mm;height:62mm;border-radius:50%;background:radial-gradient(circle,#22d3ee33,#a78bfa22 55%,transparent 70%);border:1px dashed #22d3ee66}
-.photo .ring2{position:absolute;left:-1mm;top:1mm;width:72mm;height:72mm;border-radius:50%;border:1px solid #a78bfa33}
+.photo .ring{position:absolute;left:4mm;top:6mm;width:62mm;height:62mm;border-radius:50%;background:radial-gradient(circle,#1d6fd833,#7048e822 55%,transparent 70%);border:1px dashed #1d6fd866}
+.photo .ring2{position:absolute;left:-1mm;top:1mm;width:72mm;height:72mm;border-radius:50%;border:1px solid #7048e833}
 .photo .frame{position:absolute;left:0;right:0;top:0;bottom:0;overflow:hidden;border-radius:0 0 34mm 34mm}
 .photo img{position:absolute;width:100mm;left:-15mm;top:1mm;filter:drop-shadow(0 1.5mm 3mm #0f172a26)}
 .photo .fade{position:absolute;left:0;right:0;bottom:0;height:22mm;background:linear-gradient(transparent,var(--bg))}
@@ -115,7 +116,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
 .tl::before{content:"";position:absolute;left:3mm;top:2mm;bottom:2mm;width:.6mm;background:linear-gradient(var(--cy),var(--vi))}
 .ti{position:relative;margin-bottom:3mm;padding:3mm 3.5mm;display:grid;grid-template-columns:1fr 17mm;gap:3mm;align-items:center}
 .ti:last-child{margin-bottom:0}
-.ti::before{content:"";position:absolute;left:-7.6mm;top:50%;width:3.2mm;height:3.2mm;margin-top:-1.6mm;border-radius:50%;background:var(--bg);border:.7mm solid var(--cy);box-shadow:0 0 0 .8mm #0891b21f}
+.ti::before{content:"";position:absolute;left:-7.6mm;top:50%;width:3.2mm;height:3.2mm;margin-top:-1.6mm;border-radius:50%;background:var(--bg);border:.7mm solid var(--cy);box-shadow:0 0 0 .8mm #1d6fd81f}
 .ti .yr{font-family:'JetBrains Mono';font-size:7pt;color:var(--cy);font-weight:700}
 .ti h4{font-family:'Space Grotesk';font-size:10.2pt;line-height:1.2;margin:.6mm 0}
 .ti .inst{font-size:7.6pt;color:var(--mut)}
@@ -241,6 +242,39 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
 .pub .j b{color:#1e293b;font-weight:600}
 .end{margin-top:3mm;font-family:'JetBrains Mono';font-size:7.6pt;color:var(--mut);display:flex;align-items:center;gap:2mm}
 .end .g{color:var(--gr)}
+
+/* compact page-2 skills (expanded lists) */
+.stack{padding:2.6mm 3.5mm}
+.layer{grid-template-columns:33mm 1fr 10mm;gap:2.4mm;padding:1.5mm 0}
+.layer .lh b{font-size:8.3pt}
+.layer .lh .ic{width:6mm;height:6mm;font-size:3.3mm}
+.layer .chips{gap:1mm}
+.layer .chip{font-size:6.2pt;padding:.35mm 1.5mm}
+.layer .cnt .num{font-size:11pt}
+.ti{margin-bottom:2mm;padding:2.2mm 3.5mm}
+.sk{padding:2.6mm}
+.sk .ic{width:7mm;height:7mm;font-size:3.8mm;margin-bottom:1.4mm}
+
+/* text accents stay formal navy; colour is reserved for graphics */
+.name .grad b,.role,.readme .hl,.float b,.status span:first-child,.pj .hl,.gr p em{color:var(--ink)}
+.role::before{background:var(--ink)}
+.ti .yr,.awi .y,.pub .yr{color:var(--ink2)}
+.sk li::before{color:var(--ink2)}
+.tab .fa{color:var(--ink);border-color:#1f3f6655}
+.k{color:#5b3fb8}.s{color:#1c7a55}.nb{color:#a86400}
+
+/* alignment fixes */
+.photo .ring2{left:0;width:70mm;height:70mm}
+.code{line-height:2.05}
+.kpis{margin-top:9mm}
+.row2{margin-top:10mm}
+.contact{margin-top:10mm}
+.edu{align-items:stretch}
+.tl{display:flex;flex-direction:column;gap:3mm}
+.tl .ti{margin-bottom:0;flex:1}
+.tl::before{top:6mm;bottom:6mm}
+.track{background:repeating-linear-gradient(90deg,#e2e8f0 0 1px,transparent 1px calc(100%/7))}
+.layer{grid-template-columns:31mm 1fr 9mm;gap:2mm}
 </style>
 </head>
 <body>
@@ -278,7 +312,6 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
 <!-- ======================= PAGE 1 ======================= -->
 <section class="page">
   <div class="tab">
-    <div class="file"><b>~/uitm/</b>saiful-effendy/profil.tsx</div>
     <div class="sp"></div>
     <div>Temu Duga Memasuki Perkhidmatan UiTM</div>
     <div class="fa">GRED FA6</div>
@@ -286,25 +319,27 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
 
   <div class="hero">
     <div>
-      <div class="prompt">fendy@uitm <span>~</span> $ whoami<span class="cursor"></span></div>
-      <div class="ts">Ts.</div>
-      <div class="name"><span class="grad">Saiful <b>Effendy</b></span></div>
+      <div class="name"><span class="grad"><i>Ts.</i> Saiful <b>Effendy</b></span></div>
       <div class="name2">Bin Md Sharif</div>
       <div class="role">Penolong Pegawai Teknologi Maklumat</div>
       <div class="purpose">
         <span class="chip"><svg class="i" style="color:var(--cy)"><use href="#cpu"/></svg>Skim Teknologi Maklumat Gred FA6</span>
-        <span class="chip"><svg class="i" style="color:var(--vi)"><use href="#building"/></svg>Jabatan Infostruktur, PPII</span>
+        <span class="chip"><svg class="i" style="color:var(--vi)"><use href="#building"/></svg>Jabatan Digital, UiTM Shah Alam</span>
         <span class="chip"><svg class="i" style="color:var(--gr)"><use href="#shield"/></svg>Teknologis Profesional MBOT</span>
       </div>
       <div class="purpose" style="margin-top:4.5mm">
-        <span class="chip" style="border-color:#22d3ee55">Laravel</span>
-        <span class="chip" style="border-color:#22d3ee55">Angular</span>
-        <span class="chip" style="border-color:#22d3ee55">Quasar</span>
-        <span class="chip" style="border-color:#22d3ee55">Vue.js</span>
-        <span class="chip" style="border-color:#a78bfa55">Oracle</span>
-        <span class="chip" style="border-color:#a78bfa55">MariaDB</span>
-        <span class="chip" style="border-color:#a78bfa55">Tibero</span>
-        <span class="chip" style="border-color:#34d39955">Docker</span>
+        <span class="chip" style="border-color:#1d6fd855">Laravel</span>
+        <span class="chip" style="border-color:#1d6fd855">Vue.js</span>
+        <span class="chip" style="border-color:#1d6fd855">Angular</span>
+        <span class="chip" style="border-color:#1d6fd855">Quasar</span>
+        <span class="chip" style="border-color:#1d6fd855">Next.js</span>
+        <span class="chip" style="border-color:#1d6fd855">Flutter</span>
+        <span class="chip" style="border-color:#7048e855">Oracle</span>
+        <span class="chip" style="border-color:#7048e855">MariaDB</span>
+        <span class="chip" style="border-color:#7048e855">Tibero</span>
+        <span class="chip" style="border-color:#7048e855">Firebase</span>
+        <span class="chip" style="border-color:#0f9d6e55">Docker</span>
+        <span class="chip" style="border-color:#0f9d6e55">Git</span>
       </div>
     </div>
     <div class="photo">
@@ -312,7 +347,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
       <div class="ring"></div>
       <div class="frame"><img src="photo-507.png" alt="Ts. Saiful Effendy"><div class="fade"></div></div>
       <div class="float" style="left:-6mm;top:22mm"><svg class="i" style="color:var(--gr)"><use href="#check"/></svg>status: <b>aktif</b></div>
-      <div class="float" style="right:-2mm;top:50mm"><svg class="i" style="color:var(--am)"><use href="#star"/></svg><b>19</b>&nbsp;thn <b>9</b>&nbsp;bln @UiTM</div>
+      <div class="float" style="right:0;top:50mm"><svg class="i" style="color:var(--am)"><use href="#star"/></svg><b>19</b>&nbsp;thn <b>9</b>&nbsp;bln @UiTM</div>
     </div>
   </div>
 
@@ -352,27 +387,18 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
   </div>
 
   <div class="contact">
-    <div class="card ct"><div class="ic" style="background:#22d3ee1f;color:var(--cy)"><svg class="i"><use href="#building"/></svg></div><div><div class="lb">Alamat Jabatan</div><div class="vl">Jabatan Infostruktur, Pejabat Infrastruktur &amp; Infostruktur, Universiti Teknologi MARA, 40450 Shah Alam, Selangor</div></div></div>
-    <div class="card ct"><div class="ic" style="background:#a78bfa1f;color:var(--vi)"><svg class="i"><use href="#home"/></svg></div><div><div class="lb">Alamat Rumah</div><div class="vl">No 4, Taman Setia Utama 3, Jalan Setia Utama U13/39J, 40170 Shah Alam</div></div></div>
-    <div class="card ct"><div class="ic" style="background:#34d3991f;color:var(--gr)"><svg class="i"><use href="#phone"/></svg></div><div><div class="lb">Tel. Rasmi</div><div class="vl mono">03-5544 2165</div></div></div>
-    <div class="card ct"><div class="ic" style="background:#f472b61f;color:var(--pk)"><svg class="i"><use href="#mobile"/></svg></div><div><div class="lb">Tel. Peribadi</div><div class="vl mono">019-572 2600</div></div></div>
+    <div class="card ct"><div class="ic" style="background:#1d6fd81f;color:var(--cy)"><svg class="i"><use href="#building"/></svg></div><div><div class="lb">Alamat Jabatan</div><div class="vl">Jabatan Infostruktur, Pejabat Infrastruktur &amp; Infostruktur, Universiti Teknologi MARA, 40450 Shah Alam, Selangor</div></div></div>
+    <div class="card ct"><div class="ic" style="background:#7048e81f;color:var(--vi)"><svg class="i"><use href="#home"/></svg></div><div><div class="lb">Alamat Rumah</div><div class="vl">No 4, Taman Setia Utama 3, Jalan Setia Utama U13/39J, 40170 Shah Alam</div></div></div>
+    <div class="card ct"><div class="ic" style="background:#0f9d6e1f;color:var(--gr)"><svg class="i"><use href="#phone"/></svg></div><div><div class="lb">Tel. Rasmi</div><div class="vl mono">03-5544 2165</div></div></div>
+    <div class="card ct"><div class="ic" style="background:#e0336f1f;color:var(--pk)"><svg class="i"><use href="#mobile"/></svg></div><div><div class="lb">Tel. Peribadi</div><div class="vl mono">019-572 2600</div></div></div>
   </div>
 
-  <div class="toc">
-    <div>01 · hal.1<b>Profil &amp; Biodata</b></div>
-    <div>02 · hal.2<b>Akademik &amp; Kemahiran</b></div>
-    <div>03 · hal.3<b>Tugas &amp; Pembangunan Sistem</b></div>
-    <div>04 · hal.4<b>Anugerah, Kepimpinan &amp; Penulisan</b></div>
-  </div>
-
-  <div class="status"><span>⎇ main</span><span>● Ts. Saiful Effendy Bin Md Sharif</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 1/4</span></div>
+  <div class="status"><span>● Ts. Saiful Effendy Bin Md Sharif</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 1/4</span></div>
 </section>
 
 <!-- ======================= PAGE 2 ======================= -->
 <section class="page">
   <div class="tab">
-    <div class="file"><b>~/saiful-effendy/</b>akademik.log</div>
-    <div class="file" style="border-bottom-color:transparent;color:var(--mut)">kemahiran.config.ts</div>
     <div class="sp"></div>
     <div class="fa">GRED FA6</div>
   </div>
@@ -382,7 +408,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     <div class="tl">
       <div class="card ti">
         <div><div class="yr">2017</div><h4>Ijazah Sarjana Muda (Kepujian) Sains Komputer (IT)</h4><div class="inst">Universiti Teknologi MARA</div></div>
-        <div class="gauge"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#e2e8f0" stroke-width="3"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#g1)" stroke-width="3" stroke-dasharray="76 100" stroke-linecap="round"/><defs><linearGradient id="g1"><stop offset="0" stop-color="#0891b2"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs></svg><div class="gv"><div>3.04<small>CGPA</small></div></div></div>
+        <div class="gauge"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#e2e8f0" stroke-width="3"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#g1)" stroke-width="3" stroke-dasharray="76 100" stroke-linecap="round"/><defs><linearGradient id="g1"><stop offset="0" stop-color="#1d6fd8"/><stop offset="1" stop-color="#7048e8"/></linearGradient></defs></svg><div class="gv"><div>3.04<small>CGPA</small></div></div></div>
       </div>
       <div class="card ti">
         <div><div class="yr">2004</div><h4>Sijil Teknologi Maklumat</h4><div class="inst">Politeknik Sultan Abdul Halim Mu'adzam Shah</div></div>
@@ -396,13 +422,13 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     <div class="card mbot">
       <div class="ttl">// badan profesional</div>
       <div class="cert">
-        <div class="top"><div class="badge" style="background:#a78bfa22;color:var(--vi)"><svg class="i"><use href="#grad"/></svg></div><div><div class="d">FEB 2021</div><h5>Teknologis Berijazah</h5></div></div>
+        <div class="top"><div class="badge" style="background:#7048e822;color:var(--vi)"><svg class="i"><use href="#grad"/></svg></div><div><div class="d">FEB 2021</div><h5>Teknologis Berijazah</h5></div></div>
         <div class="d" style="margin-top:1.4mm">Lembaga Teknologis Malaysia (MBOT)</div>
         <div class="np"><span>N.P</span>GT21020867</div>
       </div>
       <div class="arrow">naik taraf · 5 bulan</div>
-      <div class="cert" style="border-color:#22d3ee77;box-shadow:0 0 5mm #22d3ee22">
-        <div class="top"><div class="badge" style="background:#22d3ee22;color:var(--cy)"><svg class="i"><use href="#shield"/></svg></div><div><div class="d">JUL 2021</div><h5>Teknologis Profesional (Ts.)</h5></div></div>
+      <div class="cert" style="border-color:#1d6fd877;box-shadow:0 0 5mm #1d6fd822">
+        <div class="top"><div class="badge" style="background:#1d6fd822;color:var(--cy)"><svg class="i"><use href="#shield"/></svg></div><div><div class="d">JUL 2021</div><h5>Teknologis Profesional (Ts.)</h5></div></div>
         <div class="d" style="margin-top:1.4mm">Lembaga Teknologis Malaysia (MBOT)</div>
         <div class="np"><span>N.P</span>PT21070847</div>
       </div>
@@ -410,51 +436,54 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     </div>
   </div>
 
-  <div class="sec v" style="margin-top:6mm"><span class="n">03</span><h2>Kemahiran Utama</h2><span class="c">// kemahiran.config.ts</span></div>
+  <div class="sec v" style="margin-top:4mm"><span class="n">03</span><h2>Kemahiran Utama</h2><span class="c">// kemahiran.config.ts</span></div>
   <div class="card stack">
     <div class="layer">
-      <div class="lh"><div class="ic" style="background:#22d3ee1f;color:var(--cy)"><svg class="i"><use href="#code"/></svg></div><b>Bahasa Pengaturcaraan</b></div>
-      <div class="chips"><span class="chip">PHP · Laravel</span><span class="chip">JavaScript</span><span class="chip">Vanilla JS</span><span class="chip">jQuery</span><span class="chip">Angular</span><span class="chip">Quasar</span><span class="chip">HTML5</span><span class="chip">CSS</span><span class="chip">Bootstrap</span><span class="chip">ColdFusion (CFML)</span><span class="chip">SQL</span></div>
-      <div class="cnt"><div class="num" style="color:var(--cy)">11</div><div class="u">item</div><div class="meter"><i style="width:100%;background:var(--cy)"></i></div></div>
+      <div class="lh"><div class="ic" style="background:#1d6fd81f;color:var(--cy)"><svg class="i"><use href="#code"/></svg></div><b>Bahasa &amp; Kerangka Kerja</b></div>
+      <div class="chips"><span class="chip">PHP · Laravel</span><span class="chip">JavaScript</span><span class="chip">TypeScript</span><span class="chip">Vue.js</span><span class="chip">Angular</span><span class="chip">Quasar</span><span class="chip">React · Next.js</span><span class="chip">Dart · Flutter</span><span class="chip">jQuery</span><span class="chip">HTML5 · CSS · Sass</span><span class="chip">Bootstrap</span><span class="chip">Tailwind CSS</span><span class="chip">ColdFusion (CFML)</span><span class="chip">SQL</span></div>
+      <div class="cnt"><div class="num" style="color:var(--cy)">14</div><div class="u">item</div><div class="meter"><i style="width:100%;background:var(--cy)"></i></div></div>
     </div>
     <div class="layer">
-      <div class="lh"><div class="ic" style="background:#a78bfa1f;color:var(--vi)"><svg class="i"><use href="#db"/></svg></div><b>Pangkalan Data</b></div>
-      <div class="chips"><span class="chip">MariaDB / MySQL</span><span class="chip">Oracle Database</span><span class="chip">Tibero</span><span class="chip">Firebase Realtime DB</span></div>
-      <div class="cnt"><div class="num" style="color:var(--vi)">4</div><div class="u">enjin</div><div class="meter"><i style="width:36%;background:var(--vi)"></i></div></div>
+      <div class="lh"><div class="ic" style="background:#7048e81f;color:var(--vi)"><svg class="i"><use href="#db"/></svg></div><b>Pangkalan Data</b></div>
+      <div class="chips"><span class="chip">MariaDB / MySQL</span><span class="chip">Oracle</span><span class="chip">Tibero</span><span class="chip">Firebase Firestore · Realtime DB</span><span class="chip">Redis</span><span class="chip">Meilisearch</span></div>
+      <div class="cnt"><div class="num" style="color:var(--vi)">6</div><div class="u">enjin</div><div class="meter"><i style="width:43%;background:var(--vi)"></i></div></div>
     </div>
     <div class="layer">
-      <div class="lh"><div class="ic" style="background:#34d3991f;color:var(--gr)"><svg class="i"><use href="#term"/></svg></div><b>Persekitaran Pembangunan</b></div>
-      <div class="chips"><span class="chip">VS Code</span><span class="chip">Dreamweaver</span><span class="chip">Navicat</span><span class="chip">DBeaver</span><span class="chip">Postman</span><span class="chip">Laravel Herd</span><span class="chip">Laragon</span><span class="chip">ServBay</span><span class="chip">XAMPP</span><span class="chip">Docker</span></div>
-      <div class="cnt"><div class="num" style="color:var(--gr)">10</div><div class="u">alatan</div><div class="meter"><i style="width:91%;background:var(--gr)"></i></div></div>
+      <div class="lh"><div class="ic" style="background:#0c9fb81f;color:var(--bl)"><svg class="i"><use href="#layers"/></svg></div><b>Awan &amp; Integrasi</b></div>
+      <div class="chips"><span class="chip">Firebase Auth · Hosting · Cloud Functions</span><span class="chip">AWS S3 · MinIO</span><span class="chip">REST API · Sanctum · JWT</span><span class="chip">OAuth2 · Google SSO</span><span class="chip">WS Integrasi UiTM</span><span class="chip">Pusher · Notifikasi Telegram</span><span class="chip">PWA · Service Worker</span><span class="chip">Laporan PDF · Excel · QR</span></div>
+      <div class="cnt"><div class="num" style="color:var(--bl)">8</div><div class="u">servis</div><div class="meter"><i style="width:57%;background:var(--bl)"></i></div></div>
     </div>
     <div class="layer">
-      <div class="lh"><div class="ic" style="background:#fbbf241f;color:var(--am)"><svg class="i"><use href="#bug"/></svg></div><b>Pengujian &amp; Debugging</b></div>
-      <div class="chips"><span class="chip">Laravel Telescope</span><span class="chip">Dynatrace</span><span class="chip">Ujian fungsi &amp; API · Postman</span><span class="chip">Penjejakan bug · ujian manual &amp; laporan pengguna</span></div>
-      <div class="cnt"><div class="num" style="color:var(--am)">4</div><div class="u">kaedah</div><div class="meter"><i style="width:36%;background:var(--am)"></i></div></div>
+      <div class="lh"><div class="ic" style="background:#0f9d6e1f;color:var(--gr)"><svg class="i"><use href="#term"/></svg></div><b>Persekitaran Pembangunan</b></div>
+      <div class="chips"><span class="chip">VS Code</span><span class="chip">Git</span><span class="chip">Docker · Compose</span><span class="chip">Laravel Octane · Horizon</span><span class="chip">Vite · Laravel Mix</span><span class="chip">Composer · npm</span><span class="chip">Navicat · DBeaver</span><span class="chip">Postman</span><span class="chip">Laravel Herd</span><span class="chip">Laragon</span><span class="chip">ServBay</span><span class="chip">XAMPP</span><span class="chip">Dreamweaver</span></div>
+      <div class="cnt"><div class="num" style="color:var(--gr)">13</div><div class="u">alatan</div><div class="meter"><i style="width:93%;background:var(--gr)"></i></div></div>
     </div>
     <div class="layer">
-      <div class="lh"><div class="ic" style="background:#f472b61f;color:var(--pk)"><svg class="i"><use href="#clip"/></svg></div><b>Pengurusan Projek</b></div>
+      <div class="lh"><div class="ic" style="background:#f08c001f;color:var(--am)"><svg class="i"><use href="#bug"/></svg></div><b>Pengujian &amp; Debugging</b></div>
+      <div class="chips"><span class="chip">PHPUnit</span><span class="chip">PHPStan</span><span class="chip">Jasmine · Karma</span><span class="chip">Laravel Telescope</span><span class="chip">Laravel Debugbar</span><span class="chip">Dynatrace</span><span class="chip">Elastic APM</span><span class="chip">Ujian fungsi &amp; API · Postman</span><span class="chip">Penjejakan bug · ujian manual &amp; laporan pengguna</span></div>
+      <div class="cnt"><div class="num" style="color:var(--am)">9</div><div class="u">kaedah</div><div class="meter"><i style="width:64%;background:var(--am)"></i></div></div>
+    </div>
+    <div class="layer">
+      <div class="lh"><div class="ic" style="background:#e0336f1f;color:var(--pk)"><svg class="i"><use href="#clip"/></svg></div><b>Pengurusan Projek</b></div>
       <div class="chips"><span class="chip">Change Request (CR)</span><span class="chip">UAR</span><span class="chip">Perbincangan bersama pengguna</span></div>
-      <div class="cnt"><div class="num" style="color:var(--pk)">3</div><div class="u">proses</div><div class="meter"><i style="width:27%;background:var(--pk)"></i></div></div>
+      <div class="cnt"><div class="num" style="color:var(--pk)">3</div><div class="u">proses</div><div class="meter"><i style="width:21%;background:var(--pk)"></i></div></div>
     </div>
   </div>
 
-  <div class="sec g" style="margin-top:6mm"><span class="n">04</span><h2>Kemahiran Insaniah</h2><span class="c">// soft-skills.md</span></div>
+  <div class="sec g" style="margin-top:4mm"><span class="n">04</span><h2>Kemahiran Insaniah</h2><span class="c">// soft-skills.md</span></div>
   <div class="soft">
-    <div class="card sk"><span class="idx">01</span><div class="ic" style="background:#22d3ee1f;color:var(--cy)"><svg class="i"><use href="#msg"/></svg></div><h4>Komunikasi &amp; Dokumentasi</h4><ul><li>Penyediaan dokumentasi sistem, manual pengguna &amp; laporan teknikal</li><li>Komunikasi efektif pelbagai peringkat: pengguna akhir &amp; pentadbir sistem</li></ul></div>
-    <div class="card sk"><span class="idx">02</span><div class="ic" style="background:#fbbf241f;color:var(--am)"><svg class="i"><use href="#wrench"/></svg></div><h4>Penyelesaian Masalah</h4><ul><li>Mampu mengenal pasti dan menyelesaikan isu teknikal dengan efisien</li></ul></div>
-    <div class="card sk"><span class="idx">03</span><div class="ic" style="background:#34d3991f;color:var(--gr)"><svg class="i"><use href="#users"/></svg></div><h4>Kerjasama Pasukan &amp; Kepimpinan</h4><ul><li>Bekerja dalam pasukan pembangunan sistem dalaman jabatan</li><li>Membimbing staf baharu dalam tugas teknikal</li></ul></div>
-    <div class="card sk"><span class="idx">04</span><div class="ic" style="background:#a78bfa1f;color:var(--vi)"><svg class="i"><use href="#bulb"/></svg></div><h4>Kreatif &amp; Inovatif</h4><ul><li>Mencadangkan penambahbaikan fungsi sistem sedia ada</li><li>Mereka bentuk antara muka pengguna (UI) moden &amp; mesra pengguna</li></ul></div>
+    <div class="card sk"><span class="idx">01</span><div class="ic" style="background:#1d6fd81f;color:var(--cy)"><svg class="i"><use href="#msg"/></svg></div><h4>Komunikasi &amp; Dokumentasi</h4><ul><li>Penyediaan dokumentasi sistem, manual pengguna &amp; laporan teknikal</li><li>Komunikasi efektif pelbagai peringkat: pengguna akhir &amp; pentadbir sistem</li></ul></div>
+    <div class="card sk"><span class="idx">02</span><div class="ic" style="background:#f08c001f;color:var(--am)"><svg class="i"><use href="#wrench"/></svg></div><h4>Penyelesaian Masalah</h4><ul><li>Mampu mengenal pasti dan menyelesaikan isu teknikal dengan efisien</li></ul></div>
+    <div class="card sk"><span class="idx">03</span><div class="ic" style="background:#0f9d6e1f;color:var(--gr)"><svg class="i"><use href="#users"/></svg></div><h4>Kerjasama Pasukan &amp; Kepimpinan</h4><ul><li>Bekerja dalam pasukan pembangunan sistem dalaman jabatan</li><li>Membimbing staf baharu dalam tugas teknikal</li></ul></div>
+    <div class="card sk"><span class="idx">04</span><div class="ic" style="background:#7048e81f;color:var(--vi)"><svg class="i"><use href="#bulb"/></svg></div><h4>Kreatif &amp; Inovatif</h4><ul><li>Mencadangkan penambahbaikan fungsi sistem sedia ada</li><li>Mereka bentuk antara muka pengguna (UI) moden &amp; mesra pengguna</li></ul></div>
   </div>
 
-  <div class="status"><span>⎇ main</span><span>● Akademik &amp; Kemahiran</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 2/4</span></div>
+  <div class="status"><span>● Akademik &amp; Kemahiran</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 2/4</span></div>
 </section>
 
 <!-- ======================= PAGE 3 ======================= -->
 <section class="page">
   <div class="tab">
-    <div class="file"><b>~/saiful-effendy/</b>tugas.matrix</div>
-    <div class="file" style="border-bottom-color:transparent;color:var(--mut)">projek/</div>
     <div class="sp"></div>
     <div class="fa">GRED FA6</div>
   </div>
@@ -498,9 +527,9 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
       <div class="card sbox bars">
         <div class="t">// beban tugas mengikut fasa</div>
         <div class="b"><div class="lb"><span>CR · 2021–24</span><b style="color:var(--vi)">4</b></div><div class="tr"><i style="width:44%;background:var(--vi)"></i></div></div>
-        <div class="b"><div class="lb"><span>Selenggara · 2021–24</span><b style="color:var(--vi)">5</b></div><div class="tr"><i style="width:56%;background:linear-gradient(90deg,var(--vi),#7c3aed)"></i></div></div>
+        <div class="b"><div class="lb"><span>Selenggara · 2021–24</span><b style="color:var(--vi)">5</b></div><div class="tr"><i style="width:56%;background:linear-gradient(90deg,var(--vi),#7048e8)"></i></div></div>
         <div class="b"><div class="lb"><span>CR · 2024–kini</span><b style="color:var(--cy)">9</b></div><div class="tr"><i style="width:100%;background:var(--cy)"></i></div></div>
-        <div class="b"><div class="lb"><span>Selenggara · 2024–kini</span><b style="color:var(--cy)">6</b></div><div class="tr"><i style="width:67%;background:linear-gradient(90deg,var(--cy),#0891b2)"></i></div></div>
+        <div class="b"><div class="lb"><span>Selenggara · 2024–kini</span><b style="color:var(--cy)">6</b></div><div class="tr"><i style="width:67%;background:linear-gradient(90deg,var(--cy),#1d6fd8)"></i></div></div>
       </div>
       <div class="card sbox" style="text-align:center">
         <div class="t" style="text-align:left">// jumlah unik</div>
@@ -514,36 +543,33 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
   <div class="devhd"><svg class="i" style="color:var(--pk)"><use href="#branch"/></svg>Jabatan Infostruktur, PPII · 2021 – Sekarang</div>
   <div class="dev">
     <div class="card pj"><span class="no">01</span>
-      <div class="top"><div class="ic" style="background:#fbbf241f;color:var(--am)"><svg class="i"><use href="#card"/></svg></div><h4>Sistem Pengurusan Stok<br>Kad Prihatin Siswa</h4></div>
-      <div class="tags"><span class="chip" style="border-color:#fbbf2466">Pembangun Penuh</span><span class="chip">Seluruh UiTM</span></div>
+      <div class="top"><div class="ic" style="background:#f08c001f;color:var(--am)"><svg class="i"><use href="#card"/></svg></div><h4>Sistem Pengurusan Stok<br>Kad Prihatin Siswa</h4></div>
+      <div class="tags"><span class="chip" style="border-color:#f08c0066">Pembangun Penuh</span><span class="chip">Seluruh UiTM</span></div>
       <p>Membangunkan sistem untuk merekodkan stok kad prihatin siswa yang digunapakai di seluruh UiTM. Rekod stok adalah <span class="hl">syarat wajib Bank Negara</span> memandangkan kad mempunyai cip "bank card". Sistem ini memudahkan pegawai terlibat merekodkan stok.</p>
     </div>
     <div class="card pj"><span class="no">02</span>
-      <div class="top"><div class="ic" style="background:#22d3ee1f;color:var(--cy)"><svg class="i"><use href="#alert"/></svg></div><h4>Sistem eAduan UiTM</h4></div>
-      <div class="tags"><span class="chip" style="border-color:#22d3ee66">Front-end</span><span class="chip">Laravel</span></div>
+      <div class="top"><div class="ic" style="background:#1d6fd81f;color:var(--cy)"><svg class="i"><use href="#alert"/></svg></div><h4>Sistem eAduan UiTM</h4></div>
+      <div class="tags"><span class="chip" style="border-color:#1d6fd866">Front-end</span><span class="chip">Laravel</span></div>
       <p>Terlibat dalam pembangunan (front-end) sistem eAduan UiTM. Dibangunkan menggunakan framework Laravel, bertujuan untuk <span class="hl">memberi nafas baharu</span> kepada Sistem eAduan Korporat.</p>
     </div>
     <div class="card pj"><span class="no">03</span>
-      <div class="top"><div class="ic" style="background:#a78bfa1f;color:var(--vi)"><svg class="i"><use href="#users"/></svg></div><h4>Sistem PPUiTM</h4></div>
-      <div class="tags"><span class="chip" style="border-color:#a78bfa66">Front-end</span><span class="chip">Quasar</span></div>
+      <div class="top"><div class="ic" style="background:#7048e81f;color:var(--vi)"><svg class="i"><use href="#users"/></svg></div><h4>Sistem PPUiTM</h4></div>
+      <div class="tags"><span class="chip" style="border-color:#7048e866">Front-end</span><span class="chip">Quasar</span></div>
       <p>Terlibat dalam pembangunan (front-end) sistem PPUiTM. Dibangunkan menggunakan Framework Quasar sebagai <span class="hl">platform Persatuan Pentadbir UiTM</span>.</p>
     </div>
     <div class="card pj"><span class="no">04</span>
-      <div class="top"><div class="ic" style="background:#34d3991f;color:var(--gr)"><svg class="i"><use href="#cal"/></svg></div><h4>Sistem Pengurusan Majlis – DevOps</h4></div>
-      <div class="tags"><span class="chip" style="border-color:#34d39966">Pembangun</span><span class="chip">Vue.js</span></div>
+      <div class="top"><div class="ic" style="background:#0f9d6e1f;color:var(--gr)"><svg class="i"><use href="#cal"/></svg></div><h4>Sistem Pengurusan Majlis – DevOps</h4></div>
+      <div class="tags"><span class="chip" style="border-color:#0f9d6e66">Pembangun</span><span class="chip">Vue.js</span></div>
       <p>Membangunkan Sistem Pengurusan Majlis – DevOps menggunakan Vue.js untuk melancarkan program tersebut. Sistem ini juga <span class="hl">boleh digunakan semula</span> untuk sebarang majlis akan datang.</p>
     </div>
   </div>
 
-  <div class="status"><span>⎇ main</span><span>● Tugas &amp; Pembangunan Sistem</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 3/4</span></div>
+  <div class="status"><span>● Tugas &amp; Pembangunan Sistem</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 3/4</span></div>
 </section>
 
 <!-- ======================= PAGE 4 ======================= -->
 <section class="page">
   <div class="tab">
-    <div class="file"><b>~/saiful-effendy/</b>pencapaian.yml</div>
-    <div class="file" style="border-bottom-color:transparent;color:var(--mut)">kepimpinan.gantt</div>
-    <div class="file" style="border-bottom-color:transparent;color:var(--mut)">penulisan.bib</div>
     <div class="sp"></div>
     <div class="fa">GRED FA6</div>
   </div>
@@ -551,19 +577,19 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
   <div class="sec a" style="margin-bottom:2.6mm"><span class="n">07</span><h2>Anugerah &amp; Pengiktirafan</h2><span class="c">// 2020 → 2024</span></div>
   <div class="aw">
     <div class="card awl">
-      <div class="awi"><span class="y">2024</span><span class="md" style="background:#fbbf2426;color:var(--am)"><svg class="i"><use href="#star"/></svg></span><div><b>Anugerah Harapan – Konvensyen KIK Peringkat Universiti Awam</b><span>Mewakili UiTM</span></div></div>
-      <div class="awi"><span class="y">2023</span><span class="md" style="background:#fbbf2426;color:var(--am)"><svg class="i"><use href="#trophy"/></svg></span><div><b>Johan – Konvensyen KIK Peringkat Zon Tengah</b></div></div>
+      <div class="awi"><span class="y">2024</span><span class="md" style="background:#f08c0026;color:var(--am)"><svg class="i"><use href="#star"/></svg></span><div><b>Anugerah Harapan – Konvensyen KIK Peringkat Universiti Awam</b><span>Mewakili UiTM</span></div></div>
+      <div class="awi"><span class="y">2023</span><span class="md" style="background:#f08c0026;color:var(--am)"><svg class="i"><use href="#trophy"/></svg></span><div><b>Johan – Konvensyen KIK Peringkat Zon Tengah</b></div></div>
       <div class="awi"><span class="y">2023</span><span class="md" style="background:#64748b1f;color:#64748b"><svg class="i"><use href="#trophy"/></svg></span><div><b>Naib Johan – Konvensyen KIK Peringkat UiTM</b></div></div>
-      <div class="awi"><span class="y">2023</span><span class="md" style="background:#34d39926;color:var(--gr)"><svg class="i"><use href="#award"/></svg></span><div><b>Anugerah Aperantis Terbaik – Program Kompetensi Skim F</b></div></div>
+      <div class="awi"><span class="y">2023</span><span class="md" style="background:#0f9d6e26;color:var(--gr)"><svg class="i"><use href="#award"/></svg></span><div><b>Anugerah Aperantis Terbaik – Program Kompetensi Skim F</b></div></div>
       <div class="awi"><span class="y">2021</span><span class="md" style="background:#64748b1f;color:#64748b"><svg class="i"><use href="#award"/></svg></span><div><b>Pingat Perak – Mini Konvensyen Inovasi &amp; Kreativiti 2021</b><span>Peringkat Pejabat Pembangunan Infrastruktur dan Infostruktur</span></div></div>
-      <div class="awi"><span class="y">2020</span><span class="md" style="background:#22d3ee26;color:var(--cy)"><svg class="i"><use href="#star"/></svg></span><div><b>Anugerah Perkhidmatan Cemerlang (APC)</b><span>Universiti Teknologi MARA</span></div></div>
+      <div class="awi"><span class="y">2020</span><span class="md" style="background:#1d6fd826;color:var(--cy)"><svg class="i"><use href="#star"/></svg></span><div><b>Anugerah Perkhidmatan Cemerlang (APC)</b><span>Universiti Teknologi MARA</span></div></div>
     </div>
     <div class="card podium">
       <div class="t">// laluan KIK · naik peringkat</div>
       <div class="steps">
         <div class="st"><div class="lbl">Naib Johan</div><div class="sub">UiTM<br>2023</div><div class="blk" style="height:16mm;background:linear-gradient(180deg,#cbd5e1,#64748b)"><svg class="i"><use href="#trophy"/></svg>L1</div></div>
-        <div class="st"><div class="lbl" style="color:var(--am)">Johan</div><div class="sub">Zon Tengah<br>2023</div><div class="blk" style="height:26mm;background:linear-gradient(180deg,#fde68a,#f59e0b)"><svg class="i"><use href="#trophy"/></svg>L2</div></div>
-        <div class="st"><div class="lbl" style="color:var(--cy)">Harapan</div><div class="sub">Universiti Awam<br>2024</div><div class="blk" style="height:36mm;background:linear-gradient(180deg,#67e8f9,#7c3aed)"><svg class="i"><use href="#star"/></svg>L3</div></div>
+        <div class="st"><div class="lbl" style="color:var(--am)">Johan</div><div class="sub">Zon Tengah<br>2023</div><div class="blk" style="height:26mm;background:linear-gradient(180deg,#ffc34d,#f08c00)"><svg class="i"><use href="#trophy"/></svg>L2</div></div>
+        <div class="st"><div class="lbl" style="color:var(--cy)">Harapan</div><div class="sub">Universiti Awam<br>2024</div><div class="blk" style="height:36mm;background:linear-gradient(180deg,#5aa0f0,#7048e8)"><svg class="i"><use href="#star"/></svg>L3</div></div>
       </div>
       <div class="base"></div>
     </div>
@@ -586,9 +612,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     <div class="card pub"><div class="yr"><svg class="i"><use href="#book"/></svg>2026</div><h4>"AI Brain Fry" and Technostress: Modeling Professional Well-Being in Malaysian Higher Education</h4><div class="j"><b>Quantum Journal of Social Sciences and Humanities</b><br>ISSN 2716-6481 · Special Issue 2026</div></div>
   </div>
 
-  <div class="end"><span class="g">fendy@uitm ~ $</span> exit 0 <span class="cm">// Terima kasih atas pertimbangan pihak panel.</span><span class="cursor"></span></div>
-
-  <div class="status"><span>⎇ main</span><span>● Anugerah · Kepimpinan · Penulisan</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 4/4</span></div>
+  <div class="status"><span>● Anugerah · Kepimpinan · Penulisan</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 4/4</span></div>
 </section>
 
 </body>
