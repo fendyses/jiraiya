@@ -266,15 +266,40 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
 /* alignment fixes */
 .photo .ring2{left:0;width:70mm;height:70mm}
 .code{line-height:2.05}
-.kpis{margin-top:9mm}
-.row2{margin-top:10mm}
-.contact{margin-top:10mm}
+.kpis{margin-top:7mm}
+.row2{margin-top:7mm}
+.contact{margin-top:7mm}
 .edu{align-items:stretch}
 .tl{display:flex;flex-direction:column;gap:3mm}
 .tl .ti{margin-bottom:0;flex:1}
 .tl::before{top:6mm;bottom:6mm}
 .track{background:repeating-linear-gradient(90deg,#e2e8f0 0 1px,transparent 1px calc(100%/7))}
 .layer{grid-template-columns:31mm 1fr 9mm;gap:2mm}
+
+/* sub-captions: icon + plain text instead of code comments */
+.sec .c,.sbox .t,.podium .t,.mbot .ttl{font-family:Inter,sans-serif;font-size:7pt;font-weight:500;color:var(--mut);display:flex;align-items:center;gap:1.3mm;letter-spacing:.1pt}
+.sec .c{align-self:center}
+.sec .c .i,.sbox .t .i,.podium .t .i,.mbot .ttl .i{width:3.2mm;height:3.2mm;color:var(--cy)}
+.sec.v .c .i{color:var(--vi)}.sec.g .c .i{color:var(--gr)}.sec.a .c .i{color:var(--am)}.sec.p .c .i{color:var(--pk)}
+
+/* biodata card (formal table instead of JSON editor) */
+.bio{padding:4mm 4.5mm}
+.bio h3{font-family:'Space Grotesk';font-size:12.5pt;margin-bottom:2.6mm;display:flex;align-items:center;gap:2mm}
+.bio h3 .i{color:var(--cy)}
+.bio table{width:100%;border-collapse:collapse;font-size:7.9pt}
+.bio th{text-align:left;font-weight:500;color:var(--mut);width:32.5mm;padding:1.25mm 0;vertical-align:top;border-bottom:1px solid var(--line)}
+.bio td{color:var(--tx);font-weight:600;padding:1.25mm 0;border-bottom:1px solid var(--line);line-height:1.3}
+.bio tr:last-child th,.bio tr:last-child td{border-bottom:0}
+
+/* KPI tenure in full words */
+.kpi .v.tenure{font-size:16pt;white-space:nowrap;padding-top:1mm}
+.kpi .v.tenure small{font-size:7.6pt;margin:0 1mm 0 .5mm}
+/* professional body card: fill height, aligned boxes, formal field row */
+.mbot{justify-content:space-between}
+.mbot .cert{flex:1;display:flex;flex-direction:column;justify-content:center}
+.field{border-top:1px solid var(--line);padding-top:2mm;display:flex;flex-direction:column;gap:.5mm}
+.field .lb{font-size:6.4pt;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.4pt}
+.field .vl{font-size:7.8pt;font-weight:600;color:var(--tx)}
 </style>
 </head>
 <body>
@@ -346,13 +371,12 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
       <div class="ring2"></div>
       <div class="ring"></div>
       <div class="frame"><img src="photo-507.png" alt="Ts. Saiful Effendy"><div class="fade"></div></div>
-      <div class="float" style="left:-6mm;top:22mm"><svg class="i" style="color:var(--gr)"><use href="#check"/></svg>status: <b>aktif</b></div>
-      <div class="float" style="right:0;top:50mm"><svg class="i" style="color:var(--am)"><use href="#star"/></svg><b>19</b>&nbsp;thn <b>9</b>&nbsp;bln @UiTM</div>
+      <div class="float" style="right:0;top:50mm"><svg class="i" style="color:var(--am)"><use href="#star"/></svg><b>19</b>&nbsp;tahun <b>9</b>&nbsp;bulan @UiTM</div>
     </div>
   </div>
 
   <div class="kpis">
-    <div class="card kpi"><i class="bar" style="background:var(--cy)"></i><svg class="i spark"><use href="#cal"/></svg><div class="v" style="color:var(--cy)">19<small>t</small> 9<small>b</small></div><div class="l">Tempoh perkhidmatan di UiTM</div></div>
+    <div class="card kpi"><i class="bar" style="background:var(--cy)"></i><div class="v tenure" style="color:var(--cy)">19<small>tahun</small> 9<small>bulan</small></div><div class="l">Tempoh perkhidmatan di UiTM</div></div>
     <div class="card kpi"><i class="bar" style="background:var(--vi)"></i><svg class="i spark"><use href="#layers"/></svg><div class="v" style="color:var(--vi)">19</div><div class="l">Sistem dibangun, ditambah baik &amp; diselenggara</div></div>
     <div class="card kpi"><i class="bar" style="background:var(--am)"></i><svg class="i spark"><use href="#trophy"/></svg><div class="v" style="color:var(--am)">6</div><div class="l">Anugerah &amp; pengiktirafan (2020–2024)</div></div>
     <div class="card kpi"><i class="bar" style="background:var(--gr)"></i><svg class="i spark"><use href="#users"/></svg><div class="v" style="color:var(--gr)">5</div><div class="l">Peranan kepimpinan (2018–2024)</div></div>
@@ -360,25 +384,21 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
   </div>
 
   <div class="row2">
-    <div class="card editor">
-      <div class="hd"><b>{ }</b> biodata.json <span style="margin-left:auto">JSON · UTF-8</span></div>
-      <div class="code">
-        <div class="ln">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11</div>
-        <div><span class="pu">{</span><br>
-&nbsp;&nbsp;<span class="k">"noPekerja"</span><span class="pu">:</span> <span class="nb">199254</span><span class="pu">,</span><br>
-&nbsp;&nbsp;<span class="k">"nama"</span><span class="pu">:</span> <span class="s">"Ts. Saiful Effendy"</span><span class="pu">,</span><br>
-&nbsp;&nbsp;<span class="k">"tarikhLahir"</span><span class="pu">:</span> <span class="s">"5 Ogos 1984"</span><span class="pu">,</span><br>
-&nbsp;&nbsp;<span class="k">"keturunan"</span><span class="pu">:</span> <span class="s">"Melayu"</span><span class="pu">,</span><br>
-&nbsp;&nbsp;<span class="k">"agama"</span><span class="pu">:</span> <span class="s">"Islam"</span><span class="pu">,</span><br>
-&nbsp;&nbsp;<span class="k">"tarafPerkahwinan"</span><span class="pu">:</span> <span class="s">"Berkahwin"</span><span class="pu">,</span><br>
-&nbsp;&nbsp;<span class="k">"perkhidmatanUiTM"</span><span class="pu">:</span> <span class="s">"19 Tahun 9 Bulan"</span><span class="pu">,</span><br>
-&nbsp;&nbsp;<span class="k">"skim"</span><span class="pu">:</span> <span class="s">"Teknologi Maklumat"</span><span class="pu">,</span><br>
-&nbsp;&nbsp;<span class="k">"gredDipohon"</span><span class="pu">:</span> <span class="s">"FA6"</span> <span class="cm">// Pen. Pegawai TM</span><br>
-<span class="pu">}</span></div>
-      </div>
+    <div class="card bio">
+      <h3><svg class="i"><use href="#card"/></svg>Maklumat Peribadi</h3>
+      <table>
+        <tr><th>No. Pekerja</th><td>199254</td></tr>
+        <tr><th>Nama Penuh</th><td>Ts. Saiful Effendy Bin Md Sharif</td></tr>
+        <tr><th>Tarikh Lahir</th><td>5 Ogos 1984</td></tr>
+        <tr><th>Keturunan</th><td>Melayu</td></tr>
+        <tr><th>Agama</th><td>Islam</td></tr>
+        <tr><th>Taraf Perkahwinan</th><td>Berkahwin</td></tr>
+        <tr><th>Tempoh Perkhidmatan</th><td>19 Tahun 9 Bulan</td></tr>
+        <tr><th>Skim Perkhidmatan</th><td>Teknologi Maklumat</td></tr>
+        <tr><th>Gred Dipohon</th><td>FA6</td></tr>
+      </table>
     </div>
     <div class="card readme">
-      <div class="t"># README.md</div>
       <h3><svg class="i"><use href="#file"/></svg>Ringkasan Eksekutif</h3>
       <p>Profil data peribadi ini disediakan bagi menerangkan <span class="hl">latar belakang dan pencapaian berimpak tinggi</span> saya sepanjang perkhidmatan di UiTM untuk pertimbangan lantikan baharu ke Skim FA6 Penolong Pegawai Teknologi Maklumat.</p>
       <p>Di kesempatan ini saya mengucapkan setinggi-tinggi penghargaan dan terima kasih kepada Pengurusan Eksekutif UiTM, Jabatan Digital, Universiti Teknologi MARA Cawangan Perlis dan seluruh warga UiTM di atas segala peluang dan tunjuk ajar sepanjang saya berkhidmat.</p>
@@ -393,7 +413,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     <div class="card ct"><div class="ic" style="background:#e0336f1f;color:var(--pk)"><svg class="i"><use href="#mobile"/></svg></div><div><div class="lb">Tel. Peribadi</div><div class="vl mono">019-572 2600</div></div></div>
   </div>
 
-  <div class="status"><span>● Ts. Saiful Effendy Bin Md Sharif</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 1/4</span></div>
+  <div class="status"><span>● Ts. Saiful Effendy Bin Md Sharif</span><span class="sp"></span><span>Muka Surat 1/4</span></div>
 </section>
 
 <!-- ======================= PAGE 2 ======================= -->
@@ -403,7 +423,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     <div class="fa">GRED FA6</div>
   </div>
 
-  <div class="sec"><span class="n">02</span><h2>Kelulusan Akademik</h2><span class="c">// git log --education</span></div>
+  <div class="sec"><span class="n">02</span><h2>Kelulusan Akademik</h2><span class="c"><svg class="i"><use href="#grad"/></svg>3 kelulusan · 2 pentauliahan</span></div>
   <div class="edu">
     <div class="tl">
       <div class="card ti">
@@ -420,7 +440,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
       </div>
     </div>
     <div class="card mbot">
-      <div class="ttl">// badan profesional</div>
+      <div class="ttl"><svg class="i"><use href="#shield"/></svg>Badan Profesional</div>
       <div class="cert">
         <div class="top"><div class="badge" style="background:#7048e822;color:var(--vi)"><svg class="i"><use href="#grad"/></svg></div><div><div class="d">FEB 2021</div><h5>Teknologis Berijazah</h5></div></div>
         <div class="d" style="margin-top:1.4mm">Lembaga Teknologis Malaysia (MBOT)</div>
@@ -432,11 +452,11 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
         <div class="d" style="margin-top:1.4mm">Lembaga Teknologis Malaysia (MBOT)</div>
         <div class="np"><span>N.P</span>PT21070847</div>
       </div>
-      <div class="d mono" style="font-size:6.6pt;color:var(--mut)">Bidang: <span style="color:var(--tx)">Information &amp; Computing Technology (IT)</span></div>
+      <div class="field"><span class="lb">Bidang</span><span class="vl">Information &amp; Computing Technology (IT)</span></div>
     </div>
   </div>
 
-  <div class="sec v" style="margin-top:4mm"><span class="n">03</span><h2>Kemahiran Utama</h2><span class="c">// kemahiran.config.ts</span></div>
+  <div class="sec v" style="margin-top:4mm"><span class="n">03</span><h2>Kemahiran Utama</h2><span class="c"><svg class="i"><use href="#cpu"/></svg>6 kategori teknikal</span></div>
   <div class="card stack">
     <div class="layer">
       <div class="lh"><div class="ic" style="background:#1d6fd81f;color:var(--cy)"><svg class="i"><use href="#code"/></svg></div><b>Bahasa &amp; Kerangka Kerja</b></div>
@@ -460,17 +480,17 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     </div>
     <div class="layer">
       <div class="lh"><div class="ic" style="background:#f08c001f;color:var(--am)"><svg class="i"><use href="#bug"/></svg></div><b>Pengujian &amp; Debugging</b></div>
-      <div class="chips"><span class="chip">PHPUnit</span><span class="chip">PHPStan</span><span class="chip">Jasmine · Karma</span><span class="chip">Laravel Telescope</span><span class="chip">Laravel Debugbar</span><span class="chip">Dynatrace</span><span class="chip">Elastic APM</span><span class="chip">Ujian fungsi &amp; API · Postman</span><span class="chip">Penjejakan bug · ujian manual &amp; laporan pengguna</span></div>
-      <div class="cnt"><div class="num" style="color:var(--am)">9</div><div class="u">kaedah</div><div class="meter"><i style="width:64%;background:var(--am)"></i></div></div>
+      <div class="chips"><span class="chip">PHPUnit</span><span class="chip">Laravel Telescope</span><span class="chip">Laravel Debugbar</span><span class="chip">Dynatrace</span><span class="chip">Ujian fungsi &amp; API · Postman</span><span class="chip">Penjejakan bug · ujian manual &amp; laporan pengguna</span></div>
+      <div class="cnt"><div class="num" style="color:var(--am)">6</div><div class="u">kaedah</div><div class="meter"><i style="width:43%;background:var(--am)"></i></div></div>
     </div>
     <div class="layer">
       <div class="lh"><div class="ic" style="background:#e0336f1f;color:var(--pk)"><svg class="i"><use href="#clip"/></svg></div><b>Pengurusan Projek</b></div>
-      <div class="chips"><span class="chip">Change Request (CR)</span><span class="chip">UAR</span><span class="chip">Perbincangan bersama pengguna</span></div>
+      <div class="chips"><span class="chip">Change Request (CR)</span><span class="chip">UAT · Ujian Penerimaan Pengguna</span><span class="chip">Perbincangan bersama pengguna</span></div>
       <div class="cnt"><div class="num" style="color:var(--pk)">3</div><div class="u">proses</div><div class="meter"><i style="width:21%;background:var(--pk)"></i></div></div>
     </div>
   </div>
 
-  <div class="sec g" style="margin-top:4mm"><span class="n">04</span><h2>Kemahiran Insaniah</h2><span class="c">// soft-skills.md</span></div>
+  <div class="sec g" style="margin-top:4mm"><span class="n">04</span><h2>Kemahiran Insaniah</h2><span class="c"><svg class="i"><use href="#users"/></svg>4 kemahiran teras</span></div>
   <div class="soft">
     <div class="card sk"><span class="idx">01</span><div class="ic" style="background:#1d6fd81f;color:var(--cy)"><svg class="i"><use href="#msg"/></svg></div><h4>Komunikasi &amp; Dokumentasi</h4><ul><li>Penyediaan dokumentasi sistem, manual pengguna &amp; laporan teknikal</li><li>Komunikasi efektif pelbagai peringkat: pengguna akhir &amp; pentadbir sistem</li></ul></div>
     <div class="card sk"><span class="idx">02</span><div class="ic" style="background:#f08c001f;color:var(--am)"><svg class="i"><use href="#wrench"/></svg></div><h4>Penyelesaian Masalah</h4><ul><li>Mampu mengenal pasti dan menyelesaikan isu teknikal dengan efisien</li></ul></div>
@@ -478,7 +498,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     <div class="card sk"><span class="idx">04</span><div class="ic" style="background:#7048e81f;color:var(--vi)"><svg class="i"><use href="#bulb"/></svg></div><h4>Kreatif &amp; Inovatif</h4><ul><li>Mencadangkan penambahbaikan fungsi sistem sedia ada</li><li>Mereka bentuk antara muka pengguna (UI) moden &amp; mesra pengguna</li></ul></div>
   </div>
 
-  <div class="status"><span>● Akademik &amp; Kemahiran</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 2/4</span></div>
+  <div class="status"><span>● Akademik &amp; Kemahiran</span><span class="sp"></span><span>Muka Surat 2/4</span></div>
 </section>
 
 <!-- ======================= PAGE 3 ======================= -->
@@ -488,7 +508,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     <div class="fa">GRED FA6</div>
   </div>
 
-  <div class="sec"><span class="n">05</span><h2>Tugas &amp; Tanggungjawab Utama</h2><span class="c">// 2021 → sekarang</span></div>
+  <div class="sec"><span class="n">05</span><h2>Tugas &amp; Tanggungjawab Utama</h2><span class="c"><svg class="i"><use href="#cal"/></svg>2021 – Sekarang</span></div>
   <div class="duty">
     <div class="card mx">
       <table>
@@ -497,17 +517,17 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
           <tr><th style="text-align:left;padding-left:1mm">SISTEM</th><th>CR</th><th>SELENGGARA</th><th class="sep"></th><th>CR</th><th>SELENGGARA</th></tr>
         </thead>
         <tbody>
-          <tr><td class="sys">MyStudent</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
-          <tr><td class="sys">NiLAMS</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
-          <tr><td class="sys">Masmed2u</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
-          <tr><td class="sys">ICAN2U</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
-          <tr><td class="sys">MyAlumniCard</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
-          <tr><td class="sys">MYHEP</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
-          <tr><td class="sys">MYSRK</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
-          <tr><td class="sys">NR-HOME</td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
-          <tr><td class="sys">Pengurusan Stok Kad Prihatin Siswa</td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
+          <tr><td class="sys">MyStudent</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">NiLAMS</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">Masmed2u</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">ICAN2U</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">MyAlumniCard</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">MYHEP</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">MYSRK</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">NR-HOME</td><td><i class="dot d-cr"></i></td><td><i class="dot d-mt"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">Pengurusan Stok Kad Prihatin Siswa</td><td><i class="dot d-cr"></i></td><td><i class="dot d-mt"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-mt"></i></td></tr>
           <tr><td class="sys">Warga@UiTM</td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td></tr>
-          <tr><td class="sys">e-Kolej</td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">e-Kolej</td><td><i class="dot d-cr"></i></td><td><i class="dot d-mt"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
           <tr><td class="sys">Kebajikan<span class="grp">HEP</span></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
           <tr><td class="sys">Keselamatan – Saman<span class="grp">HEP</span></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
           <tr><td class="sys">NR – Non Resident<span class="grp">HEP</span></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
@@ -519,27 +539,27 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     </div>
     <div class="side">
       <div class="card sbox">
-        <div class="t">// skop CR berkembang</div>
-        <div class="big">+125<small>%</small></div>
-        <div class="flow"><span class="pill" style="border-color:var(--vi);color:var(--vi)">4 sistem</span><span class="muted">→</span><span class="pill" style="border-color:var(--cy);color:var(--cy)">9 sistem</span></div>
+        <div class="t"><svg class="i"><use href="#layers"/></svg>Skop CR Berkembang</div>
+        <div class="big">+100<small>%</small></div>
+        <div class="flow"><span class="pill" style="border-color:var(--vi);color:var(--vi)">4 sistem</span><span class="muted">→</span><span class="pill" style="border-color:var(--cy);color:var(--cy)">8 sistem</span></div>
         <p>Bilangan sistem yang menerima penambahbaikan (CR) meningkat daripada fasa 2021–2024 ke fasa 2024–sekarang.</p>
       </div>
       <div class="card sbox bars">
-        <div class="t">// beban tugas mengikut fasa</div>
-        <div class="b"><div class="lb"><span>CR · 2021–24</span><b style="color:var(--vi)">4</b></div><div class="tr"><i style="width:44%;background:var(--vi)"></i></div></div>
-        <div class="b"><div class="lb"><span>Selenggara · 2021–24</span><b style="color:var(--vi)">5</b></div><div class="tr"><i style="width:56%;background:linear-gradient(90deg,var(--vi),#7048e8)"></i></div></div>
-        <div class="b"><div class="lb"><span>CR · 2024–kini</span><b style="color:var(--cy)">9</b></div><div class="tr"><i style="width:100%;background:var(--cy)"></i></div></div>
-        <div class="b"><div class="lb"><span>Selenggara · 2024–kini</span><b style="color:var(--cy)">6</b></div><div class="tr"><i style="width:67%;background:linear-gradient(90deg,var(--cy),#1d6fd8)"></i></div></div>
+        <div class="t"><svg class="i"><use href="#clip"/></svg>Beban Tugas Mengikut Fasa</div>
+        <div class="b"><div class="lb"><span>CR · 2021–24</span><b style="color:var(--vi)">4</b></div><div class="tr"><i style="width:27%;background:var(--vi)"></i></div></div>
+        <div class="b"><div class="lb"><span>Selenggara · 2021–24</span><b style="color:var(--vi)">8</b></div><div class="tr"><i style="width:53%;background:linear-gradient(90deg,var(--vi),#7048e8)"></i></div></div>
+        <div class="b"><div class="lb"><span>CR · 2024–kini</span><b style="color:var(--cy)">8</b></div><div class="tr"><i style="width:53%;background:var(--cy)"></i></div></div>
+        <div class="b"><div class="lb"><span>Selenggara · 2024–kini</span><b style="color:var(--cy)">15</b></div><div class="tr"><i style="width:100%;background:linear-gradient(90deg,var(--cy),#1d6fd8)"></i></div></div>
       </div>
       <div class="card sbox" style="text-align:center">
-        <div class="t" style="text-align:left">// jumlah unik</div>
+        <div class="t"><svg class="i"><use href="#check"/></svg>Jumlah Sistem Unik</div>
         <div class="big" style="font-size:30pt">16</div>
         <p style="margin-top:0">sistem universiti di bawah tanggungjawab CR &amp; penyelenggaraan</p>
       </div>
     </div>
   </div>
 
-  <div class="sec p" style="margin-top:6mm"><span class="n">06</span><h2>Pembangunan Sistem</h2><span class="c">// ls ./projek</span></div>
+  <div class="sec p" style="margin-top:6mm"><span class="n">06</span><h2>Pembangunan Sistem</h2><span class="c"><svg class="i"><use href="#code"/></svg>4 projek utama</span></div>
   <div class="devhd"><svg class="i" style="color:var(--pk)"><use href="#branch"/></svg>Jabatan Infostruktur, PPII · 2021 – Sekarang</div>
   <div class="dev">
     <div class="card pj"><span class="no">01</span>
@@ -564,7 +584,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     </div>
   </div>
 
-  <div class="status"><span>● Tugas &amp; Pembangunan Sistem</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 3/4</span></div>
+  <div class="status"><span>● Tugas &amp; Pembangunan Sistem</span><span class="sp"></span><span>Muka Surat 3/4</span></div>
 </section>
 
 <!-- ======================= PAGE 4 ======================= -->
@@ -574,7 +594,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     <div class="fa">GRED FA6</div>
   </div>
 
-  <div class="sec a" style="margin-bottom:2.6mm"><span class="n">07</span><h2>Anugerah &amp; Pengiktirafan</h2><span class="c">// 2020 → 2024</span></div>
+  <div class="sec a" style="margin-bottom:2.6mm"><span class="n">07</span><h2>Anugerah &amp; Pengiktirafan</h2><span class="c"><svg class="i"><use href="#cal"/></svg>2020 – 2024</span></div>
   <div class="aw">
     <div class="card awl">
       <div class="awi"><span class="y">2024</span><span class="md" style="background:#f08c0026;color:var(--am)"><svg class="i"><use href="#star"/></svg></span><div><b>Anugerah Harapan – Konvensyen KIK Peringkat Universiti Awam</b><span>Mewakili UiTM</span></div></div>
@@ -585,7 +605,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
       <div class="awi"><span class="y">2020</span><span class="md" style="background:#1d6fd826;color:var(--cy)"><svg class="i"><use href="#star"/></svg></span><div><b>Anugerah Perkhidmatan Cemerlang (APC)</b><span>Universiti Teknologi MARA</span></div></div>
     </div>
     <div class="card podium">
-      <div class="t">// laluan KIK · naik peringkat</div>
+      <div class="t"><svg class="i"><use href="#trophy"/></svg>Laluan KIK · Naik Peringkat</div>
       <div class="steps">
         <div class="st"><div class="lbl">Naib Johan</div><div class="sub">UiTM<br>2023</div><div class="blk" style="height:16mm;background:linear-gradient(180deg,#cbd5e1,#64748b)"><svg class="i"><use href="#trophy"/></svg>L1</div></div>
         <div class="st"><div class="lbl" style="color:var(--am)">Johan</div><div class="sub">Zon Tengah<br>2023</div><div class="blk" style="height:26mm;background:linear-gradient(180deg,#ffc34d,#f08c00)"><svg class="i"><use href="#trophy"/></svg>L2</div></div>
@@ -595,7 +615,7 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     </div>
   </div>
 
-  <div class="sec g" style="margin-top:4mm;margin-bottom:2.6mm"><span class="n">08</span><h2>Kepimpinan</h2><span class="c">// gantt 2018 → 2024</span></div>
+  <div class="sec g" style="margin-top:4mm;margin-bottom:2.6mm"><span class="n">08</span><h2>Kepimpinan</h2><span class="c"><svg class="i"><use href="#cal"/></svg>2018 – 2024</span></div>
   <div class="card gantt">
     <div class="gh"><span>PERANAN</span><div class="axis"><span>2018</span><span>2019</span><span>2020</span><span>2021</span><span>2022</span><span>2023</span><span>2024</span></div></div>
     <div class="gr"><div><b>Setiausaha Kumpulan KIK (Proserve) Peringkat UiTM dan Universiti Awam</b><p>Menyelaras mesyuarat, menyediakan dokumentasi rasmi, dan memastikan komunikasi berkesan antara ahli kumpulan.</p></div><div class="track"><i style="left:0;width:calc(100%/7);background:var(--pk)">2018</i></div></div>
@@ -605,14 +625,14 @@ body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line
     <div class="gr"><div><b>Setiausaha Program Kecemerlangan Staf Pelaksana Skim Teknologi Maklumat UiTM 2023</b><p>Setiausaha program yang dihadiri oleh <em>442 Staf Pelaksana Skim F</em> seluruh UiTM, berlangsung pada Mei – Jun 2023.</p></div><div class="track"><i style="left:calc(500%/7);width:calc(100%/7);background:var(--vi)">2023</i></div></div>
   </div>
 
-  <div class="sec p" style="margin-top:4mm;margin-bottom:2.6mm"><span class="n">09</span><h2>Penulisan &amp; Pembentangan Kertas Kerja</h2><span class="c">// penulisan.bib</span></div>
+  <div class="sec p" style="margin-top:4mm;margin-bottom:2.6mm"><span class="n">09</span><h2>Penulisan &amp; Pembentangan Kertas Kerja</h2><span class="c"><svg class="i"><use href="#book"/></svg>3 penerbitan</span></div>
   <div class="pubs">
     <div class="card pub"><div class="yr"><svg class="i"><use href="#book"/></svg>2023</div><h4>The Role of Personality Peculiarities on Depression and Anxiety of Medical Doctors Using the Job-Demands Resources Model: The Mediating Effect of Job Burnout</h4><div class="j"><b>ERA Indexed Journal</b><br>Vol. 15 No. 3(I) (2023)</div></div>
     <div class="card pub"><div class="yr"><svg class="i"><use href="#book"/></svg>2024</div><h4>Fostering Nurses' Support in Workplace: Addressing Job Burnout among Malaysian Medical Doctors Working in Public Hospitals</h4><div class="j"><b>Information Management and Business Review</b> · ERA Indexed Journal<br>ISSN 2220-3796 · Special Issue 2024</div></div>
     <div class="card pub"><div class="yr"><svg class="i"><use href="#book"/></svg>2026</div><h4>"AI Brain Fry" and Technostress: Modeling Professional Well-Being in Malaysian Higher Education</h4><div class="j"><b>Quantum Journal of Social Sciences and Humanities</b><br>ISSN 2716-6481 · Special Issue 2026</div></div>
   </div>
 
-  <div class="status"><span>● Anugerah · Kepimpinan · Penulisan</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 4/4</span></div>
+  <div class="status"><span>● Anugerah · Kepimpinan · Penulisan</span><span class="sp"></span><span>Muka Surat 4/4</span></div>
 </section>
 
 </body>
