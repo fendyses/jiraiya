@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<title>CV Saiful Effendy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=block" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f8fafc; --panel:#ffffff; --panel2:#fbfcfe; --line:#e2e8f0; --line2:#cbd5e1;
+  --tx:#0f172a; --mut:#475569; --dim:#94a3b8;
+  --cy:#0891b2; --vi:#7c3aed; --gr:#059669; --pk:#db2777; --am:#d97706; --bl:#2563eb;
+}
+@page{size:A4;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#e5e7eb}
+body{font-family:Inter,system-ui,sans-serif;color:var(--tx);font-size:8.6pt;line-height:1.45;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.mono{font-family:'JetBrains Mono',monospace}
+.page{width:210mm;height:297mm;position:relative;overflow:hidden;background:var(--bg);padding:10mm 12mm 14mm;page-break-after:always;margin:0 auto}
+.page:last-child{page-break-after:auto}
+@media screen{.page{margin:10mm auto;box-shadow:0 10px 40px #0008}}
+/* background decoration */
+.page::before{content:"";position:absolute;inset:0;background:
+  linear-gradient(var(--line) 1px,transparent 1px) 0 0/8mm 8mm,
+  linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/8mm 8mm;opacity:.7;
+  -webkit-mask-image:radial-gradient(ellipse at 85% 0%,#000 0%,transparent 60%);mask-image:radial-gradient(ellipse at 85% 0%,#000 0%,transparent 60%)}
+.page::after{content:"";position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(circle at 100% 0%,#0891b212,transparent 45%),
+  radial-gradient(circle at 0% 100%,#7c3aed0d,transparent 45%)}
+.page>*{position:relative;z-index:1}
+.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* top bar + status bar */
+.tab{display:flex;align-items:center;gap:3mm;font-family:'JetBrains Mono';font-size:7pt;color:var(--mut);border-bottom:1px solid var(--line);padding-bottom:2.2mm;margin-bottom:5mm}
+.dots{display:flex;gap:1.4mm}.dots i{width:2.4mm;height:2.4mm;border-radius:50%;display:block}
+.dots i:nth-child(1){background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
+.tab .file{background:var(--bg2);border:1px solid var(--line);border-bottom-color:var(--cy);padding:.8mm 3mm;border-radius:1.5mm 1.5mm 0 0;color:var(--tx)}
+.tab .file b{color:var(--cy);font-weight:500}
+.tab .sp{flex:1}
+.tab .fa{color:var(--vi);border:1px solid #7c3aed55;padding:.5mm 2mm;border-radius:1mm}
+.status{position:absolute;left:12mm;right:12mm;bottom:5mm;height:6mm;border-top:1px solid var(--line2);display:flex;align-items:center;gap:5mm;font-family:'JetBrains Mono';font-size:6.6pt;color:var(--mut);z-index:2}
+.status::before{content:"";position:absolute;left:0;top:-1px;width:30mm;height:.6mm;background:linear-gradient(90deg,var(--cy),var(--vi))}
+.status .sp{flex:1}
+.status span:first-child{color:var(--cy);font-weight:700}
+
+/* section heading */
+.sec{display:flex;align-items:baseline;gap:3mm;margin:0 0 3.2mm}
+.sec .n{font-family:'JetBrains Mono';font-weight:700;font-size:9pt;color:var(--bg);background:var(--cy);padding:.4mm 1.8mm;border-radius:1mm}
+.sec h2{font-family:'Space Grotesk';font-size:15pt;font-weight:700;letter-spacing:-.2pt}
+.sec .c{font-family:'JetBrains Mono';font-size:7pt;color:var(--dim);margin-left:auto}
+.sec.v .n{background:var(--vi)}.sec.g .n{background:var(--gr)}.sec.a .n{background:var(--am)}.sec.p .n{background:var(--pk)}
+
+.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:3mm;box-shadow:0 .4mm 1.5mm #0f172a0f}
+.chip{display:inline-flex;align-items:center;gap:1mm;font-family:'JetBrains Mono';font-size:6.8pt;padding:.6mm 2mm;border-radius:1.2mm;border:1px solid var(--line2);background:#f1f5f9;color:#1e293b;white-space:nowrap}
+.muted{color:var(--mut)}
+
+/* ============ PAGE 1 ============ */
+.hero{display:grid;grid-template-columns:1fr 70mm;gap:4mm;height:92mm}
+.prompt{font-family:'JetBrains Mono';font-size:8pt;color:var(--gr);margin-bottom:3mm}
+.prompt span{color:var(--mut)}
+.cursor{display:inline-block;width:2mm;height:3.4mm;background:var(--cy);vertical-align:-.6mm;margin-left:1mm}
+.ts{display:inline-block;font-family:'Space Grotesk';font-weight:700;font-size:10pt;color:var(--bg);background:linear-gradient(90deg,var(--cy),var(--vi));padding:.3mm 2.2mm;border-radius:1.2mm;margin-bottom:2mm}
+.name{font-family:'Space Grotesk';font-weight:700;font-size:31pt;line-height:1;letter-spacing:-.8pt}
+.name .grad{color:var(--tx)}.name .grad b{color:var(--cy);font-weight:700}
+.name2{font-family:'Space Grotesk';font-size:15pt;font-weight:500;color:var(--mut);margin-top:1mm}
+.role{margin-top:4mm;font-family:'Space Grotesk';font-size:12pt;font-weight:600;color:var(--cy);display:flex;align-items:center;gap:2mm}
+.role::before{content:"";width:6mm;height:.6mm;background:var(--cy)}
+.purpose{margin-top:4mm;display:flex;flex-wrap:wrap;gap:1.6mm}
+.purpose .chip{font-size:7pt}
+.photo{position:relative;height:92mm}
+.photo .ring{position:absolute;left:4mm;top:6mm;width:62mm;height:62mm;border-radius:50%;background:radial-gradient(circle,#22d3ee33,#a78bfa22 55%,transparent 70%);border:1px dashed #22d3ee66}
+.photo .ring2{position:absolute;left:-1mm;top:1mm;width:72mm;height:72mm;border-radius:50%;border:1px solid #a78bfa33}
+.photo .frame{position:absolute;left:0;right:0;top:0;bottom:0;overflow:hidden;border-radius:0 0 34mm 34mm}
+.photo img{position:absolute;width:100mm;left:-15mm;top:1mm;filter:drop-shadow(0 1.5mm 3mm #0f172a26)}
+.photo .fade{position:absolute;left:0;right:0;bottom:0;height:22mm;background:linear-gradient(transparent,var(--bg))}
+.float{position:absolute;font-family:'JetBrains Mono';font-size:6.6pt;background:#ffffffee;border:1px solid var(--line2);border-radius:1.5mm;padding:1mm 2mm;display:flex;align-items:center;gap:1.4mm;z-index:3}
+.float b{color:var(--cy)}
+
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:2.5mm;margin-top:4mm}
+.kpi{padding:3mm 3mm 2.6mm;position:relative;overflow:hidden}
+.kpi .v{font-family:'Space Grotesk';font-weight:700;font-size:21pt;line-height:1}
+.kpi .v small{font-size:9pt;color:var(--mut);font-weight:500;margin-left:.5mm}
+.kpi .l{font-size:7pt;color:var(--mut);margin-top:1.2mm;line-height:1.25}
+.kpi .bar{position:absolute;left:0;top:0;bottom:0;width:.8mm}
+.kpi .spark{position:absolute;right:2mm;top:2.4mm;color:var(--dim);font-size:4.2mm}
+
+.row2{display:grid;grid-template-columns:86mm 1fr;gap:4mm;margin-top:7mm}
+.editor{overflow:hidden}
+.editor .hd{display:flex;align-items:center;gap:2mm;padding:1.8mm 3mm;border-bottom:1px solid var(--line);font-family:'JetBrains Mono';font-size:6.8pt;color:var(--mut);background:#f8fafc}
+.editor .hd b{color:var(--am);font-weight:500}
+.code{font-family:'JetBrains Mono';font-size:7.6pt;line-height:1.72;padding:2.4mm 3mm 3mm 0;display:grid;grid-template-columns:8mm 1fr}
+.code .ln{color:#cbd5e1;text-align:right;padding-right:3mm;user-select:none}
+.k{color:var(--vi)}.s{color:var(--gr)}.pu{color:var(--mut)}.cm{color:#94a3b8;font-style:italic}.nb{color:var(--am)}
+.readme{padding:4mm 4.5mm}
+.readme .t{font-family:'JetBrains Mono';font-size:7pt;color:var(--dim);margin-bottom:1.5mm}
+.readme h3{font-family:'Space Grotesk';font-size:12.5pt;margin-bottom:2mm;display:flex;align-items:center;gap:2mm}
+.readme h3 .i{color:var(--cy)}
+.readme p{font-size:8.3pt;color:#334155;margin-bottom:2mm;text-align:justify}
+.readme p:last-child{margin-bottom:0}
+.readme .hl{color:var(--cy);font-weight:600}
+
+.contact{display:grid;grid-template-columns:1.3fr 1.15fr .82fr .82fr;gap:2.5mm;margin-top:5.5mm}
+.ct .vl.mono{white-space:nowrap;font-size:8.2pt}
+.ct{padding:3mm;display:flex;gap:2.4mm}
+.ct .ic{width:7.5mm;height:7.5mm;border-radius:2mm;display:grid;place-items:center;font-size:4mm;flex:none}
+.ct .lb{font-family:'JetBrains Mono';font-size:6.4pt;color:var(--dim);text-transform:uppercase;letter-spacing:.3pt}
+.ct .vl{font-size:7.8pt;line-height:1.35;margin-top:.4mm}
+.toc{margin-top:7mm;display:grid;grid-template-columns:repeat(4,1fr);gap:2.5mm}
+.toc div{font-family:'JetBrains Mono';font-size:6.8pt;color:var(--mut);border-top:1px solid var(--line2);padding-top:1.6mm}
+.toc b{color:var(--tx);font-family:'Space Grotesk';font-size:8.4pt;display:block;font-weight:600}
+
+/* ============ PAGE 2 ============ */
+.edu{display:grid;grid-template-columns:1fr 70mm;gap:4mm}
+.tl{position:relative;padding-left:9mm}
+.tl::before{content:"";position:absolute;left:3mm;top:2mm;bottom:2mm;width:.6mm;background:linear-gradient(var(--cy),var(--vi))}
+.ti{position:relative;margin-bottom:3mm;padding:3mm 3.5mm;display:grid;grid-template-columns:1fr 17mm;gap:3mm;align-items:center}
+.ti:last-child{margin-bottom:0}
+.ti::before{content:"";position:absolute;left:-7.6mm;top:50%;width:3.2mm;height:3.2mm;margin-top:-1.6mm;border-radius:50%;background:var(--bg);border:.7mm solid var(--cy);box-shadow:0 0 0 .8mm #0891b21f}
+.ti .yr{font-family:'JetBrains Mono';font-size:7pt;color:var(--cy);font-weight:700}
+.ti h4{font-family:'Space Grotesk';font-size:10.2pt;line-height:1.2;margin:.6mm 0}
+.ti .inst{font-size:7.6pt;color:var(--mut)}
+.gauge{position:relative;width:17mm;height:17mm}
+.gauge svg{width:100%;height:100%;transform:rotate(-90deg)}
+.gauge .gv{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-family:'Space Grotesk';font-weight:700;font-size:9pt;line-height:1}
+.gauge .gv small{display:block;font-family:'JetBrains Mono';font-size:5pt;color:var(--mut);font-weight:400;margin-top:.6mm}
+.spm{display:grid;place-items:center;width:17mm;height:17mm;border-radius:50%;border:1px dashed var(--line2);color:var(--dim);font-size:6mm}
+.mbot{padding:3.5mm;display:flex;flex-direction:column;gap:2.6mm}
+.mbot .ttl{font-family:'JetBrains Mono';font-size:6.8pt;color:var(--dim)}
+.cert{border:1px solid var(--line2);border-radius:2.2mm;padding:2.6mm 3mm;background:#f1f5f9;position:relative}
+.cert .top{display:flex;align-items:center;gap:2mm}
+.cert .badge{width:9mm;height:9mm;border-radius:2mm;display:grid;place-items:center;font-size:5mm;flex:none}
+.cert h5{font-family:'Space Grotesk';font-size:9.6pt;line-height:1.15}
+.cert .d{font-family:'JetBrains Mono';font-size:6.6pt;color:var(--mut)}
+.cert .np{margin-top:1.8mm;font-family:'JetBrains Mono';font-size:7pt;display:flex;justify-content:space-between;color:#1e293b}
+.cert .np span{color:var(--dim)}
+.arrow{font-family:'JetBrains Mono';font-size:6.6pt;color:var(--gr);text-align:center;display:flex;align-items:center;gap:2mm;justify-content:center}
+.arrow::before,.arrow::after{content:"";flex:1;height:1px;background:repeating-linear-gradient(90deg,var(--gr) 0 1.2mm,transparent 1.2mm 2.4mm)}
+
+.stack{padding:3.5mm 4mm}
+.layer{display:grid;grid-template-columns:40mm 1fr 12mm;gap:3mm;align-items:center;padding:2.4mm 0;border-bottom:1px dashed var(--line)}
+.layer:last-child{border-bottom:0;padding-bottom:0}
+.layer:first-child{padding-top:0}
+.layer .lh{display:flex;align-items:center;gap:2mm}
+.layer .lh .ic{width:7mm;height:7mm;border-radius:1.8mm;display:grid;place-items:center;font-size:3.8mm;flex:none}
+.layer .lh b{font-family:'Space Grotesk';font-size:8.8pt;line-height:1.15;font-weight:600}
+.layer .chips{display:flex;flex-wrap:wrap;gap:1.3mm}
+.layer .cnt{text-align:right}
+.layer .cnt .num{font-family:'Space Grotesk';font-weight:700;font-size:13pt;line-height:1}
+.layer .cnt .u{font-family:'JetBrains Mono';font-size:5.6pt;color:var(--dim)}
+.meter{height:1mm;border-radius:1mm;background:var(--line);margin-top:1mm;overflow:hidden}
+.meter i{display:block;height:100%}
+.soft{display:grid;grid-template-columns:repeat(4,1fr);gap:2.5mm}
+.sk{padding:3.2mm;position:relative;overflow:hidden}
+.sk .ic{width:8.5mm;height:8.5mm;border-radius:2.2mm;display:grid;place-items:center;font-size:4.4mm;margin-bottom:2mm}
+.sk h4{font-family:'Space Grotesk';font-size:9.2pt;line-height:1.2;margin-bottom:1.4mm}
+.sk ul{list-style:none;font-size:7.3pt;color:#334155}
+.sk li{position:relative;padding-left:3mm;margin-bottom:.9mm;line-height:1.35}
+.sk li::before{content:"›";position:absolute;left:0;color:var(--cy);font-weight:700}
+.sk .idx{position:absolute;right:2.5mm;top:2mm;font-family:'JetBrains Mono';font-size:6.4pt;color:var(--dim)}
+
+/* ============ PAGE 3 ============ */
+.duty{display:grid;grid-template-columns:1fr 50mm;gap:4mm}
+.mx{padding:3mm 3.5mm}
+.mx table{width:100%;border-collapse:collapse;font-size:7.6pt}
+.mx th{font-family:'JetBrains Mono';font-weight:500;font-size:6.2pt;color:var(--mut);text-align:center;padding:0 0 1.6mm}
+.mx th.era{font-family:'Space Grotesk';font-size:8pt;font-weight:700;color:var(--tx);padding-bottom:.6mm}
+.mx th.era span{display:block;height:.7mm;border-radius:1mm;margin:1mm 2mm 0}
+.mx td{padding:1.05mm 0;border-top:1px solid #e2e8f099;text-align:center}
+.mx td.sys{text-align:left;font-weight:500;padding-left:1mm;white-space:nowrap}
+.mx td.sys .grp{font-family:'JetBrains Mono';font-size:6pt;color:var(--dim);margin-left:1mm}
+.mx td.sep{width:3mm;border-top:0}
+.dot{display:inline-block;width:3.4mm;height:3.4mm;border-radius:1mm}
+.d-cr{background:var(--cy);box-shadow:none}
+.d-mt{background:var(--vi);box-shadow:none}
+.d-no{border:1px solid #e2e8f0}
+.legend{display:flex;gap:4mm;font-family:'JetBrains Mono';font-size:6.6pt;color:var(--mut);margin-top:2.4mm}
+.legend span{display:flex;align-items:center;gap:1.4mm}
+.legend .dot{width:2.6mm;height:2.6mm}
+.side{display:flex;flex-direction:column;gap:3mm}
+.sbox{padding:3.2mm}
+.sbox .t{font-family:'JetBrains Mono';font-size:6.6pt;color:var(--dim);margin-bottom:2mm}
+.bars .b{margin-bottom:2.4mm}
+.bars .b:last-child{margin-bottom:0}
+.bars .lb{display:flex;justify-content:space-between;font-size:7.2pt;margin-bottom:.8mm}
+.bars .lb b{font-family:'Space Grotesk'}
+.bars .tr{height:2.6mm;background:#f1f5f9;border-radius:1mm;overflow:hidden;border:1px solid var(--line)}
+.bars .tr i{display:block;height:100%;border-radius:1mm}
+.big{font-family:'Space Grotesk';font-weight:700;font-size:26pt;line-height:1;color:var(--gr)}
+.big small{font-size:12pt}
+.sbox p{font-size:7.3pt;color:var(--mut);margin-top:1.2mm;line-height:1.35}
+.flow{display:flex;align-items:center;gap:1.5mm;margin-top:2mm;font-family:'JetBrains Mono';font-size:7.2pt}
+.flow .pill{padding:.6mm 2mm;border-radius:1mm;border:1px solid var(--line2)}
+.dev{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
+.pj{padding:3.5mm 3.8mm;position:relative;overflow:hidden}
+.pj .top{display:flex;align-items:center;gap:2.4mm;margin-bottom:2mm}
+.pj .ic{width:9mm;height:9mm;border-radius:2.2mm;display:grid;place-items:center;font-size:4.6mm;flex:none}
+.pj h4{font-family:'Space Grotesk';font-size:10pt;line-height:1.2}
+.pj .tags{display:flex;gap:1.3mm;flex-wrap:wrap;margin-bottom:2mm}
+.pj p{font-size:7.7pt;color:#334155;line-height:1.45}
+.pj .hl{color:var(--am);font-weight:600}
+.pj .no{position:absolute;right:3mm;top:2.2mm;font-family:'JetBrains Mono';font-size:14pt;font-weight:700;color:#e2e8f0}
+.devhd{display:flex;align-items:center;gap:2mm;margin:-1mm 0 3mm;font-family:'JetBrains Mono';font-size:7pt;color:var(--mut)}
+
+/* ============ PAGE 4 ============ */
+.aw{display:grid;grid-template-columns:1fr 64mm;gap:4mm}
+.awl{padding:3.2mm 3.5mm}
+.awi{display:grid;grid-template-columns:12mm 7mm 1fr;align-items:center;gap:2mm;padding:1.25mm 0;border-bottom:1px dashed var(--line)}
+.awi:last-child{border-bottom:0;padding-bottom:0}
+.awi:first-child{padding-top:0}
+.awi .y{font-family:'JetBrains Mono';font-weight:700;font-size:7.6pt;color:var(--am)}
+.awi .md{width:7mm;height:7mm;border-radius:50%;display:grid;place-items:center;font-size:3.6mm}
+.awi b{font-family:'Space Grotesk';font-size:8.8pt;display:block;line-height:1.2}
+.awi span{font-size:7pt;color:var(--mut)}
+.podium{padding:3.2mm 3.5mm;display:flex;flex-direction:column}
+.podium .t{font-family:'JetBrains Mono';font-size:6.6pt;color:var(--dim)}
+.steps{flex:1;display:flex;align-items:flex-end;gap:2mm;margin-top:2mm}
+.st{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center}
+.st .lbl{font-family:'Space Grotesk';font-weight:700;font-size:8.2pt;line-height:1.1}
+.st .sub{font-size:6.2pt;color:var(--mut);line-height:1.2;margin:.6mm 0 1.4mm}
+.st .blk{width:100%;border-radius:1.8mm 1.8mm 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:2mm;font-family:'JetBrains Mono';font-size:6.4pt;color:#fff;font-weight:700}
+.st .blk .i{font-size:4.5mm;margin-bottom:1mm;stroke:#fff}
+.base{height:.8mm;background:var(--line2);border-radius:1mm}
+
+.gantt{padding:3.2mm 3.5mm}
+.gh{display:grid;grid-template-columns:100mm 1fr;gap:3mm;font-family:'JetBrains Mono';font-size:6.2pt;color:var(--dim);padding-bottom:1.4mm;border-bottom:1px solid var(--line)}
+.axis{display:grid;grid-template-columns:repeat(7,1fr)}
+.axis span{text-align:left;border-left:1px solid var(--line2);padding-left:1mm}
+.gr{display:grid;grid-template-columns:100mm 1fr;gap:3mm;padding:1.4mm 0;border-bottom:1px dashed var(--line);align-items:center}
+.gr:last-child{border-bottom:0;padding-bottom:0}
+.gr b{font-family:'Space Grotesk';font-size:8.7pt;line-height:1.2;display:block}
+.gr p{font-size:6.9pt;color:var(--mut);line-height:1.35;margin-top:.5mm}
+.gr p em{color:var(--am);font-style:normal;font-weight:600}
+.track{position:relative;height:5mm;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(100%/7 - 1px),#e2e8f0 calc(100%/7 - 1px),#e2e8f0 calc(100%/7))}
+.track i{position:absolute;top:.6mm;bottom:.6mm;border-radius:1.2mm;font-style:normal;font-family:'JetBrains Mono';font-size:5.8pt;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+
+.pubs{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5mm}
+.pub{padding:3.2mm;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.pub .yr{font-family:'JetBrains Mono';font-size:7pt;font-weight:700;color:var(--pk);display:flex;align-items:center;gap:1.4mm}
+.pub h4{font-family:'Space Grotesk';font-size:8pt;line-height:1.25;margin:1.2mm 0 1.6mm;font-weight:600}
+.pub .j{margin-top:auto;font-size:6.6pt;color:var(--mut);border-top:1px solid var(--line);padding-top:1.6mm;line-height:1.35}
+.pub .j b{color:#1e293b;font-weight:600}
+.end{margin-top:3mm;font-family:'JetBrains Mono';font-size:7.6pt;color:var(--mut);display:flex;align-items:center;gap:2mm}
+.end .g{color:var(--gr)}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></symbol>
+  <symbol id="mobile" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="building" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/></symbol>
+  <symbol id="home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol>
+  <symbol id="code" viewBox="0 0 24 24"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></symbol>
+  <symbol id="db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></symbol>
+  <symbol id="term" viewBox="0 0 24 24"><path d="M4 17l6-6-6-6M12 19h8"/></symbol>
+  <symbol id="bug" viewBox="0 0 24 24"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M19 7l-3 2M5 7l3 2M19 19l-3-2M5 19l3-2M20 13h-4M4 13h4M10 4l1 2M14 4l-1 2"/></symbol>
+  <symbol id="clip" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 14l2 2 4-4"/></symbol>
+  <symbol id="msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+  <symbol id="wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+  <symbol id="users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></symbol>
+  <symbol id="award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.48 12.89L17 22l-5-3-5 3 1.52-9.11"/></symbol>
+  <symbol id="shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="grad" viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></symbol>
+  <symbol id="file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></symbol>
+  <symbol id="trophy" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></symbol>
+  <symbol id="branch" viewBox="0 0 24 24"><path d="M6 3v12"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></symbol>
+  <symbol id="layers" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></symbol>
+  <symbol id="card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></symbol>
+  <symbol id="alert" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></symbol>
+  <symbol id="cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></symbol>
+  <symbol id="book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15z"/><path d="M6.5 17A2.5 2.5 0 0 0 4 19.5 2.5 2.5 0 0 0 6.5 22H20v-5"/></symbol>
+  <symbol id="cpu" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+</svg>
+
+<!-- ======================= PAGE 1 ======================= -->
+<section class="page">
+  <div class="tab">
+    <div class="file"><b>~/uitm/</b>saiful-effendy/profil.tsx</div>
+    <div class="sp"></div>
+    <div>Temu Duga Memasuki Perkhidmatan UiTM</div>
+    <div class="fa">GRED FA6</div>
+  </div>
+
+  <div class="hero">
+    <div>
+      <div class="prompt">fendy@uitm <span>~</span> $ whoami<span class="cursor"></span></div>
+      <div class="ts">Ts.</div>
+      <div class="name"><span class="grad">Saiful <b>Effendy</b></span></div>
+      <div class="name2">Bin Md Sharif</div>
+      <div class="role">Penolong Pegawai Teknologi Maklumat</div>
+      <div class="purpose">
+        <span class="chip"><svg class="i" style="color:var(--cy)"><use href="#cpu"/></svg>Skim Teknologi Maklumat Gred FA6</span>
+        <span class="chip"><svg class="i" style="color:var(--vi)"><use href="#building"/></svg>Jabatan Infostruktur, PPII</span>
+        <span class="chip"><svg class="i" style="color:var(--gr)"><use href="#shield"/></svg>Teknologis Profesional MBOT</span>
+      </div>
+      <div class="purpose" style="margin-top:4.5mm">
+        <span class="chip" style="border-color:#22d3ee55">Laravel</span>
+        <span class="chip" style="border-color:#22d3ee55">Angular</span>
+        <span class="chip" style="border-color:#22d3ee55">Quasar</span>
+        <span class="chip" style="border-color:#22d3ee55">Vue.js</span>
+        <span class="chip" style="border-color:#a78bfa55">Oracle</span>
+        <span class="chip" style="border-color:#a78bfa55">MariaDB</span>
+        <span class="chip" style="border-color:#a78bfa55">Tibero</span>
+        <span class="chip" style="border-color:#34d39955">Docker</span>
+      </div>
+    </div>
+    <div class="photo">
+      <div class="ring2"></div>
+      <div class="ring"></div>
+      <div class="frame"><img src="photo-507.png" alt="Ts. Saiful Effendy"><div class="fade"></div></div>
+      <div class="float" style="left:-6mm;top:22mm"><svg class="i" style="color:var(--gr)"><use href="#check"/></svg>status: <b>aktif</b></div>
+      <div class="float" style="right:-2mm;top:50mm"><svg class="i" style="color:var(--am)"><use href="#star"/></svg><b>19</b>&nbsp;thn <b>9</b>&nbsp;bln @UiTM</div>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="card kpi"><i class="bar" style="background:var(--cy)"></i><svg class="i spark"><use href="#cal"/></svg><div class="v" style="color:var(--cy)">19<small>t</small> 9<small>b</small></div><div class="l">Tempoh perkhidmatan di UiTM</div></div>
+    <div class="card kpi"><i class="bar" style="background:var(--vi)"></i><svg class="i spark"><use href="#layers"/></svg><div class="v" style="color:var(--vi)">19</div><div class="l">Sistem dibangun, ditambah baik &amp; diselenggara</div></div>
+    <div class="card kpi"><i class="bar" style="background:var(--am)"></i><svg class="i spark"><use href="#trophy"/></svg><div class="v" style="color:var(--am)">6</div><div class="l">Anugerah &amp; pengiktirafan (2020–2024)</div></div>
+    <div class="card kpi"><i class="bar" style="background:var(--gr)"></i><svg class="i spark"><use href="#users"/></svg><div class="v" style="color:var(--gr)">5</div><div class="l">Peranan kepimpinan (2018–2024)</div></div>
+    <div class="card kpi"><i class="bar" style="background:var(--pk)"></i><svg class="i spark"><use href="#book"/></svg><div class="v" style="color:var(--pk)">3</div><div class="l">Kertas penyelidikan diterbitkan</div></div>
+  </div>
+
+  <div class="row2">
+    <div class="card editor">
+      <div class="hd"><b>{ }</b> biodata.json <span style="margin-left:auto">JSON · UTF-8</span></div>
+      <div class="code">
+        <div class="ln">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11</div>
+        <div><span class="pu">{</span><br>
+&nbsp;&nbsp;<span class="k">"noPekerja"</span><span class="pu">:</span> <span class="nb">199254</span><span class="pu">,</span><br>
+&nbsp;&nbsp;<span class="k">"nama"</span><span class="pu">:</span> <span class="s">"Ts. Saiful Effendy"</span><span class="pu">,</span><br>
+&nbsp;&nbsp;<span class="k">"tarikhLahir"</span><span class="pu">:</span> <span class="s">"5 Ogos 1984"</span><span class="pu">,</span><br>
+&nbsp;&nbsp;<span class="k">"keturunan"</span><span class="pu">:</span> <span class="s">"Melayu"</span><span class="pu">,</span><br>
+&nbsp;&nbsp;<span class="k">"agama"</span><span class="pu">:</span> <span class="s">"Islam"</span><span class="pu">,</span><br>
+&nbsp;&nbsp;<span class="k">"tarafPerkahwinan"</span><span class="pu">:</span> <span class="s">"Berkahwin"</span><span class="pu">,</span><br>
+&nbsp;&nbsp;<span class="k">"perkhidmatanUiTM"</span><span class="pu">:</span> <span class="s">"19 Tahun 9 Bulan"</span><span class="pu">,</span><br>
+&nbsp;&nbsp;<span class="k">"skim"</span><span class="pu">:</span> <span class="s">"Teknologi Maklumat"</span><span class="pu">,</span><br>
+&nbsp;&nbsp;<span class="k">"gredDipohon"</span><span class="pu">:</span> <span class="s">"FA6"</span> <span class="cm">// Pen. Pegawai TM</span><br>
+<span class="pu">}</span></div>
+      </div>
+    </div>
+    <div class="card readme">
+      <div class="t"># README.md</div>
+      <h3><svg class="i"><use href="#file"/></svg>Ringkasan Eksekutif</h3>
+      <p>Profil data peribadi ini disediakan bagi menerangkan <span class="hl">latar belakang dan pencapaian berimpak tinggi</span> saya sepanjang perkhidmatan di UiTM untuk pertimbangan lantikan baharu ke Skim FA6 Penolong Pegawai Teknologi Maklumat.</p>
+      <p>Di kesempatan ini saya mengucapkan setinggi-tinggi penghargaan dan terima kasih kepada Pengurusan Eksekutif UiTM, Jabatan Digital, Universiti Teknologi MARA Cawangan Perlis dan seluruh warga UiTM di atas segala peluang dan tunjuk ajar sepanjang saya berkhidmat.</p>
+      <p>Amat besarlah harapan saya untuk terus berkhidmat dan menabur bakti di UiTM dengan peranan yang lebih besar ke arah mencapai visi UiTM sebagai <span class="hl">universiti terkemuka dunia</span>.</p>
+    </div>
+  </div>
+
+  <div class="contact">
+    <div class="card ct"><div class="ic" style="background:#22d3ee1f;color:var(--cy)"><svg class="i"><use href="#building"/></svg></div><div><div class="lb">Alamat Jabatan</div><div class="vl">Jabatan Infostruktur, Pejabat Infrastruktur &amp; Infostruktur, Universiti Teknologi MARA, 40450 Shah Alam, Selangor</div></div></div>
+    <div class="card ct"><div class="ic" style="background:#a78bfa1f;color:var(--vi)"><svg class="i"><use href="#home"/></svg></div><div><div class="lb">Alamat Rumah</div><div class="vl">No 4, Taman Setia Utama 3, Jalan Setia Utama U13/39J, 40170 Shah Alam</div></div></div>
+    <div class="card ct"><div class="ic" style="background:#34d3991f;color:var(--gr)"><svg class="i"><use href="#phone"/></svg></div><div><div class="lb">Tel. Rasmi</div><div class="vl mono">03-5544 2165</div></div></div>
+    <div class="card ct"><div class="ic" style="background:#f472b61f;color:var(--pk)"><svg class="i"><use href="#mobile"/></svg></div><div><div class="lb">Tel. Peribadi</div><div class="vl mono">019-572 2600</div></div></div>
+  </div>
+
+  <div class="toc">
+    <div>01 · hal.1<b>Profil &amp; Biodata</b></div>
+    <div>02 · hal.2<b>Akademik &amp; Kemahiran</b></div>
+    <div>03 · hal.3<b>Tugas &amp; Pembangunan Sistem</b></div>
+    <div>04 · hal.4<b>Anugerah, Kepimpinan &amp; Penulisan</b></div>
+  </div>
+
+  <div class="status"><span>⎇ main</span><span>● Ts. Saiful Effendy Bin Md Sharif</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 1/4</span></div>
+</section>
+
+<!-- ======================= PAGE 2 ======================= -->
+<section class="page">
+  <div class="tab">
+    <div class="file"><b>~/saiful-effendy/</b>akademik.log</div>
+    <div class="file" style="border-bottom-color:transparent;color:var(--mut)">kemahiran.config.ts</div>
+    <div class="sp"></div>
+    <div class="fa">GRED FA6</div>
+  </div>
+
+  <div class="sec"><span class="n">02</span><h2>Kelulusan Akademik</h2><span class="c">// git log --education</span></div>
+  <div class="edu">
+    <div class="tl">
+      <div class="card ti">
+        <div><div class="yr">2017</div><h4>Ijazah Sarjana Muda (Kepujian) Sains Komputer (IT)</h4><div class="inst">Universiti Teknologi MARA</div></div>
+        <div class="gauge"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#e2e8f0" stroke-width="3"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#g1)" stroke-width="3" stroke-dasharray="76 100" stroke-linecap="round"/><defs><linearGradient id="g1"><stop offset="0" stop-color="#0891b2"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs></svg><div class="gv"><div>3.04<small>CGPA</small></div></div></div>
+      </div>
+      <div class="card ti">
+        <div><div class="yr">2004</div><h4>Sijil Teknologi Maklumat</h4><div class="inst">Politeknik Sultan Abdul Halim Mu'adzam Shah</div></div>
+        <div class="gauge"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" fill="none" stroke="#e2e8f0" stroke-width="3"/><circle cx="18" cy="18" r="15.9" fill="none" stroke="url(#g1)" stroke-width="3" stroke-dasharray="76.25 100" stroke-linecap="round"/></svg><div class="gv"><div>3.05<small>CGPA</small></div></div></div>
+      </div>
+      <div class="card ti">
+        <div><div class="yr">2001</div><h4>Sijil Pelajaran Malaysia (SPM)</h4><div class="inst">Sek. Men. Kebangsaan Derma, Kangar</div></div>
+        <div class="spm"><svg class="i"><use href="#grad"/></svg></div>
+      </div>
+    </div>
+    <div class="card mbot">
+      <div class="ttl">// badan profesional</div>
+      <div class="cert">
+        <div class="top"><div class="badge" style="background:#a78bfa22;color:var(--vi)"><svg class="i"><use href="#grad"/></svg></div><div><div class="d">FEB 2021</div><h5>Teknologis Berijazah</h5></div></div>
+        <div class="d" style="margin-top:1.4mm">Lembaga Teknologis Malaysia (MBOT)</div>
+        <div class="np"><span>N.P</span>GT21020867</div>
+      </div>
+      <div class="arrow">naik taraf · 5 bulan</div>
+      <div class="cert" style="border-color:#22d3ee77;box-shadow:0 0 5mm #22d3ee22">
+        <div class="top"><div class="badge" style="background:#22d3ee22;color:var(--cy)"><svg class="i"><use href="#shield"/></svg></div><div><div class="d">JUL 2021</div><h5>Teknologis Profesional (Ts.)</h5></div></div>
+        <div class="d" style="margin-top:1.4mm">Lembaga Teknologis Malaysia (MBOT)</div>
+        <div class="np"><span>N.P</span>PT21070847</div>
+      </div>
+      <div class="d mono" style="font-size:6.6pt;color:var(--mut)">Bidang: <span style="color:var(--tx)">Information &amp; Computing Technology (IT)</span></div>
+    </div>
+  </div>
+
+  <div class="sec v" style="margin-top:6mm"><span class="n">03</span><h2>Kemahiran Utama</h2><span class="c">// kemahiran.config.ts</span></div>
+  <div class="card stack">
+    <div class="layer">
+      <div class="lh"><div class="ic" style="background:#22d3ee1f;color:var(--cy)"><svg class="i"><use href="#code"/></svg></div><b>Bahasa Pengaturcaraan</b></div>
+      <div class="chips"><span class="chip">PHP · Laravel</span><span class="chip">JavaScript</span><span class="chip">Vanilla JS</span><span class="chip">jQuery</span><span class="chip">Angular</span><span class="chip">Quasar</span><span class="chip">HTML5</span><span class="chip">CSS</span><span class="chip">Bootstrap</span><span class="chip">ColdFusion (CFML)</span><span class="chip">SQL</span></div>
+      <div class="cnt"><div class="num" style="color:var(--cy)">11</div><div class="u">item</div><div class="meter"><i style="width:100%;background:var(--cy)"></i></div></div>
+    </div>
+    <div class="layer">
+      <div class="lh"><div class="ic" style="background:#a78bfa1f;color:var(--vi)"><svg class="i"><use href="#db"/></svg></div><b>Pangkalan Data</b></div>
+      <div class="chips"><span class="chip">MariaDB / MySQL</span><span class="chip">Oracle Database</span><span class="chip">Tibero</span><span class="chip">Firebase Realtime DB</span></div>
+      <div class="cnt"><div class="num" style="color:var(--vi)">4</div><div class="u">enjin</div><div class="meter"><i style="width:36%;background:var(--vi)"></i></div></div>
+    </div>
+    <div class="layer">
+      <div class="lh"><div class="ic" style="background:#34d3991f;color:var(--gr)"><svg class="i"><use href="#term"/></svg></div><b>Persekitaran Pembangunan</b></div>
+      <div class="chips"><span class="chip">VS Code</span><span class="chip">Dreamweaver</span><span class="chip">Navicat</span><span class="chip">DBeaver</span><span class="chip">Postman</span><span class="chip">Laravel Herd</span><span class="chip">Laragon</span><span class="chip">ServBay</span><span class="chip">XAMPP</span><span class="chip">Docker</span></div>
+      <div class="cnt"><div class="num" style="color:var(--gr)">10</div><div class="u">alatan</div><div class="meter"><i style="width:91%;background:var(--gr)"></i></div></div>
+    </div>
+    <div class="layer">
+      <div class="lh"><div class="ic" style="background:#fbbf241f;color:var(--am)"><svg class="i"><use href="#bug"/></svg></div><b>Pengujian &amp; Debugging</b></div>
+      <div class="chips"><span class="chip">Laravel Telescope</span><span class="chip">Dynatrace</span><span class="chip">Ujian fungsi &amp; API · Postman</span><span class="chip">Penjejakan bug · ujian manual &amp; laporan pengguna</span></div>
+      <div class="cnt"><div class="num" style="color:var(--am)">4</div><div class="u">kaedah</div><div class="meter"><i style="width:36%;background:var(--am)"></i></div></div>
+    </div>
+    <div class="layer">
+      <div class="lh"><div class="ic" style="background:#f472b61f;color:var(--pk)"><svg class="i"><use href="#clip"/></svg></div><b>Pengurusan Projek</b></div>
+      <div class="chips"><span class="chip">Change Request (CR)</span><span class="chip">UAR</span><span class="chip">Perbincangan bersama pengguna</span></div>
+      <div class="cnt"><div class="num" style="color:var(--pk)">3</div><div class="u">proses</div><div class="meter"><i style="width:27%;background:var(--pk)"></i></div></div>
+    </div>
+  </div>
+
+  <div class="sec g" style="margin-top:6mm"><span class="n">04</span><h2>Kemahiran Insaniah</h2><span class="c">// soft-skills.md</span></div>
+  <div class="soft">
+    <div class="card sk"><span class="idx">01</span><div class="ic" style="background:#22d3ee1f;color:var(--cy)"><svg class="i"><use href="#msg"/></svg></div><h4>Komunikasi &amp; Dokumentasi</h4><ul><li>Penyediaan dokumentasi sistem, manual pengguna &amp; laporan teknikal</li><li>Komunikasi efektif pelbagai peringkat: pengguna akhir &amp; pentadbir sistem</li></ul></div>
+    <div class="card sk"><span class="idx">02</span><div class="ic" style="background:#fbbf241f;color:var(--am)"><svg class="i"><use href="#wrench"/></svg></div><h4>Penyelesaian Masalah</h4><ul><li>Mampu mengenal pasti dan menyelesaikan isu teknikal dengan efisien</li></ul></div>
+    <div class="card sk"><span class="idx">03</span><div class="ic" style="background:#34d3991f;color:var(--gr)"><svg class="i"><use href="#users"/></svg></div><h4>Kerjasama Pasukan &amp; Kepimpinan</h4><ul><li>Bekerja dalam pasukan pembangunan sistem dalaman jabatan</li><li>Membimbing staf baharu dalam tugas teknikal</li></ul></div>
+    <div class="card sk"><span class="idx">04</span><div class="ic" style="background:#a78bfa1f;color:var(--vi)"><svg class="i"><use href="#bulb"/></svg></div><h4>Kreatif &amp; Inovatif</h4><ul><li>Mencadangkan penambahbaikan fungsi sistem sedia ada</li><li>Mereka bentuk antara muka pengguna (UI) moden &amp; mesra pengguna</li></ul></div>
+  </div>
+
+  <div class="status"><span>⎇ main</span><span>● Akademik &amp; Kemahiran</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 2/4</span></div>
+</section>
+
+<!-- ======================= PAGE 3 ======================= -->
+<section class="page">
+  <div class="tab">
+    <div class="file"><b>~/saiful-effendy/</b>tugas.matrix</div>
+    <div class="file" style="border-bottom-color:transparent;color:var(--mut)">projek/</div>
+    <div class="sp"></div>
+    <div class="fa">GRED FA6</div>
+  </div>
+
+  <div class="sec"><span class="n">05</span><h2>Tugas &amp; Tanggungjawab Utama</h2><span class="c">// 2021 → sekarang</span></div>
+  <div class="duty">
+    <div class="card mx">
+      <table>
+        <thead>
+          <tr><th></th><th colspan="2" class="era">2021 – 2024<span style="background:var(--vi)"></span></th><th class="sep"></th><th colspan="2" class="era">2024 – Sekarang<span style="background:var(--cy)"></span></th></tr>
+          <tr><th style="text-align:left;padding-left:1mm">SISTEM</th><th>CR</th><th>SELENGGARA</th><th class="sep"></th><th>CR</th><th>SELENGGARA</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="sys">MyStudent</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
+          <tr><td class="sys">NiLAMS</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
+          <tr><td class="sys">Masmed2u</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
+          <tr><td class="sys">ICAN2U</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
+          <tr><td class="sys">MyAlumniCard</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
+          <tr><td class="sys">MYHEP</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
+          <tr><td class="sys">MYSRK</td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
+          <tr><td class="sys">NR-HOME</td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
+          <tr><td class="sys">Pengurusan Stok Kad Prihatin Siswa</td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td></tr>
+          <tr><td class="sys">Warga@UiTM</td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-no"></i></td></tr>
+          <tr><td class="sys">e-Kolej</td><td><i class="dot d-cr"></i></td><td><i class="dot d-no"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">Kebajikan<span class="grp">HEP</span></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">Keselamatan – Saman<span class="grp">HEP</span></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">NR – Non Resident<span class="grp">HEP</span></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">Tatatertib<span class="grp">HEP</span></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
+          <tr><td class="sys">Zakat<span class="grp">HEP</span></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td><td class="sep"></td><td><i class="dot d-no"></i></td><td><i class="dot d-mt"></i></td></tr>
+        </tbody>
+      </table>
+      <div class="legend"><span><i class="dot d-cr"></i>Penambahbaikan Sistem / Change Request (CRF)</span><span><i class="dot d-mt"></i>Penyelenggaraan &amp; Pemantauan</span></div>
+    </div>
+    <div class="side">
+      <div class="card sbox">
+        <div class="t">// skop CR berkembang</div>
+        <div class="big">+125<small>%</small></div>
+        <div class="flow"><span class="pill" style="border-color:var(--vi);color:var(--vi)">4 sistem</span><span class="muted">→</span><span class="pill" style="border-color:var(--cy);color:var(--cy)">9 sistem</span></div>
+        <p>Bilangan sistem yang menerima penambahbaikan (CR) meningkat daripada fasa 2021–2024 ke fasa 2024–sekarang.</p>
+      </div>
+      <div class="card sbox bars">
+        <div class="t">// beban tugas mengikut fasa</div>
+        <div class="b"><div class="lb"><span>CR · 2021–24</span><b style="color:var(--vi)">4</b></div><div class="tr"><i style="width:44%;background:var(--vi)"></i></div></div>
+        <div class="b"><div class="lb"><span>Selenggara · 2021–24</span><b style="color:var(--vi)">5</b></div><div class="tr"><i style="width:56%;background:linear-gradient(90deg,var(--vi),#7c3aed)"></i></div></div>
+        <div class="b"><div class="lb"><span>CR · 2024–kini</span><b style="color:var(--cy)">9</b></div><div class="tr"><i style="width:100%;background:var(--cy)"></i></div></div>
+        <div class="b"><div class="lb"><span>Selenggara · 2024–kini</span><b style="color:var(--cy)">6</b></div><div class="tr"><i style="width:67%;background:linear-gradient(90deg,var(--cy),#0891b2)"></i></div></div>
+      </div>
+      <div class="card sbox" style="text-align:center">
+        <div class="t" style="text-align:left">// jumlah unik</div>
+        <div class="big" style="font-size:30pt">16</div>
+        <p style="margin-top:0">sistem universiti di bawah tanggungjawab CR &amp; penyelenggaraan</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec p" style="margin-top:6mm"><span class="n">06</span><h2>Pembangunan Sistem</h2><span class="c">// ls ./projek</span></div>
+  <div class="devhd"><svg class="i" style="color:var(--pk)"><use href="#branch"/></svg>Jabatan Infostruktur, PPII · 2021 – Sekarang</div>
+  <div class="dev">
+    <div class="card pj"><span class="no">01</span>
+      <div class="top"><div class="ic" style="background:#fbbf241f;color:var(--am)"><svg class="i"><use href="#card"/></svg></div><h4>Sistem Pengurusan Stok<br>Kad Prihatin Siswa</h4></div>
+      <div class="tags"><span class="chip" style="border-color:#fbbf2466">Pembangun Penuh</span><span class="chip">Seluruh UiTM</span></div>
+      <p>Membangunkan sistem untuk merekodkan stok kad prihatin siswa yang digunapakai di seluruh UiTM. Rekod stok adalah <span class="hl">syarat wajib Bank Negara</span> memandangkan kad mempunyai cip "bank card". Sistem ini memudahkan pegawai terlibat merekodkan stok.</p>
+    </div>
+    <div class="card pj"><span class="no">02</span>
+      <div class="top"><div class="ic" style="background:#22d3ee1f;color:var(--cy)"><svg class="i"><use href="#alert"/></svg></div><h4>Sistem eAduan UiTM</h4></div>
+      <div class="tags"><span class="chip" style="border-color:#22d3ee66">Front-end</span><span class="chip">Laravel</span></div>
+      <p>Terlibat dalam pembangunan (front-end) sistem eAduan UiTM. Dibangunkan menggunakan framework Laravel, bertujuan untuk <span class="hl">memberi nafas baharu</span> kepada Sistem eAduan Korporat.</p>
+    </div>
+    <div class="card pj"><span class="no">03</span>
+      <div class="top"><div class="ic" style="background:#a78bfa1f;color:var(--vi)"><svg class="i"><use href="#users"/></svg></div><h4>Sistem PPUiTM</h4></div>
+      <div class="tags"><span class="chip" style="border-color:#a78bfa66">Front-end</span><span class="chip">Quasar</span></div>
+      <p>Terlibat dalam pembangunan (front-end) sistem PPUiTM. Dibangunkan menggunakan Framework Quasar sebagai <span class="hl">platform Persatuan Pentadbir UiTM</span>.</p>
+    </div>
+    <div class="card pj"><span class="no">04</span>
+      <div class="top"><div class="ic" style="background:#34d3991f;color:var(--gr)"><svg class="i"><use href="#cal"/></svg></div><h4>Sistem Pengurusan Majlis – DevOps</h4></div>
+      <div class="tags"><span class="chip" style="border-color:#34d39966">Pembangun</span><span class="chip">Vue.js</span></div>
+      <p>Membangunkan Sistem Pengurusan Majlis – DevOps menggunakan Vue.js untuk melancarkan program tersebut. Sistem ini juga <span class="hl">boleh digunakan semula</span> untuk sebarang majlis akan datang.</p>
+    </div>
+  </div>
+
+  <div class="status"><span>⎇ main</span><span>● Tugas &amp; Pembangunan Sistem</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 3/4</span></div>
+</section>
+
+<!-- ======================= PAGE 4 ======================= -->
+<section class="page">
+  <div class="tab">
+    <div class="file"><b>~/saiful-effendy/</b>pencapaian.yml</div>
+    <div class="file" style="border-bottom-color:transparent;color:var(--mut)">kepimpinan.gantt</div>
+    <div class="file" style="border-bottom-color:transparent;color:var(--mut)">penulisan.bib</div>
+    <div class="sp"></div>
+    <div class="fa">GRED FA6</div>
+  </div>
+
+  <div class="sec a" style="margin-bottom:2.6mm"><span class="n">07</span><h2>Anugerah &amp; Pengiktirafan</h2><span class="c">// 2020 → 2024</span></div>
+  <div class="aw">
+    <div class="card awl">
+      <div class="awi"><span class="y">2024</span><span class="md" style="background:#fbbf2426;color:var(--am)"><svg class="i"><use href="#star"/></svg></span><div><b>Anugerah Harapan – Konvensyen KIK Peringkat Universiti Awam</b><span>Mewakili UiTM</span></div></div>
+      <div class="awi"><span class="y">2023</span><span class="md" style="background:#fbbf2426;color:var(--am)"><svg class="i"><use href="#trophy"/></svg></span><div><b>Johan – Konvensyen KIK Peringkat Zon Tengah</b></div></div>
+      <div class="awi"><span class="y">2023</span><span class="md" style="background:#64748b1f;color:#64748b"><svg class="i"><use href="#trophy"/></svg></span><div><b>Naib Johan – Konvensyen KIK Peringkat UiTM</b></div></div>
+      <div class="awi"><span class="y">2023</span><span class="md" style="background:#34d39926;color:var(--gr)"><svg class="i"><use href="#award"/></svg></span><div><b>Anugerah Aperantis Terbaik – Program Kompetensi Skim F</b></div></div>
+      <div class="awi"><span class="y">2021</span><span class="md" style="background:#64748b1f;color:#64748b"><svg class="i"><use href="#award"/></svg></span><div><b>Pingat Perak – Mini Konvensyen Inovasi &amp; Kreativiti 2021</b><span>Peringkat Pejabat Pembangunan Infrastruktur dan Infostruktur</span></div></div>
+      <div class="awi"><span class="y">2020</span><span class="md" style="background:#22d3ee26;color:var(--cy)"><svg class="i"><use href="#star"/></svg></span><div><b>Anugerah Perkhidmatan Cemerlang (APC)</b><span>Universiti Teknologi MARA</span></div></div>
+    </div>
+    <div class="card podium">
+      <div class="t">// laluan KIK · naik peringkat</div>
+      <div class="steps">
+        <div class="st"><div class="lbl">Naib Johan</div><div class="sub">UiTM<br>2023</div><div class="blk" style="height:16mm;background:linear-gradient(180deg,#cbd5e1,#64748b)"><svg class="i"><use href="#trophy"/></svg>L1</div></div>
+        <div class="st"><div class="lbl" style="color:var(--am)">Johan</div><div class="sub">Zon Tengah<br>2023</div><div class="blk" style="height:26mm;background:linear-gradient(180deg,#fde68a,#f59e0b)"><svg class="i"><use href="#trophy"/></svg>L2</div></div>
+        <div class="st"><div class="lbl" style="color:var(--cy)">Harapan</div><div class="sub">Universiti Awam<br>2024</div><div class="blk" style="height:36mm;background:linear-gradient(180deg,#67e8f9,#7c3aed)"><svg class="i"><use href="#star"/></svg>L3</div></div>
+      </div>
+      <div class="base"></div>
+    </div>
+  </div>
+
+  <div class="sec g" style="margin-top:4mm;margin-bottom:2.6mm"><span class="n">08</span><h2>Kepimpinan</h2><span class="c">// gantt 2018 → 2024</span></div>
+  <div class="card gantt">
+    <div class="gh"><span>PERANAN</span><div class="axis"><span>2018</span><span>2019</span><span>2020</span><span>2021</span><span>2022</span><span>2023</span><span>2024</span></div></div>
+    <div class="gr"><div><b>Setiausaha Kumpulan KIK (Proserve) Peringkat UiTM dan Universiti Awam</b><p>Menyelaras mesyuarat, menyediakan dokumentasi rasmi, dan memastikan komunikasi berkesan antara ahli kumpulan.</p></div><div class="track"><i style="left:0;width:calc(100%/7);background:var(--pk)">2018</i></div></div>
+    <div class="gr"><div><b>Ketua Unit Sistem Maklumat, Bhg. Infostruktur, UiTM Cawangan Perlis</b><p>Memimpin dan mengelola pasukan termasuk merancang dan menyediakan latihan untuk staf, serta bertanggungjawab dalam kolaborasi dengan pihak lain.</p></div><div class="track"><i style="left:calc(100%/7);width:calc(300%/7);background:var(--cy)">2019 – 2021</i></div></div>
+    <div class="gr"><div><b>Ketua Kumpulan Program Kompetensi Staf Tukar Lantik UiTM Shah Alam</b><p>Ketua Kumpulan dari Disember 2021 – April 2022. Mendapat anugerah <em>Aperantis Terbaik</em> dan <em>Kumpulan Terbaik</em>. Berjaya membangunkan sistem yang digunapakai sejak 1 Oktober 2022.</p></div><div class="track"><i style="left:calc(300%/7);width:calc(200%/7);background:var(--am)">2021 – 2022</i></div></div>
+    <div class="gr"><div><b>AJK Biro Kebajikan (JAKES)</b><p>AJK Biro Kebajikan bagi Jawatankuasa Kebajikan dan Kesejahteraan (JAKES) Jabatan Infostruktur.</p></div><div class="track"><i style="left:calc(400%/7);width:calc(300%/7);background:var(--gr)">2022 – 2024</i></div></div>
+    <div class="gr"><div><b>Setiausaha Program Kecemerlangan Staf Pelaksana Skim Teknologi Maklumat UiTM 2023</b><p>Setiausaha program yang dihadiri oleh <em>442 Staf Pelaksana Skim F</em> seluruh UiTM, berlangsung pada Mei – Jun 2023.</p></div><div class="track"><i style="left:calc(500%/7);width:calc(100%/7);background:var(--vi)">2023</i></div></div>
+  </div>
+
+  <div class="sec p" style="margin-top:4mm;margin-bottom:2.6mm"><span class="n">09</span><h2>Penulisan &amp; Pembentangan Kertas Kerja</h2><span class="c">// penulisan.bib</span></div>
+  <div class="pubs">
+    <div class="card pub"><div class="yr"><svg class="i"><use href="#book"/></svg>2023</div><h4>The Role of Personality Peculiarities on Depression and Anxiety of Medical Doctors Using the Job-Demands Resources Model: The Mediating Effect of Job Burnout</h4><div class="j"><b>ERA Indexed Journal</b><br>Vol. 15 No. 3(I) (2023)</div></div>
+    <div class="card pub"><div class="yr"><svg class="i"><use href="#book"/></svg>2024</div><h4>Fostering Nurses' Support in Workplace: Addressing Job Burnout among Malaysian Medical Doctors Working in Public Hospitals</h4><div class="j"><b>Information Management and Business Review</b> · ERA Indexed Journal<br>ISSN 2220-3796 · Special Issue 2024</div></div>
+    <div class="card pub"><div class="yr"><svg class="i"><use href="#book"/></svg>2026</div><h4>"AI Brain Fry" and Technostress: Modeling Professional Well-Being in Malaysian Higher Education</h4><div class="j"><b>Quantum Journal of Social Sciences and Humanities</b><br>ISSN 2716-6481 · Special Issue 2026</div></div>
+  </div>
+
+  <div class="end"><span class="g">fendy@uitm ~ $</span> exit 0 <span class="cm">// Terima kasih atas pertimbangan pihak panel.</span><span class="cursor"></span></div>
+
+  <div class="status"><span>⎇ main</span><span>● Anugerah · Kepimpinan · Penulisan</span><span class="sp"></span><span>FA6 · Penolong Pegawai Teknologi Maklumat</span><span>Hal. 4/4</span></div>
+</section>
+
+</body>
+</html>
