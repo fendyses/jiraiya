@@ -1,6 +1,8 @@
 # Nilam — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-09-30** — [NILAM PIC Resubmission Workflow Investigation and Fix](../../daily-diary/current/2026-09-30.md)
+  - Outcome: The production states were verified read-only, the old and new return paths were unified behind guarded server-side rules, rollback cleanup and test isolation were hardened, all 45 tests passed, and the completed fix was committed to `development` as `45a1b53f`
 - **2026-09-23** — [MyAlumniCard: Himpunan Mesra Alumni 2026 Banner on Home; Nilam: Editable Partner Contact Details in Manage Partners Modal](../../daily-diary/current/2026-09-23.md)
   - Outcome: Banner + "Register Now" button added to `src/app/home/home.component.html`; change is staged but **not committed**, and not yet built or viewed in a browser.
 - **2026-09-18** — [Nilam: The PIC Who Could Not Send It Back](../../daily-diary/current/2026-09-18.md)

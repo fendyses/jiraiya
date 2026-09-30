@@ -1,6 +1,8 @@
 # Jiraiya — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
+- **2026-09-30** — [NILAM PIC Resubmission Workflow Investigation and Fix](../../daily-diary/current/2026-09-30.md)
+  - Outcome: The production states were verified read-only, the old and new return paths were unified behind guarded server-side rules, rollback cleanup and test isolation were hardened, all 45 tests passed, and the completed fix was committed to `development` as `45a1b53f`
 - **2026-09-26** — [ForexPulse UI/UX Refinement and iPhone Deployment](../../daily-diary/current/2026-09-26.md)
   - Outcome: The UI enhancement sprint was completed, committed as `9e0ac1e`, verified with static analysis and 18 passing tests, and installed successfully as ForexPulse `1.0.0 (2)` on `FendySES iP`
 - **2026-09-17** — [Nilam: LPU Re-route Check and the SEDA Partner That Became MGTC; MyAlumniCard: Null Father Alumni ID on /attendance, Borang Jubah Notice; Nilam: PUU Monitoring Redesign Week, the MEU Letter That Was Never Released, and Two LPU Flag Bugs](../../daily-diary/current/2026-09-17.md)
