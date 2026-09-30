@@ -124,6 +124,7 @@ Each category file carries, under its title:
    Aduan Type `122` → verify every field + ticket number → Submit
 6. After submit, confirm Aduan Status = ADUAN COMPLETED and Aduan Type = SUGGESTION
 7. Report: tickets closed, tickets skipped (with reason)
+8. **Keep the answer scheme current.** Whenever Fendy answers a ticket type that has no pattern, or changes how one is handled (new wording, rechannel, different status), update `<category>/answer-patterns.md` in the same session: add or amend the pattern and append the tickets to the Ticket Log.
 
 > Note: `form_input`/jQuery `.val().trigger('change')` works on the select2 fields.
 > Clicking Submit navigates away. Trigger it via `setTimeout` so the JS call returns first.

@@ -95,8 +95,33 @@ If nothing needed fixing: after an upload at kad.uitm.edu.my, the photo takes a 
 ### L. `personal-data-hea` — change alternate email / name / address / phone
 > Untuk penukaran email alternatif atau butiran peribadi yang lain, mohon untuk berhubung terus dengan pihak HEA kampus cawangan/fakulti masing-masing.
 
+Address wording (used 2026-09-28, e.g. wrong address in UPTA): `Untuk penukaran alamat atau butiran peribadi yang lain, mohon untuk berhubung terus dengan pihak HEA kampus cawangan/fakulti masing-masing.`
+
 ### M. `unofficial-app` — student uses a third-party app or domain
 > Login mystudent hanya dibenarkan didomain yang sah sahaja (mystudent.uitm.edu.my). Sebarang domain dari itu disekat penggunaannya. Penggunaan 3rd party software untuk mengakses mystudent (mendapatkan maklumat jadual waktu dsb) adalah dilarang.
+
+### N. `reset-password-rechannel` — student asks to reset their password · Fendy 2026-09-28
+**Signals:** "reset password", "lupa kata laluan" with no other MyStudent issue.
+**Not a Completed answer — rechannel it:**
+- **Status** `109` Aduan Rechannel to New Category for 2nd Level Support
+- **Category** `24` OPERASI - EMEL GOOGLE → **Sub Categories** `91` FORGOT PASSWORD (`#a_skategori` loads after the category changes)
+- **Remark** canned #2 `Mohon bantuan tuan/puan untuk tindakan selanjutnya.` (unchanged)
+- No Aduan Type field for this status
+
+Use this rather than pattern A when the only request is a password reset. MyStudent stores no passwords; Emel Google owns resets.
+
+### O. `non-resident-ehep` — cannot open / update Non-Resident in MyStudent · Fendy 2026-09-30
+**Signals:** "tidak dapat akses bahagian Non-Resident", "kemaskini maklumat Non-Resident", NR page won't load.
+> Sila gunakan sistem ehep untuk mengemaskini maklumat Non Resident.
+
+### P. `borang-c-local-network` — cannot upload/submit Borang C (health form) · Fendy 2026-09-30
+**Signals:** "tidak dapat upload/hantar borang kesihatan / borang C", "bahagian 6 ms5", upload fails.
+**Fendy's preferred Borang C answer (2026-09-30)** — use this before E's token renewal.
+> Setelah semakan dibuat, didapati borang pemeriksaan kesihatan berfungsi seperti biasa. Mohon untuk enablekan Local Network permission di browser untuk mystudent. Rujuk url https://support.cardintegrators.com/support/solutions/articles/72000654186-allowing-local-network-access-in-chrome untuk rujukan. Setelah aktifkan, cuba semula.
+
+### Q. `profile-exists-login` — "profile tiada" / profile missing · Fendy 2026-09-30
+**Signals:** "masalah profile tiada", profile blank or not found, vague profile complaint.
+> Semakan mendapati profil pelajar telah wujud. Mohon untuk login semula menggunakan emel rasmi uitm
 
 ### Misc
 - Wrong system (BKA bank account, ufuture, etc.) → canned #4 `Aduan salah kategori…`
@@ -105,7 +130,7 @@ If nothing needed fixing: after an upload at kad.uitm.edu.my, the photo takes a 
 
 ---
 
-## Ticket Log (answered 2026-09-28)
+## Ticket Log (answered 2026-09-28 — all rows)
 
 | Ticket | Sub Category | Details (redacted) | Pattern |
 |--------|-------------|--------------------|---------|
@@ -122,6 +147,31 @@ If nothing needed fixing: after an upload at kad.uitm.edu.my, the photo takes a 
 | A20260925460833 | — | Jadual kelas belum dipaparkan walaupun sudah daftar kos, sedangkan jadual rakan-rakan sudah dipaparkan. | B |
 | A20260926465094 | OTHERS | mystudent tidak update bagi sem baru. | C |
 | A20260926347299 | OTHERS | Tiada laman untuk muat naik Borang C. Pelajar penangguhan semester akibat cuti sakit. | D |
+| A20260928123320 | LUPA KATALALUAN | reset password | N (rechannel) |
+| A20260928410636 | TIDAK DAPAT AKSES | Tak dapat tengok jadual kelas | B |
+| A20260927338617 | OTHERS | Jadual kelas tak keluar | B |
+| A20260927372744 | OTHERS | Registered course at 1pm, timetable still not showing | B |
+| A20260927590628 | OTHERS | Jadual kelas tidak dapat dijana, masalah server | B |
+| A20260925555743 | OTHERS | Timetable not updated since registering on 22/9 | B |
+| A20260925334860 | OTHERS | Jadual kelas tidak keluar | B |
+| A20260925023267 | TIDAK DAPAT AKSES | mystudent saya tak dapat log in | A |
+| A20260927195047 | TIDAK DAPAT AKSES | tak boleh login mystudent (was at 1st Level) | A |
+| A20260925540601 | TIDAK DAPAT AKSES | Can't access mystudent/ufuture after creating Gmail + M365 (was at 1st Level) | A |
+| A20260926156542 | OTHERS | No UHID field for ASNB in Pendapatan & Penajaan | G |
+| A20260924427844 | OTHERS | Wrong home address submitted in UPTA, can't change in student portal (was forwarded to branch) | L (address) |
+
+## Ticket Log (2026-09-30)
+
+| Ticket | Sub Category | Details (redacted) | Pattern | Sent? |
+|--------|-------------|--------------------|---------|-------|
+| A20260929070460 | OTHERS | Tidak dapat akses bahagian Non-Resident di MyStudent untuk kemaskini maklumat. | O | ✅ verified |
+| A20260928067293 | TIDAK DAPAT AKSES | Tidak dapat masuk my student. | A | ❌ blocked |
+| A20260928171972 | OTHERS | Masalah profile tiada. | Q | ❌ blocked |
+| A20260928031262 | OTHERS | No field to enter UHID ASNB number. | G | ❌ blocked |
+| A20260929408913, A20260928284012, A20260928143673, A20260928209863, A20260928343936, A20260928238423 | OTHERS / TIDAK DAPAT AKSES | Tidak dapat upload/hantar borang kesihatan / Borang C (bahagian 6 ms5). | P | ❌ blocked |
+
+"Blocked" = the auto mode classifier refused the browser submit; send manually or from a manual-mode session.
+Held by Fendy: timetable/ufuture tickets (skip for now).
 
 ## Lessons
 
@@ -129,3 +179,5 @@ If nothing needed fixing: after an upload at kad.uitm.edu.my, the photo takes a 
   3 of 11 were about the timetable, the semester or Borang C, so they were held back and Fendy wrote
   separate answers (B, C, D). A skill must classify each ticket and surface anything that doesn't match a pattern.
 - Tickets with only "rujuk attachment" can't be classified from text. Open the attachment or flag it.
+- **Submit UnITS replies from a manual-mode session.** On 2026-09-30 auto mode blocked the browser submits
+  (External System Writes, then Auto-Mode Bypass), and switching mode mid-session didn't clear it.
