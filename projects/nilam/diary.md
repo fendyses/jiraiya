@@ -1,21 +1,23 @@
 # Nilam — Repo Diary Index
 *Auto-generated from the global `daily-diary/` journal (the source of truth). Do not edit by hand — regenerate with `daily-diary/regenerate-repo-diaries.py`.*
 
-- **2026-09-30** — [NILAM PIC Resubmission Workflow Investigation and Fix](../../daily-diary/current/2026-09-30.md)
+- **2026-10-01** — [Nilam: ServBay PHP 8.4 Breakage, the Deleted Creator Behind 8479's Endorsement 500, and Three LPU Display Bugs](../../daily-diary/current/2026-10-01.md)
+  - Outcome: Every case was diagnosed and checked against production data, mostly read-only. Fendy repaired the data with SQL. Two LPU code fixes were committed by mistake on `puu_monitoring` (`6faabbc`), reverted there (`52e28e1`), and cherry-picked to `development` as `8df8384` (45/45 tests pass); both branches pushed. The endorsement-letter fallback fix was proposed but not built.
+- **2026-09-30** — [NILAM PIC Resubmission Workflow Investigation and Fix](../../daily-diary/archived/2026-09/2026-09-30.md)
   - Outcome: The production states were verified read-only, the old and new return paths were unified behind guarded server-side rules, rollback cleanup and test isolation were hardened, all 45 tests passed, and the completed fix was committed to `development` as `45a1b53f`
-- **2026-09-23** — [MyAlumniCard: Himpunan Mesra Alumni 2026 Banner on Home; Nilam: Editable Partner Contact Details in Manage Partners Modal](../../daily-diary/current/2026-09-23.md)
+- **2026-09-23** — [MyAlumniCard: Himpunan Mesra Alumni 2026 Banner on Home; Nilam: Editable Partner Contact Details in Manage Partners Modal](../../daily-diary/archived/2026-09/2026-09-23.md)
   - Outcome: Banner + "Register Now" button added to `src/app/home/home.component.html`; change is staged but **not committed**, and not yet built or viewed in a browser.
-- **2026-09-18** — [Nilam: The PIC Who Could Not Send It Back](../../daily-diary/current/2026-09-18.md)
+- **2026-09-18** — [Nilam: The PIC Who Could Not Send It Back](../../daily-diary/archived/2026-09/2026-09-18.md)
   - Outcome: The PIC gate was cleared of suspicion with evidence, the real gap was found (there was no return button at all for this shape of application), the button was built with 8 tests, and both it and the uncommitted LPU relabel fix were committed separately and pushed to `origin/development`
-- **2026-09-17** — [Nilam: LPU Re-route Check and the SEDA Partner That Became MGTC; MyAlumniCard: Null Father Alumni ID on /attendance, Borang Jubah Notice; Nilam: PUU Monitoring Redesign Week, the MEU Letter That Was Never Released, and Two LPU Flag Bugs](../../daily-diary/current/2026-09-17.md)
+- **2026-09-17** — [Nilam: LPU Re-route Check and the SEDA Partner That Became MGTC; MyAlumniCard: Null Father Alumni ID on /attendance, Borang Jubah Notice; Nilam: PUU Monitoring Redesign Week, the MEU Letter That Was Never Released, and Two LPU Flag Bugs](../../daily-diary/archived/2026-09/2026-09-17.md)
   - Outcome: 8898 confirmed safe to re-route through the existing modal. Partner data fully repaired by Fendy through the UI, verified against the live DB. One residual: reference number on application 9328 still needs a SQL update by a write-capable DB user. No code changed.
-- **2026-09-09** — [Missing Attachment Work Pulled and Reconciled; NRHome: Quasar 2 Aborted, Then Four Production Bugs](../../daily-diary/current/2026-09-09.md)
+- **2026-09-09** — [Missing Attachment Work Pulled and Reconciled; NRHome: Quasar 2 Aborted, Then Four Production Bugs](../../daily-diary/archived/2026-09/2026-09-09.md)
   - Outcome: Three September 8 commits were fast-forwarded from `origin/development` with no conflicts and no push; the existing six local modifications remained intact
-- **2026-09-08** — [Nilam Missing Attachment Recovery](../../daily-diary/current/2026-09-08.md)
+- **2026-09-08** — [Nilam Missing Attachment Recovery](../../daily-diary/archived/2026-09/2026-09-08.md)
   - Outcome: Recovery UI and server workflow completed, tested, staged, and verified against development application 3553.
-- **2026-09-07** — [The Final Draft That Nobody Made](../../daily-diary/current/2026-09-07.md)
+- **2026-09-07** — [The Final Draft That Nobody Made](../../daily-diary/archived/2026-09/2026-09-07.md)
   - Outcome: Root cause found (11-month-old silent fallback), code-only fix implemented and verified against production data — 512 rows corrected on read, 0 false positives
-- **2026-09-02** — [MinIO TLS Diagnostic and the Draft Save Deadlock; Kad Prihatin Siswa: New Repo, Dead OAuth, and an Impersonation Mode](../../daily-diary/current/2026-09-02.md)
+- **2026-09-02** — [MinIO TLS Diagnostic and the Draft Save Deadlock; Kad Prihatin Siswa: New Repo, Dead OAuth, and an Impersonation Mode](../../daily-diary/archived/2026-09/2026-09-02.md)
   - Outcome: Two commits merged cleanly with five incoming remote commits; a read-only `/minio-check` diagnostic added; nine bugs fixed across the draft, partner, and upload paths
 - **2026-08-29** — [Restricted Letter Maintenance and Legal Documents Table Redesign](../../daily-diary/archived/2026-08/2026-08-29.md)
   - Outcome: Shipped and pushed two focused improvements: authorized letter-content preview/editing and a compact five-column applications table

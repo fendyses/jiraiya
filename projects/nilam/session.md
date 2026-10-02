@@ -1,58 +1,35 @@
 # Nilam — Session Memory
-*Last updated: 2026-09-30*
+*Last updated: 2026-10-01*
 
 ## Session Context
-**Session Type**: Production diagnosis / workflow bug fix / regression verification
+**Session Type**: Production support / data diagnosis / LPU display fixes
 **Current Project**: Nilam (slug: `nilam`)
 **Repo**: `/Applications/Sites/nilam` (UiTM)
-**Status**: Fix committed as `45a1b53f` on `development`; branch is one commit ahead of `origin/development` and has not been pushed
-**Time**: 2026-09-30, 11:36 GMT+8
+**Status**: LPU fixes on `development` as `8df8384` (pushed); reverted from `puu_monitoring` as `52e28e1` (pushed). Only `config/services.php` remains locally modified.
+**Time**: 2026-10-01, 17:21 GMT+8
 
 ## Current Focus
-- **Primary Task**: Resolve applications 8387, 8438, and 9019 remaining at Action Required after PIC resubmission.
-- **Technical Context**: The missing-attachment feature introduced a new no-vetting-document return route, while records with existing vetting documents continued using the legacy route.
-- **Progress**: Production was checked read-only, both paths were unified behind guarded logic, 45 tests passed, and the fix was committed.
+- **Primary Task**: A string of support cases: 9430, 8479, 8829, users with bad department codes, and LPU display bugs.
+- **Technical Context**: Production DB is read through the local `.env` with a read-only user; ETL is `etl` → `antartika.uitm.edu.my/etldata.v_nilams_staff`; production Telescope is at `nilams.uitm.edu.my/telescope`.
+- **Progress**: All cases diagnosed. Fendy applied the data fixes. LPU label and preliminary-email template fixes are checked against live data, committed to `development` as `8df8384` and pushed.
 
 ## Working Memory
 
 ### Active Context
-- Applications 8387 and 8438 remain returned to PIC with existing vetting documents and empty PIC comments; 9019 completed a return on 15 September and was returned again by the vetter on 21 September.
-- Shared eligibility now requires a returned application, creator/assigned PIC, no outstanding confirmed-missing attachment, `assigned-draft` document status, and an assigned vetter.
-- Existing vetting documents support PIC feedback and optional revised DOC/DOCX upload; stale, duplicate, unauthorized, and wrong-stage submissions are rejected.
-- Missing-attachment and revised-draft files are deleted when a database transaction rolls back; notification failures are logged without undoing successful workflow state.
-- `config/services.php` was restored before commit, generated Blade views were cleared, and the working tree was clean after commit.
-- The unrelated missing `PuuMonitoringController` route-list issue remains separate because PUU Monitoring is not yet deployed to production.
+- Local site needs **PHP 8.3** in ServBay; Laravel 8 does not run on 8.4. Use `/Applications/ServBay/package/php/8.3/8.3.25/bin/php` for artisan.
+- Uncommitted: `app/Http/Controllers/LpuApprovalController.php` (selects now include `lpu_approval`; the label uses `$row->status`) and `resources/views/lpuapprovals/create.blade.php` (approval/notification wording, the agreement's own title, L4095/88 highlighted, `$abbrevMatches` rename).
+- 8479: `created_by` is now 3219 (a duplicate of Aznur, 184) with A0402. The letter renders. The submit step still needs the final-draft file on the server.
+- 8829: status 11, `lpu_meeting_id` 30 (LPU 215, held 30 Sep). It shows under the "Preliminary Approval" menu item. Its title has a typo that needs correcting before the preliminary email.
+- About 30 in-progress applications have a creator with no jabatan. The letter-page fallback (application department → creator with trashed → PIC → placeholders) was proposed but not built.
 
 ### Recent Progress
-- Diagnosed the three production records and identified the split workflow regression.
-- Fixed `VettingDocumentAlert` undefined `$who` on `development` as `d13ba9b7`; kept it out of `puu_monitoring` locally as requested.
-- Implemented and committed the guarded resubmission fix as `45a1b53f`.
-- Verified PHP syntax, Blade compilation, whitespace, focused workflow tests, and the full 45-test suite.
+- Found the causes of the ServBay 8.4 outage and the 8479 500. Showed where 8829 is listed in the LPU menus.
+- Fixed the LPU status label (bug present since `c1d1b54`) and the preliminary-email template.
 
 ### Important Decisions
-- Preserve the attachment recovery feature and extend the guarded return logic to historical applications with existing vetting documents instead of replacing their UI path broadly.
-- Treat storage outages as unknown rather than proof that a file is missing, preventing accidental replacement of valid remote files.
-- Keep regression tests in the commit; remove only local login configuration and generated artifacts.
-- Do not push automatically; Fendy controls deployment timing.
+- 8829 not detached from LPU 215, because the meeting already took place.
+- Approval wording "Kelulusan" / "meluluskan" chosen by JIRAIYA and still needs the secretariat's confirmation.
+- The salutation keeps the title only ("YBhg. Profesor Ts. Dr."), following letter convention.
 
 ## Session Recap (For AI Restart)
-NILAM's PIC resubmission bug for applications 8387, 8438, and 9019 was traced to separate return paths introduced with missing-attachment recovery. The unified guarded workflow and rollback cleanup are committed on `development` as `45a1b53f`; all 45 tests pass and nothing has been pushed.
-
-The notification undefined-variable fix is also on `development` as `d13ba9b7`. PUU Monitoring remains development-only and its missing controller/route-list issue was intentionally left outside this fix.
-
-## Session Achievements
-- ✅ Verified affected production application state without modifying production data
-- ✅ Unified no-draft and existing-draft PIC return workflows
-- ✅ Added authorization, stage, attachment, latest-document, duplicate, and validation guards
-- ✅ Added file cleanup for failed database transactions and isolated notification failures
-- ✅ Fixed order-dependent Telescope test leakage and reached 45 passing tests
-- ✅ Removed local `config/services.php` settings and committed eight intended files as `45a1b53f`
-- ✅ Logged the session and UiTM CR entries for 30 September 2026
-
-## Quick Context for Next Session
-- **Where We Left Off**: `development` is clean and one commit ahead of origin at `45a1b53f`.
-- **What's Working**: Full PHPUnit suite, PHP lint, Blade compilation, and diff checks all pass.
-- **What Needs Attention**: Push/deploy when approved, then smoke-test the three affected applications with their PIC users; keep PUU Monitoring work separate.
-
----
-*Session updated: 2026-09-30 11:36*
+2026-10-01: many Nilam support cases. Two LPU fixes (status label, preliminary email template) are uncommitted on `puu_monitoring` and need their own commit apart from `config/services.php`. Still to do: the endorsement-letter fallback and `insertUserLDAP` fixes (withTrashed, `department_code`, trim), a code check at login, merging Aznur's duplicate accounts, and moving the hardcoded Digital Campus token into `.env`.
