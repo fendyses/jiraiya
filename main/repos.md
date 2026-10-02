@@ -19,9 +19,9 @@
 | 12 | NRHome | /Applications/Sites/nrhome |
 
 ## Active Repo
-- **Name**: NRHome
-- **Path**: /Applications/Sites/nrhome
-- **Switched**: 2026-09-10
+- **Name**: Jiraiya
+- **Path**: /Applications/Sites/jiraiya
+- **Switched**: 2026-10-02
 
 ---
 *Add new repos by appending a row to the table above.*
